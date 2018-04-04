@@ -103,9 +103,12 @@ void Matrix::AxisAngle(Vector3& axis, f32 angle)
 
 void Matrix::EulerToMatrix(f32 yaw, f32 pitch, f32 roll)
 {
-	this->AxisAngle( Vector3(1,0,0), -pitch );
-	this->AxisAngle( Vector3(0,1,0),  yaw );
-	this->AxisAngle( Vector3(0,0,1),  roll );
+	Vector3 vPitch = Vector3(1,0,0);
+	Vector3 vYaw = Vector3(0,1,0);
+	Vector3 vRoll = Vector3(0,0,1);
+	this->AxisAngle( vPitch, -pitch );
+	this->AxisAngle( vYaw,  yaw );
+	this->AxisAngle( vRoll,  roll );
 }
 
 void Matrix::Scale(Vector3& scale)

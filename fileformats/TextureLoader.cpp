@@ -7,6 +7,7 @@
 #include "../memory/ScratchPad.h"
 #include "../ui/XL_Console.h"
 #include <assert.h>
+#include <cstring>
 
 #define MAX_PAL_COUNT 32
 #define MAX_COLORMAP_COUNT 32
@@ -226,7 +227,7 @@ bool TextureLoader::LoadTexture_Mem(const u8 *pImgBuffer, u32 uPalIndex, u32 wid
 	u32 uDataSize = width*height;
 	if ( m_uTexColorDepth == 32 ) uDataSize *= 4;
 	m_pConvertedData = (u8 *)ScratchPad::AllocMem( uDataSize );
-	if ( m_pConvertedData == false )
+	if ( !(m_pConvertedData != NULL) )
 		return false;
 
 	if ( m_uTexColorDepth == 32 )

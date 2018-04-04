@@ -4,6 +4,7 @@
 #include "../fileformats/TextureLoader.h"
 #include "../math/Math.h"
 #include <assert.h>
+#include <cstring>
 
 enum
 {

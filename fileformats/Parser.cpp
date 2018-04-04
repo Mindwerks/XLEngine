@@ -127,7 +127,7 @@ bool Parser::SearchKeyword_Str(const char *pszKeyword, char *pszOut, bool bEndOn
 				bCommentStarted = false;
 			}
 		}
-		else if ( bCommentStarted == false && _strnicmp(&m_pMemory[c], pszKeyword, strlen(pszKeyword)) == 0 )
+		else if ( bCommentStarted == false && strnicmp(&m_pMemory[c], pszKeyword, strlen(pszKeyword)) == 0 )
 		{
 			//now search for a number or end of the line.
 			for (cc=c+(s32)strlen(pszKeyword), i=0; m_pMemory[cc] != '\r' && m_pMemory[cc] != '#' && ((m_pMemory[cc] != ' ' && m_pMemory[cc] != 9) || !bStartSpace || (!bEndOnSpace && nSpaceCnt<maxSpaceCnt)); cc++)
@@ -171,7 +171,7 @@ bool Parser::SearchKeyword_F1(const char *pszKeyword, f32& rfValue)
 	s32 i, c, cc;
 	for (c=(s32)m_uFilePtr; c<(s32)m_uLength; c++)
 	{
-		if ( (!pszKeyword) || _strnicmp(&m_pMemory[c], pszKeyword, strlen(pszKeyword)) == 0 )
+		if ( (!pszKeyword) || strnicmp(&m_pMemory[c], pszKeyword, strlen(pszKeyword)) == 0 )
 		{
 			//now search for a number or end of the line.
 			for (cc=c+(int)strlen(pszKeyword), i=0; m_pMemory[cc] != '\r' && m_pMemory[cc] != '#' && ((m_pMemory[cc] != ' ' && m_pMemory[cc] != 9) || !bStartSpace); cc++, i++)

@@ -3,6 +3,7 @@
 #include "../memory/ScratchPad.h"
 #include "../fileformats/TextureLoader.h"
 #include <assert.h>
+#include <cstring>
 
 TextureConv_PCX::TextureConv_PCX() : TextureConverter()
 {

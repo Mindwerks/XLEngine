@@ -468,7 +468,8 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, ch
 			Matrix mBlockRot;
 			float zAngle = -(float)pBlockPos[j].Angle * MATH_PI_OVER_2/512.0f;
 			mBlockRot.Identity();
-			mBlockRot.AxisAngle( Vector3(0, 0, 1), zAngle );
+			Vector3 vAngel = Vector3(0, 0, 1);
+			mBlockRot.AxisAngle( vAngel , zAngle );
 			Vector3 vBlockOffs = Vector3((float)pBlockPos[j].XPos2 * fFP_Scale, (float)pBlockPos[j].YPos2 * fFP_Scale, 0.0f);
 			Vector3 vOutPos = mBlockRot.TransformVector(vPos);
 			vPos = vOutPos + vBlockOffs;
