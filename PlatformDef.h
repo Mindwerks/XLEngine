@@ -2,19 +2,19 @@
 #define PLATFORM_DEF_H
 
 //platform defines.
-#ifdef _WINDOWS
+#ifdef _WIN32
 	#define PLATFORM_WIN 1
 #else
 	#define PLATFORM_WIN 0
 #endif
 
-#ifdef _LINUX
+#ifdef __linux__
 	#define	PLATFORM_LINUX 1
 #else
 	#define	PLATFORM_LINUX 0
 #endif
 
-#ifdef _OSX
+#ifdef __APPLE__
 	#define PLATFORM_OSX 1
 #else
 	#define PLATFORM_OSX 0

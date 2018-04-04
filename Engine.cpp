@@ -137,7 +137,7 @@ bool Engine::Init(void **winParam, s32 paramCnt, s32 w, s32 h)
 #elif PLATFORM_LINUX
 		m_pDriver3D->SetPlatform( xlNew Driver3D_OGL_Linux() );
 #endif
-	
+
 		m_pDriver3D->SetWindowData(paramCnt, winParam);
 		m_pDriver3D->Init(w, h);
 	}
@@ -164,7 +164,7 @@ bool Engine::Init(void **winParam, s32 paramCnt, s32 w, s32 h)
 	if ( EngineSettings::IsServer() == false )
 	{
 		RenderQue::Init( m_pDriver3D );
-	
+
 		//Initialize Texture Cache.
 		TextureCache::Init( m_pDriver3D );
 
@@ -173,7 +173,7 @@ bool Engine::Init(void **winParam, s32 paramCnt, s32 w, s32 h)
 
 		//Initialize the Font Manager.
 		FontManager::Init( "fonts/", m_pDriver3D );
-	
+
 		//Load the basic system fonts.
 		m_pSystemFont16 = FontManager::LoadFont( "Verdana16.fnt" );
 		m_pSystemFont24 = FontManager::LoadFont( "Verdana24.fnt" );
@@ -259,8 +259,11 @@ bool Engine::Init(void **winParam, s32 paramCnt, s32 w, s32 h)
 				Matrix projMtx;
 				projMtx.ProjOrtho((f32)m_nWidth, (f32)m_nHeight);
 
+                Vector3 pLoc = Vector3(0,0,0);
+                Vector3 pDir = Vector3(0,0,1);
+
 				m_pDriver3D->SetProjMtx( &projMtx );
-				m_pDriver3D->SetViewMatrix( &Matrix::s_Identity, &Vector3(0,0,0), &Vector3(0,0,1) );
+				m_pDriver3D->SetViewMatrix( &Matrix::s_Identity, &pLoc, &pDir);
 				m_pDriver3D->SetWorldMatrix( &Matrix::s_Identity, 0, 0 );
 
 				//now only wait so long...
@@ -404,7 +407,9 @@ void Engine::AddDisplayMessage(const char *pszMsg, Vector4 *color, f32 fShowTime
 		m_nMessageCnt--;
 	}
 
-	strcpy_s(m_aMessages[ m_nMessageCnt ].msg, 127, pszMsg);
+	// todo: think about using std::string for safe string
+	//strcpy_s(m_aMessages[ m_nMessageCnt ].msg, 127, pszMsg);
+	strcpy(m_aMessages[ m_nMessageCnt ].msg, pszMsg);
 	m_aMessages[ m_nMessageCnt ].displayTime = (fShowTime == 0.0f) ? 3.0f : fShowTime;
 	if ( color )
 	{
@@ -488,8 +493,10 @@ void Game_LoadWorldMap(void)
 void Engine::Engine_SetCameraData(f32 *pos, f32 *dir, f32 fSkew, f32 fSpeed, u32 uSector)
 {
 	Camera *pCamera = m_pEngineForAPI->m_pCamera;
-	pCamera->SetLoc( Vector3(pos[0], pos[1], pos[2]) );
-	pCamera->SetDir( Vector3(dir[0], dir[1], dir[2]) );
+	Vector3 vLoc = Vector3(pos[0], pos[1], pos[2]);
+	pCamera->SetLoc( vLoc );
+	Vector3 vDir = Vector3(dir[0], dir[1], dir[2]);
+	pCamera->SetDir( vDir );
 	pCamera->SetSkew(fSkew);
 	pCamera->SetSpeed( fSpeed );
 	pCamera->SetSector( uSector );
@@ -694,7 +701,7 @@ void Engine::SetupPluginAPI()
 	m_pPluginAPI->World_GetCellStartPos  = World_GetCellStartPos;
 	//Object
 	m_pPluginAPI->Object_Create		     = ObjectManager::CreateObjectID;
-	m_pPluginAPI->Object_Free		     = ObjectManager::FreeObjectID;			
+	m_pPluginAPI->Object_Free		     = ObjectManager::FreeObjectID;
 	m_pPluginAPI->Object_AddLogic	     = ObjectManager::AddLogicToObjID;
 	m_pPluginAPI->Object_GetPhysicsData  = ObjectManager::GetObjectPhysicsData;
 	m_pPluginAPI->Object_GetGameData     = ObjectManager::GetObjectGameData;
@@ -722,7 +729,7 @@ void Engine::SetupPluginAPI()
 	m_pPluginAPI->Pathing_GetRandomNode  = Pathing_GetRandomNode;
 	m_pPluginAPI->Pathing_CheckNode      = Pathing_CheckNode;
 	m_pPluginAPI->Pathing_GetNodeVector  = Pathing_GetNodeVector;
-	
+
 	//Initialize the Plugin Manager
 	PluginManager::Init( m_pPluginAPI );
 }
@@ -830,8 +837,11 @@ bool Engine::Loop(f32 fDeltaTime, bool bFullspeed)
 			Matrix projMtx;
 			projMtx.ProjOrtho((f32)m_nWidth, (f32)m_nHeight);
 
+			Vector3 pDir = Vector3(0,0,0);
+			Vector3 pLoc = Vector3(0,0,1);
+
 			m_pDriver3D->SetProjMtx( &projMtx );
-			m_pDriver3D->SetViewMatrix( &Matrix::s_Identity, &Vector3(0,0,0), &Vector3(0,0,1) );
+			m_pDriver3D->SetViewMatrix( &Matrix::s_Identity, &pDir, &pLoc );
 			m_pDriver3D->SetWorldMatrix( &Matrix::s_Identity, 0, 0 );
 
 			//call game PostWorld Render (usually UI).
@@ -848,7 +858,7 @@ bool Engine::Loop(f32 fDeltaTime, bool bFullspeed)
 
 			//Render the console on top...
 			XL_Console::Render();
-			
+
 			m_pDriver3D->EnableDepthRead(true);
 			m_pDriver3D->EnableDepthWrite(true);
 		}
@@ -893,7 +903,7 @@ void Engine::DisplayMessages(f32 fDeltaTime)
 
 			y += 24;
 			*/
-			
+
 			for (s32 m=0; m<m_nMessageCnt; m++, y+= 18)
 			{
 				f32 alpha = m_aMessages[m].color.w * Math::clamp(m_aMessages[m].displayTime, 0.0f, 1.0f);
