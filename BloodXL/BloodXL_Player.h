@@ -1,0 +1,39 @@
+#ifndef BLOODXL_PLAYER_H
+#define BLOODXL_PLAYER_H
+
+#include "../plugin_framework/plugin.h"
+#include "../world/ObjectDef.h"
+#include <string>
+
+class BloodXL_Player
+{
+public:
+	BloodXL_Player(const XLEngine_Plugin_API *API);
+	~BloodXL_Player(void);
+
+	void SetPassthruAdjoins(bool bPassthru) { m_bPassthruAdjoins = bPassthru; }
+	void KeyDown(s32 key);
+
+private:
+	struct PlayerData
+	{
+		u32 m_HP;
+		f32 m_fYaw;
+		f32 m_fPitch;
+	};
+
+	const XLEngine_Plugin_API *m_pAPI;
+	u32 m_uObjID;
+	PlayerData m_PlayerData;
+	ObjectPhysicsData *m_PhysicsData;
+	bool m_bPassthruAdjoins;
+
+	void LogicSetup(u32 uObjID, u32 uParamCount, LogicParam *param);
+	void ObjectSetup(u32 uObjID, u32 uParamCount, LogicParam *param);
+	void Update(u32 uObjID, u32 uParamCount, LogicParam *param);
+	void Message(u32 uObjID, u32 uParamCount, LogicParam *param);
+
+	LOGIC_CB_FUNC();
+};
+
+#endif //BLOODXL_PLAYER_H
