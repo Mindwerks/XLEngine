@@ -27,6 +27,9 @@ Window     win;
 
 Engine *m_pEngine;
 
+bool g_bFullScreen=false;
+bool g_bHasFocus=true;
+
 void fatalError(char *message)
 {
   fprintf(stderr, "main: %s\n", message);
@@ -115,7 +118,7 @@ int main(int argc, char **argv)
                 break;
             Clock::StartTimer();
             {
-                m_pEngine->Loop(fDeltaTime);
+                m_pEngine->Loop(fDeltaTime, g_bHasFocus||g_bFullScreen);
             }
             fDeltaTime = Clock::GetDeltaTime(fMaxDelta);
             break;
@@ -191,7 +194,7 @@ int main(int argc, char **argv)
     }; /* loop to compress events */
     Clock::StartTimer();
     {
-        m_pEngine->Loop(fDeltaTime);
+        m_pEngine->Loop(fDeltaTime, g_bHasFocus||g_bFullScreen);
     }
     fDeltaTime = Clock::GetDeltaTime(fMaxDelta);
 
