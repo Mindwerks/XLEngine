@@ -3,6 +3,7 @@
 #include "../ui/XL_Console.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define MAX_NB_TILES 9216
 #define PALETTE_SIZE (256 * 3)
