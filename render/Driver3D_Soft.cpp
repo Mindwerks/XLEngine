@@ -129,8 +129,6 @@ Driver3D_Soft::~Driver3D_Soft()
 	aligned_free(m_pDepthBuffer);
 
 	xlDelete [] _pCurPal;
-
-	// IDriver3D::~IDriver3D();
 }
 
 void Driver3D_Soft::ChangeWindowSize(s32 w, s32 h)
