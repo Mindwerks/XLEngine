@@ -193,7 +193,7 @@ private:
 	static void UI_SetImageUV_RangeI(int hImage, int u0, int v0, int w, int h);
 	static void UI_RenderPolygon(int npt, asIScriptArray *x, asIScriptArray *y, float r, float g, float b, float a, int alignHoriz, int alignVert);
 	static void UI_RenderRect(int x, int y, int w, int h, float r, float g, float b, float a, int alignHoriz, int alignVert);
-	static void UI_RenderString(string& sString, int x, int y, int size, float r, float g, float b, float a);
+	static void UI_RenderString(const string& sString, int x, int y, int size, float r, float g, float b, float a);
 	static void UI_PrintMousePos(int x, int y, int size);
 	static void UI_GetMousePos(int& x, int& y);
 	static void UI_SetVirtualScreenSize(int w, int h);
@@ -208,7 +208,7 @@ private:
 	static void UI_DestroyLFD_Anim(int ID);
 	static void UI_RenderLFD_Anim(int ID, int frame, int x, int y);
 	//use different flags for overlay versus fullscreen.
-	static void UI_PushScreen(string& uiName, int flags, int backgrndFX);
+	static void UI_PushScreen(const string& uiName, int flags, int backgrndFX);
 	//pops the current screen off the stack, returning control to the previous.
 	static void UI_PopScreen();
 

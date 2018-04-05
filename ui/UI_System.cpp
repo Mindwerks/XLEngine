@@ -565,7 +565,7 @@ void UI_System::UI_StartScreen(string& sUI_Start)
 	}
 }
 
-void UI_System::UI_PushScreen(string& uiName, int flags, int backgrndFX)
+void UI_System::UI_PushScreen(const string& uiName, int flags, int backgrndFX)
 {
 	char szFuncName[128];
 	sprintf(szFuncName, "%s_OnEnter", uiName.c_str());
@@ -1019,7 +1019,7 @@ void UI_System::UI_RenderImage(int hImage, int x, int y, float intensity, int al
 	}
 }
 
-void UI_System::UI_RenderString(string& sString, int x, int y, int size, float r, float g, float b, float a)
+void UI_System::UI_RenderString(const string& sString, int x, int y, int size, float r, float g, float b, float a)
 {
 	XLFont *pFont = m_pEngine->GetSystemFont(size);
 	if ( pFont )
@@ -1201,7 +1201,7 @@ void UI_System::KeyDownCallback(s32 key)
 		UI_Screen *pUI_Editor = FindScreen("XL_UI_Editor");
 		if ( pUI_Editor == NULL || m_Context != pUI_Editor )
 		{
-			UI_PushScreen(string("XL_UI_Editor"), UIFLAG_OVERLAY, 0);
+			UI_PushScreen( "XL_UI_Editor", UIFLAG_OVERLAY, 0);
 		}
 	}
 }
