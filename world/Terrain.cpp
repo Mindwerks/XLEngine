@@ -17,6 +17,7 @@
 //just load the Daggerfall skyloader for now..., fix later.
 #include "../fileformats/SkyLoader_Daggerfall.h"
 #include <algorithm>
+#include <cstring>
 
 struct TerrainVtx
 {

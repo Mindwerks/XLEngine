@@ -7,6 +7,7 @@
 #include "../render/Camera.h"
 #include "../render/RenderQue.h"
 #include "WorldCell.h"
+#include <cstring>
 
 Vector2 Sector_2_5D::m_nearPlane[2];
 bool Sector_2_5D::m_bUpdateVis = true;

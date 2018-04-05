@@ -2,6 +2,7 @@
 #define COMMON_TYPES_H
 
 #include "PlatformDef.h"
+#include <string.h>
 
 #if PLATFORM_WIN
 
