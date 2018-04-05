@@ -4,7 +4,7 @@
 #include "../EngineSettings.h"
 #include "../memory/ScratchPad.h"
 #include "../world/ObjectManager.h"
-#include "enet-1.3.3/include/enet/enet.h"
+#include <enet/enet.h>
 
 #define MAX_PLAYERS 32
 

@@ -31,3 +31,10 @@ Changelog
 * Removed 3rd-party libs (will add back as necessary)
 * Removed binaries and MSVC related files
 
+
+linking it all together
+=======================
+
+gcc -c *.cpp (repeat for all directories)
+cd linux
+reset; gcc -o XLEngine main.o -lGL -lX11 ../*.o -lm ../fileformats/*.o ../math/*.o ../memory/*.o ../movieplayback/*.o ../networking/*.o ../os/linux/*.o ../os/*.o ../plugin_framework/*.o -ldl ../procedural/*.o ../render/linux/*.o ../render/triangleRasterizer/*.o  ../render/*.o ../ui/*.o ../world/*.o -lstdc++ -lGLEW -lIL -lenet
