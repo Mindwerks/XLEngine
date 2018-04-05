@@ -2,7 +2,6 @@
 
 TODO
 ====
-* fix render/ so it compiles with gcc -c *.cpp
 * fix ui/ so it compiles with gcc -c *.cpp
 * fix world/ so it compiles with gcc -c *.cpp
 

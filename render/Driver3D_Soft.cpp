@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <float.h>
+#include <cstdint>
 
 #if PLATFORM_WIN	//we have to include Windows.h before gl.h on Windows platforms.
 	#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
@@ -648,7 +649,7 @@ void Driver3D_Soft::SetWorldMatrix(Matrix *pMtx, s32 worldX, s32 worldY)
 		_prevWorldMtxPtr_Soft = pMtx;
 		_prevWorldX = worldX;
 		_prevWorldY = worldY;
-		m_uMatrixWorldKey = (u32)pMtx;
+		m_uMatrixWorldKey = (intptr_t)pMtx;
 	}
 }
 
