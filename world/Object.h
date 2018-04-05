@@ -9,6 +9,7 @@
 #include "CollisionComponent.h"
 #include <vector>
 #include <string>
+#include <stdlib.h>
 
 using namespace std;
 

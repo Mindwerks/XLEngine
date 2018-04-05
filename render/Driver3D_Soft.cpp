@@ -1,4 +1,5 @@
 #include "Driver3D_Soft.h"
+#include <stdlib.h>
 #include "../Engine.h"
 #include "../math/Math.h"
 #include "../math/FixedPoint.h"
@@ -42,7 +43,8 @@ bool m_bVideoMemAllocated=false;
 u8  _fog_table[256];
 u8 m_colorRed=0xff, m_colorGrn=0xff, m_colorBlue=0xff;
 int m_nMatrixViewKey  = 0;
-u32 m_uMatrixWorldKey = 0;
+//u32 m_uMatrixWorldKey = 0;
+u64 m_uMatrixWorldKey = 0;
 int m_AffineLength;
 float m_QuadWidthScale  = 1.0f;
 float m_QuadHeightScale = 1.0f;
@@ -59,7 +61,7 @@ void *aligned_malloc(size_t size, size_t align_size)
 	char *ptr, *ptr2, *aligned_ptr;
 	int align_mask = (int)align_size-1;
 
-	ptr = (char *)malloc( size + align_size + sizeof(int) );
+	ptr = (char *) malloc( size + align_size + sizeof(int) );
 	if ( ptr == NULL)
 		return NULL;
 
@@ -129,7 +131,7 @@ Driver3D_Soft::~Driver3D_Soft()
 
 	xlDelete [] _pCurPal;
 
-	IDriver3D::~IDriver3D();
+	// IDriver3D::~IDriver3D();
 }
 
 void Driver3D_Soft::ChangeWindowSize(s32 w, s32 h)
@@ -649,7 +651,8 @@ void Driver3D_Soft::SetWorldMatrix(Matrix *pMtx, s32 worldX, s32 worldY)
 		_prevWorldMtxPtr_Soft = pMtx;
 		_prevWorldX = worldX;
 		_prevWorldY = worldY;
-		m_uMatrixWorldKey = (u32)pMtx;
+//		m_uMatrixWorldKey = (u32)pMtx;
+		m_uMatrixWorldKey = (u64)pMtx;
 	}
 }
 

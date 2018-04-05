@@ -212,7 +212,9 @@ int Camera::AABBInsideFrustum(Vector3& vMin, Vector3& vMax, s32 worldX, s32 worl
 	for (int i=0; i<np; i++)
 	{
 		Vector3 signFlip(SIGN(p[i].a), SIGN(p[i].b), SIGN(p[i].c));
-		if ( p[i].Dot(vCen + vExt*signFlip) < -p[i].d )
+        Vector3 arg = vCen + vExt*signFlip;
+
+		if ( p[i].Dot(arg) < -p[i].d )
 		{
 			result = FRUSTUM_OUT;
 			break;

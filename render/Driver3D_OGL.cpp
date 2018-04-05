@@ -66,7 +66,7 @@ Driver3D_OGL::~Driver3D_OGL()
 		glDeleteTextures( (GLsizei)m_uTextureCnt, (GLuint *)m_Textures );
 	}
 
-	IDriver3D::~IDriver3D();
+	// IDriver3D::~IDriver3D();
 }
 
 void Driver3D_OGL::ChangeWindowSize(s32 w, s32 h)

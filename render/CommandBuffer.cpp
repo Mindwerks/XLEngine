@@ -3,6 +3,7 @@
 #include "VertexBuffer.h"
 #include <memory.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 u8 *CommandBuffer::s_pCommandBuffer[ CommandBuffer::BUFFER_COUNT ];
 u32 CommandBuffer::s_uReadBuffer;
