@@ -61,7 +61,7 @@ void *aligned_malloc(size_t size, size_t align_size)
 	char *ptr, *ptr2, *aligned_ptr;
 	int align_mask = (int)align_size-1;
 
-	ptr = (char *) malloc( size + align_size + sizeof(int) );
+	ptr = (char *)malloc( size + align_size + sizeof(int) );
 	if ( ptr == NULL)
 		return NULL;
 
@@ -651,8 +651,7 @@ void Driver3D_Soft::SetWorldMatrix(Matrix *pMtx, s32 worldX, s32 worldY)
 		_prevWorldMtxPtr_Soft = pMtx;
 		_prevWorldX = worldX;
 		_prevWorldY = worldY;
-//		m_uMatrixWorldKey = (u32)pMtx;
-		m_uMatrixWorldKey = (u64)pMtx;
+		m_uMatrixWorldKey = (u32)pMtx;
 	}
 }
 
