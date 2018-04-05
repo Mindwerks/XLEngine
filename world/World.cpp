@@ -17,7 +17,7 @@ World::World()
 	m_pCamera  = NULL;
 	m_pTerrain = NULL;
 
-	XL_Console::RegisterCmd("r_lockcam", CC_LockCamera, Console::CTYPE_FUNCTION, "Lock the camera so that the visibility stops updating.", this);
+	XL_Console::RegisterCmd("r_lockcam", (void*)CC_LockCamera, Console::CTYPE_FUNCTION, "Lock the camera so that the visibility stops updating.", this);
 	XL_Console::RegisterCmd("r_maxRecursion", &Sector::s_MaxSecDrawCnt, Console::CTYPE_UINT, "Maximum portal recursion, 0 = default.", NULL);
 
 	m_uSectorTypeVis = SECTOR_TYPE_EXTERIOR;

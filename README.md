@@ -2,7 +2,6 @@
 
 TODO
 ====
-* fix world/ so it compiles with gcc -c *.cpp
 * fix scriptsystem/ so it compiles with gcc -c *.cpp
 
 
