@@ -12,10 +12,6 @@ OrientedSprite::OrientedSprite() : RenderComponent()
 	m_fAlpha = 1.0f;
 }
 
-OrientedSprite::~OrientedSprite()
-{
-	RenderComponent::~RenderComponent();
-}
 
 void OrientedSprite::Render(Object *pObj, IDriver3D *pDriver, f32 fIntensity, const Vector3& vOffset)
 {

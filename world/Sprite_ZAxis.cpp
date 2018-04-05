@@ -20,11 +20,6 @@ Sprite_ZAxis::Sprite_ZAxis() : RenderComponent()
 	m_nFrameDelay = _FRAME_DELAY;
 }
 
-Sprite_ZAxis::~Sprite_ZAxis()
-{
-	RenderComponent::~RenderComponent();
-}
-
 void Sprite_ZAxis::Render(Object *pObj, IDriver3D *pDriver, f32 fIntensity, const Vector3& vOffset)
 {
 	const Matrix& viewMtx = pDriver->GetRenderCam_ViewMtx();

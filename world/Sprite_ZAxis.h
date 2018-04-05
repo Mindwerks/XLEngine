@@ -14,7 +14,7 @@ class Sprite_ZAxis : public RenderComponent
 {
 public:
 	Sprite_ZAxis();
-	virtual ~Sprite_ZAxis();
+	virtual ~Sprite_ZAxis(){};
 
 	void Render(Object *pObj, IDriver3D *pDriver, f32 fIntensity, const Vector3& vOffset);
 	void SetUV_Flip(bool bFlipX, bool bFlipY, bool bFlipAxis=false) { m_aFlip[0] = bFlipX?1:0; m_aFlip[1] = bFlipY?1:0; m_aFlip[2] = bFlipAxis?1:0; }
