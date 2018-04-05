@@ -13,6 +13,7 @@
 #include "../render/IndexBuffer.h"
 #include <assert.h>
 #include <float.h>
+#include <stdio.h>
 
 #define STO_TERRAIN			 2
 #define STO_RUINS			 7

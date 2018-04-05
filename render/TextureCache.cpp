@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <memory.h>
+#include <stdio.h>
 
 ImageLoader *TextureCache::m_pLoader;
 IDriver3D *TextureCache::m_pDriver;

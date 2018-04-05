@@ -1,4 +1,5 @@
 #include "Driver3D_Soft.h"
+#include <stdlib.h>
 #include "../Engine.h"
 #include "../math/Math.h"
 #include "../math/FixedPoint.h"
@@ -128,8 +129,6 @@ Driver3D_Soft::~Driver3D_Soft()
 	aligned_free(m_pDepthBuffer);
 
 	xlDelete [] _pCurPal;
-
-	IDriver3D::~IDriver3D();
 }
 
 void Driver3D_Soft::ChangeWindowSize(s32 w, s32 h)
