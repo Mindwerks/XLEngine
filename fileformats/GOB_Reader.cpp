@@ -3,6 +3,7 @@
 #include "../ui/XL_Console.h"
 #include <string.h>
 #include <stdio.h>
+#include <cstdint>
 
 GOB_Reader::GOB_Reader() : Archive()
 {
@@ -31,7 +32,7 @@ bool GOB_Reader::Open(const char *pszName)
 		{
 			fseek(f, m_Header.MASTERX, SEEK_SET);
 			
-			fread(&m_FileList.MASTERN, sizeof(long), 1, f);
+			fread(&m_FileList.MASTERN, sizeof(int32_t), 1, f);
 			m_FileList.pEntries = xlNew GOB_Entry_t[m_FileList.MASTERN];
 			fread(m_FileList.pEntries, sizeof(GOB_Entry_t), m_FileList.MASTERN, f);
 		}
