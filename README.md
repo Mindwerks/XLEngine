@@ -19,9 +19,11 @@ Dependancies
 Building
 ========
 We use Cmake as a cross-platform build system.
-git checkout https://github.com/Mindwerks/XLEngine.git
-mkdir build; cd build; cmake ../XLEngine; make -j4
 
+```bash
+git checkout https://github.com/Mindwerks/XLEngine.git;
+mkdir build; cd build; cmake ../XLEngine; make -j4
+```
 
 Changelog
 =========
