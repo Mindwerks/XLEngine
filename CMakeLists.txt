@@ -135,3 +135,33 @@ set(darkxl_sources
 )
 add_library(DarkXL SHARED ${darkxl_sources})
 set_target_properties(DarkXL PROPERTIES PREFIX "")
+
+
+set(daggerxl_sources
+    DaggerXL/DaggerXL_Game.cpp
+    DaggerXL/DaggerXL_main.cpp
+    DaggerXL/DaggerXL_Player.cpp
+    DaggerXL/Logic_Door.cpp
+    DaggerXL/Logic_NPC.cpp
+    DaggerXL/Logic_Obj_Action.cpp
+)
+add_library(DaggerXL SHARED ${daggerxl_sources})
+set_target_properties(DaggerXL PROPERTIES PREFIX "")
+
+
+set(bloodxl_sources
+    BloodXL/BloodXL_Game.cpp
+    BloodXL/BloodXL_main.cpp
+    BloodXL/BloodXL_Player.cpp
+)
+add_library(BloodXL SHARED ${bloodxl_sources})
+set_target_properties(BloodXL PROPERTIES PREFIX "")
+
+
+set(outlawsxl_sources
+    OutlawsXL/OutlawsXL_Game.cpp
+    OutlawsXL/OutlawsXL_main.cpp
+    OutlawsXL/OutlawsXL_Player.cpp
+)
+add_library(OutlawsXL SHARED ${outlawsxl_sources})
+set_target_properties(OutlawsXL PROPERTIES PREFIX "")
