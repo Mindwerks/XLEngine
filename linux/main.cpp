@@ -17,6 +17,7 @@
 #include <string.h>
 
 #include "../Engine.h"
+#include "../EngineSettings.h"
 #include "../os/Input.h"
 #include "../os/Clock.h"
 
@@ -65,6 +66,21 @@ int main(int argc, char **argv)
 "Usage: XLEngine -g <game>\n"
 "\tValid games: DarkXL, DaggerXL, BloodXL, OutlawsXL");
 
+    //Engine settings.
+    EngineSettings::Init();
+
+    //We have to load the engine settings before created the window and setting up
+    //so that we can pick the correct resolution, fullscreen, etc.
+    {
+        std::string szSettingsFile = game_name;
+        szSettingsFile += '/';
+        szSettingsFile += game_name;
+        szSettingsFile += ".set";
+
+        EngineSettings::SetGameDir(game_name);
+        EngineSettings::Load(szSettingsFile.c_str());
+    }
+
   /*** (1) open a connection to the X server ***/
   dpy = XOpenDisplay(NULL);
   if (dpy == NULL)
@@ -92,7 +108,8 @@ int main(int argc, char **argv)
   swa.event_mask = KeyPressMask | KeyReleaseMask | ExposureMask
                  | ButtonPressMask | ButtonReleaseMask | StructureNotifyMask;
   win = XCreateWindow(dpy, RootWindow(dpy, vi->screen), 0, 0,
-                      1024, 768, 0, vi->depth, InputOutput, vi->visual,
+                      EngineSettings::GetScreenWidth(), EngineSettings::GetScreenHeight(),
+                      0, vi->depth, InputOutput, vi->visual,
                       CWBorderPixel | CWColormap | CWEventMask, &swa);
 
   /* only set window title and handle wm_delete_events if in windowed mode */
@@ -112,7 +129,7 @@ int main(int argc, char **argv)
 //Setup Engine with Linux specific data.
   m_pEngine = new Engine();
   void *linux_param[] = { (void*)dpy, (void*)win };
-  m_pEngine->Init(linux_param, 2, 1024, 768);
+  m_pEngine->Init(linux_param, 2, EngineSettings::GetScreenWidth(), EngineSettings::GetScreenHeight());
   m_pEngine->InitGame( game_name );
 
   char buffer[32];
