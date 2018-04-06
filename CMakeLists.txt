@@ -147,3 +147,21 @@ set(daggerxl_sources
 )
 add_library(DaggerXL SHARED ${daggerxl_sources})
 set_target_properties(DaggerXL PROPERTIES PREFIX "")
+
+
+set(bloodxl_sources
+    BloodXL/BloodXL_Game.cpp
+    BloodXL/BloodXL_main.cpp
+    BloodXL/BloodXL_Player.cpp
+)
+add_library(BloodXL SHARED ${bloodxl_sources})
+set_target_properties(BloodXL PROPERTIES PREFIX "")
+
+
+set(outlawsxl_sources
+    OutlawsXL/OutlawsXL_Game.cpp
+    OutlawsXL/OutlawsXL_main.cpp
+    OutlawsXL/OutlawsXL_Player.cpp
+)
+add_library(OutlawsXL SHARED ${outlawsxl_sources})
+set_target_properties(OutlawsXL PROPERTIES PREFIX "")
