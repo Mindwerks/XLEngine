@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="angelscript">
+</Property><Property Name="Solution File" Value="C:\XL_Dev\DARK\Remake\DF_Remake_DX\AngelCode\sdk\angelscript\projects\msvc8\angelscript.sln">
+</Property><Property Name="Date" Value="Tuesday, November 23, 2010">
+</Property><Property Name="Time" Value="22:20 PM">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="angelscript.sln" Description="File successfully backed up as C:\XL_Dev\DARK\Remake\DF_Remake_DX\AngelCode\sdk\angelscript\projects\msvc8\angelscript.sln.old">
+</Event><Event ErrorLevel="1" Project="angelscript" Source="angelscript.vcproj" Description="This application has been updated to include settings related to the User Account Control (UAC) feature of Windows Vista. By default, when run on Windows Vista with UAC enabled, this application is marked to run with the same privileges as the process that launched it. This marking also disables the application from running with virtualization. You can change UAC related settings from the Property Pages of the project.">
+</Event><Event ErrorLevel="0" Project="angelscript" Source="angelscript.vcproj" Description="Project file successfully backed up as 'C:\XL_Dev\DARK\Remake\DF_Remake_DX\AngelCode\sdk\angelscript\projects\msvc8\angelscript.vcproj.8.00.old'.">
+</Event><Event ErrorLevel="0" Project="angelscript" Source="angelscript.vcproj" Description="Project upgraded successfully.">
+</Event><Event ErrorLevel="3" Project="angelscript" Source="angelscript.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="angelscript.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="angelscript.sln" Description="Converted">
+</Event></UpgradeLog>

@@ -22,6 +22,8 @@ find_package(Threads)
 
 check_library_exists(dl dlopen "" HAVE_LIBDL)
 
+add_subdirectory(thirdparty)
+
 set(sources
     movieplayback/LFD_Film.cpp
     movieplayback/MovieManager.cpp
@@ -115,9 +117,10 @@ else(WIN32)
     )
 endif(WIN32)
 
+
 add_executable(XLEngine ${sources})
 target_link_libraries(XLEngine
-     GLEW::GLEW ${OPENGL_LIBRARIES} ${IL_LIBRARIES} enet angelscript
+     GLEW::GLEW ${OPENGL_LIBRARIES} ${IL_LIBRARIES} enet Angelscript
      Threads::Threads
 )
 if(X11_FOUND)
