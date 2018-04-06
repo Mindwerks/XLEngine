@@ -126,3 +126,12 @@ endif(X11_FOUND)
 if(HAVE_LIBDL)
     target_link_libraries(XLEngine dl)
 endif(HAVE_LIBDL)
+
+
+set(darkxl_sources
+    DarkXL/CutscenePlayer.cpp
+    DarkXL/DarkXL_Game.cpp
+    DarkXL/DarkXL_main.cpp
+)
+add_library(DarkXL SHARED ${darkxl_sources})
+set_target_properties(DarkXL PROPERTIES PREFIX "")
