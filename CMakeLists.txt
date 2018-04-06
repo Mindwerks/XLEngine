@@ -135,3 +135,15 @@ set(darkxl_sources
 )
 add_library(DarkXL SHARED ${darkxl_sources})
 set_target_properties(DarkXL PROPERTIES PREFIX "")
+
+
+set(daggerxl_sources
+    DaggerXL/DaggerXL_Game.cpp
+    DaggerXL/DaggerXL_main.cpp
+    DaggerXL/DaggerXL_Player.cpp
+    DaggerXL/Logic_Door.cpp
+    DaggerXL/Logic_NPC.cpp
+    DaggerXL/Logic_Obj_Action.cpp
+)
+add_library(DaggerXL SHARED ${daggerxl_sources})
+set_target_properties(DaggerXL PROPERTIES PREFIX "")
