@@ -223,10 +223,10 @@ struct XLEngine_Plugin_API
 
 //Helper MACRO to map from "C" Logic callbacks to "C++" member functions.
 #define LOGIC_CB_MAP(c) \
-void c##::LogicSetupCB(void *pOwner, u32 uObjID, u32 uParamCount, LogicParam *param) { ((c## *)pOwner)->LogicSetup(uObjID, uParamCount, param); }	\
-void c##::ObjectSetupCB(void *pOwner, u32 uObjID, u32 uParamCount, LogicParam *param) { ((c## *)pOwner)->ObjectSetup(uObjID, uParamCount, param); }	\
-void c##::UpdateCB(void *pOwner, u32 uObjID, u32 uParamCount, LogicParam *param) { ((c## *)pOwner)->Update(uObjID, uParamCount, param); }	\
-void c##::MessageCB(void *pOwner, u32 uObjID, u32 uParamCount, LogicParam *param) { ((c## *)pOwner)->Message(uObjID, uParamCount, param); }
+void c::LogicSetupCB(void *pOwner, u32 uObjID, u32 uParamCount, LogicParam *param) { ((c *)pOwner)->LogicSetup(uObjID, uParamCount, param); }	\
+void c::ObjectSetupCB(void *pOwner, u32 uObjID, u32 uParamCount, LogicParam *param) { ((c *)pOwner)->ObjectSetup(uObjID, uParamCount, param); }	\
+void c::UpdateCB(void *pOwner, u32 uObjID, u32 uParamCount, LogicParam *param) { ((c *)pOwner)->Update(uObjID, uParamCount, param); }	\
+void c::MessageCB(void *pOwner, u32 uObjID, u32 uParamCount, LogicParam *param) { ((c *)pOwner)->Message(uObjID, uParamCount, param); }
 
 //Define the static Callback functions in the class definition.
 #define LOGIC_CB_FUNC() \
@@ -236,7 +236,7 @@ static void UpdateCB(void *pOwner, u32 uObjID, u32 uParamCount, LogicParam *para
 static void MessageCB(void *pOwner, u32 uObjID, u32 uParamCount, LogicParam *param); 
 
 #define LOGIC_FUNC_LIST(f) \
-LogicFunction f##[]={ LogicSetupCB,	ObjectSetupCB, UpdateCB, MessageCB }
+LogicFunction f[]={ LogicSetupCB,	ObjectSetupCB, UpdateCB, MessageCB }
 
 #ifdef  __cplusplus
 }
