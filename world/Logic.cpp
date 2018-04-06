@@ -38,7 +38,7 @@ bool Logic::AddCallback(u32 uCallbackID, LogicFunction pCallback)
 		//store away this as the current logic, so the logic setup knows which logic to
 		//reference.
 		s_pCurLogic = this;
-		m_Callbacks[ uCallbackID ].codeCB( m_pOwner, NULL, 0, NULL );
+		m_Callbacks[ uCallbackID ].codeCB( m_pOwner, 0, 0, NULL );
 		s_pCurLogic = NULL;
 	}
 

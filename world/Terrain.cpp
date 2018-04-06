@@ -237,7 +237,7 @@ void Terrain::LoadHeightmap()
 {
 	static u32 uHM_Data[1000*500];
 
-	char *szFile = "WOODS.WLD";
+	const char *szFile = "WOODS.WLD";
 	if ( ArchiveManager::File_Open(szFile) )
 	{
 		ScratchPad::StartFrame();
@@ -916,7 +916,7 @@ void Terrain::RenderSky(s32 skyIndex, s32 timeIndex, Camera *pCamera)
 		m_pDriver->RenderWorldQuad(posList, uvList, Vector4::One);
 	}
 
-	m_pDriver->SetTexture(0, NULL);
+	m_pDriver->SetTexture(0, 0);
 	pCamera->Compute(1.0f, true);
 	pCamera->Set(m_pDriver);
 	m_pDriver->SetAmbient(0.75f*195.0f/255.0f);

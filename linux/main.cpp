@@ -22,15 +22,15 @@
 
 static int dblBuf[]  = {GLX_RGBA, GLX_RED_SIZE, 8, GLX_GREEN_SIZE, 8, GLX_BLUE_SIZE, 8, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None};
 
-Display   *dpy;
-Window     win;
+static Display   *dpy;
+static Window     win;
 
-Engine *m_pEngine;
+static Engine *m_pEngine;
 
-bool g_bFullScreen=false;
-bool g_bHasFocus=true;
+static bool g_bFullScreen=false;
+static bool g_bHasFocus=true;
 
-void fatalError(char *message)
+static void fatalError(const char *message)
 {
   fprintf(stderr, "main: %s\n", message);
   exit(1);
