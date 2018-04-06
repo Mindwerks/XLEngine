@@ -38,13 +38,32 @@ void fatalError(char *message)
 
 int main(int argc, char **argv)
 {
+  const char          *game_name = NULL;
   XVisualInfo         *vi;
   Colormap             cmap;
   XSetWindowAttributes swa;
   GLXContext           cx;
   XEvent               event;
   int                  dummy;
+  int                  i;
   Atom wmDelete;
+
+  for(i = 1;i < argc;i++)
+  {
+    if(strcmp(argv[i], "-g") == 0)
+    {
+      if(argc-1 > i)
+        game_name = argv[++i];
+      else
+        fatalError("Missing game name");
+    }
+    else
+      fprintf(stderr, "Unhandled command line option: %s\n", argv[i]);
+  }
+  if(!game_name)
+    fatalError("No game specified.\n"
+"Usage: XLEngine -g <game>\n"
+"\tValid games: DarkXL, DaggerXL, BloodXL, OutlawsXL");
 
   /*** (1) open a connection to the X server ***/
   dpy = XOpenDisplay(NULL);
@@ -94,7 +113,7 @@ int main(int argc, char **argv)
   m_pEngine = new Engine();
   void *linux_param[] = { (void*)dpy, (void*)win };
   m_pEngine->Init(linux_param, 2, 1024, 768);
-  m_pEngine->InitGame( "DarkXL" );
+  m_pEngine->InitGame( game_name );
 
   char buffer[32];
   int bufsize=32;
