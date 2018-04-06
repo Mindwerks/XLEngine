@@ -2,7 +2,10 @@
 
 TODO
 ====
-* fix scriptsystem/ so it compiles with gcc -c *.cpp
+* fix BloodXL/ so it compiles with gcc
+* fix DaggerXL/ so it compiles with gcc
+* fix DarkXL/ so it compiles with gcc
+* fix OutlawsXL/ so it compiles with gcc
 
 
 Dependancies
@@ -10,6 +13,8 @@ Dependancies
 * DevIL (libdevil-dev) Cross-platform image loading and manipulation toolkit
 * enet (libenet-dev) Thin network communication layer on top of UDP
 * angelscript (not in Debian/Ubuntu) Flexible cross-platform scripting library
+* GLEW (libglew-dev) OpenGL Extension Wrangler Library
+
 
 Changelog
 =========
