@@ -2,7 +2,6 @@
 
 TODO
 ====
-* pull in angelscript as an external that we need included; it's zlib and that's OK!
 * game plugin fix-ups
 * have cmake place images, as and other things into the build directory
 
@@ -11,7 +10,6 @@ Dependancies
 ============
 * DevIL (libdevil-dev) Cross-platform image loading and manipulation toolkit
 * enet (libenet-dev) Thin network communication layer on top of UDP
-* angelscript (not in Debian/Ubuntu) Flexible cross-platform scripting library
 * GLEW (libglew-dev) OpenGL Extension Wrangler Library
 * cmake
 
