@@ -31,5 +31,10 @@
 *.out
 *.app
 
+# Build locations
+build/
+
 # IDE files
 .idea/
+.kdev4/
+*.kdev4
