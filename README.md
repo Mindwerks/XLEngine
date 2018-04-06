@@ -2,10 +2,9 @@
 
 TODO
 ====
-* fix BloodXL/ so it compiles with gcc
-* fix DaggerXL/ so it compiles with gcc
-* fix DarkXL/ so it compiles with gcc
-* fix OutlawsXL/ so it compiles with gcc
+* pull in angelscript as an external that we need included; it's zlib and that's OK!
+* game plugin fix-ups
+* have cmake place images, as and other things into the build directory
 
 
 Dependancies
@@ -14,6 +13,14 @@ Dependancies
 * enet (libenet-dev) Thin network communication layer on top of UDP
 * angelscript (not in Debian/Ubuntu) Flexible cross-platform scripting library
 * GLEW (libglew-dev) OpenGL Extension Wrangler Library
+* cmake
+
+
+Building
+========
+We use Cmake as a cross-platform build system.
+git checkout https://github.com/Mindwerks/XLEngine.git
+mkdir build; cd build; cmake ../XLEngine; make -j4
 
 
 Changelog
@@ -24,6 +31,8 @@ Changelog
 * dos2unix all files
 * PlatformDef magic with macros
 * bare minimum fixes to compile on linux with gcc
+* added cross-platform cmake build system
+* re-added angelscript external dep
 
 
 0.1.0 Initial Release
@@ -36,9 +45,3 @@ Changelog
 * Removed binaries and MSVC related files
 
 
-linking it all together
-=======================
-
-gcc -c *.cpp (repeat for all directories)
-cd linux
-reset; gcc -o XLEngine main.o -lGL -lX11 ../*.o -lm ../fileformats/*.o ../math/*.o ../memory/*.o ../movieplayback/*.o ../networking/*.o ../os/linux/*.o ../os/*.o ../plugin_framework/*.o -ldl ../procedural/*.o ../render/linux/*.o ../render/triangleRasterizer/*.o  ../render/*.o ../ui/*.o ../world/*.o -lstdc++ -lGLEW -lIL -lenet
