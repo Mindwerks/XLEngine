@@ -11,7 +11,7 @@ void UI_Config_OnEnter()
 	UIC_ExitBtn1 = UI_AddImage("DXL_ExitBtn1.png", 0, 0);
 	
 	//buttons	
-	UI_CreateWindow("UIC_ExitBtn", 0, 622, 652, 204, 66, UIWinFlag_None);
+	UI_CreateWindow("UIC_ExitBtn", "", 0, 622, 652, 204, 66, UIWinFlag_None);
 }
 
 void UI_Config_OnExit()

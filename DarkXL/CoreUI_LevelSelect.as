@@ -23,10 +23,10 @@ void UI_LevelSelect_OnEnter()
 	UIL_LFD_Menu = UI_CreateLFD_Anim("AGENTMNU.LFD", "AGENTMNU.ANIM", "AGENTMNU.PLTT");
 	
 	//Buttons
-	UI_CreateWindow("UIL_New",    0, offset+ 66, 628, 194, 97, UIWinFlag_None);
-	UI_CreateWindow("UIL_Remove", 0, offset+286, 628, 194, 97, UIWinFlag_None);
-	UI_CreateWindow("UIL_Exit",   0, offset+524, 628, 204, 97, UIWinFlag_None);
-	UI_CreateWindow("UIL_Begin",  0, offset+765, 628, 204, 97, UIWinFlag_None);
+	UI_CreateWindow("UIL_New",    "", 0, offset+ 66, 628, 194, 97, UIWinFlag_None);
+	UI_CreateWindow("UIL_Remove", "", 0, offset+286, 628, 194, 97, UIWinFlag_None);
+	UI_CreateWindow("UIL_Exit",   "", 0, offset+524, 628, 204, 97, UIWinFlag_None);
+	UI_CreateWindow("UIL_Begin",  "", 0, offset+765, 628, 204, 97, UIWinFlag_None);
 	
 	//Start the Intro cutscene after allocating resources that we'll need.
 	Game_StartCutscene( 10 );

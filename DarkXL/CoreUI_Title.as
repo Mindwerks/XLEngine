@@ -47,9 +47,9 @@ void UI_Title_OnEnter()
 	//Start music playback.
 
 	//buttons	
-	UI_CreateWindow("UIT_StartBtn",    0, (196+offset)*scale, 652, 204*scale, 66, UIWinFlag_None);
-	UI_CreateWindow("UIT_SettingsBtn", 0, (409+offset)*scale, 652, 204*scale, 66, UIWinFlag_None);
-	UI_CreateWindow("UIT_ExitBtn",     0, (622+offset)*scale, 652, 204*scale, 66, UIWinFlag_None);
+	UI_CreateWindow("UIT_StartBtn", "", int(0), (196+offset)*scale, 652, 204*scale, 66, UIWinFlag_None);
+	UI_CreateWindow("UIT_SettingsBtn", "", 0, (409+offset)*scale, 652, 204*scale, 66, UIWinFlag_None);
+	UI_CreateWindow("UIT_ExitBtn", "", 0, (622+offset)*scale, 652, 204*scale, 66, UIWinFlag_None);
 }
 
 void UI_Title_OnExit()
