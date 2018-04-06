@@ -4,7 +4,7 @@
 #include <memory.h>
 #include <assert.h>
 
-#define SCRATCH_PAD_SIZE 32*1024*1024
+#define SCRATCH_PAD_SIZE 64*1024*1024
 #define MAX_FRAME_COUNT 128
 
 u8 *ScratchPad::m_pMemory=NULL;
