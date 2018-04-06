@@ -331,7 +331,7 @@ void NetworkMgr::_ServerLoop()
 
 				/* Store any relevant client information here. */
 				_apPlayers[ m_nPlayerCount++ ].peer = event.peer;
-				event.peer->data = (void *)m_nPlayerCount;
+				event.peer->data = (void *)(intptr_t)m_nPlayerCount;
 
 				//now that the client has connected, send the startup data.
 				const char *pszMap = EngineSettings::GetStartMap();
@@ -368,7 +368,7 @@ void NetworkMgr::_ServerLoop()
 			case ENET_EVENT_TYPE_RECEIVE:
 				if ( event.packet->dataLength > GetPacketOverhead() )
 				{
-					s32 nClientID = -1 + *((s32 *)event.peer->data);
+					s32 nClientID = -1 + (s32)(intptr_t)event.peer->data;
 					if ( nClientID > -1 && nClientID < m_nPlayerCount )
 					{
 						u32 dataSize;
@@ -386,7 +386,7 @@ void NetworkMgr::_ServerLoop()
 				//now shuffle the client list...
 				if ( event.peer->data && m_nPlayerCount > 0 )
 				{
-					s32 nClientID = -1 + *((s32 *)event.peer->data);
+					s32 nClientID = -1 + (s32)(intptr_t)event.peer->data;
 
 					char szMsg[64];
 					sprintf(szMsg, "Player \"%s\" has left the game.", _apPlayers[nClientID].szName);
