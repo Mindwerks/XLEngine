@@ -19,10 +19,13 @@ include(CheckLibraryExists)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(DevIL REQUIRED)
-find_package(SDL2)
-find_package(Threads)
+find_package(Threads REQUIRED)
+if(NOT WIN32)
+    find_package(SDL2 REQUIRED)
 
-check_library_exists(dl dlopen "" HAVE_LIBDL)
+    # Some systems need libdl for dlopen and friends.
+    check_library_exists(dl dlopen "" HAVE_LIBDL)
+endif(NOT WIN32)
 
 add_subdirectory(thirdparty)
 
@@ -124,13 +127,13 @@ set(xlengine_include_dirs )
 set(xlengine_libraries
     GLEW::GLEW ${OPENGL_LIBRARIES} ${IL_LIBRARIES} enet Angelscript Threads::Threads
 )
-if(SDL2_FOUND)
+if(NOT WIN32)
     set(xlengine_libraries ${xlengine_libraries}  ${SDL2_LIBRARY})
     set(xlengine_include_dirs ${xlengine_include_dirs}  ${SDL2_INCLUDE_DIR})
-endif(SDL2_FOUND)
-if(HAVE_LIBDL)
-    set(xlengine_libraries ${xlengine_libraries}  dl)
-endif(HAVE_LIBDL)
+    if(HAVE_LIBDL)
+        set(xlengine_libraries ${xlengine_libraries}  dl)
+    endif(HAVE_LIBDL)
+endif(NOT WIN32)
 
 add_executable(XLEngine ${sources})
 target_include_directories(XLEngine PRIVATE ${xlengine_include_dirs})
