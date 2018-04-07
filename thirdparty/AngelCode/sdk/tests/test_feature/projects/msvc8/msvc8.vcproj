@@ -519,7 +519,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\source\testexecutethis32mixedargs.cpp"
+				RelativePath="..\..\source\testexecutethiint32_tmixedargs.cpp"
 				>
 			</File>
 			<File

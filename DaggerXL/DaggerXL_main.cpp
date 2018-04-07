@@ -4,7 +4,7 @@
 //this is static for now.
 DaggerXL_Game *m_pGame=NULL;
 
-void DaggerXL_Update(s32 stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData)
+void DaggerXL_Update(int32_t stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData)
 {
 	if ( stage == UPDATE_STAGE_FIXED )
 	{
@@ -16,7 +16,7 @@ void DaggerXL_Update(s32 stage, f32 dt, XLEngine_Plugin_API *API, void *pUserDat
 	}
 }
 
-void DaggerXL_Render(s32 stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData)
+void DaggerXL_Render(int32_t stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData)
 {
 	if ( stage == RENDER_STAGE_PREWORLD )
 	{
@@ -28,7 +28,7 @@ void DaggerXL_Render(s32 stage, f32 dt, XLEngine_Plugin_API *API, void *pUserDat
 	}
 }
 
-void DaggerXL_KeyDownCallback(s32 key)
+void DaggerXL_KeyDownCallback(int32_t key)
 {
 	m_pGame->KeyDown(key);
 }
@@ -47,7 +47,7 @@ void DaggerXL_DestroyGame()
 	m_pGame = NULL;
 }
 
-extern "C" PLUGIN_API s32 ExitFunc()
+extern "C" PLUGIN_API int32_t ExitFunc()
 {
 	DaggerXL_DestroyGame();
 

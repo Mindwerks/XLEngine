@@ -12,8 +12,8 @@ struct ObjectPhysicsData
 	Vector3 m_Velocity;
 	Vector3 m_Scale;
 
-	u32 m_uSector;
-	s32 m_worldX, m_worldY;
+	uint32_t m_uSector;
+	int32_t m_worldX, m_worldY;
 };
 
 #endif //OBJECTDEF_H

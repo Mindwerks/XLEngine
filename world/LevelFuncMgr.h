@@ -18,7 +18,7 @@ public:
 	static void Destroy();
 
 	static void SetWorldCell(WorldCell *pCell) { m_pWorldCell = pCell; }
-	static LevelFunc *CreateLevelFunc(const char *pszFuncName, s32 nSector, s32 nWall);
+	static LevelFunc *CreateLevelFunc(const char *pszFuncName, int32_t nSector, int32_t nWall);
 	static void DestroyLevelFunc(LevelFunc *pFunc);
 
 	static void AddToActiveList(LevelFunc *pFunc);

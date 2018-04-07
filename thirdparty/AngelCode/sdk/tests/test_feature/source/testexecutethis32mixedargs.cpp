@@ -127,7 +127,7 @@ public:
 
 static TestClass test;
 
-bool TestExecuteThis32MixedArgs()
+bool TestExecuteThiint32_tMixedArgs()
 {
 	bool ret = false;
 

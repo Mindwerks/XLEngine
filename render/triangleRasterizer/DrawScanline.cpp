@@ -15,25 +15,25 @@ namespace DrawScanline
 	int _nFrameWidth;
 	int _nFrameHeight;
 	int _Intensity;
-	u32 *_pFrameBuffer_32;
-	u8  *_pFrameBuffer_8;
-	u8 _uColormapID;
-	u16 *_pDepthBuffer;
+	uint32_t *_pFrameBuffer_32;
+	uint8_t  *_pFrameBuffer_8;
+	uint8_t _uColormapID;
+	uint16_t *_pDepthBuffer;
 	int  _nMip=0;
 	Texture *_pCurTex;
-	u32 _uCurFrame = 0;
+	uint32_t _uCurFrame = 0;
 	int _texFlip = 0;
 	int _nLightCnt;
 	bool _useFog = true;
 	Vector3 _avLightPos[4];
 	float _afIntens[4];
 	Vector3 _N;
-	u32 *_pCurPal;
+	uint32_t *_pCurPal;
 
 	float _sqrtTable[65537];
-	u8    _aTransTable_Blend[256*256];
-	u8	  _aTransTable_Add[256*256];
-	u32   _colorMap32[3][256*256];
+	uint8_t    _aTransTable_Blend[256*256];
+	uint8_t	  _aTransTable_Add[256*256];
+	uint32_t   _colorMap32[3][256*256];
 
 	static int _ditherTable[]=
 	{

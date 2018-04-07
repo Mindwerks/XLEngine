@@ -37,7 +37,7 @@ public:
 	Console(IDriver3D *pDriver3D);
 	~Console(void);
 
-	void SetGameInfo(const string& gameName, s32 versionMinor, s32 versionMajor);
+	void SetGameInfo(const string& gameName, int32_t versionMinor, int32_t versionMajor);
 
 	void AddItem(const string& itemName, void *ptr, ConsoleItemType type, const string& itemHelp, void *pUserData=NULL);
 	void RemoveItem(const string& itemName);
@@ -52,7 +52,7 @@ public:
 	void PassKey(char key);
 	void PassEnter();
 	void PassBackspace();
-	void PassVirtualKey(s32 key);
+	void PassVirtualKey(int32_t key);
 
 	void Render();
 
@@ -92,14 +92,14 @@ public:
 
 	IDriver3D *m_pDriver;
 
-	u32 m_MaxCommands;
-	u32 m_MaxTextLines;
+	uint32_t m_MaxCommands;
+	uint32_t m_MaxTextLines;
 	bool m_bEchoCommands;
 	bool m_bPaused;
-	s32 m_nCommandHistory;
-	s32 m_nScrollOffs;
-	s32 m_nBlinkFrame;
-	u32 m_CaretPos;
+	int32_t m_nCommandHistory;
+	int32_t m_nScrollOffs;
+	int32_t m_nBlinkFrame;
+	uint32_t m_CaretPos;
 	bool m_bActive;
 	bool m_bChatMode;
 

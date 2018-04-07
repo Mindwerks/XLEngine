@@ -35,16 +35,16 @@ Logic_Obj_Action::~Logic_Obj_Action(void)
 {
 }
 
-void Logic_Obj_Action::LogicSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void Logic_Obj_Action::LogicSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 	m_pAPI->Logic_SetMessageMask(LMSG_ACTIVATE | LMSG_CHILD_ACTIVATE);	//only actions without parents can be directly activated.
 }
 
-void Logic_Obj_Action::ObjectSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void Logic_Obj_Action::ObjectSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }
 
-void Logic_Obj_Action::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
+void Logic_Obj_Action::Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 	LOA_GameData *pData = (LOA_GameData *)m_pAPI->Object_GetGameData(uObjID);
 
@@ -127,7 +127,7 @@ void Logic_Obj_Action::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	}
 }
 
-void Logic_Obj_Action::Message(u32 uObjID, u32 uParamCount, LogicParam *param)
+void Logic_Obj_Action::Message(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 	if ( uParamCount && (param[0].nParam == LMSG_ACTIVATE || param[0].nParam == LMSG_CHILD_ACTIVATE) )
 	{
@@ -141,7 +141,7 @@ void Logic_Obj_Action::Message(u32 uObjID, u32 uParamCount, LogicParam *param)
 			//send commands to the target.
 			if ( pData->nTargetID > -1 )
 			{
-				m_pAPI->Object_SendMessage((u32)pData->nTargetID, LMSG_CHILD_ACTIVATE, 0);
+				m_pAPI->Object_SendMessage((uint32_t)pData->nTargetID, LMSG_CHILD_ACTIVATE, 0);
 			}
 
 			//nothing to animate if there is no delta or type flags.

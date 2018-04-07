@@ -18,10 +18,10 @@ public:
 	static void Init(IDriver3D *pDriver);
 	static void Destroy();
 
-	static void SetPlayerType(u32 uPlayerType);
-	static void SetPlayerArchives(u32 uArchiveType, const char *pszArchive0, const char *pszArchive1);
-	static s32 StartMovie(const char *pszFile, u32 uFlags, s32 nSpeed);
-	static s32 UpdateMovie();
+	static void SetPlayerType(uint32_t uPlayerType);
+	static void SetPlayerArchives(uint32_t uArchiveType, const char *pszArchive0, const char *pszArchive1);
+	static int32_t StartMovie(const char *pszFile, uint32_t uFlags, int32_t nSpeed);
+	static int32_t UpdateMovie();
 	static void StopMovie(void);
 	static void RenderMovie(f32 fDeltaTime);
 

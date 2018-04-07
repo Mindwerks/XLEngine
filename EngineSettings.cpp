@@ -20,7 +20,7 @@ struct Common_Settings
 {
     char szDataPath[260];
 
-    u16 flags;
+    uint16_t flags;
     short resX;
     short resY;
 
@@ -128,19 +128,19 @@ void LoadSettingsFromFile(Common_Settings &settings, std::istream &file)
 char EngineSettings::m_szGameDataDir[260];
 char EngineSettings::m_szMapName[260];
 char EngineSettings::m_szGameDir[260];
-s32 EngineSettings::m_nScreenWidth;
-s32 EngineSettings::m_nScreenHeight;
-s32 EngineSettings::m_nRenderer = EngineSettings::RENDERER_SOFT8;//OPENGL;
+int32_t EngineSettings::m_nScreenWidth;
+int32_t EngineSettings::m_nScreenHeight;
+int32_t EngineSettings::m_nRenderer = EngineSettings::RENDERER_SOFT8;//OPENGL;
 
-s32 EngineSettings::m_nServerPlayerCnt;
-s32 EngineSettings::m_nPort;
+int32_t EngineSettings::m_nServerPlayerCnt;
+int32_t EngineSettings::m_nPort;
 char EngineSettings::m_szServerIP[32];
 
 bool EngineSettings::m_bOverridePos;
-s32 EngineSettings::m_nStartSec;
+int32_t EngineSettings::m_nStartSec;
 Vector3 EngineSettings::m_vStartPos;
 
-u32 EngineSettings::m_uFlags;
+uint32_t EngineSettings::m_uFlags;
 
 float EngineSettings::m_fBrightness;
 float EngineSettings::m_fContrast;
@@ -201,7 +201,7 @@ bool EngineSettings::Load( const char *pszSettingsFile )
     return false;
 }
 
-bool EngineSettings::IsFeatureEnabled(u32 uFeature)
+bool EngineSettings::IsFeatureEnabled(uint32_t uFeature)
 {
 	return (m_uFlags&uFeature) ? true : false;
 }
@@ -232,14 +232,14 @@ void EngineSettings::SetStartMap( const char *pszMapName )
 	strcpy(m_szMapName, pszMapName); 
 }
 
-void EngineSettings::SetStartPos( const Vector3 *pos, s32 nSector )
+void EngineSettings::SetStartPos( const Vector3 *pos, int32_t nSector )
 {
 	m_bOverridePos = true;
 	m_vStartPos = *pos;
 	m_nStartSec = nSector;
 }
 
-void EngineSettings::SetMultiplayerData( s32 nServer_PlayerCnt, s32 nPort, const char *pszJoinIP )
+void EngineSettings::SetMultiplayerData( int32_t nServer_PlayerCnt, int32_t nPort, const char *pszJoinIP )
 {
 	m_nServerPlayerCnt = nServer_PlayerCnt;
 	m_nPort = nPort;

@@ -100,7 +100,7 @@ SRCNAMES = \
   testexecutemixedargs.cpp \
   testexecutescript.cpp \
   testexecutestring.cpp \
-  testexecutethis32mixedargs.cpp \
+  testexecutethiint32_tmixedargs.cpp \
   test_factory.cpp \
   testglobalvar.cpp \
   test_int8.cpp \

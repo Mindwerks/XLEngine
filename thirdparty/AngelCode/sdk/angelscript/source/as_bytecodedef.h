@@ -111,7 +111,7 @@ enum bcInstr
 	// Unsorted
 	BC_COPY			= 46,	// Do byte-for-byte copy of object
 	BC_SET8			= 47,	// Push QWORD on stack
-	BC_RDS8			= 48,	// Read value from address on stack onto the top of the stack
+	BC_RDint8_t			= 48,	// Read value from address on stack onto the top of the stack
 	BC_SWAP8		= 49,
 
 	// Comparisons
@@ -227,12 +227,12 @@ enum bcInstr
 	BC_iTOi64       = 147,
 	BC_fTOi64       = 148,
 	BC_dTOi64       = 149,
-	BC_fTOu64       = 150,
-	BC_dTOu64       = 151,
+	BC_fTOuint64_t       = 150,
+	BC_dTOuint64_t       = 151,
 	BC_i64TOf       = 152,
-	BC_u64TOf       = 153,
+	BC_uint64_tTOf       = 153,
 	BC_i64TOd       = 154,
-	BC_u64TOd       = 155,
+	BC_uint64_tTOd       = 155,
 	BC_NEGi64       = 156,
 	BC_INCi64       = 157,
 	BC_DECi64       = 158,
@@ -250,7 +250,7 @@ enum bcInstr
 	BC_BSRL64		= 169,
 	BC_BSRA64		= 170,
 	BC_CMPi64       = 171,
-	BC_CMPu64       = 172,
+	BC_CMPuint64_t       = 172,
 	
 	BC_ChkNullS     = 173,
 	BC_ClrHi        = 174,
@@ -264,7 +264,7 @@ enum bcInstr
 };
 
 #ifdef AS_64BIT_PTR
-	#define BC_RDSPTR BC_RDS8
+	#define BC_RDSPTR BC_RDint8_t
 #else
 	#define BC_RDSPTR BC_RDS4
 #endif
@@ -359,7 +359,7 @@ const int BCT_BSRA      = BCTYPE_wW_rW_rW_ARG;
 
 const int BCT_COPY      = BCTYPE_W_ARG;
 const int BCT_SET8      = BCTYPE_QW_ARG;
-const int BCT_RDS8      = BCTYPE_NO_ARG;
+const int BCT_RDint8_t      = BCTYPE_NO_ARG;
 const int BCT_SWAP8     = BCTYPE_NO_ARG;
 
 const int BCT_CMPd      = BCTYPE_rW_rW_ARG;
@@ -469,12 +469,12 @@ const int BCT_uTOi64    = BCTYPE_wW_rW_ARG;
 const int BCT_iTOi64    = BCTYPE_wW_rW_ARG;
 const int BCT_fTOi64    = BCTYPE_wW_rW_ARG;
 const int BCT_dTOi64    = BCTYPE_rW_ARG;
-const int BCT_fTOu64    = BCTYPE_wW_rW_ARG;
-const int BCT_dTOu64    = BCTYPE_rW_ARG;
+const int BCT_fTOuint64_t    = BCTYPE_wW_rW_ARG;
+const int BCT_dTOuint64_t    = BCTYPE_rW_ARG;
 const int BCT_i64TOf    = BCTYPE_wW_rW_ARG;
-const int BCT_u64TOf    = BCTYPE_wW_rW_ARG;
+const int BCT_uint64_tTOf    = BCTYPE_wW_rW_ARG;
 const int BCT_i64TOd    = BCTYPE_rW_ARG;
-const int BCT_u64TOd    = BCTYPE_rW_ARG;
+const int BCT_uint64_tTOd    = BCTYPE_rW_ARG;
 const int BCT_NEGi64    = BCTYPE_rW_ARG;
 const int BCT_INCi64    = BCTYPE_NO_ARG;
 const int BCT_DECi64    = BCTYPE_NO_ARG;
@@ -492,7 +492,7 @@ const int BCT_BSLL64    = BCTYPE_wW_rW_rW_ARG;
 const int BCT_BSRL64    = BCTYPE_wW_rW_rW_ARG;
 const int BCT_BSRA64    = BCTYPE_wW_rW_rW_ARG;
 const int BCT_CMPi64    = BCTYPE_rW_rW_ARG;
-const int BCT_CMPu64    = BCTYPE_rW_rW_ARG;
+const int BCT_CMPuint64_t    = BCTYPE_rW_rW_ARG;
 const int BCT_ChkNullS  = BCTYPE_W_ARG;
 const int BCT_ClrHi     = BCTYPE_NO_ARG;
 
@@ -555,7 +555,7 @@ const int bcTypes[256] =
 	BCT_BSRA,
 	BCT_COPY,
 	BCT_SET8,
-	BCT_RDS8,
+	BCT_RDint8_t,
 	BCT_SWAP8,
 	BCT_CMPd,
 	BCT_CMPu,
@@ -657,12 +657,12 @@ const int bcTypes[256] =
 	BCT_iTOi64,
 	BCT_fTOi64,
 	BCT_dTOi64,
-	BCT_fTOu64,
-	BCT_dTOu64,
+	BCT_fTOuint64_t,
+	BCT_dTOuint64_t,
 	BCT_i64TOf,
-	BCT_u64TOf,
+	BCT_uint64_tTOf,
 	BCT_i64TOd,
-	BCT_u64TOd,
+	BCT_uint64_tTOd,
 	BCT_NEGi64,
 	BCT_INCi64,
 	BCT_DECi64,
@@ -679,7 +679,7 @@ const int bcTypes[256] =
 	BCT_BSRL64,
 	BCT_BSRA64,
 	BCT_CMPi64,
-	BCT_CMPu64,
+	BCT_CMPuint64_t,
 	BCT_ChkNullS,
 	BCT_ClrHi,
 	0,0,0,0, // 175-179
@@ -752,7 +752,7 @@ const int bcStackInc[256] =
 	0,			// BC_BSRA
 	-1,			// BC_COPY
 	2,			// BC_SET8
-	2-PTR_SIZE,	// BC_RDS8
+	2-PTR_SIZE,	// BC_RDint8_t
 	0,			// BC_SWAP8
 	0,			// BC_CMPd
 	0,			// BC_CMPu
@@ -854,12 +854,12 @@ const int bcStackInc[256] =
 	0,			// BC_iTOi64
 	0,			// BC_fTOi64
 	0,			// BC_dTOi64
-	0,			// BC_fTOu64
-	0,			// BC_dTOu64
+	0,			// BC_fTOuint64_t
+	0,			// BC_dTOuint64_t
 	0,			// BC_i64TOf
-	0,			// BC_u64TOf
+	0,			// BC_uint64_tTOf
 	0,			// BC_i64TOd
-	0,			// BC_u64TOd
+	0,			// BC_uint64_tTOd
 	0,          // BC_NEGi64
 	0,          // BC_INCi64
 	0,          // BC_DECi64
@@ -876,7 +876,7 @@ const int bcStackInc[256] =
 	0,			// BC_BSRL64
 	0,			// BC_BSRA64
 	0,			// BC_CMPi64
-	0,			// BC_CMPu64
+	0,			// BC_CMPuint64_t
 	0,			// BC_ChkNullS
 	0,			// BC_ClrHi
 	0,0,0,0,0, // 175-179
@@ -955,7 +955,7 @@ const sByteCodeName bcName[256] =
 	{"BSRA"},
 	{"COPY"},
 	{"SET8"},
-	{"RDS8"},
+	{"RDint8_t"},
 	{"SWAP8"},
 	{"CMPd"},
 	{"CMPu"},
@@ -1057,12 +1057,12 @@ const sByteCodeName bcName[256] =
 	{"iTOi64"},
 	{"fTOi64"},
 	{"dTOi64"},
-	{"fTOu64"},
-	{"dTOu64"},
+	{"fTOuint64_t"},
+	{"dTOuint64_t"},
 	{"i64TOf"},
-	{"u64TOf"},
+	{"uint64_tTOf"},
 	{"i64TOd"},
-	{"u64TOd"},
+	{"uint64_tTOd"},
 	{"NEGi64"},
 	{"INCi64"},
 	{"DECi64"},
@@ -1079,7 +1079,7 @@ const sByteCodeName bcName[256] =
 	{"BSRL64"},
 	{"BSRA64"},
 	{"CMPi64"},
-	{"CMPu64"},
+	{"CMPuint64_t"},
 	{"ChkNullS"},
 	{"ClrHi"},
 	{0},{0},{0},{0},{0}, // 175-179

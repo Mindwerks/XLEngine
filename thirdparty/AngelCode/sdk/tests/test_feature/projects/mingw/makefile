@@ -84,7 +84,7 @@ SRCNAMES = \
   testexecutemixedargs.cpp \
   testexecutescript.cpp \
   testexecutestring.cpp \
-  testexecutethis32mixedargs.cpp \
+  testexecutethiint32_tmixedargs.cpp \
   testglobalvar.cpp \
   testint64.cpp \
   testlongtoken.cpp \

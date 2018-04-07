@@ -11,10 +11,10 @@
 
 #define CACHED_FILE_VERSION 0x01
 
-u32 WorldMap::m_uRegionCount;
+uint32_t WorldMap::m_uRegionCount;
 Region_Daggerfall *WorldMap::m_pRegions;
-map<u64, Location_Daggerfall *> WorldMap::m_MapLoc;
-map<u64, WorldCell *> WorldMap::m_MapCell;
+map<uint64_t, Location_Daggerfall *> WorldMap::m_MapLoc;
+map<uint64_t, WorldCell *> WorldMap::m_MapCell;
 map<string, Location_Daggerfall *> WorldMap::m_MapNames;
 bool WorldMap::m_bMapLoaded = false;
 
@@ -45,16 +45,16 @@ void Location_Daggerfall::Save(FILE *f)
 	fwrite(m_szName,       1, 32, f);
 	fwrite(&m_x,           1, sizeof(float), f);
 	fwrite(&m_y,           1, sizeof(float), f);
-	fwrite(&m_OrigX,       1, sizeof(s32), f);
-	fwrite(&m_OrigY,       1, sizeof(s32), f);
-	fwrite(&m_waterHeight, 1, sizeof(s32), f);
-	fwrite(&m_Long,        1, sizeof(s32), f);
-	fwrite(&m_Lat,         1, sizeof(s32), f);
-	fwrite(&m_LocationID,  1, sizeof(u32), f);
-	fwrite(&m_BlockWidth,  1, sizeof(s32), f);
-	fwrite(&m_BlockHeight, 1, sizeof(s32), f);
-	fwrite(&m_locType,     1, sizeof(s16), f);
-	fwrite(&m_locCat,      1, sizeof(s16), f);
+	fwrite(&m_OrigX,       1, sizeof(int32_t), f);
+	fwrite(&m_OrigY,       1, sizeof(int32_t), f);
+	fwrite(&m_waterHeight, 1, sizeof(int32_t), f);
+	fwrite(&m_Long,        1, sizeof(int32_t), f);
+	fwrite(&m_Lat,         1, sizeof(int32_t), f);
+	fwrite(&m_LocationID,  1, sizeof(uint32_t), f);
+	fwrite(&m_BlockWidth,  1, sizeof(int32_t), f);
+	fwrite(&m_BlockHeight, 1, sizeof(int32_t), f);
+	fwrite(&m_locType,     1, sizeof(int16_t), f);
+	fwrite(&m_locCat,      1, sizeof(int16_t), f);
 
 	for (int b=0; b<m_BlockWidth*m_BlockHeight; b++)
 	{
@@ -62,32 +62,32 @@ void Location_Daggerfall::Save(FILE *f)
 	}
 
 	//dungeon data...
-	fwrite(&m_dungeonBlockCnt,   1, sizeof(s16), f);
-	fwrite(&m_startDungeonBlock, 1, sizeof(s16), f);
+	fwrite(&m_dungeonBlockCnt,   1, sizeof(int16_t), f);
+	fwrite(&m_startDungeonBlock, 1, sizeof(int16_t), f);
 
 	for (int b=0; b<m_dungeonBlockCnt; b++)
 	{
 		fwrite(m_pDungeonBlocks[b].szName, 1, 16, f);
-		fwrite(&m_pDungeonBlocks[b].x, 1, sizeof(s16), f);
-		fwrite(&m_pDungeonBlocks[b].y, 1, sizeof(s16), f);
+		fwrite(&m_pDungeonBlocks[b].x, 1, sizeof(int16_t), f);
+		fwrite(&m_pDungeonBlocks[b].y, 1, sizeof(int16_t), f);
 	}
 }
 
-bool Location_Daggerfall::Load(FILE *f, map<u64, Location_Daggerfall *>& mapLoc, map<string, Location_Daggerfall *>& mapNames)
+bool Location_Daggerfall::Load(FILE *f, map<uint64_t, Location_Daggerfall *>& mapLoc, map<string, Location_Daggerfall *>& mapNames)
 {
 	fread(m_szName,       1, 32, f);
 	fread(&m_x,           1, sizeof(float), f);
 	fread(&m_y,           1, sizeof(float), f);
-	fread(&m_OrigX,       1, sizeof(s32), f);
-	fread(&m_OrigY,       1, sizeof(s32), f);
-	fread(&m_waterHeight, 1, sizeof(s32), f);
-	fread(&m_Long,        1, sizeof(s32), f);
-	fread(&m_Lat,         1, sizeof(s32), f);
-	fread(&m_LocationID,  1, sizeof(u32), f);
-	fread(&m_BlockWidth,  1, sizeof(s32), f);
-	fread(&m_BlockHeight, 1, sizeof(s32), f);
-	fread(&m_locType,     1, sizeof(s16), f);
-	fread(&m_locCat,      1, sizeof(s16), f);
+	fread(&m_OrigX,       1, sizeof(int32_t), f);
+	fread(&m_OrigY,       1, sizeof(int32_t), f);
+	fread(&m_waterHeight, 1, sizeof(int32_t), f);
+	fread(&m_Long,        1, sizeof(int32_t), f);
+	fread(&m_Lat,         1, sizeof(int32_t), f);
+	fread(&m_LocationID,  1, sizeof(uint32_t), f);
+	fread(&m_BlockWidth,  1, sizeof(int32_t), f);
+	fread(&m_BlockHeight, 1, sizeof(int32_t), f);
+	fread(&m_locType,     1, sizeof(int16_t), f);
+	fread(&m_locCat,      1, sizeof(int16_t), f);
 
 	m_pBlockNames = new Location_Daggerfall::LocName[m_BlockWidth*m_BlockHeight];
 	for (int b=0; b<m_BlockWidth*m_BlockHeight; b++)
@@ -96,19 +96,19 @@ bool Location_Daggerfall::Load(FILE *f, map<u64, Location_Daggerfall *>& mapLoc,
 	}
 
 	//dungeon data...
-	fread(&m_dungeonBlockCnt,   1, sizeof(s16), f);
-	fread(&m_startDungeonBlock, 1, sizeof(s16), f);
+	fread(&m_dungeonBlockCnt,   1, sizeof(int16_t), f);
+	fread(&m_startDungeonBlock, 1, sizeof(int16_t), f);
 
 	m_pDungeonBlocks = new DungeonBlock[m_dungeonBlockCnt];
 	for (int b=0; b<m_dungeonBlockCnt; b++)
 	{
 		fread( m_pDungeonBlocks[b].szName, 1, 16, f);
-		fread(&m_pDungeonBlocks[b].x, 1, sizeof(s16), f);
-		fread(&m_pDungeonBlocks[b].y, 1, sizeof(s16), f);
+		fread(&m_pDungeonBlocks[b].x, 1, sizeof(int16_t), f);
+		fread(&m_pDungeonBlocks[b].y, 1, sizeof(int16_t), f);
 	}
 
 	//Add to map.
-	u64 uKey     = (u64)((s32)m_y>>3)<<32ULL | (u64)((s32)m_x>>3); 
+	uint64_t uKey     = (uint64_t)((int32_t)m_y>>3)<<32ULL | (uint64_t)((int32_t)m_x>>3);
 	mapLoc[uKey] = this;
 	mapNames[m_szName] = this;
 
@@ -132,18 +132,18 @@ Region_Daggerfall::~Region_Daggerfall()
 //Save and load cached data.
 void Region_Daggerfall::Save(FILE *f)
 {
-	fwrite(&m_uLocationCount, 1, sizeof(u32), f);
-	for (u32 l=0; l<m_uLocationCount; l++)
+	fwrite(&m_uLocationCount, 1, sizeof(uint32_t), f);
+	for (uint32_t l=0; l<m_uLocationCount; l++)
 	{
 		m_pLocations[l].Save(f);
 	}
 }
 
-bool Region_Daggerfall::Load(FILE *f, map<u64, Location_Daggerfall *>& mapLoc, map<string, Location_Daggerfall *>& mapNames)
+bool Region_Daggerfall::Load(FILE *f, map<uint64_t, Location_Daggerfall *>& mapLoc, map<string, Location_Daggerfall *>& mapNames)
 {
-	fread(&m_uLocationCount, 1, sizeof(u32), f);
+	fread(&m_uLocationCount, 1, sizeof(uint32_t), f);
 	m_pLocations = new Location_Daggerfall[ m_uLocationCount ];
-	for (u32 l=0; l<m_uLocationCount; l++)
+	for (uint32_t l=0; l<m_uLocationCount; l++)
 	{
 		m_pLocations[l].Load(f, mapLoc, mapNames);
 	}
@@ -188,10 +188,10 @@ bool WorldMap::Load()
 			fclose(f);
 			return Cache();
 		}
-		fread(&m_uRegionCount, 1, sizeof(u32), f);
+		fread(&m_uRegionCount, 1, sizeof(uint32_t), f);
 		m_pRegions = new Region_Daggerfall[ m_uRegionCount ];
 
-		for (u32 r=0; r<m_uRegionCount; r++)
+		for (uint32_t r=0; r<m_uRegionCount; r++)
 		{
 			m_pRegions[r].Load(f, m_MapLoc, m_MapNames);
 		}
@@ -219,9 +219,9 @@ void WorldMap::Save()
 	{
 		int version = CACHED_FILE_VERSION;
 		fwrite(&version, 1, sizeof(int), f);
-		fwrite(&m_uRegionCount, 1, sizeof(u32), f);
+		fwrite(&m_uRegionCount, 1, sizeof(uint32_t), f);
 
-		for (u32 r=0; r<m_uRegionCount; r++)
+		for (uint32_t r=0; r<m_uRegionCount; r++)
 		{
 			m_pRegions[r].Save(f);	
 		}
@@ -239,24 +239,24 @@ void WorldMap::Save()
 
 struct LocationRec
 {
-	s32 oneValue;
-	s16 NullValue1;
-	s8  NullValue2;
-	s32 XPosition;
-	s32 NullValue3;
-	s32 YPosition;
-	s32 LocType;
-	s32 Unknown2;
-	s32 Unknown3;
-	s16 oneValue2;
-	u16 LocationID;
-	s32 NullValue4;
-	s16 Unknown4;
-	s32 Unknown5;
+	int32_t oneValue;
+	int16_t NullValue1;
+	int8_t  NullValue2;
+	int32_t XPosition;
+	int32_t NullValue3;
+	int32_t YPosition;
+	int32_t LocType;
+	int32_t Unknown2;
+	int32_t Unknown3;
+	int16_t oneValue2;
+	uint16_t LocationID;
+	int32_t NullValue4;
+	int16_t Unknown4;
+	int32_t Unknown5;
 	char NullValue[26];
 	char LocationName[32];
 	char Unknowns[9];
-	s16 PostRecCount;
+	int16_t PostRecCount;
 };
 
 #pragma pack(pop)
@@ -372,7 +372,7 @@ bool WorldMap::Cache()
 {
 	//step 1: compute the total number of locations for the entire world...
 	char szFileName[64];
-	u32 TotalLocCount=0;
+	uint32_t TotalLocCount=0;
 	ScratchPad::FreeFrame();
 	char *pData = (char *)ScratchPad::AllocMem( 1024*1024 );
 
@@ -387,7 +387,7 @@ bool WorldMap::Cache()
 			m_pRegions[r].m_uLocationCount = 0;
 			m_pRegions[r].m_pLocations     = NULL;
 
-			u32 uLength = ArchiveManager::GameFile_GetLength();
+			uint32_t uLength = ArchiveManager::GameFile_GetLength();
 			if ( uLength == 0 )
 			{
 				ArchiveManager::GameFile_Close();
@@ -409,7 +409,7 @@ bool WorldMap::Cache()
 		sprintf(szFileName, "MAPTABLE.0%02d", r);
 		if ( ArchiveManager::GameFile_Open(ARCHIVETYPE_BSA, "MAPS.BSA", szFileName) )
 		{
-			u32 uLength = ArchiveManager::GameFile_GetLength();
+			uint32_t uLength = ArchiveManager::GameFile_GetLength();
 			if ( uLength == 0 )
 			{	
 				ArchiveManager::GameFile_Close();
@@ -422,15 +422,15 @@ bool WorldMap::Cache()
 				ArchiveManager::GameFile_Close();
 
 				int index = 0;
-				for (u32 i=0; i<m_pRegions[r].m_uLocationCount; i++)
+				for (uint32_t i=0; i<m_pRegions[r].m_uLocationCount; i++)
 				{
 					int mapID = *((int *)&pData[index]); index += 4;
-					u8 U1 = *((u8 *)&pData[index]); index++;
-					u32 longType = *((u32 *)&pData[index]); index += 4;
+					uint8_t U1 = *((uint8_t *)&pData[index]); index++;
+					uint32_t longType = *((uint32_t *)&pData[index]); index += 4;
 					m_pRegions[r].m_pLocations[i].m_Lat   = ( *((short *)&pData[index]) )&0xFFFF; index += 2;
 					m_pRegions[r].m_pLocations[i].m_Long  = longType&0xFFFF;
-					u16 U2 = *((u16 *)&pData[index]); index += 2; //unknown
-					u32 U3 = *((u32 *)&pData[index]); index += 4; //unknown
+					uint16_t U2 = *((uint16_t *)&pData[index]); index += 2; //unknown
+					uint32_t U3 = *((uint32_t *)&pData[index]); index += 4; //unknown
 
 					m_pRegions[r].m_pLocations[i].m_locType = longType >> 17;
 
@@ -442,7 +442,7 @@ bool WorldMap::Cache()
 		sprintf(szFileName, "MAPPITEM.0%02d", r);
 		if ( ArchiveManager::GameFile_Open(ARCHIVETYPE_BSA, "MAPS.BSA", szFileName) )
 		{
-			u32 uLength = ArchiveManager::GameFile_GetLength();
+			uint32_t uLength = ArchiveManager::GameFile_GetLength();
 			if ( uLength == 0 )
 			{	
 				ArchiveManager::GameFile_Close();
@@ -455,7 +455,7 @@ bool WorldMap::Cache()
 				ArchiveManager::GameFile_Close();
 				
 				//pData = region data.
-				u32 *offsets = (u32 *)pData;
+				uint32_t *offsets = (uint32_t *)pData;
 				int nLocationCount = (int)m_pRegions[r].m_uLocationCount;
 				int base_index = 4*nLocationCount;
 				int index;
@@ -463,10 +463,10 @@ bool WorldMap::Cache()
 				{
 					index = base_index + offsets[i];
 					int nPreRecCount = *((int *)&pData[index]); index += 4;
-					u8 *PreRecords = NULL; 
+					uint8_t *PreRecords = NULL;
 					if ( nPreRecCount > 0 )
 					{
-						PreRecords = (u8 *)&pData[index]; index += nPreRecCount*6;
+						PreRecords = (uint8_t *)&pData[index]; index += nPreRecCount*6;
 					}
 					LocationRec *pLocation = (LocationRec *)&pData[index];
 					index += sizeof(LocationRec);
@@ -477,7 +477,7 @@ bool WorldMap::Cache()
 					m_pRegions[r].m_pLocations[i].m_y          = (float)pLocation->YPosition / 4096.0f;
 					strcpy(m_pRegions[r].m_pLocations[i].m_szName, pLocation->LocationName);
 
-					u64 uKey       = (u64)m_pRegions[r].m_pLocations[i].m_y<<32ULL | (u64)m_pRegions[r].m_pLocations[i].m_x; 
+					uint64_t uKey       = (uint64_t)m_pRegions[r].m_pLocations[i].m_y<<32ULL | (uint64_t)m_pRegions[r].m_pLocations[i].m_x;
 					m_MapLoc[uKey] = &m_pRegions[r].m_pLocations[i];
 
 					m_pRegions[r].m_pLocations[i].m_BlockWidth  = 0;
@@ -497,7 +497,7 @@ bool WorldMap::Cache()
 						index += 7;	//unknowns
 						char *BlockFileIndex  = &pData[index]; index += 64;
 						char *BlockFileNumber = &pData[index]; index += 64;
-						u8 *BlockFileChar = (u8 *)&pData[index]; index += 64;
+						uint8_t *BlockFileChar = (uint8_t *)&pData[index]; index += 64;
 						m_pRegions[r].m_pLocations[i].m_BlockWidth  = BlockWidth;
 						m_pRegions[r].m_pLocations[i].m_BlockHeight = BlockHeight;
 						m_pRegions[r].m_pLocations[i].m_pBlockNames = new Location_Daggerfall::LocName[BlockWidth*BlockHeight];
@@ -567,7 +567,7 @@ bool WorldMap::Cache()
 		sprintf(szFileName, "MAPDITEM.0%02d", r);
 		if ( ArchiveManager::GameFile_Open(ARCHIVETYPE_BSA, "MAPS.BSA", szFileName) )
 		{
-			u32 uLength = ArchiveManager::GameFile_GetLength();
+			uint32_t uLength = ArchiveManager::GameFile_GetLength();
 			if ( uLength == 0 )
 			{	
 				ArchiveManager::GameFile_Close();
@@ -581,12 +581,12 @@ bool WorldMap::Cache()
 
 				//pData = region data.
 				int index = 0;
-				u32 count = *((u32*)&pData[index]); index += 4;
+				uint32_t count = *((uint32_t*)&pData[index]); index += 4;
 				struct DungeonOffset
 				{
-					u32 Offset;
-					u16 IsDungeon;
-					u16 ExteriorLocID;
+					uint32_t Offset;
+					uint16_t IsDungeon;
+					uint16_t ExteriorLocID;
 				};
 				DungeonOffset *pOffsets = (DungeonOffset *)&pData[index]; index += 8*count;
 				int base_index = index;
@@ -607,10 +607,10 @@ bool WorldMap::Cache()
 					assert(pCurLoc);
 
 					int nPreRecCount = *((int *)&pData[index]); index += 4;
-					u8 *PreRecords = NULL; 
+					uint8_t *PreRecords = NULL;
 					if ( nPreRecCount > 0 )
 					{
-						PreRecords = (u8 *)&pData[index]; index += nPreRecCount*6;
+						PreRecords = (uint8_t *)&pData[index]; index += nPreRecCount*6;
 					}
 					LocationRec *pLocation = (LocationRec *)&pData[index];
 					index += sizeof(LocationRec);
@@ -623,21 +623,21 @@ bool WorldMap::Cache()
 							pCurLoc->m_waterHeight = -256000;
 						}
 						index += 8;//unknowns...
-						u16 blockCnt = *((u16 *)&pData[index]); index += 2;
+						uint16_t blockCnt = *((uint16_t *)&pData[index]); index += 2;
 						index += 5;	//unknown
 
 						pCurLoc->m_dungeonBlockCnt = blockCnt;
 						pCurLoc->m_startDungeonBlock = 0;
 						pCurLoc->m_pDungeonBlocks = new Location_Daggerfall::DungeonBlock[blockCnt];
 						bool bStartFound = false;
-						for (u32 b=0; b<blockCnt; b++)
+						for (uint32_t b=0; b<blockCnt; b++)
 						{
-							char X = *((u8 *)&pData[index]); index++;
-							char Y = *((u8 *)&pData[index]); index++;
-							u16  BlockNumStartIndex = *((u16 *)&pData[index]); index+=2;
+							char X = *((uint8_t *)&pData[index]); index++;
+							char Y = *((uint8_t *)&pData[index]); index++;
+							uint16_t  BlockNumStartIndex = *((uint16_t *)&pData[index]); index+=2;
 							int  blockNum = BlockNumStartIndex&1023;
 							bool IsStartBlock = (BlockNumStartIndex&1024) ? true : false;
-							u32  blockIndex = (BlockNumStartIndex>>11)&0xff;
+							uint32_t  blockIndex = (BlockNumStartIndex>>11)&0xff;
 							//now decode the string name...
 							char bIdxTable[] = { 'N', 'W', 'L', 'S', 'B', 'M' };
 							char szName[32];
@@ -670,12 +670,12 @@ bool WorldMap::Cache()
 	return true;
 }
 
-Location_Daggerfall *WorldMap::GetLocation(s32 x, s32 y)
+Location_Daggerfall *WorldMap::GetLocation(int32_t x, int32_t y)
 {
 	Location_Daggerfall *pLoc = NULL;
 
-	u64 uKey = (u64)y<<32ULL | (u64)x;
-	map<u64, Location_Daggerfall *>::iterator iLoc = m_MapLoc.find(uKey);
+	uint64_t uKey = (uint64_t)y<<32ULL | (uint64_t)x;
+	map<uint64_t, Location_Daggerfall *>::iterator iLoc = m_MapLoc.find(uKey);
 	if ( iLoc != m_MapLoc.end() )
 	{
 		pLoc = iLoc->second;
@@ -697,17 +697,17 @@ Location_Daggerfall *WorldMap::GetLocation(const char *pszName)
 	return pLoc;
 }
 
-void WorldMap::SetWorldCell(s32 x, s32 y, WorldCell *pCell)
+void WorldMap::SetWorldCell(int32_t x, int32_t y, WorldCell *pCell)
 {
-	u64 uKey = (u64)y<<32ULL | (u64)x;
+	uint64_t uKey = (uint64_t)y<<32ULL | (uint64_t)x;
 	m_MapCell[uKey] = pCell;
 }
 
-WorldCell *WorldMap::GetWorldCell(s32 x, s32 y)
+WorldCell *WorldMap::GetWorldCell(int32_t x, int32_t y)
 {
 	WorldCell *pCell = NULL;
-	u64 uKey = (u64)y<<32ULL | (u64)x;
-	map<u64, WorldCell *>::iterator iLoc = m_MapCell.find(uKey);
+	uint64_t uKey = (uint64_t)y<<32ULL | (uint64_t)x;
+	map<uint64_t, WorldCell *>::iterator iLoc = m_MapCell.find(uKey);
 
 	if ( iLoc != m_MapCell.end() )
 	{

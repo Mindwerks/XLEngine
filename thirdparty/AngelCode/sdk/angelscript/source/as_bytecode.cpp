@@ -686,8 +686,8 @@ int asCByteCode::Optimize()
 		// PSF x, RDS4 -> PshV4 x
 		else if( IsCombination(curr, asBC_PSF, asBC_RDS4) )
 			instr = GoBack(ChangeFirstDeleteNext(curr, asBC_PshV4));
-		// PSF x, RDS8 -> PshV8 x
-		else if( IsCombination(curr, asBC_PSF, asBC_RDS8) )
+		// PSF x, RDint8_t -> PshV8 x
+		else if( IsCombination(curr, asBC_PSF, asBC_RDint8_t) )
 			instr = GoBack(ChangeFirstDeleteNext(curr, asBC_PshV8));
 		// RDS4, POP x -> POP x
 		else if( IsCombination(curr, asBC_RDS4, asBC_POP) && instr->wArg[0] >= 1 ) 
@@ -697,8 +697,8 @@ int asCByteCode::Optimize()
 			instr->wArg[0] -= 1-AS_PTR_SIZE; 
 			instr = GoBack(instr);
 		}
-		// RDS8, POP 2 -> POP x-1
-		else if( IsCombination(curr, asBC_RDS8, asBC_POP) && instr->wArg[0] >= 2 )
+		// RDint8_t, POP 2 -> POP x-1
+		else if( IsCombination(curr, asBC_RDint8_t, asBC_POP) && instr->wArg[0] >= 2 )
 		{
 			DeleteInstruction(curr);
 			// Transform the pop to remove the address instead of the 8 byte word
@@ -897,9 +897,9 @@ int asCByteCode::Optimize()
 			DeleteInstruction(instr->next);
 			instr = GoBack(curr);
 		}
-		// PSF, ChkRefS, RDS8 -> PshV8, CHKREF
+		// PSF, ChkRefS, RDint8_t -> PshV8, CHKREF
 		else if( IsCombination(curr, asBC_PSF, asBC_ChkRefS) &&
-		         IsCombination(instr, asBC_ChkRefS, asBC_RDS8) )
+		         IsCombination(instr, asBC_ChkRefS, asBC_RDint8_t) )
 		{
 			asASSERT( AS_PTR_SIZE == 2 );
 

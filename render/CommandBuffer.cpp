@@ -5,10 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-u8 *CommandBuffer::s_pCommandBuffer[ CommandBuffer::BUFFER_COUNT ];
-u32 CommandBuffer::s_uReadBuffer;
-u32 CommandBuffer::s_uWriteBuffer;
-u32 CommandBuffer::s_uCommandPos;
+uint8_t *CommandBuffer::s_pCommandBuffer[ CommandBuffer::BUFFER_COUNT ];
+uint32_t CommandBuffer::s_uReadBuffer;
+uint32_t CommandBuffer::s_uWriteBuffer;
+uint32_t CommandBuffer::s_uCommandPos;
 IDriver3D *CommandBuffer::s_pDriver;
 
 //Initialize memory.
@@ -21,7 +21,7 @@ void CommandBuffer::Init(IDriver3D *pDriver)
 
 	for (int c=0; c<CommandBuffer::BUFFER_COUNT; c++)
 	{
-		s_pCommandBuffer[c] = (u8 *)malloc(BUFFER_SIZE);
+		s_pCommandBuffer[c] = (uint8_t *)malloc(BUFFER_SIZE);
 	}
 }
 
@@ -35,7 +35,7 @@ void CommandBuffer::Destroy()
 }
 
 //Commands
-void CommandBuffer::SetBlendMode(u32 uMode)
+void CommandBuffer::SetBlendMode(uint32_t uMode)
 {
 	CB_BlendMode *pBlendMode = (CB_BlendMode *)CB_Command( sizeof(CB_BlendMode) );
 	if ( pBlendMode )
@@ -46,7 +46,7 @@ void CommandBuffer::SetBlendMode(u32 uMode)
 	}
 }
 
-void CommandBuffer::SetTexture(s32 slot, TextureHandle hTex, u32 uFilter, bool bWrap)
+void CommandBuffer::SetTexture(int32_t slot, TextureHandle hTex, uint32_t uFilter, bool bWrap)
 {
 	CB_SetTexture *pSetTexture = (CB_SetTexture *)CB_Command( sizeof(CB_SetTexture) );
 	if ( pSetTexture )
@@ -70,7 +70,7 @@ void CommandBuffer::SetVertexBuffer(VertexBuffer *pVB)
 	}
 }
 
-void CommandBuffer::DrawIndexed(IndexBuffer *pIB, s32 nStartIndex, s32 nTriCnt)
+void CommandBuffer::DrawIndexed(IndexBuffer *pIB, int32_t nStartIndex, int32_t nTriCnt)
 {
 	CB_DrawIndexed *pDrawIndexed = (CB_DrawIndexed *)CB_Command( sizeof(CB_DrawIndexed) );
 	if ( pDrawIndexed )
@@ -83,7 +83,7 @@ void CommandBuffer::DrawIndexed(IndexBuffer *pIB, s32 nStartIndex, s32 nTriCnt)
 	}
 }
 
-void CommandBuffer::DrawCall(const Matrix& mWorld, TextureHandle hTex, VertexBuffer *pVB, IndexBuffer *pIB, s32 nStartIndex, s32 nTriCnt)
+void CommandBuffer::DrawCall(const Matrix& mWorld, TextureHandle hTex, VertexBuffer *pVB, IndexBuffer *pIB, int32_t nStartIndex, int32_t nTriCnt)
 {
 	CB_DrawCall *pDrawCall = (CB_DrawCall *)CB_Command( sizeof(CB_DrawCall) );
 	if ( pDrawCall )
@@ -100,7 +100,7 @@ void CommandBuffer::DrawCall(const Matrix& mWorld, TextureHandle hTex, VertexBuf
 }
 
 //Custom command, returns memory allocated from the command buffer.
-void *CommandBuffer::CB_Command(u32 uSize)
+void *CommandBuffer::CB_Command(uint32_t uSize)
 {
 	void *pMem = NULL;
 	if ( s_uCommandPos+uSize+END_MARKER_SIZE <= BUFFER_SIZE )
@@ -115,7 +115,7 @@ void *CommandBuffer::CB_Command(u32 uSize)
 void CommandBuffer::Execute()
 {
 	//Add the end marker.
-	u16 *pEndMarker = (u16 *)CB_Command( END_MARKER_SIZE );
+	uint16_t *pEndMarker = (uint16_t *)CB_Command( END_MARKER_SIZE );
 	pEndMarker[0] = CB_END_MARKER;
 	pEndMarker[1] = END_MARKER_SIZE;
 
@@ -127,7 +127,7 @@ void CommandBuffer::Execute()
 	//This should be on the render thread.
 
 	//Read the commands from the Read Buffer.
-	u8 *pReadBuffer = (u8 *)s_pCommandBuffer[s_uReadBuffer];
+	uint8_t *pReadBuffer = (uint8_t *)s_pCommandBuffer[s_uReadBuffer];
 	bool bEndMarkerReached = false;
 	while (bEndMarkerReached == false)
 	{

@@ -2,7 +2,9 @@
 #define COMMON_TYPES_H
 
 #include "PlatformDef.h"
-#include <string.h>
+#include <cstring>
+#include <cstdint>
+#include <cstdbool>
 
 #if PLATFORM_WIN
 
@@ -33,30 +35,10 @@
 	#define xlDelete delete
 #endif
 
-typedef unsigned char       u8;
-typedef unsigned short     u16;
-typedef unsigned int       u32;
-typedef unsigned long long u64;
-
-typedef char       s8;
-typedef short     s16;
-typedef int       s32;
-typedef long long s64;
-
 typedef float  f32;
 typedef double f64;
 
 #elif PLATFORM_LINUX
-
-typedef unsigned char       u8;
-typedef unsigned short     u16;
-typedef unsigned int       u32;
-typedef unsigned long long u64;
-
-typedef char       s8;
-typedef short     s16;
-typedef int       s32;
-typedef long long s64;
 
 typedef float  f32;
 typedef double f64;
@@ -77,12 +59,12 @@ typedef double f64;
 
 #endif
 
-typedef s32 XL_BOOL;
+typedef int32_t XL_BOOL;
 #define XL_TRUE  1
 #define XL_FALSE 0
 
 #define XL_INVALID_TEXTURE 0xffffffff
-typedef u32 TextureHandle;
+typedef uint32_t TextureHandle;
 
 //Make sure that the point is non-null before delete. Set to NULL.
 #define SafeDeleteArr(p) if (p) { xlDelete [] (p); (p) = NULL; }

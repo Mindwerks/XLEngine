@@ -3,7 +3,7 @@
 
 Logic *Logic::s_pCurLogic = NULL;
 
-Logic::Logic(const string& sName, void *pOwner, u32 uType)
+Logic::Logic(const string& sName, void *pOwner, uint32_t uType)
 {
 	m_sName = sName;
 	m_pOwner = pOwner;
@@ -11,7 +11,7 @@ Logic::Logic(const string& sName, void *pOwner, u32 uType)
 	m_uMsgMask = 0;
 
 	//first initiliaze all the callbacks to NULL.
-	for (u32 c=0; c<LCB_COUNT; c++)
+	for (uint32_t c=0; c<LCB_COUNT; c++)
 	{
 		if ( m_uType == LTYPE_CODE )
 			m_Callbacks[c].codeCB = NULL;
@@ -29,7 +29,7 @@ Logic::~Logic()
 {
 }
 
-bool Logic::AddCallback(u32 uCallbackID, LogicFunction pCallback)
+bool Logic::AddCallback(uint32_t uCallbackID, LogicFunction pCallback)
 {
 	m_Callbacks[ uCallbackID ].codeCB = pCallback;
 
@@ -69,7 +69,7 @@ void Logic::Update(Object *parent)
 	}
 }
 
-void Logic::SendMessage(Object *parent, u32 uMsgID, f32 fValue)
+void Logic::SendMessage(Object *parent, uint32_t uMsgID, f32 fValue)
 {
 	if ( uMsgID & m_uMsgMask )
 	{
@@ -82,8 +82,8 @@ void Logic::SendMessage(Object *parent, u32 uMsgID, f32 fValue)
 		else if ( m_uType == LTYPE_SCRIPT && m_Callbacks[ LCB_MESSAGE ].scriptCB >= 0 )
 		{
 			ScriptArgument paramList[2];
-			paramList[0].uType  = SC_ARG_U32;
-			paramList[0].argU32 = uMsgID;
+			paramList[0].uType  = SC_ARG_uint32_t;
+			paramList[0].arguint32_t = uMsgID;
 			paramList[1].uType  = SC_ARG_F32;
 			paramList[1].argF32 = fValue;
 
@@ -92,7 +92,7 @@ void Logic::SendMessage(Object *parent, u32 uMsgID, f32 fValue)
 	}
 }
 
-void Logic::SetMessageMask_CurLogic(u32 uMask)
+void Logic::SetMessageMask_CurLogic(uint32_t uMask)
 {
 	s_pCurLogic->m_uMsgMask = uMask;
 }

@@ -14,10 +14,10 @@ public:
 private:
 	const XLEngine_Plugin_API *m_pAPI;
 
-	void LogicSetup(u32 uObjID, u32 uParamCount, LogicParam *param);
-	void ObjectSetup(u32 uObjID, u32 uParamCount, LogicParam *param);
-	void Update(u32 uObjID, u32 uParamCount, LogicParam *param);
-	void Message(u32 uObjID, u32 uParamCount, LogicParam *param);
+	void LogicSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param);
+	void ObjectSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param);
+	void Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param);
+	void Message(uint32_t uObjID, uint32_t uParamCount, LogicParam *param);
 
 	LOGIC_CB_FUNC();
 };
@@ -28,19 +28,19 @@ public:
 	NPC(const XLEngine_Plugin_API *pAPI);
 	~NPC(void);
 
-	void Reset(const XLEngine_Plugin_API *pAPI, s32 NPC_file, float x, float y, float z, s32 worldX, s32 worldY, float dirx=0.0f, float diry=1.0f);
+	void Reset(const XLEngine_Plugin_API *pAPI, int32_t NPC_file, float x, float y, float z, int32_t worldX, int32_t worldY, float dirx=0.0f, float diry=1.0f);
 	void Enable(const XLEngine_Plugin_API *pAPI, bool bEnable);
 	bool IsEnabled();
 
-	void GetWorldPos(const XLEngine_Plugin_API *API, s32& x, s32& y);
+	void GetWorldPos(const XLEngine_Plugin_API *API, int32_t& x, int32_t& y);
 
 public:
 	struct GameData
 	{
-		u32 uObjID;
+		uint32_t uObjID;
 		TextureHandle ahTex[6];
 
-		u32 uState;
+		uint32_t uState;
 	};
 	GameData m_Data;
 };

@@ -16,21 +16,21 @@ public:
 	static void Init();
 	static void Destroy();
 
-	static Archive *OpenArchive(u32 uArchiveType, const char *pszArchiveName);
+	static Archive *OpenArchive(uint32_t uArchiveType, const char *pszArchiveName);
 	static void CloseArchive(Archive *pArchive);
 
-	static s32 GameFile_Open(Archive *pArchive, const char *pszFileName);
-	static s32 GameFile_Open(u32 uArchiveType, const char *pszArchiveName, const char *pszFileName);
-	static s32 GameFile_Open(u32 uArchiveType, const char *pszArchiveName, u32 fileID);
-	static s32 GameFile_SearchForFile(u32 uArchiveType, const char *pszArchiveName, const char *pszFileName, char *pszFileOut);
-	static u32 GameFile_GetLength();
-	static void GameFile_Read(void *pData, u32 uLength);
+	static int32_t GameFile_Open(Archive *pArchive, const char *pszFileName);
+	static int32_t GameFile_Open(uint32_t uArchiveType, const char *pszArchiveName, const char *pszFileName);
+	static int32_t GameFile_Open(uint32_t uArchiveType, const char *pszArchiveName, uint32_t fileID);
+	static int32_t GameFile_SearchForFile(uint32_t uArchiveType, const char *pszArchiveName, const char *pszFileName, char *pszFileOut);
+	static uint32_t GameFile_GetLength();
+	static void GameFile_Read(void *pData, uint32_t uLength);
 	static void *GameFile_GetFileInfo();
 	static void GameFile_Close();
 
-	static s32 File_Open(const char *pszFileName);
-	static u32 File_GetLength();
-	static void File_Read(void *pData, u32 uStart, u32 uLength);
+	static int32_t File_Open(const char *pszFileName);
+	static uint32_t File_GetLength();
+	static void File_Read(void *pData, uint32_t uStart, uint32_t uLength);
 	static void *File_GetFileInfo();
 	static void File_Close();
 
@@ -43,12 +43,12 @@ private:
 };
 
 //helper defines.
-#define READ_U32(p, i) *((u32 *)&p[i]); i += 4
-#define READ_S32(p, i) *((s32 *)&p[i]); i += 4
-#define READ_U16(p, i) *((u16 *)&p[i]); i += 2
-#define READ_S16(p, i) *((s16 *)&p[i]); i += 2
-#define READ_U8(p, i) *((u8 *)&p[i]); i++
-#define READ_S8(p, i) *((s8 *)&p[i]); i++
+#define READ_uint32_t(p, i) *((uint32_t *)&p[i]); i += 4
+#define READ_int32_t(p, i) *((int32_t *)&p[i]); i += 4
+#define READ_uint16_t(p, i) *((uint16_t *)&p[i]); i += 2
+#define READ_int16_t(p, i) *((int16_t *)&p[i]); i += 2
+#define READ_uint8_t(p, i) *((uint8_t *)&p[i]); i++
+#define READ_int8_t(p, i) *((int8_t *)&p[i]); i++
 #define READ_DATA(d, i, s) memcpy(d, &pData[index], s); i+=s
 
 #endif //ARCHIVEMANAGER_H

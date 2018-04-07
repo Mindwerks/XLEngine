@@ -510,7 +510,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit49]
-FileName=..\..\source\testexecutethis32mixedargs.cpp
+FileName=..\..\source\testexecutethiint32_tmixedargs.cpp
 CompileCpp=1
 Folder=devcpp
 Compile=1

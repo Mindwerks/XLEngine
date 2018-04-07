@@ -50,7 +50,7 @@ BSRL
 BSRA      
 COPY      
 SET8      
-RDS8      
+RDint8_t
 SWAP8     
 CMPd      
 CMPu      
@@ -152,12 +152,12 @@ uTOi64
 iTOi64    
 fTOi64    
 dTOi64    
-fTOu64    
-dTOu64    
+fTOuint64_t
+dTOuint64_t
 i64TOf    
-u64TOf    
+uint64_tTOf
 i64TOd    
-u64TOd    
+uint64_tTOd
 NEGi64    
 INCi64    
 DECi64    
@@ -174,6 +174,6 @@ BSLL64
 BSRL64    
 BSRA64    
 CMPi64    
-CMPu64    
+CMPuint64_t
 ChkNullS  
 ClrHi     

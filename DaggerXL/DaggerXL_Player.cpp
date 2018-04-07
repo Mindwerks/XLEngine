@@ -67,15 +67,15 @@ DaggerXL_Player::~DaggerXL_Player(void)
 {
 }
 
-void DaggerXL_Player::LogicSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void DaggerXL_Player::LogicSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }
 
-void DaggerXL_Player::ObjectSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void DaggerXL_Player::ObjectSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }
 
-void DaggerXL_Player::KeyDown(s32 key)
+void DaggerXL_Player::KeyDown(int32_t key)
 {
 	if ( key == XL_SPACE && m_bOnGround && m_GravVector.z == m_StartGravity.z )
 	{
@@ -88,7 +88,7 @@ void DaggerXL_Player::KeyDown(s32 key)
 		p0 = m_PhysicsData->m_Loc; p0.z += (m_PlayerHeight);
 		p1 = p0 + m_vLookDir*50.0f;
 
-		u32 uSector = 0;//m_PhysicsData->m_uSector;
+		uint32_t uSector = 0;//m_PhysicsData->m_uSector;
 		m_pAPI->World_Activate(&p0, &p1, uSector);
 	}
 	else if ( key == XL_T )
@@ -105,14 +105,14 @@ void DaggerXL_Player::SetPos(Vector3& pos)
 	m_nFrameRotDelay = 8;
 }
 
-void DaggerXL_Player::GetPos(Vector3& pos, s32& worldX, s32& worldY)
+void DaggerXL_Player::GetPos(Vector3& pos, int32_t& worldX, int32_t& worldY)
 {
 	pos = m_PhysicsData->m_Loc;
 	worldX = m_PhysicsData->m_worldX;
 	worldY = m_PhysicsData->m_worldY;
 }
 
-void DaggerXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
+void DaggerXL_Player::Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 	XL_BOOL bUpdateControls = m_pAPI->Engine_AllowPlayerControls();
 	m_PhysicsData->m_uSector = 0;
@@ -372,6 +372,6 @@ void DaggerXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	}
 }
 
-void DaggerXL_Player::Message(u32 uObjID, u32 uParamCount, LogicParam *param)
+void DaggerXL_Player::Message(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }

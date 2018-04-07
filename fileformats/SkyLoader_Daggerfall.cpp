@@ -12,7 +12,7 @@
 
 SkyLoader_Daggerfall::SkyLoader_Daggerfall() : SkyLoader()
 {
-	for (s32 i=0; i<MAX_REGION_COUNT; i++)
+	for (int32_t i=0; i<MAX_REGION_COUNT; i++)
 	{
 		m_aSkyData[i].bLoaded = false;
 	}
@@ -22,7 +22,7 @@ SkyLoader_Daggerfall::~SkyLoader_Daggerfall()
 {
 }
 
-bool SkyLoader_Daggerfall::LoadSky(s32 regionID)
+bool SkyLoader_Daggerfall::LoadSky(int32_t regionID)
 {
 	if ( m_aSkyData[regionID].bLoaded )
 		 return true;
@@ -35,8 +35,8 @@ bool SkyLoader_Daggerfall::LoadSky(s32 regionID)
 	{
 		ScratchPad::StartFrame();
 
-		u32 uLen  = ArchiveManager::File_GetLength();
-		u8 *pData = (u8 *)ScratchPad::AllocMem( uLen+1 );
+		uint32_t uLen  = ArchiveManager::File_GetLength();
+		uint8_t *pData = (uint8_t *)ScratchPad::AllocMem( uLen+1 );
 		assert(pData);
 
 		if ( pData )
@@ -49,41 +49,41 @@ bool SkyLoader_Daggerfall::LoadSky(s32 regionID)
 		{
 			SkyData *skyData = &m_aSkyData[regionID];
 
-			s32 index = 0;
-			s32 fileSize;
-			s16 formatID;
-			s16 formatVersion;
-			for (s32 p=0; p<32; p++)
+			int32_t index = 0;
+			int32_t fileSize;
+			int16_t formatID;
+			int16_t formatVersion;
+			for (int32_t p=0; p<32; p++)
 			{
-				fileSize = READ_S32(pData, index);
-				formatID = READ_S16(pData, index);
-				formatVersion = READ_S16(pData, index);
+				fileSize = READ_int32_t(pData, index);
+				formatID = READ_int16_t(pData, index);
+				formatVersion = READ_int16_t(pData, index);
 				
-				for (s32 c=0; c<256; c++)
+				for (int32_t c=0; c<256; c++)
 				{
-					skyData->aPalettes[p].colors[c*3+0] = READ_U8(pData, index);
-					skyData->aPalettes[p].colors[c*3+1] = READ_U8(pData, index);
-					skyData->aPalettes[p].colors[c*3+2] = READ_U8(pData, index);
+					skyData->aPalettes[p].colors[c*3+0] = READ_uint8_t(pData, index);
+					skyData->aPalettes[p].colors[c*3+1] = READ_uint8_t(pData, index);
+					skyData->aPalettes[p].colors[c*3+2] = READ_uint8_t(pData, index);
 				}
 			}
-			for (s32 p=0; p<32; p++)
+			for (int32_t p=0; p<32; p++)
 			{
 				READ_DATA(&skyData->aColormaps[p].data, index, 16384);
 				skyData->aColormaps[p].lightLevels = 64;
 			}
 
 			//copy the colormap for the windows to the proper map...
-			for (s32 p=0; p<32; p++)
+			for (int32_t p=0; p<32; p++)
 			{
-				for (s32 l=0, lOffs=0; l<64; l++, lOffs+=256)
+				for (int32_t l=0, lOffs=0; l<64; l++, lOffs+=256)
 				{
 					skyData->aColormaps[p].data[255 + lOffs] = skyData->aColormaps[p].data[96+(p>>1) + lOffs];
 				}
 			}
 
 			//west images.
-			u8 img_data[512*220];
-			for (s32 s=0; s<32; s++)
+			uint8_t img_data[512*220];
+			for (int32_t s=0; s<32; s++)
 			{
 				READ_DATA(img_data, index, 512*220);
 				char szName[256];
@@ -92,7 +92,7 @@ bool SkyLoader_Daggerfall::LoadSky(s32 regionID)
 			}
 
 			//east images.
-			for (s32 s=0; s<32; s++)
+			for (int32_t s=0; s<32; s++)
 			{
 				READ_DATA(img_data, index, 512*220);
 				char szName[256];
@@ -109,7 +109,7 @@ bool SkyLoader_Daggerfall::LoadSky(s32 regionID)
 	return bSuccess;
 }
 
-void *SkyLoader_Daggerfall::GetSkyData(s32 regionID)
+void *SkyLoader_Daggerfall::GetSkyData(int32_t regionID)
 {
 	void *pData = NULL;
 	if ( m_aSkyData[regionID].bLoaded )

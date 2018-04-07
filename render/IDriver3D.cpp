@@ -32,7 +32,7 @@ IDriver3D::~IDriver3D()
 	}
 }
 
-void IDriver3D::AddOverlay(s32 x, s32 y, s32 scale, TextureHandle hTex)
+void IDriver3D::AddOverlay(int32_t x, int32_t y, int32_t scale, TextureHandle hTex)
 {
 	if ( m_uOverlayCount < MAX_OVERLAY_COUNT )
 	{

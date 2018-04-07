@@ -9,7 +9,7 @@ class Driver3D_OGL_Win : public Driver3D_IPlatform
         Driver3D_OGL_Win();
         virtual ~Driver3D_OGL_Win();
 
-        void SetWindowData(s32 nParam, void **param);
+        void SetWindowData(int32_t nParam, void **param);
 
         void Present();
     protected:

@@ -34,12 +34,12 @@ class UI_Window;
 
 struct UI_RenderFrame
 {
-	u32 ID;			//ID
+	uint32_t ID;			//ID
 	bool bInUse;	//is this frame currently allocated?
 
 	TextureHandle hFrame;		//the image handle.
-	s16 width;		//the image width.
-	s16 height;		//the image height.
+	int16_t width;		//the image width.
+	int16_t height;		//the image height.
 	f32 fRelWidth;	//Relative width and height.
 	f32 fRelHeight;	//used to determine uv's when image is fit into a pow of 2 texture.
 };
@@ -57,8 +57,8 @@ public:
 	SHANDLE m_hOnPostRender;
 	SHANDLE m_hOnUpdate;
 	SHANDLE m_hOnKey;
-	u32 m_uFlags;
-	u32 m_uState;
+	uint32_t m_uFlags;
+	uint32_t m_uState;
 	f32 m_fVirt_Scr_W;
 	f32 m_fVirt_Scr_H;
 
@@ -77,11 +77,11 @@ public:
 	void Draw(int x, int y);
 	void Update(bool bMouseOver, int nMouseX, int nMouseY, int x, int y);
 public:
-	u32 m_uType;
-	s32 m_x, m_y;
-	s32 m_w, m_h;
-	s32 m_prevX;
-	s32 m_prevY;
+	uint32_t m_uType;
+	int32_t m_x, m_y;
+	int32_t m_w, m_h;
+	int32_t m_prevX;
+	int32_t m_prevY;
 	bool m_bMouseHeld;
 	bool m_bMoving;
 	bool m_bEnabled;
@@ -92,8 +92,8 @@ public:
 
 	static bool s_bWindowMoving;
 
-	u32 m_uFlags;
-	u32 m_uState;
+	uint32_t m_uFlags;
+	uint32_t m_uState;
 
 	string m_name;
 	string m_text;
@@ -164,12 +164,12 @@ private:
 	static UI_RenderFrame *m_pRenderFramePool;
 	static LFD_Anim *m_pLFD_Anim_List[];
 
-	static u32 m_auImage_TexType[];
-	static u32 m_auImage_ArchiveType[];
+	static uint32_t m_auImage_TexType[];
+	static uint32_t m_auImage_ArchiveType[];
 
 	//Add a new screen, if it hasn't already been added.
 	static UI_Screen *AddScreen(const string& sName);
-	static UI_Window *AddWindow(const string& sName, const string& sText, u32 uType, s32 x, s32 y, s32 w, s32 h, u32 flags, UI_Window *parent=NULL);
+	static UI_Window *AddWindow(const string& sName, const string& sText, uint32_t uType, int32_t x, int32_t y, int32_t w, int32_t h, uint32_t flags, UI_Window *parent=NULL);
 
 	//Script Functions, these are call by the UI Scripts.
 	//UI_StartScreen is the first UI screen to start up, the program entry point.
@@ -181,7 +181,7 @@ private:
 	static void UI_EnableWindow(string& sName, int enable);
 	static void UI_CreateWindow_FromLFDFrame(string& sName, int LFDAnim_ID, int frame, int x0, int y0);
 	static int  UI_AddImage(string& sImage, int cutoutMinIdx, int cutoutMaxIdx);
-	static int  UI_AddGameImage(u32 uImageType, string &sArchive, string &sImage);
+	static int  UI_AddGameImage(uint32_t uImageType, string &sArchive, string &sImage);
 	static void UI_FreeImage(int hImageHandle);
 	static void UI_EnableImageFilter(int enable);
 	static void UI_EnableImageBlending(int enable);
@@ -216,11 +216,11 @@ private:
 	static void AllocRenderFramePool();
 	static void FreeRenderFramePool();
 	static UI_RenderFrame *AllocRenderFrame();
-	static void FreeRenderFrame(u32 uFrameID);
-	static UI_RenderFrame *GetRenderFrame(u32 uFrameID);
+	static void FreeRenderFrame(uint32_t uFrameID);
+	static UI_RenderFrame *GetRenderFrame(uint32_t uFrameID);
 
 	//
-	static void KeyDownCallback(s32 key);
+	static void KeyDownCallback(int32_t key);
 };
 
 #endif //UISYSTEM_H

@@ -17,14 +17,14 @@ public:
 	void PreRender(float dt);
 	void PostRender(float dt);
 
-	void KeyDown(s32 key);
+	void KeyDown(int32_t key);
 
-	void GetVersion(s32& major, s32& minor) { major = m_nVersionMajor; minor = m_nVersionMinor; }
+	void GetVersion(int32_t& major, int32_t& minor) { major = m_nVersionMajor; minor = m_nVersionMinor; }
 
 private:
 	const XLEngine_Plugin_API *m_pAPI;
-	s32 m_nVersionMajor;
-	s32 m_nVersionMinor;
+	int32_t m_nVersionMajor;
+	int32_t m_nVersionMinor;
 
 	//Console commands
 	static DarkXL_Game *s_pGame_Console;

@@ -15,40 +15,40 @@
 #endif
 
 #if bpp8 == 1
-	u8 *pDestBits = _pFrameBuffer_8;
+	uint8_t *pDestBits = _pFrameBuffer_8;
 
-	u32 uOffsTex = 0;
-	u32 tw = _pCurTex->m_nWidth;
-	u32 th = _pCurTex->m_nHeight;
-	for (s32 l=0; l<_nMip; l++)
+	uint32_t uOffsTex = 0;
+	uint32_t tw = _pCurTex->m_nWidth;
+	uint32_t th = _pCurTex->m_nHeight;
+	for (int32_t l=0; l<_nMip; l++)
 	{
 		uOffsTex += (tw*th);
 		tw >>= 1;
 		th >>= 1;
 	}
 
-	u32 *pTexFrame = _pCurTex->m_pData[_uCurFrame];
-	u8 *pTextureBits = (u8 *)&pTexFrame[uOffsTex>>2];
-	u8 *pColormapFog = TextureLoader::GetColormapData(_uColormapID);
-	u8 *pColormapLit = TextureLoader::GetColormapData(0);
+	uint32_t *pTexFrame = _pCurTex->m_pData[_uCurFrame];
+	uint8_t *pTextureBits = (uint8_t *)&pTexFrame[uOffsTex>>2];
+	uint8_t *pColormapFog = TextureLoader::GetColormapData(_uColormapID);
+	uint8_t *pColormapLit = TextureLoader::GetColormapData(0);
 #else
-	u32 *pDestBits = _pFrameBuffer_32;
-	u32 uOffsTex = 0;
-	u32 tw = _pCurTex->m_nWidth;
-	u32 th = _pCurTex->m_nHeight;
-	for (s32 l=0; l<_nMip; l++)
+	uint32_t *pDestBits = _pFrameBuffer_32;
+	uint32_t uOffsTex = 0;
+	uint32_t tw = _pCurTex->m_nWidth;
+	uint32_t th = _pCurTex->m_nHeight;
+	for (int32_t l=0; l<_nMip; l++)
 	{
 		uOffsTex += (tw*th);
 		tw >>= 1;
 		th >>= 1;
 	}
-	u32 *pTexFrame = _pCurTex->m_pData[_uCurFrame];
-	u8 *pTextureBits = (u8 *)&pTexFrame[uOffsTex];
+	uint32_t *pTexFrame = _pCurTex->m_pData[_uCurFrame];
+	uint8_t *pTextureBits = (uint8_t *)&pTexFrame[uOffsTex];
 #endif
-	u16 *pDepthBuffer = _pDepthBuffer;
+	uint16_t *pDepthBuffer = _pDepthBuffer;
 	pDestBits += pLeft->Y * _nFrameWidth + XStart;
 	pDepthBuffer += pLeft->Y * _nFrameWidth + XStart;
-	s32 TextureDeltaScan = _pCurTex->m_nWidth>>_nMip;
+	int32_t TextureDeltaScan = _pCurTex->m_nWidth>>_nMip;
 
 	float OneOverZLeft = pLeft->OneOverZ;
 	float UOverZLeft   = pLeft->UOverZ;
@@ -128,7 +128,7 @@
 		V = Fixed16_16Math::FloatToFixed(VLeft) + Gradients.dVdXModifier - 32768;
 	
 		//Lighting
-		u32 L0 = r, L1 = r;
+		uint32_t L0 = r, L1 = r;
 	#if gouraud == 1
 		gRight = ZRight * (pRight->gOverZ - Gradients.dgOverZdX);
 		L0 += (int)(gLeft);
@@ -139,15 +139,15 @@
 		if ( Z < 0 ) { return; }
 	
 		fixed16_16 dZ = 0;
-		s32 dF = 0;
+		int32_t dF = 0;
 		#if bpp8 == 1
-			s32 F0, F1;
-			F0 = MIN((s32)L0, 63 - (Z>>10));
+			int32_t F0, F1;
+			F0 = MIN((int32_t)L0, 63 - (Z>>10));
 			F1=F0;
 		#else
-			s32 F0 = MIN((s32)L0, 255 - (Z>>8)), F1=F0;
+			int32_t F0 = MIN((int32_t)L0, 255 - (Z>>8)), F1=F0;
 		#endif
-		s32 F  = F0;
+		int32_t F  = F0;
 		//Guard against div-by-0 for 1 pixel lines.
 		if ( --Width )
 		{
@@ -157,9 +157,9 @@
 			dZ = Fixed16_16Math::FloatToFixed(ZRight - ZLeft) / Width;
 		
 			#if bpp8 == 1
-				F1 = MIN((s32)L1, 63 - ((Z+dZ*Width)>>10));
+				F1 = MIN((int32_t)L1, 63 - ((Z+dZ*Width)>>10));
 			#else
-				F1 = MIN((s32)L1, 255 - ((Z+dZ*Width)>>8));
+				F1 = MIN((int32_t)L1, 255 - ((Z+dZ*Width)>>8));
 			#endif
 			dF = (F1 - F0) / Width;
 		}
@@ -167,7 +167,7 @@
 		for (int Counter=0; Counter <= Width; Counter++)
 		{
 			//
-			u16 Zd = *pDepthBuffer;
+			uint16_t Zd = *pDepthBuffer;
 			if ( Z <= Zd )
 			{
 				#if pow2 == 1
@@ -179,11 +179,11 @@
 				#endif
 			
 				#if bpp8==1
-					u8 color = *( pTextureBits + UInt + (VInt*TextureDeltaScan) );
+					uint8_t color = *( pTextureBits + UInt + (VInt*TextureDeltaScan) );
 					*pDestBits = pColormapFog[ color + (F<<8) ];
-					*pDepthBuffer = (u16)Z;
+					*pDepthBuffer = (uint16_t)Z;
 				#else
-					u32 color = _pCurPal[ *( pTextureBits + UInt + (VInt*TextureDeltaScan) ) ];
+					uint32_t color = _pCurPal[ *( pTextureBits + UInt + (VInt*TextureDeltaScan) ) ];
 						color = _colorMap32[0][((color>>16)&0xff) + (F<<8)] | _colorMap32[1][((color>>8)&0xff) + (F<<8)] |
 							    _colorMap32[2][(color&0xff) + (F<<8)] | (color&0xff000000);
 					#if alpha != 0
@@ -191,7 +191,7 @@
 					{
 					#endif
 						*pDestBits = color;
-						*pDepthBuffer = (u16)Z;
+						*pDepthBuffer = (uint16_t)Z;
 					#if alpha != 0
 					}
 					#endif
@@ -231,7 +231,7 @@
 		
 			fixed16_16 dZ = Fixed16_16Math::FloatToFixed(ZRight - ZLeft) / _nAffineLength;
 			//Lighting
-			u32 L0 = r, L1 = r;
+			uint32_t L0 = r, L1 = r;
 		#if gouraud == 1
 			gRight = ZRight * gOverZRight;
 			L0 += (int)(gLeft);
@@ -278,29 +278,29 @@
 		
 			//lighting
 			#if bpp8 == 1
-				s32 F0, F1;
+				int32_t F0, F1;
 			#if fogLighting == 0
 				if ( _useFog )
 				{
-					F0 = MIN((s32)L0, 63 - (Z>>10));
-					F1 = MIN((s32)L1, 63 - ((Z+dZ*_nAffineLength)>>10));
+					F0 = MIN((int32_t)L0, 63 - (Z>>10));
+					F1 = MIN((int32_t)L1, 63 - ((Z+dZ*_nAffineLength)>>10));
 				}
 				else
 			#endif
 				{
-					F0 = MIN((s32)L0, 63);
-					F1 = MIN((s32)L1, 63);
+					F0 = MIN((int32_t)L0, 63);
+					F1 = MIN((int32_t)L1, 63);
 				}
 			#else
-				s32 F0 = MIN((s32)L0, 255 - (Z>>8));
-				s32 F1 = MIN((s32)L1, 255 - ((Z+dZ*_nAffineLength)>>8));
+				int32_t F0 = MIN((int32_t)L0, 255 - (Z>>8));
+				int32_t F1 = MIN((int32_t)L1, 255 - ((Z+dZ*_nAffineLength)>>8));
 			#endif
-			s32 F  = F0;
-			s32 dF = (F1 - F0) / _nAffineLength;
+			int32_t F  = F0;
+			int32_t dF = (F1 - F0) / _nAffineLength;
 		
 			for (int Counter = 0; Counter < _nAffineLength; Counter++)
 			{
-				u16 Zd = *pDepthBuffer;
+				uint16_t Zd = *pDepthBuffer;
 				if ( Z <= Zd )
 				{
 				#if bilinear == 1
@@ -323,7 +323,7 @@
 					#endif
 				#endif
 				#if bpp8==1
-					u8 color = *( pTextureBits + UInt + (VInt*TextureDeltaScan) );
+					uint8_t color = *( pTextureBits + UInt + (VInt*TextureDeltaScan) );
 					#if alpha != 0
 					if (color)
 					{
@@ -338,12 +338,12 @@
 							*pDestBits = pColormapFog[ color + (F<<8) ];
 						#endif
 					#endif
-						*pDepthBuffer = (u16)Z;
+						*pDepthBuffer = (uint16_t)Z;
 					#if alpha != 0
 					}
 					#endif
 				#else
-					u32 color = _pCurPal[ *( pTextureBits + UInt + (VInt*TextureDeltaScan) ) ];
+					uint32_t color = _pCurPal[ *( pTextureBits + UInt + (VInt*TextureDeltaScan) ) ];
 						color = _colorMap32[0][((color>>16)&0xff) + (F<<8)] | _colorMap32[1][((color>>8)&0xff) + (F<<8)] |
 								_colorMap32[2][(color&0xff) + (F<<8)] | (color&0xff000000);
 						//color = ((((color&0x00ff0000)*F)>>8)&0x00ff0000) | ((((color&0x0000ff00)*F)>>8)&0x0000ff00) |
@@ -353,7 +353,7 @@
 					{
 					#endif
 						*pDestBits = color;
-						*pDepthBuffer = (u16)Z;
+						*pDepthBuffer = (uint16_t)Z;
 					#if alpha != 0
 					}
 					#endif
@@ -407,7 +407,7 @@
 			V = Fixed16_16Math::FloatToFixed(VLeft) + Gradients.dVdXModifier - 32768;
 		
 			//Lighting
-			u32 L0 = r, L1 = r;
+			uint32_t L0 = r, L1 = r;
 		#if gouraud == 1
 			gRight = ZRight * (pRight->gOverZ - Gradients.dgOverZdX);
 			L0 += (int)(gLeft);
@@ -456,21 +456,21 @@
 			if ( Z < 0 ) { return; }
 		
 			fixed16_16 dZ = 0;
-			s32 dF = 0;
+			int32_t dF = 0;
 			#if bpp8 == 1
-				s32 F0, F1;
+				int32_t F0, F1;
 				#if fogLighting == 0
 				if ( _useFog )
-					F0 = MIN((s32)L0, 63 - (Z>>10));
+					F0 = MIN((int32_t)L0, 63 - (Z>>10));
 				else
 				#endif
-					F0 = MIN((s32)L0, 63);
+					F0 = MIN((int32_t)L0, 63);
 
 				F1=F0;
 			#else
-				s32 F0 = MIN((s32)L0, 255 - (Z>>8)), F1=F0;
+				int32_t F0 = MIN((int32_t)L0, 255 - (Z>>8)), F1=F0;
 			#endif
-			s32 F  = F0;
+			int32_t F  = F0;
 			//Guard against div-by-0 for 1 pixel lines.
 			if ( --WidthModLength )
 			{
@@ -482,12 +482,12 @@
 				#if bpp8 == 1
 				#if fogLighting == 0
 					if ( _useFog )
-						F1 = MIN((s32)L1, 63 - ((Z+dZ*WidthModLength)>>10));
+						F1 = MIN((int32_t)L1, 63 - ((Z+dZ*WidthModLength)>>10));
 					else
 				#endif
-						F1 = MIN((s32)L1, 63);
+						F1 = MIN((int32_t)L1, 63);
 				#else
-					F1 = MIN((s32)L1, 255 - ((Z+dZ*WidthModLength)>>8));
+					F1 = MIN((int32_t)L1, 255 - ((Z+dZ*WidthModLength)>>8));
 				#endif
 				dF = (F1 - F0) / WidthModLength;
 			}
@@ -495,7 +495,7 @@
 			for (int Counter=0; Counter <= WidthModLength; Counter++)
 			{
 				//
-				u16 Zd = *pDepthBuffer;
+				uint16_t Zd = *pDepthBuffer;
 				if ( Z <= Zd )
 				{
 					#if bilinear == 1
@@ -519,7 +519,7 @@
 					#endif
 				
 					#if bpp8==1
-						u8 color = *( pTextureBits + UInt + (VInt*TextureDeltaScan) );
+						uint8_t color = *( pTextureBits + UInt + (VInt*TextureDeltaScan) );
 						#if alpha != 0
 						if (color)
 						{
@@ -534,12 +534,12 @@
 								*pDestBits = pColormapFog[ color + (F<<8) ];
 							#endif
 						#endif
-							*pDepthBuffer = (u16)Z;
+							*pDepthBuffer = (uint16_t)Z;
 						#if alpha != 0
 						}
 						#endif
 					#else
-						u32 color = _pCurPal[ *( pTextureBits + UInt + (VInt*TextureDeltaScan) ) ];
+						uint32_t color = _pCurPal[ *( pTextureBits + UInt + (VInt*TextureDeltaScan) ) ];
 							//color = ((((color&0x00ff0000)*F)>>8)&0x00ff0000) | ((((color&0x0000ff00)*F)>>8)&0x0000ff00) |
 							//((((color&0x000000ff)*F)>>8)&0x000000ff) | (color&0xff000000);
 							color = _colorMap32[0][((color>>16)&0xff) + (F<<8)] | _colorMap32[1][((color>>8)&0xff) + (F<<8)] |
@@ -549,7 +549,7 @@
 						{
 						#endif
 							*pDestBits = color;
-							*pDepthBuffer = (u16)Z;
+							*pDepthBuffer = (uint16_t)Z;
 						#if alpha != 0
 						}
 						#endif

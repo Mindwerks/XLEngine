@@ -34,7 +34,7 @@ public:
 	void Update();
 	void Init();
 	void Reset();
-	void SendMessage(u32 uMsgID, f32 fValue);
+	void SendMessage(uint32_t uMsgID, f32 fValue);
 
 	void SetLoc(const Vector3& vLoc) { m_ObjPhysicsData.m_Loc = vLoc; }
 	void GetLoc(Vector3& vLoc)		 { vLoc = m_ObjPhysicsData.m_Loc; }
@@ -48,14 +48,14 @@ public:
 	void SetScale(const Vector3& vScale) { m_ObjPhysicsData.m_Scale = vScale; }
 	void GetScale(Vector3& vScale)		 { vScale = m_ObjPhysicsData.m_Scale; }
 
-	void SetSector(u16 uSector) { m_ObjPhysicsData.m_uSector = uSector; }
-	u16  GetSector()			{ return m_ObjPhysicsData.m_uSector; }
+	void SetSector(uint16_t uSector) { m_ObjPhysicsData.m_uSector = uSector; }
+	uint16_t  GetSector()			{ return m_ObjPhysicsData.m_uSector; }
 
 	void AddLogic(Logic *pLogic);
 
 	void SetGameData(void *pData) { m_pDataComp = pData; }
 	void *GetGameData()			  { return m_pDataComp; }
-	void AllocGameData(u32 uSize) { m_pDataComp = xlMalloc(uSize); m_bAllocGameData = true; }
+	void AllocGameData(uint32_t uSize) { m_pDataComp = xlMalloc(uSize); m_bAllocGameData = true; }
 	ObjectPhysicsData *GetPhysicsData() { return &m_ObjPhysicsData; }
 	void EnableCollision(bool bEnable) { m_bCollisionEnable = bEnable; }
 
@@ -67,11 +67,11 @@ public:
 	bool Collide(CollisionPacket *packet, const Vector3& vOffset) { if (m_pCollisionComp&&m_bCollisionEnable && (m_uFlags&OBJFLAGS_ACTIVE)) return m_pCollisionComp->Collide(packet, &m_worldMtx, vOffset); else return false; }
 	bool Raycast(RaycastPacket *packet, Sector *pSector, const Vector3& vOffset) { if (m_pCollisionComp && (m_uFlags&OBJFLAGS_ACTIVE)) return m_pCollisionComp->Raycast(packet, &m_worldMtx, this, pSector, vOffset); else return false; }
 
-	u32 GetID() { return m_uID; }
-	void SetID(u32 ID) { m_uID = ID; }
+	uint32_t GetID() { return m_uID; }
+	void SetID(uint32_t ID) { m_uID = ID; }
 
-	u32 GetGameID() { return m_uGameID; }
-	void SetGameID(u32 uID) { m_uGameID = uID; }
+	uint32_t GetGameID() { return m_uGameID; }
+	void SetGameID(uint32_t uID) { m_uGameID = uID; }
 
 	f32 GetBrightness() { return m_fBrightness; }
 	void SetBrightness(f32 fBrightness) { m_fBrightness = fBrightness; }
@@ -86,23 +86,23 @@ public:
 	float GetBoundingSphere(Vector3& vCen) { vCen = m_worldCen; return m_fRadius; }
 	void SetBoundingSphere(const Vector3& vCen, float fRadius) { m_worldCen = vCen; m_fRadius = fRadius; }
 
-	void SetRenderKey(u32 uKey) { m_uRenderKey = uKey; }
-	u32 GetRenderKey() { return m_uRenderKey; }
+	void SetRenderKey(uint32_t uKey) { m_uRenderKey = uKey; }
+	uint32_t GetRenderKey() { return m_uRenderKey; }
 
 	void AddLight(const LightObject *pLight) { if ( m_nLightCount < MAX_LIGHT_COUNT ) m_apLights[ m_nLightCount++ ] = pLight; }
 	const LightObject **GetLightList(int& rnLightCnt) { rnLightCnt = m_nLightCount; return m_apLights; }
 
-	u16 GetRefCnt() { return m_uRefCnt; }
+	uint16_t GetRefCnt() { return m_uRefCnt; }
 	void AddRef() { m_uRefCnt++; }
-	u16 Release();
+	uint16_t Release();
 
-	void SetFlag(u32 uFlag)   { m_uFlags |= uFlag; }
-	void ClearFlag(u32 uFlag) { m_uFlags &= ~uFlag; }
-	bool IsFlagSet(u32 uFlag) { return (m_uFlags&uFlag)!=0; }
+	void SetFlag(uint32_t uFlag)   { m_uFlags |= uFlag; }
+	void ClearFlag(uint32_t uFlag) { m_uFlags &= ~uFlag; }
+	bool IsFlagSet(uint32_t uFlag) { return (m_uFlags&uFlag)!=0; }
 
-	s32 GetWorldX() { return m_ObjPhysicsData.m_worldX; }
-	s32 GetWorldY() { return m_ObjPhysicsData.m_worldY; }
-	void SetWorldPos(s32 x, s32 y) { m_ObjPhysicsData.m_worldX = x; m_ObjPhysicsData.m_worldY = y; }
+	int32_t GetWorldX() { return m_ObjPhysicsData.m_worldX; }
+	int32_t GetWorldY() { return m_ObjPhysicsData.m_worldY; }
+	void SetWorldPos(int32_t x, int32_t y) { m_ObjPhysicsData.m_worldX = x; m_ObjPhysicsData.m_worldY = y; }
 
 public:
 	enum ObjFlags_e
@@ -116,14 +116,14 @@ public:
 protected:
 	string m_Name;
 
-	u16 m_uPad;
-	u16 m_uRefCnt;
-	u32 m_uRenderKey;
+	uint16_t m_uPad;
+	uint16_t m_uRefCnt;
+	uint32_t m_uRenderKey;
 
 	ObjectPhysicsData m_ObjPhysicsData;
-	u32 m_uFlags;
-	u32 m_uID;
-	u32 m_uGameID;	//used for game specific purposes.
+	uint32_t m_uFlags;
+	uint32_t m_uID;
+	uint32_t m_uGameID;	//used for game specific purposes.
 	f32 m_fBrightness;
 	vector<Logic *> m_Logics;
 	void *m_pDataComp;

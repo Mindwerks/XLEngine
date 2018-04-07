@@ -32,19 +32,19 @@ bool FontManager::Init(const string& szFontPath, IDriver3D *pDriver)
 	}
 
 	m_pIB = xlNew IndexBuffer(pDriver);
-	if ( m_pIB->Create(MAX_STRING_COUNT*6, sizeof(u16), false) == false )
+	if ( m_pIB->Create(MAX_STRING_COUNT*6, sizeof(uint16_t), false) == false )
 	{
 		xlDelete m_pVB;
 		xlDelete m_pIB;
 		return false;
 	}
 	//now fill the index buffer, since we're always rendering quads. The only difference is how many primitives that we render.
-	u16 *pIB_Data = (u16 *)xlMalloc( sizeof(u16)*MAX_STRING_COUNT*6 );
+	uint16_t *pIB_Data = (uint16_t *)xlMalloc( sizeof(uint16_t)*MAX_STRING_COUNT*6 );
 	if ( pIB_Data )
 	{
-		u16 vIdx=0;
-		s32 iIdx=0;
-		for (s32 q=0; q<MAX_STRING_COUNT; q++)
+		uint16_t vIdx=0;
+		int32_t iIdx=0;
+		for (int32_t q=0; q<MAX_STRING_COUNT; q++)
 		{
 			pIB_Data[iIdx++] = vIdx+0;
 			pIB_Data[iIdx++] = vIdx+1;
@@ -56,7 +56,7 @@ bool FontManager::Init(const string& szFontPath, IDriver3D *pDriver)
 
 			vIdx += 4;
 		}
-		m_pIB->Fill( (u32 *)pIB_Data );
+		m_pIB->Fill( (uint32_t *)pIB_Data );
 		xlFree(pIB_Data);
 	}
 	else
@@ -135,14 +135,14 @@ void FontManager::EndTextRendering()
 	m_pDriver->SetColor( &Vector4::One );
 }
 
-void FontManager::RenderString(s32 x, s32 y, const string& szString, XLFont *pFont, Vector4 *pColor)
+void FontManager::RenderString(int32_t x, int32_t y, const string& szString, XLFont *pFont, Vector4 *pColor)
 {
 	TextureHandle hTex = pFont->GetTexture();
 
 	FontVertex *pVB_Data = (FontVertex *)m_pVB->Lock();
 	if ( pVB_Data )
 	{
-		s32 nCharCount = pFont->FillVB(x, y, szString, pVB_Data);
+		int32_t nCharCount = pFont->FillVB(x, y, szString, pVB_Data);
 		m_pVB->Unlock();
 
 		if ( nCharCount > 0 )
@@ -159,15 +159,15 @@ void FontManager::RenderString(s32 x, s32 y, const string& szString, XLFont *pFo
 	}
 }
 
-u32 FontManager::GetLength(const string& szString, u32 uPosInString, XLFont *pFont)
+uint32_t FontManager::GetLength(const string& szString, uint32_t uPosInString, XLFont *pFont)
 {
-	u32 uPos = uPosInString;
-	u32 uStrLen = (u32)szString.size();
+	uint32_t uPos = uPosInString;
+	uint32_t uStrLen = (uint32_t)szString.size();
 
 	if ( uStrLen < 1 )
 		return 0;
 
-	if ( uStrLen < uPos ) uPos = (u32)(uStrLen-1);
+	if ( uStrLen < uPos ) uPos = (uint32_t)(uStrLen-1);
 
 	return pFont->ComputePixelPos(szString, uPos);
 }

@@ -11,7 +11,7 @@ public:
 	MoviePlayer(IDriver3D *pDriver)  { m_bPlaying = false; m_pDriver = pDriver; }
 	virtual ~MoviePlayer() { Stop(); }
 
-	virtual bool Start(Archive *pRes0, Archive *pRes1, const char *pszFile, u32 uFlags, s32 nSpeed) {return false;}
+	virtual bool Start(Archive *pRes0, Archive *pRes1, const char *pszFile, uint32_t uFlags, int32_t nSpeed) {return false;}
 	virtual void Stop() {};
 
 	virtual bool Update() {return false;}

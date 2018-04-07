@@ -16,10 +16,10 @@ class TextureCache
 	struct Texture
 	{
 		TextureHandle hHandle;
-		s32 nOffsX;
-		s32 nOffsY;
-		u32 uWidth;
-		u32 uHeight;
+		int32_t nOffsX;
+		int32_t nOffsY;
+		uint32_t uWidth;
+		uint32_t uHeight;
 		f32 fRelSizeX;
 		f32 fRelSizeY;
 		void *pExtraData;
@@ -34,13 +34,13 @@ public:
 	static void RestorePath();
 
 	static TextureHandle LoadTexture(const string& szFile, bool bGenMips=true);
-	static TextureHandle GameFile_LoadTexture(u32 uTextureType, u32 uPalIndex, u32 uArchiveType, const string& sArchive, const string& szFile, bool bGenMips=true, bool bCopyPal=false);
-	static TextureHandle GameFile_LoadTexture_TexList(u32 uTextureType, u32 uPalIndex, u32 uArchiveType, const string& sArchive, const string& szFile, s32 nRecord, bool bGenMips=true);
-	static TextureHandle GameFile_LoadTexture_TexList_API(u32 uTextureType, u32 uPalIndex, u32 uArchiveType, const char *pszArchive, const char *pszFile, s32 nRecord, XL_BOOL bGenMips);
-	static TextureHandle LoadTextureFromMem_Pal(const u8 *pImgBuffer, u32 uPalIndex, u32 width, u32 height, const string& sName, bool bGenMips=true);
-	static TextureHandle LoadTextureFromMem(const u8 *pImgBuffer, u32 width, u32 height, bool bGenMips=true);
+	static TextureHandle GameFile_LoadTexture(uint32_t uTextureType, uint32_t uPalIndex, uint32_t uArchiveType, const string& sArchive, const string& szFile, bool bGenMips=true, bool bCopyPal=false);
+	static TextureHandle GameFile_LoadTexture_TexList(uint32_t uTextureType, uint32_t uPalIndex, uint32_t uArchiveType, const string& sArchive, const string& szFile, int32_t nRecord, bool bGenMips=true);
+	static TextureHandle GameFile_LoadTexture_TexList_API(uint32_t uTextureType, uint32_t uPalIndex, uint32_t uArchiveType, const char *pszArchive, const char *pszFile, int32_t nRecord, XL_BOOL bGenMips);
+	static TextureHandle LoadTextureFromMem_Pal(const uint8_t *pImgBuffer, uint32_t uPalIndex, uint32_t width, uint32_t height, const string& sName, bool bGenMips=true);
+	static TextureHandle LoadTextureFromMem(const uint8_t *pImgBuffer, uint32_t width, uint32_t height, bool bGenMips=true);
 	static void FreeTexture(TextureHandle hTex);
-	static void GetTextureSize( s32& nOffsX, s32& nOffsY, u32& uTexWidth, u32& uTexHeight, f32& fRelSizeX, f32& fRelSizeY );
+	static void GetTextureSize( int32_t& nOffsX, int32_t& nOffsY, uint32_t& uTexWidth, uint32_t& uTexHeight, f32& fRelSizeX, f32& fRelSizeY );
 	static void *GetTexExtraData();
 
 private:
@@ -51,10 +51,10 @@ private:
 
 	static TextureMap m_TextureMap;
 	//dimensions of the previously loaded texture.
-	static s32 m_nPrevTexOffsX;
-	static s32 m_nPrevTexOffsY;
-	static u32 m_uPrevTexWidth;
-	static u32 m_uPrevTexHeight;
+	static int32_t m_nPrevTexOffsX;
+	static int32_t m_nPrevTexOffsY;
+	static uint32_t m_uPrevTexWidth;
+	static uint32_t m_uPrevTexHeight;
 	static f32 m_fRelSizeX;
 	static f32 m_fRelSizeY;
 	static void *m_pPrevExtraData;

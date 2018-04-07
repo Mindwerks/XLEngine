@@ -41,7 +41,7 @@ bool g_bHasFocus=true;
 
 void ParseCommandLine(size_t len, const char *pszCmdLine);
 bool GetOption(const char *pszOption, char *pszValue);
-s32  GetOptionS32(const char *pszOption);
+int32_t  GetOptionint32_t(const char *pszOption);
 
 #ifdef _CRTDBG_MAP_ALLOC
 	_CRT_ALLOC_HOOK _prevAllocHook;
@@ -87,8 +87,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		return FALSE;
 	}
 
-	s32 nServer_PlayerCnt = GetOptionS32("server");
-	s32 nPort = GetOptionS32("port");
+	int32_t nServer_PlayerCnt = GetOptionint32_t("server");
+	int32_t nPort = GetOptionint32_t("port");
 
 	char szMap[32];
 	if ( !GetOption("map", szMap) )
@@ -556,7 +556,7 @@ struct CmdLineOptions
 	char szValue[64];
 };
 CmdLineOptions options[16];
-u32 optCount = 0;
+uint32_t optCount = 0;
 
 void ParseCommandLine(size_t len, const char *pszCmdLine)
 {
@@ -594,7 +594,7 @@ void ParseCommandLine(size_t len, const char *pszCmdLine)
 
 bool GetOption(const char *pszOption, char *pszValue)
 {
-	for (u32 i=0; i<optCount; i++)
+	for (uint32_t i=0; i<optCount; i++)
 	{
 		if ( stricmp(options[i].szOption, pszOption) == 0 )
 		{
@@ -605,10 +605,10 @@ bool GetOption(const char *pszOption, char *pszValue)
 	return false;
 }
 
-s32 GetOptionS32(const char *pszOption)
+int32_t GetOptionint32_t(const char *pszOption)
 {
 	char *pszEndPtr;
-	for (u32 i=0; i<optCount; i++)
+	for (uint32_t i=0; i<optCount; i++)
 	{
 		if ( stricmp(options[i].szOption, pszOption) == 0 )
 		{

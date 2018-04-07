@@ -23,8 +23,8 @@ public:
 
 private:
 	TextureHandle m_hTex;
-	u8 m_aFlip[3];
-	u8 m_uPad;
+	uint8_t m_aFlip[3];
+	uint8_t m_uPad;
 	f32 m_fBaseItens;
 	f32 m_fAlpha;
 };

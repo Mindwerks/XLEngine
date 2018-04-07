@@ -14,15 +14,15 @@ public:
 	void Close();
 
 	bool OpenFile(const char *pszFile);
-	bool OpenFile(const u32 uID);
+	bool OpenFile(const uint32_t uID);
 	bool SearchForFile(const char *pszFileIn, char *pszFileOut);
 	void CloseFile();
-	u32 GetFileLen();
-	bool ReadFile(void *pData, u32 uLength);
+	uint32_t GetFileLen();
+	bool ReadFile(void *pData, uint32_t uLength);
 
-	s32 GetFileCount();
-	const char *GetFileName(s32 nFileIdx);
-	u32 GetFileID(s32 nFileIdx);
+	int32_t GetFileCount();
+	const char *GetFileName(int32_t nFileIdx);
+	uint32_t GetFileID(int32_t nFileIdx);
 
 private:
 
@@ -37,27 +37,27 @@ private:
 
 	struct BSA_Header
 	{
-		s16 DirectoryCount;
-		u16 DirectoryType;
+		int16_t DirectoryCount;
+		uint16_t DirectoryType;
 	};
 
 	struct BSA_EntryName
 	{
-		s8  NAME[14];	//file name.
-		s32 RecordSize;
+		char  NAME[14];	//file name.
+		int32_t RecordSize;
 	};
 
 	struct BSA_EntryNum
 	{
-		u32 RecordID;
-		s32 RecordSize;
+		uint32_t RecordID;
+		int32_t RecordSize;
 	};
 #pragma pack(pop)
 
 	BSA_Header     m_Header;
 	BSA_EntryName *m_pFileListName;
 	BSA_EntryNum  *m_pFileListNum;
-	s32			   m_CurFile;
+	int32_t			   m_CurFile;
 
 	FILE *m_pFile;
 	char m_szFileName[64];

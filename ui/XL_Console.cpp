@@ -76,7 +76,7 @@ void XL_Console::Destroy()
 	xlDelete s_pConsole;
 }
 
-void XL_Console::_KeyDownCallback(s32 key)
+void XL_Console::_KeyDownCallback(int32_t key)
 {
 	if ( s_pConsole == NULL )
 		return;
@@ -95,7 +95,7 @@ void XL_Console::_KeyDownCallback(s32 key)
 	}
 }
 
-void XL_Console::_CharDownCallback(s32 key)
+void XL_Console::_CharDownCallback(int32_t key)
 {
 	if ( s_pConsole == NULL )
 		return;
@@ -169,7 +169,7 @@ void XL_Console::PrintF(const char *pszString, ...)
   Plugin API
  *******************************/
 
-void Console_RegisterCommand(const char *pszItemName, void *ptr, u32 type, const char *pszItemHelp, void *pUserData)
+void Console_RegisterCommand(const char *pszItemName, void *ptr, uint32_t type, const char *pszItemHelp, void *pUserData)
 {
 	XL_Console::RegisterCmd(pszItemName, ptr, (Console::ConsoleItemType)type, pszItemHelp, pUserData);
 }

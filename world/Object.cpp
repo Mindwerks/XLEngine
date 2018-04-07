@@ -70,7 +70,7 @@ void Object::Reset()
 	m_bCollisionEnable = true;
 }
 
-u16 Object::Release() 
+uint16_t Object::Release()
 { 
 	assert(m_uRefCnt);
 	if ( m_uRefCnt ) 
@@ -102,7 +102,7 @@ void Object::Init()
 	}
 }
 
-void Object::SendMessage(u32 uMsgID, f32 fValue)
+void Object::SendMessage(uint32_t uMsgID, f32 fValue)
 {
 	vector<Logic *>::iterator iLogic = m_Logics.begin();
 	vector<Logic *>::iterator eLogic = m_Logics.end();

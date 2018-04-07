@@ -30,8 +30,8 @@ public:
 	static void BeginTextRendering();
 	static void EndTextRendering();
 	//Render a string at location(x,y) using font pFont
-	static void RenderString(s32 x, s32 y, const string& szString, XLFont *pFont, Vector4 *pColor=&Vector4::One);
-	static u32 GetLength(const string& szString, u32 uPosInString, XLFont *pFont);
+	static void RenderString(int32_t x, int32_t y, const string& szString, XLFont *pFont, Vector4 *pColor=&Vector4::One);
+	static uint32_t GetLength(const string& szString, uint32_t uPosInString, XLFont *pFont);
 
 private:
 	static IDriver3D *m_pDriver;

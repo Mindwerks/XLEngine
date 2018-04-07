@@ -96,7 +96,7 @@ bool BSA_Reader::OpenFile(const char *pszFile)
 	return m_CurFile > -1 ? true : false;
 }
 
-bool BSA_Reader::OpenFile(const u32 uID)
+bool BSA_Reader::OpenFile(const uint32_t uID)
 {
 	if ( m_Header.DirectoryType != DT_NumberRecord )
 		return false;
@@ -191,9 +191,9 @@ void BSA_Reader::CloseFile()
 	m_CurFile = -1;
 }
 
-u32 BSA_Reader::GetFileLen()
+uint32_t BSA_Reader::GetFileLen()
 {
-	u32 length = 0;
+	uint32_t length = 0;
 
 	if ( m_Header.DirectoryType == DT_NameRecord )
 		length = m_pFileListName[ m_CurFile ].RecordSize;
@@ -203,7 +203,7 @@ u32 BSA_Reader::GetFileLen()
 	return length;
 }
 
-bool BSA_Reader::ReadFile(void *pData, u32 uLength)
+bool BSA_Reader::ReadFile(void *pData, uint32_t uLength)
 {
 	if ( !m_pFile ) { return false; }
 
@@ -227,17 +227,17 @@ bool BSA_Reader::ReadFile(void *pData, u32 uLength)
 	return true;
 }
 
-s32 BSA_Reader::GetFileCount()
+int32_t BSA_Reader::GetFileCount()
 {
 	return m_Header.DirectoryCount;
 }
 
-const char *BSA_Reader::GetFileName(s32 nFileIdx)
+const char *BSA_Reader::GetFileName(int32_t nFileIdx)
 {
 	return m_pFileListName[ nFileIdx ].NAME;
 }
 
-u32 BSA_Reader::GetFileID(s32 nFileIdx)
+uint32_t BSA_Reader::GetFileID(int32_t nFileIdx)
 {
 	return m_pFileListNum[ nFileIdx ].RecordID;
 }

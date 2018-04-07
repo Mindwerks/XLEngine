@@ -18,18 +18,18 @@ bool Sector_2_5D::m_bUpdateVis = true;
 
 Sector_2_5D::VisStack Sector_2_5D::m_visStack[ _MAX_RECURSION_LEVEL ];
 Vector3 Sector_2_5D::s_vCurrentOffs;
-s32 Sector_2_5D::m_visStackCnt;
-s32 Sector_2_5D::m_visStackIdx;
+int32_t Sector_2_5D::m_visStackCnt;
+int32_t Sector_2_5D::m_visStackIdx;
 
 Sector_2_5D::VisStack Sector_2_5D::m_visStack_VAdjoin[ _MAX_RECURSION_LEVEL ];
-s32 Sector_2_5D::m_visStackCnt_VAdjoin;
+int32_t Sector_2_5D::m_visStackCnt_VAdjoin;
 
 bool s_bPassThruAdjoins=false;
 
 #define _VADJOIN_BUFFER_SIZE 32768
 static f32 _VAdjoinBuffer[_VADJOIN_BUFFER_SIZE];
-static u32 _uAdjoinBufferLoc;
-static u32 _uRenderKey=0;
+static uint32_t _uAdjoinBufferLoc;
+static uint32_t _uRenderKey=0;
 static Vector3 _vCamDir;
 
 Camera Sector_2_5D::m_Camera2D;
@@ -43,13 +43,13 @@ Vector3 _cpos;
 Vector2 ssPos[65536];
 Sector_2_5D *_pStartSec;
 
-const s32 bwidth = 1024;
+const int32_t bwidth = 1024;
 const f32 fbwidth = 1024.0f;
 
 f32 fDepth[bwidth];
 f32 fDepthPrev[bwidth];
-u16 idBuffer[bwidth];
-u16 sBuffer[bwidth];
+uint16_t idBuffer[bwidth];
+uint16_t sBuffer[bwidth];
 
 //150 for Blood, 1000 for Outlaws
 f32 Sector_2_5D::s_fFogRange = 100.0f;	//150 for Blood, make this game settable.
@@ -67,7 +67,7 @@ struct ObjToRender
 
 #define MAX_RENDER_OBJECTS 1024
 ObjToRender s_Objects[MAX_RENDER_OBJECTS];
-u32 s_uObjectCnt = 0;
+uint32_t s_uObjectCnt = 0;
 
 Sector_2_5D::Sector_2_5D() : Sector()
 {
@@ -126,12 +126,12 @@ void Sector_2_5D::Render(IDriver3D *pDriver, Camera *pCamera)
 	color.Set(fI, fI, fI, 1.0f);
 
 	//for now just render the walls - brute force.
-	for (u32 w=0; w<m_uWallCount; w++)
+	for (uint32_t w=0; w<m_uWallCount; w++)
 	{
 		//if ( m_Walls[w].m_adjoin[0] != SOLID_WALL && !(m_Walls[w].m_flags&Wall::WALL_FLAGS_SOLIDTEX) )
 		//	continue;
 
-		s32 shade = Math::clamp( (s32)m_uAmbientFloor + m_Walls[w].m_lightDelta + m_aLightFX[2], 0, 255 );
+		int32_t shade = Math::clamp( (int32_t)m_uAmbientFloor + m_Walls[w].m_lightDelta + m_aLightFX[2], 0, 255 );
 		fI = fOO255 * (f32)shade;
 		color.Set(fI, fI, fI, 1.0f);
 
@@ -154,9 +154,9 @@ void Sector_2_5D::Render(IDriver3D *pDriver, Camera *pCamera)
 bool Sector_2_5D::PointInsideSector(f32 x, f32 y)
 {
 	Vector2 p(x,y);
-	s32 c=0;
+	int32_t c=0;
 		
-	for (s32 w=0; w<m_uWallCount; w++)
+	for (int32_t w=0; w<m_uWallCount; w++)
 	{
 		const Vector2& v0 = m_pVertexCur[ m_Walls[w].m_idx[0] ];
 		const Vector2& v1 = m_pVertexCur[ m_Walls[w].m_idx[1] ];
@@ -176,7 +176,7 @@ bool Sector_2_5D::PointInsideSector(f32 x, f32 y)
 }
 
 //2.5D sector based visibility system.
-void Sector_2_5D::VisStack_Push(Vector2& fL, Vector2& fR, u32 uStartX, u32 uEndX, Sector_2_5D *pNext, bool bUsePortalClip, Vector3& vOffset)
+void Sector_2_5D::VisStack_Push(Vector2& fL, Vector2& fR, uint32_t uStartX, uint32_t uEndX, Sector_2_5D *pNext, bool bUsePortalClip, Vector3& vOffset)
 {
 	if ( m_visStackCnt < _MAX_RECURSION_LEVEL )
 	{
@@ -219,7 +219,7 @@ void Sector_2_5D::RenderSky(IDriver3D *pDriver, WorldCell *pCell)
 	Vector3 posList[4];
 	Vector2 uvList[4];
 
-	u32 uSkyTexCnt = pCell->GetSkyTexCount();
+	uint32_t uSkyTexCnt = pCell->GetSkyTexCount();
 
 	uvList[0].Set( 0.01f, 0.01f );
 	uvList[1].Set( 0.99f, 0.01f );
@@ -233,13 +233,13 @@ void Sector_2_5D::RenderSky(IDriver3D *pDriver, WorldCell *pCell)
 	pDriver->EnableDepthRead(false);
 	pDriver->EnableDepthWrite(false);
 	pDriver->EnableStencilTesting(true);
-	u32 uDiv = 16/uSkyTexCnt;
+	uint32_t uDiv = 16/uSkyTexCnt;
 	f32 fWidth = 1.0f/(f32)uDiv;
-	for (u32 s=0; s<16; s++)
+	for (uint32_t s=0; s<16; s++)
 	{
 		if ( uSkyTexCnt < 16 )
 		{
-			u32 idx = s%uDiv;
+			uint32_t idx = s%uDiv;
 			f32 fStart = (f32)idx * fWidth;
 
 			uvList[0].x = fStart;
@@ -305,12 +305,12 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
 	_uAdjoinBufferLoc = 0;
 	s_uObjectCnt = 0;
 
-	u32 maxDrawCnt = _MAX_RECURSION_LEVEL;
+	uint32_t maxDrawCnt = _MAX_RECURSION_LEVEL;
 	if ( s_MaxSecDrawCnt > 0 )
 	{
 		maxDrawCnt = MIN(s_MaxSecDrawCnt, maxDrawCnt);
 	}
-	u32 recursion = 0;
+	uint32_t recursion = 0;
 
 	if ( pStart->m_vAdjoin[1] != 0xffff && vLoc.z > pStart->GetZ_Ceil(vLoc.x+pStart->m_vAdjOffset[1].x, vLoc.y+pStart->m_vAdjOffset[1].y, Sectors) )
 	{
@@ -329,7 +329,7 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
 
 	_bAllowVAdjoin = true;
 
-	for (s32 x=0; x<bwidth; x++)
+	for (int32_t x=0; x<bwidth; x++)
 	{
 		fDepth[x] = 0.0f;
 		fDepthPrev[x] = 10000000.0f;
@@ -380,14 +380,14 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
 		if ( m_visStackCnt_VAdjoin )
 		{
 			_bAllowVAdjoin = false;
-			for (u32 v=0; v<(u32)m_visStackCnt_VAdjoin; v++)
+			for (uint32_t v=0; v<(uint32_t)m_visStackCnt_VAdjoin; v++)
 			{
 				VisStack *pVAdjoin = &m_visStack_VAdjoin[v];
 
 				if ( pVAdjoin->depth == NULL )
 					continue;
 
-				for (u32 x=pVAdjoin->uStartX; x<=pVAdjoin->uEndX; x++)
+				for (uint32_t x=pVAdjoin->uStartX; x<=pVAdjoin->uEndX; x++)
 				{
 					fDepth[x] = pVAdjoin->depth[x-pVAdjoin->uStartX];
 				}
@@ -397,7 +397,7 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
 				if ( pStart->m_vAdjoin[0] != 0xffff || pStart->m_vAdjoin[1] != 0xffff )
 				{
 					_pStartSec = pVAdjoin->pNext;
-					for (u32 x=pVAdjoin->uStartX; x<=pVAdjoin->uEndX; x++)
+					for (uint32_t x=pVAdjoin->uStartX; x<=pVAdjoin->uEndX; x++)
 					{
 						fDepthPrev[x] = 1000000.0f;
 					}
@@ -437,7 +437,7 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
 	if ( player )
 	{
 		const f32 fOO255 = (1.0f/255.0f);
-		s32 shade = Math::clamp( (s32)pStart->m_uAmbientFloor + pStart->m_aLightFX[0], 0, 255 );
+		int32_t shade = Math::clamp( (int32_t)pStart->m_uAmbientFloor + pStart->m_aLightFX[0], 0, 255 );
 		f32 fI = fOO255 * (f32)shade;
 
 		player->SetBrightness( fI );
@@ -456,10 +456,10 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
 	pDriver->EnableDepthRead(false);
 	pDriver->EnableCulling(false);
 	pDriver->SetTexture(0, XL_INVALID_TEXTURE);
-	u32 uDiv = bwidth/1024;
+	uint32_t uDiv = bwidth/1024;
 	//test
-	s32 nInvalidPixelCount = 0;
-	for (u32 x=1; x<bwidth-1; x+=uDiv)
+	int32_t nInvalidPixelCount = 0;
+	for (uint32_t x=1; x<bwidth-1; x+=uDiv)
 	{
 		if ( fDepth[x] <= 0.0f )
 		{
@@ -468,10 +468,10 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
 	}
 	assert( nInvalidPixelCount == 0 );
 	//
-	for (u32 x=0; x<bwidth; x+=uDiv)
+	for (uint32_t x=0; x<bwidth; x+=uDiv)
 	{
 		//ok extract the texture ID...
-		u32 uTexID = 0;
+		uint32_t uTexID = 0;
 		f32 fTex = 1.0f;
 		if ( fDepth[x] != 0.0f )
 		{
@@ -491,20 +491,20 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
 #endif
 }
 
-s32 _nCollideSecCnt;
-s32 _anCollideSectors[256];
+int32_t _nCollideSecCnt;
+int32_t _anCollideSectors[256];
 
 f32 m_fCollideHeight = 6.8f;
 f32 m_fCollideHeight_DH = 4.5f;
 f32 m_fStepSize = 4.5f;	//should be 3.5
 f32 m_fJumpStepSize = 3.5f;
 
-bool _AddToCollideList(s32 s)
+bool _AddToCollideList(int32_t s)
 {
 	bool bInList = false;
 	if ( s > -1 )
 	{
-		for (s32 i=0; i<_nCollideSecCnt; i++)
+		for (int32_t i=0; i<_nCollideSecCnt; i++)
 		{
 			if ( _anCollideSectors[i] == s )
 			{
@@ -524,7 +524,7 @@ bool _AddToCollideList(s32 s)
 	return bInList;
 }
 
-void Sector_2_5D::_AddSectorToList(s32 s, Vector3 *p0, Vector2& vPathMin, Vector2& vPathMax, const vector<Sector *>& Sectors)
+void Sector_2_5D::_AddSectorToList(int32_t s, Vector3 *p0, Vector2& vPathMin, Vector2& vPathMax, const vector<Sector *>& Sectors)
 {
 	//now go through and add any portals that overlap the path...
 	if ( _AddToCollideList(s) == true )
@@ -532,7 +532,7 @@ void Sector_2_5D::_AddSectorToList(s32 s, Vector3 *p0, Vector2& vPathMin, Vector
 
 	Sector_2_5D *pSec = (Sector_2_5D *)Sectors[s];
 	f32 col_z0 = pSec->GetZ_Floor(p0->x, p0->y, Sectors), col_z1;
-	s32 w;
+	int32_t w;
 
 	for (w=0; w<pSec->m_uWallCount; w++)
 	{
@@ -545,7 +545,7 @@ void Sector_2_5D::_AddSectorToList(s32 s, Vector3 *p0, Vector2& vPathMin, Vector
 
 		//Is this wall solid?
 		bool bSolid = true;
-		u16 uNextSec = pSec->m_Walls[w].m_adjoin[0];
+		uint16_t uNextSec = pSec->m_Walls[w].m_adjoin[0];
 		if ( uNextSec != 0xffff )
 		{
 			if ( pSec->m_Walls[w].m_adjoin[1] != 0xffff )
@@ -556,7 +556,7 @@ void Sector_2_5D::_AddSectorToList(s32 s, Vector3 *p0, Vector2& vPathMin, Vector
 
 				//which is lower?
 				Sector_2_5D *pLowest, *pHighest;
-				u16 uLowIdx, uHighIdx;
+				uint16_t uLowIdx, uHighIdx;
 				if ( pNext0->m_ZRangeCur.y < pNext1->m_ZRangeCur.y )
 				{
 					pLowest  = pNext0;
@@ -619,12 +619,12 @@ bool _PushOutPositionList(Vector3 *p0, f32 fRadius, const vector<Sector *>& Sect
 	vMaxPath.x = p0->x + fRadius;
 	vMaxPath.y = p0->y + fRadius;
 
-	for (s32 p=0; p<16; p++)
+	for (int32_t p=0; p<16; p++)
 	{
 		bool bPush = false;
-		for (s32 sec=0; sec<_nCollideSecCnt; sec++)
+		for (int32_t sec=0; sec<_nCollideSecCnt; sec++)
 		{
-			s32 s = _anCollideSectors[sec], w;
+			int32_t s = _anCollideSectors[sec], w;
 			Sector_2_5D *pSec = (Sector_2_5D *)Sectors[s];
 			f32 col_z0 = pSec->m_ZRangeCur.x, col_z1;
 
@@ -711,12 +711,12 @@ bool _PushOutPositionList(Vector3 *p0, f32 fRadius, const vector<Sector *>& Sect
 	return bNeedPush;
 }
 
-void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, u32& uSector, const vector<Sector *>& Sectors)
+void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector, const vector<Sector *>& Sectors)
 {
 	bool bHit = false;
-	u32 s = uSector;
+	uint32_t s = uSector;
 	Sector_2_5D *pSec = (Sector_2_5D *)Sectors[s];
-	s32 nClosestWall=-1;	//0xfffe = floor, 0xffff = ceiling.
+	int32_t nClosestWall=-1;	//0xfffe = floor, 0xffff = ceiling.
 
 	Vector3 N;
 	N.Set(p1->x-p0->x, p1->y-p0->y, p1->z-p0->z);
@@ -753,10 +753,10 @@ void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, u32& uSector, con
 	y2 = p0->y; y3 = p1->y;
 	f32 z=0.0f;
 
-	for (u32 w=0; w<pSec->m_uWallCount; w++)
+	for (uint32_t w=0; w<pSec->m_uWallCount; w++)
 	{
-		u16 i0 = pSec->m_Walls[w].m_idx[0];
-		u16 i1 = pSec->m_Walls[w].m_idx[1];
+		uint16_t i0 = pSec->m_Walls[w].m_idx[0];
+		uint16_t i1 = pSec->m_Walls[w].m_idx[1];
 		x0 = pSec->m_pVertexCur[i0].x; x1 = pSec->m_pVertexCur[i1].x;
 		y0 = pSec->m_pVertexCur[i0].y; y1 = pSec->m_pVertexCur[i1].y;
 
@@ -775,7 +775,7 @@ void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, u32& uSector, con
 				if ( min_u_sec > v )
 				{
 					min_u_sec = v;
-					nClosestWall = (s32)w;
+					nClosestWall = (int32_t)w;
 				}
 			}
 		}
@@ -836,13 +836,13 @@ void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, u32& uSector, con
 	}
 }
 
-void Sector_2_5D::Collide(Vector3 *p0, Vector3 *p1, u32& uSector, f32 fRadius, const vector<Sector *>& Sectors, bool bPassThruAdjoins)
+void Sector_2_5D::Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, f32 fRadius, const vector<Sector *>& Sectors, bool bPassThruAdjoins)
 {
 	s_bPassThruAdjoins = bPassThruAdjoins;
 	//start from p0, move to p1.
 	//since we simulate at 60fps there's no point in doing continuous collision.
-	u32 startSec = uSector;
-	u32 s = uSector;
+	uint32_t startSec = uSector;
+	uint32_t s = uSector;
 	f32 r2 = fRadius*fRadius;
 
 	//Which adjoins do we intersect?
@@ -862,7 +862,7 @@ void Sector_2_5D::Collide(Vector3 *p0, Vector3 *p1, u32& uSector, f32 fRadius, c
 	bool bSectorFound = false;
 	_PushOutPositionList(&iPos, fRadius, Sectors);
 
-	for (s32 i=0; i<_nCollideSecCnt; i++)
+	for (int32_t i=0; i<_nCollideSecCnt; i++)
 	{
 		s = _anCollideSectors[i];
 		Sector_2_5D *pSec = (Sector_2_5D *)Sectors[s];
@@ -960,7 +960,7 @@ void Sector_2_5D::RenderObjects(IDriver3D *pDriver)
 	pDriver->EnableAlphaTest(true, 32);
 	pDriver->SetBlendMode( IDriver3D::BLEND_ALPHA );
 
-	for (u32 o=0; o<s_uObjectCnt; o++)
+	for (uint32_t o=0; o<s_uObjectCnt; o++)
 	{
 		s_Objects[o].pObj->Render( pDriver, s_Objects[o].fIntensity, s_Objects[o].offset );
 	}
@@ -976,7 +976,7 @@ void Sector_2_5D::_DrawFloor(IDriver3D *pDriver, Sector_2_5D *pCurSec, const Vec
 	f32 fI;
 	Vector4 color;
 
-	s32 shade = Math::clamp( (s32)pCurSec->m_uAmbientFloor + pCurSec->m_aLightFX[0], 0, 255 );
+	int32_t shade = Math::clamp( (int32_t)pCurSec->m_uAmbientFloor + pCurSec->m_aLightFX[0], 0, 255 );
 	fI = fOO255 * (f32)shade;
 	color.Set(fI, fI, fI, 1.0f);
 
@@ -1035,7 +1035,7 @@ void Sector_2_5D::_DrawFloor(IDriver3D *pDriver, Sector_2_5D *pCurSec, const Vec
 		posList[2].z = pCurSec->GetZ_Ceil(worldPos[1].x, worldPos[1].y, Sectors);
 		posList[3].z = pCurSec->GetZ_Ceil(vb.x, vb.y, Sectors);
 
-		shade = Math::clamp( (s32)pCurSec->m_uAmbientCeil + pCurSec->m_aLightFX[1], 0, 255 );
+		shade = Math::clamp( (int32_t)pCurSec->m_uAmbientCeil + pCurSec->m_aLightFX[1], 0, 255 );
 		fI = fOO255 * (f32)shade;
 		color.Set(fI, fI, fI, 1.0f);
 
@@ -1065,14 +1065,14 @@ void Sector_2_5D::_DrawFloor(IDriver3D *pDriver, Sector_2_5D *pCurSec, const Vec
 	}
 }
 
-void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5D *pNextSec, Sector_2_5D *pBotSec, Sector_2_5D *pTopSec, u16 w, Vector2 *worldPos, const vector<Sector *>& Sectors)
+void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5D *pNextSec, Sector_2_5D *pBotSec, Sector_2_5D *pTopSec, uint16_t w, Vector2 *worldPos, const vector<Sector *>& Sectors)
 {
 	const f32 fOO255 = (1.0f/255.0f);
 	f32 fI;
 	Vector4 color;
 
 	//later get the delta to work.
-	s32 shade = Math::clamp( pCurSec->m_Walls[w].m_lightDelta + pCurSec->m_aLightFX[2], 0, 255 );
+	int32_t shade = Math::clamp( pCurSec->m_Walls[w].m_lightDelta + pCurSec->m_aLightFX[2], 0, 255 );
 	fI = fOO255 * (f32)shade;
 	color.Set(fI, fI, fI, 1.0f);
 
@@ -1082,7 +1082,7 @@ void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5
 	Vector2 uv0, uv1;
 	f32 dz = pCurSec->m_ZRangeCur.y - pCurSec->m_ZRangeCur.x;
 
-	u16 i0 = pCurSec->m_Walls[w].m_idx[0], i1 = pCurSec->m_Walls[w].m_idx[1];
+	uint16_t i0 = pCurSec->m_Walls[w].m_idx[0], i1 = pCurSec->m_Walls[w].m_idx[1];
 	
 	if ( pCurSec->m_Walls[w].m_flags&Wall::WALL_FLAGS_XFLIP )
 	{
@@ -1474,13 +1474,13 @@ void Sector_2_5D::_SetupCameraParameters(const Vector3& cPos, const Vector3& cDi
 	_cpos = cPos;
 }
 
-void Sector_2_5D::WallRasterizer(const Vector3& cPos, u32 uStartX, u32 uEndX, Sector_2_5D *pCurSec, const vector<Sector *>& Sectors)
+void Sector_2_5D::WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t uEndX, Sector_2_5D *pCurSec, const vector<Sector *>& Sectors)
 {
 	//transform all vertices into 2D projected space (x, 1/w)
 	m_Camera2D.TransformPointsSS_2D(pCurSec->m_uVertexCount, pCurSec->m_pVertexCur, ssPos, Vector2::Zero);
 
 	//we have to restore the depth after vertical adjoins.
-	for (u32 x=uStartX; x<=uEndX; x++)
+	for (uint32_t x=uStartX; x<=uEndX; x++)
 	{
 		//if ( fDepth[x] > 0 ) fDepthPrev[x] = fDepth[x];
 		fDepth[x] = 0.0f;
@@ -1489,10 +1489,10 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, u32 uStartX, u32 uEndX, Se
 	}
 
 	//1. Figure out which walls may be visible.
-	for (u32 w=0; w<pCurSec->m_uWallCount; w++)
+	for (uint32_t w=0; w<pCurSec->m_uWallCount; w++)
 	{
-		u16 i0 = pCurSec->m_Walls[w].m_idx[0];
-		u16 i1 = pCurSec->m_Walls[w].m_idx[1];
+		uint16_t i0 = pCurSec->m_Walls[w].m_idx[0];
+		uint16_t i1 = pCurSec->m_Walls[w].m_idx[1];
 
 		const Vector2& v0 = pCurSec->m_pVertexCur[i0];
 		const Vector2& v1 = pCurSec->m_pVertexCur[i1];
@@ -1535,7 +1535,7 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, u32 uStartX, u32 uEndX, Se
 		}
 
 		//finally rasterize to the 1D depth buffer.
-		s32 a=0, b=1;
+		int32_t a=0, b=1;
 		if ( ss[0].x > ss[1].x )
 		{
 			b = 0; a = 1;
@@ -1545,14 +1545,14 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, u32 uStartX, u32 uEndX, Se
 		f32 z0 = ss[a].y;
 		f32 z1 = ss[b].y;
 
-		s32 x0 = (s32)fx0;
-		s32 x1 = (s32)(fx1+0.5f);
+		int32_t x0 = (int32_t)fx0;
+		int32_t x1 = (int32_t)(fx1+0.5f);
 
 		if ( x1 - x0 < 1 )
 			continue;
 
-		s32 x0s = x0;
-		s32 x1s = x1;
+		int32_t x0s = x0;
+		int32_t x1s = x1;
 
 		//now figure out the z values at the pixel centers.
 		f32 dz = z1 - z0;
@@ -1562,20 +1562,20 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, u32 uStartX, u32 uEndX, Se
 		z0 = z0s + s0*(z1s - z0s);
 		z1 = z0s + s1*(z1s - z0s);
 
-		if ( x0 > (s32)uEndX || x1 < (s32)uStartX )
+		if ( x0 > (int32_t)uEndX || x1 < (int32_t)uStartX )
 			continue;
 
 		//f32 z0s = z0, z1s = z1;
 		z0s = z0; z1s = z1;
 		//f32 s0 = 0.0f, s1 = 1.0f;
 		s0 = 0.0f; s1 = 1.0f;
-		if ( x0 < (s32)uStartX ) 
+		if ( x0 < (int32_t)uStartX )
 		{
 			f32 s = ( (f32)uStartX-(f32)x0s ) / ( (f32)x1s - (f32)x0s );
 			z0 = s * (z1s - z0s) + z0s;
 			x0 = uStartX;
 		}
-		if ( x1 > (s32)uEndX ) 
+		if ( x1 > (int32_t)uEndX )
 		{
 			f32 s = ( (f32)uEndX-(f32)x0s ) / ( (f32)x1s - (f32)x0s );
 			z1 = s * (z1s - z0s) + z0s;
@@ -1587,7 +1587,7 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, u32 uStartX, u32 uEndX, Se
 		f32 z = z0;
 
 		const f32 eps = 0.00001f;
-		for (s32 x=x0; x<=x1; x++, z+=dz)
+		for (int32_t x=x0; x<=x1; x++, z+=dz)
 		{
 			if ( z > fDepth[x] )//&& z < fDepthPrev[x]+eps )
 			{
@@ -1602,19 +1602,19 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, u32 uStartX, u32 uEndX, Se
 
 	//now figure out the adjoins and add new sectors to the render list.
 	Vector2 worldPos[2];
-	s32 x0=uStartX;
-	u16 id = idBuffer[uStartX];
-	u16 sec = sBuffer[uStartX];
+	int32_t x0=uStartX;
+	uint16_t id = idBuffer[uStartX];
+	uint16_t sec = sBuffer[uStartX];
 	Sector_2_5D *pNextSec = NULL;
-	s32 x=(s32)uStartX+1;
-	for (; x<=(s32)uEndX; x++)
+	int32_t x=(int32_t)uStartX+1;
+	for (; x<=(int32_t)uEndX; x++)
 	{
 		if ( idBuffer[x] != id || sBuffer[x] != sec )
 		{
 			//draw the wall...
 			if ( sec == pCurSec->m_uID )
 			{
-				s32 x1 = x-1;
+				int32_t x1 = x-1;
 
 				f32 z0 = fDepth[x0];
 				f32 z1 = fDepth[x1];
@@ -1644,7 +1644,7 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, u32 uStartX, u32 uEndX, Se
 	if ( sec == pCurSec->m_uID )
 	{
 		//the last wall
-		s32 x1 = uEndX;
+		int32_t x1 = uEndX;
 
 		m_Camera2D.InverseTransformPointsSS_2D((f32)(x0-0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x0], worldPos[0]);
 		m_Camera2D.InverseTransformPointsSS_2D((f32)(x1+0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x1], worldPos[1]);
@@ -1663,7 +1663,7 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, u32 uStartX, u32 uEndX, Se
 	}
 }
 
-void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, u32 uStartX, u32 uEndX, Sector_2_5D *pCurSec, const vector<Sector *>& Sectors, bool bUsePortalClip, IDriver3D *pDriver)
+void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint32_t uStartX, uint32_t uEndX, Sector_2_5D *pCurSec, const vector<Sector *>& Sectors, bool bUsePortalClip, IDriver3D *pDriver)
 {
 	//insert vadjoins first?
 	if ( _bAllowVAdjoin )
@@ -1733,7 +1733,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, u32 
 	//static f32 fDepth_vAdjoin[4096];
 	if ( pCurSec != _pStartSec || uStartX != 0 || uEndX != bwidth-1 )
 	{
-		for (u32 x=uStartX; x<=uEndX; x++)
+		for (uint32_t x=uStartX; x<=uEndX; x++)
 		{
 			fDepthPrev[x] = (bUsePortalClip) ? fDepth[x] : 1000000.0f;
 			//fDepth_vAdjoin[x] = fDepth[x];
@@ -1746,8 +1746,8 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, u32 
 	bool bDegenerate = false;
 	if ( pCurSec->m_uWallCount <= 4 )
 	{
-		u16 i0 = pCurSec->m_Walls[0].m_idx[0];
-		u16 i1 = pCurSec->m_Walls[0].m_idx[1];
+		uint16_t i0 = pCurSec->m_Walls[0].m_idx[0];
+		uint16_t i1 = pCurSec->m_Walls[0].m_idx[1];
 
 		const Vector2& v0 = pCurSec->m_pVertexCur[i0] + Vector2(s_vCurrentOffs.x, s_vCurrentOffs.y);
 		const Vector2& v1 = pCurSec->m_pVertexCur[i1] + Vector2(s_vCurrentOffs.x, s_vCurrentOffs.y);
@@ -1770,10 +1770,10 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, u32 
 	}
 
 	//0. Make a render order, solid first then adjoins.
-	static u16 auRenderOrder[65536];
-	u32 uCurRenderIndex = 0;
-	u32 uAdjoinStart = 65536;
-	for (u32 w=0; w<pCurSec->m_uWallCount; w++)
+	static uint16_t auRenderOrder[65536];
+	uint32_t uCurRenderIndex = 0;
+	uint32_t uAdjoinStart = 65536;
+	for (uint32_t w=0; w<pCurSec->m_uWallCount; w++)
 	{
 		if ( pCurSec->m_Walls[w].m_adjoin[0] == 0xffff )
 			continue;
@@ -1781,7 +1781,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, u32 
 		auRenderOrder[ uCurRenderIndex++ ] = w;
 	}
 	uAdjoinStart = uCurRenderIndex;
-	for (u32 w=0; w<pCurSec->m_uWallCount; w++)
+	for (uint32_t w=0; w<pCurSec->m_uWallCount; w++)
 	{
 		if ( pCurSec->m_Walls[w].m_adjoin[0] < 0xffff )
 			continue;
@@ -1790,13 +1790,13 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, u32 
 	}
 
 	//1. Figure out which walls may be visible.
-	for (u32 ww=0; ww<pCurSec->m_uWallCount; ww++)
+	for (uint32_t ww=0; ww<pCurSec->m_uWallCount; ww++)
 	{
 		f32 fDepthBias = 0.0f;//(ww<uAdjoinStart) ? 0.0f : 0.001f;
 
-		u32 w = auRenderOrder[ww];
-		u16 i0 = pCurSec->m_Walls[w].m_idx[0];
-		u16 i1 = pCurSec->m_Walls[w].m_idx[1];
+		uint32_t w = auRenderOrder[ww];
+		uint16_t i0 = pCurSec->m_Walls[w].m_idx[0];
+		uint16_t i1 = pCurSec->m_Walls[w].m_idx[1];
 
 		const Vector2& v0 = pCurSec->m_pVertexCur[i0] + Vector2(s_vCurrentOffs.x, s_vCurrentOffs.y);
 		const Vector2& v1 = pCurSec->m_pVertexCur[i1] + Vector2(s_vCurrentOffs.x, s_vCurrentOffs.y);
@@ -1841,7 +1841,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, u32 
 		}
 
 		//finally rasterize to the 1D depth buffer.
-		s32 a=0, b=1;
+		int32_t a=0, b=1;
 		if ( ss[0].x > ss[1].x )
 		{
 			b = 0; a = 1;
@@ -1851,27 +1851,27 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, u32 
 		f32 z0 = ss[a].y;
 		f32 z1 = ss[b].y;
 
-		s32 x0 = (s32)fx0;
-		s32 x1 = (s32)(fx1+0.5f);
+		int32_t x0 = (int32_t)fx0;
+		int32_t x1 = (int32_t)(fx1+0.5f);
 
 		if ( x1 - x0 < 1 )
 			continue;
 
-		s32 x0s = x0;
-		s32 x1s = x1;
+		int32_t x0s = x0;
+		int32_t x1s = x1;
 
-		if ( x0 > (s32)uEndX || x1 < (s32)uStartX )
+		if ( x0 > (int32_t)uEndX || x1 < (int32_t)uStartX )
 			continue;
 
 		f32 z0s = z0, z1s = z1;
 		f32 s0 = 0.0f, s1 = 1.0f;
-		if ( x0 < (s32)uStartX ) 
+		if ( x0 < (int32_t)uStartX )
 		{
 			f32 s = ( (f32)uStartX-(f32)x0s ) / ( (f32)x1s - (f32)x0s );
 			z0 = s * (z1s - z0s) + z0s;
 			x0 = uStartX;
 		}
-		if ( x1 > (s32)uEndX ) 
+		if ( x1 > (int32_t)uEndX )
 		{
 			f32 s = ( (f32)uEndX-(f32)x0s ) / ( (f32)x1s - (f32)x0s );
 			z1 = s * (z1s - z0s) + z0s;
@@ -1882,7 +1882,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, u32 
 		f32 z = z0;
 
 		//const f32 eps = 0.0005f;
-		for (s32 x=x0; x<=x1; x++, z+=dz)
+		for (int32_t x=x0; x<=x1; x++, z+=dz)
 		{
 			if ( z > fDepth[x]+fDepthBias && ( z <= fDepthPrev[x] || bDegenerate ) )
 			{
@@ -1898,21 +1898,21 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, u32 
 	Vector2 n0(fL.x, fL.y), n1(fR.x, fR.y);
 
 	Vector2 worldPos[2];
-	s32 x0=uStartX;
-	u16 id = idBuffer[uStartX];
-	u16 sec = sBuffer[uStartX];
+	int32_t x0=uStartX;
+	uint16_t id = idBuffer[uStartX];
+	uint16_t sec = sBuffer[uStartX];
 	Sector_2_5D *pNextSec = NULL;
-	s32 x=(s32)uStartX+1;
+	int32_t x=(int32_t)uStartX+1;
 	Sector_2_5D *pBotSec = pCurSec->m_vAdjoin[0] == 0xffff ? NULL : (Sector_2_5D *)Sectors[pCurSec->m_vAdjoin[0]];
 	Sector_2_5D *pTopSec = pCurSec->m_vAdjoin[1] == 0xffff ? NULL : (Sector_2_5D *)Sectors[pCurSec->m_vAdjoin[1]];
-	for (; x<=(s32)uEndX; x++)
+	for (; x<=(int32_t)uEndX; x++)
 	{
 		if ( idBuffer[x] != id || sBuffer[x] != sec )
 		{
 			//draw the wall...
 			if ( sec == pCurSec->m_uID )
 			{
-				s32 x1 = x-1;
+				int32_t x1 = x-1;
 
 				m_Camera2D.InverseTransformPointsSS_2D((f32)(x0-0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x0], worldPos[0]);
 				m_Camera2D.InverseTransformPointsSS_2D((f32)(x1+0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x1], worldPos[1]);
@@ -1969,7 +1969,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, u32 
 	if ( sec == pCurSec->m_uID )
 	{
 		//the last wall
-		s32 x1 = uEndX;
+		int32_t x1 = uEndX;
 
 		m_Camera2D.InverseTransformPointsSS_2D((f32)(x0-0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x0], worldPos[0]);
 		m_Camera2D.InverseTransformPointsSS_2D((f32)(x1+0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x1], worldPos[1]);
@@ -2019,15 +2019,15 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, u32 
 	const f32 fOO255 = (1.0f/255.0f);
 	f32 fI;
 
-	s32 shade = Math::clamp( (s32)pCurSec->m_uAmbientFloor + pCurSec->m_aLightFX[0], 0, 255 );
+	int32_t shade = Math::clamp( (int32_t)pCurSec->m_uAmbientFloor + pCurSec->m_aLightFX[0], 0, 255 );
 	fI = fOO255 * (f32)shade;
 
 	//now add objects to the list...
-	vector<u32>::iterator iObj = pCurSec->m_Objects.begin();
-	vector<u32>::iterator eObj = pCurSec->m_Objects.end();
+	vector<uint32_t>::iterator iObj = pCurSec->m_Objects.begin();
+	vector<uint32_t>::iterator eObj = pCurSec->m_Objects.end();
 	for (; iObj != eObj; ++iObj)
 	{
-		u32 uObjID = *iObj;
+		uint32_t uObjID = *iObj;
 		Object *pObj = ObjectManager::GetObjectFromID(uObjID);
 		if ( pObj->GetRenderKey() != _uRenderKey )
 		{
@@ -2040,7 +2040,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, u32 
 	if ( bUsePortalClip == false )
 	{
 		//in the case of vadjoins, restore the depth when we're done...
-		for (u32 x=uStartX; x<=uEndX; x++)
+		for (uint32_t x=uStartX; x<=uEndX; x++)
 		{
 			fDepth[x] = fDepth_vAdjoin[x];
 		}

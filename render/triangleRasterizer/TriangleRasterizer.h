@@ -13,7 +13,7 @@ struct PolygonData;
 
 struct PolyClipspace
 {
-	s16 vtxCnt;
+	int16_t vtxCnt;
 	VFmt_Pos_UV_Clip vtx[32];
 };
 
@@ -51,8 +51,8 @@ struct TriEdge
 	void init(const TriGradients& Gradients, const VFmt_Pos_UV_Screen *pVertices, int Top, int Bottom);
 	inline int Step();
 
-	s32 X, XStep, Numerator, Denominator;	//DDA info for X.
-	s32 ErrorTerm;
+	int32_t X, XStep, Numerator, Denominator;	//DDA info for X.
+	int32_t ErrorTerm;
 	int Y, Height;	//Current Y and vertical count.
 	float OneOverZ, OneOverZStep, OneOverZStepExtra;	// 1/z and step.
 	float UOverZ, UOverZStep, UOverZStepExtra;			// u/z and step.
@@ -68,7 +68,7 @@ struct TriEdge
 namespace TriangleRasterizer
 {
 	void BuildTables();
-	void DrawClippedNGon_Indexed(Driver3D_Soft *pDriver, VBO *pVertices, int vCnt, const u16 *pIdx, bool bRecLighting, int alphaMode, PolygonData *polygonData=NULL);
+	void DrawClippedNGon_Indexed(Driver3D_Soft *pDriver, VBO *pVertices, int vCnt, const uint16_t *pIdx, bool bRecLighting, int alphaMode, PolygonData *polygonData=NULL);
 	void DrawClippedNGon(Driver3D_Soft *pDriver, VBO *pVertices, int vCnt, int offs, int alphaMode);
 };
 

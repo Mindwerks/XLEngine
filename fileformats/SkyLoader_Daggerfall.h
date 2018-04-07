@@ -21,8 +21,8 @@ public:
 	SkyLoader_Daggerfall();
 	~SkyLoader_Daggerfall();
 
-	bool LoadSky(s32 regionID);
-	void *GetSkyData(s32 regionID);
+	bool LoadSky(int32_t regionID);
+	void *GetSkyData(int32_t regionID);
 
 private:
 	enum

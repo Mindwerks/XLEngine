@@ -1,6 +1,6 @@
 #include "Sector.h"
 
-u32 Sector::s_MaxSecDrawCnt=0;
+uint32_t Sector::s_MaxSecDrawCnt=0;
 
 Sector::Sector()
 {
@@ -25,16 +25,16 @@ Sector::~Sector()
 	xlDelete [] m_pValidNodes;
 }
 
-void Sector::AddObject(u32 uHandle)
+void Sector::AddObject(uint32_t uHandle)
 {
 	m_Objects.push_back( uHandle );
 }
 
-void Sector::RemoveObject(u32 uHandle)
+void Sector::RemoveObject(uint32_t uHandle)
 {
 	//search for object handle and then erase it.
-	vector<u32>::iterator iObj = m_Objects.begin();
-	vector<u32>::iterator eObj = m_Objects.end();
+	vector<uint32_t>::iterator iObj = m_Objects.begin();
+	vector<uint32_t>::iterator eObj = m_Objects.end();
 	for ( ; iObj != eObj; ++iObj )
 	{
 		if ( *iObj == uHandle )

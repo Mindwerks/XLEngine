@@ -36,7 +36,7 @@ CellLoader_BloodMap::~CellLoader_BloodMap()
 {
 }
 
-void CellLoader_BloodMap::DecryptBuffer(u8 *pBuffer, const u32 uDataSize, u8 uDecryptKey)
+void CellLoader_BloodMap::DecryptBuffer(uint8_t *pBuffer, const uint32_t uDataSize, uint8_t uDecryptKey)
 {
     // Variables
     assert(pBuffer != NULL);
@@ -46,13 +46,13 @@ void CellLoader_BloodMap::DecryptBuffer(u8 *pBuffer, const u32 uDataSize, u8 uDe
         return;
 
     // Decryption
-    for (u16 i = 0; i < uDataSize; i++)
+    for (uint16_t i = 0; i < uDataSize; i++)
 	{
-        pBuffer[i] ^= (u8)(uDecryptKey + i);
+        pBuffer[i] ^= (uint8_t)(uDecryptKey + i);
 	}
 }
 
-bool CellLoader_BloodMap::ParseHeader(char *pData, s32& index)
+bool CellLoader_BloodMap::ParseHeader(char *pData, int32_t& index)
 {
 	// Variables
     HeaderPart1 header1;
@@ -90,7 +90,7 @@ bool CellLoader_BloodMap::ParseHeader(char *pData, s32& index)
 
     // Load and decrypt the first part of the header
 	memcpy(&header1, &pData[index], sizeof(HeaderPart1)); index += sizeof(HeaderPart1);
-    DecryptBuffer((u8*)&header1, sizeof(HeaderPart1), 0x4D);
+    DecryptBuffer((uint8_t*)&header1, sizeof(HeaderPart1), 0x4D);
 
     // Store the info
     m_bloodData.pos[0]   = header1.startX;
@@ -104,7 +104,7 @@ bool CellLoader_BloodMap::ParseHeader(char *pData, s32& index)
 
     // Load and decrypt the third part of the header
 	memcpy(&header3, &pData[index], sizeof(HeaderPart3)); index += sizeof(HeaderPart3);
-    DecryptBuffer((u8*)&header3, sizeof(HeaderPart3), 0x68);
+    DecryptBuffer((uint8_t*)&header3, sizeof(HeaderPart3), 0x68);
 
     // Store the map info.
 	m_bloodData.revisions = header3.mapRevisions;
@@ -115,16 +115,16 @@ bool CellLoader_BloodMap::ParseHeader(char *pData, s32& index)
     return true;
 }
 
-s32 CellLoader_BloodMap::FindFirstSector(char *pData, s32& index)
+int32_t CellLoader_BloodMap::FindFirstSector(char *pData, int32_t& index)
 {
     // Variables
-    u16 uBuffer;
+    uint16_t uBuffer;
 
     if (!m_bIsEncrypted)
         return 75;
 
 	index = 171;
-	uBuffer = *((u16 *)&pData[index]);
+	uBuffer = *((uint16_t *)&pData[index]);
 
     switch (uBuffer)
     {
@@ -144,16 +144,16 @@ s32 CellLoader_BloodMap::FindFirstSector(char *pData, s32& index)
 	return -1;
 }
 
-bool CellLoader_BloodMap::ExtractSectors(char *pData, s32& index)
+bool CellLoader_BloodMap::ExtractSectors(char *pData, int32_t& index)
 {
 	// Variables
-    u8 Buffer[128];
-    u8 uDecryptKey;
+    uint8_t Buffer[128];
+    uint8_t uDecryptKey;
 
     uDecryptKey = ((m_bloodData.revisions * sizeof(BloodSector)) & 0xFF);
 	m_pBloodSectors = xlNew BloodSector_Xtra[m_bloodData.secCnt];
 
-	for (s32 nInd = 0; nInd < m_bloodData.secCnt; nInd++)
+	for (int32_t nInd = 0; nInd < m_bloodData.secCnt; nInd++)
     {
 		memcpy(Buffer, &pData[index], sizeof(BloodSector));
         DecryptBuffer(Buffer, sizeof(BloodSector), uDecryptKey);
@@ -170,7 +170,7 @@ bool CellLoader_BloodMap::ExtractSectors(char *pData, s32& index)
 				static int _x=0;
 				_x++;
 			}
-			u8 *pExtData = (u8 *)&pData[index];
+			uint8_t *pExtData = (uint8_t *)&pData[index];
 
 			m_pBloodSectors[nInd].startState = (pExtData[1]&64) ? 1 : 0;
 			m_pBloodSectors[nInd].cmd  = (pExtData[9]>>2) + (pExtData[10]&63)*64;
@@ -213,14 +213,14 @@ bool CellLoader_BloodMap::ExtractSectors(char *pData, s32& index)
 			m_pBloodSectors[nInd].bUnderwater	 = (pExtData[19]&16) ? 1 : 0;
 			m_pBloodSectors[nInd].bCrushing		 = (pExtData[48]&1)  ? 1 : 0;
 
-			m_pBloodSectors[nInd].floorStates[0] = *((s32 *)&pExtData[36]);
-			m_pBloodSectors[nInd].floorStates[1] = *((s32 *)&pExtData[40]);
+			m_pBloodSectors[nInd].floorStates[0] = *((int32_t *)&pExtData[36]);
+			m_pBloodSectors[nInd].floorStates[1] = *((int32_t *)&pExtData[40]);
 
-			m_pBloodSectors[nInd].ceilStates[0] = *((s32 *)&pExtData[28]);
-			m_pBloodSectors[nInd].ceilStates[1] = *((s32 *)&pExtData[32]);
+			m_pBloodSectors[nInd].ceilStates[0] = *((int32_t *)&pExtData[28]);
+			m_pBloodSectors[nInd].ceilStates[1] = *((int32_t *)&pExtData[32]);
 
 			m_pBloodSectors[nInd].lightFX_wave = pExtData[17];
-			u8 a0 = pExtData[14]&63;
+			uint8_t a0 = pExtData[14]&63;
 			m_pBloodSectors[nInd].lightFX_amp = a0 < 32 ? (pExtData[13]>>6) + a0*4 : (pExtData[13]>>6) + (a0-32)*4 - 128;
 			m_pBloodSectors[nInd].lightFX_freq = (pExtData[14]>>6) + (pExtData[15]&63)*4;
 			m_pBloodSectors[nInd].lightFX_phase = pExtData[16];
@@ -230,13 +230,13 @@ bool CellLoader_BloodMap::ExtractSectors(char *pData, s32& index)
 			m_pBloodSectors[nInd].lightFX_floorPal2 = pExtData[51]>>4;
 
 			m_pBloodSectors[nInd].motionFX_speed = pExtData[20];
-			m_pBloodSectors[nInd].motionFX_angle = *((u16 *)&pExtData[21]);
+			m_pBloodSectors[nInd].motionFX_angle = *((uint16_t *)&pExtData[21]);
 			m_pBloodSectors[nInd].motionFX_flags = pExtData[19]&0x0f;
 
-			m_pBloodSectors[nInd].wind_vel = ( *((u16 *)&pExtData[53]) )>>1;
+			m_pBloodSectors[nInd].wind_vel = ( *((uint16_t *)&pExtData[53]) )>>1;
 			m_pBloodSectors[nInd].wind_vel &= 1023;
 
-			m_pBloodSectors[nInd].wind_ang = ( *((u16 *)&pExtData[54]) )>>3;
+			m_pBloodSectors[nInd].wind_ang = ( *((uint16_t *)&pExtData[54]) )>>3;
 			m_pBloodSectors[nInd].wind_ang &= 2047;
 			m_pBloodSectors[nInd].bWindAlways = (pExtData[55]&64) ? XL_TRUE : XL_FALSE;
 
@@ -260,18 +260,18 @@ bool CellLoader_BloodMap::ExtractSectors(char *pData, s32& index)
     return true;
 }
 
-bool CellLoader_BloodMap::ExtractWalls(char *pData, s32& index)
+bool CellLoader_BloodMap::ExtractWalls(char *pData, int32_t& index)
 {
     // Variables
-    u8 Buffer[128];
-    u8 uDecryptKey;
+    uint8_t Buffer[128];
+    uint8_t uDecryptKey;
 
 	assert( m_bloodData.wallCnt > 0 );
     uDecryptKey = (((m_bloodData.revisions * sizeof (BloodSector)) | 0x4d) & 0xFF);
 
 	m_pBloodWalls = xlNew BloodWall_Xtra[m_bloodData.wallCnt];
 	
-    for (s32 nInd = 0; nInd < m_bloodData.wallCnt; nInd++)
+    for (int32_t nInd = 0; nInd < m_bloodData.wallCnt; nInd++)
     {
 		memcpy(Buffer, &pData[index], sizeof(BloodWall));
         DecryptBuffer(Buffer, sizeof(BloodWall), uDecryptKey);
@@ -282,7 +282,7 @@ bool CellLoader_BloodMap::ExtractWalls(char *pData, s32& index)
         // If extra data follow
         if (m_pBloodWalls[nInd].extra > 0) // TESTME: <= 511 && WallPtr->extra >= 256
         {
-			u8 *pExtData = (u8 *)&pData[index];
+			uint8_t *pExtData = (uint8_t *)&pData[index];
 
 			m_pBloodWalls[nInd].rxID = 0;
 			m_pBloodWalls[nInd].txID = pExtData[6];
@@ -307,16 +307,16 @@ bool CellLoader_BloodMap::ExtractWalls(char *pData, s32& index)
     return true;
 }
 
-bool CellLoader_BloodMap::ExtractSprites(char *pData, s32& index)
+bool CellLoader_BloodMap::ExtractSprites(char *pData, int32_t& index)
 {
     // Variables
-    u8 Buffer[128];
-    u8 uDecryptKey;
+    uint8_t Buffer[128];
+    uint8_t uDecryptKey;
 
     uDecryptKey = (((m_bloodData.revisions * sizeof(BloodSprite)) | 0x4d) & 0xFF);
 	m_pBloodSprites = xlNew BloodSprite_Xtra[m_bloodData.spriteCnt];
 
-    for (s32 nInd = 0; nInd < m_bloodData.spriteCnt; nInd++)
+    for (int32_t nInd = 0; nInd < m_bloodData.spriteCnt; nInd++)
     {
 		memcpy(Buffer, &pData[index], sizeof(BloodSprite));
         DecryptBuffer(Buffer, sizeof(BloodSprite), uDecryptKey);
@@ -333,12 +333,12 @@ bool CellLoader_BloodMap::ExtractSprites(char *pData, s32& index)
 				_x++;
 			}
 
-			m_pBloodSprites[nInd].data[0] = ((u8 *)&pData[index])[16];
-			m_pBloodSprites[nInd].data[1] = ((u8 *)&pData[index])[17];
-			m_pBloodSprites[nInd].data[2] = ((u8 *)&pData[index])[18];
-			m_pBloodSprites[nInd].data[3] = ((u8 *)&pData[index])[19];
+			m_pBloodSprites[nInd].data[0] = ((uint8_t *)&pData[index])[16];
+			m_pBloodSprites[nInd].data[1] = ((uint8_t *)&pData[index])[17];
+			m_pBloodSprites[nInd].data[2] = ((uint8_t *)&pData[index])[18];
+			m_pBloodSprites[nInd].data[3] = ((uint8_t *)&pData[index])[19];
 
-			m_pBloodSprites[nInd].txID    = ((u8 *)&pData[index])[4];
+			m_pBloodSprites[nInd].txID    = ((uint8_t *)&pData[index])[4];
             // skip the next 56 bytes
             index += 56;
         }
@@ -363,9 +363,9 @@ bool CellLoader_BloodMap::ExtractSprites(char *pData, s32& index)
     return true;
 }
 
-TextureHandle CellLoader_BloodMap::AddBloodTile(s32 picnum, u32 uPalIdx, u32& uWidth, u32& uHeight, bool bMip)
+TextureHandle CellLoader_BloodMap::AddBloodTile(int32_t picnum, uint32_t uPalIdx, uint32_t& uWidth, uint32_t& uHeight, bool bMip)
 {
-	s32 nArtIndex = picnum / 256;
+	int32_t nArtIndex = picnum / 256;
 	char szTileArchive[64];
 	char szTileName[32];
 
@@ -382,22 +382,22 @@ TextureHandle CellLoader_BloodMap::AddBloodTile(s32 picnum, u32 uPalIdx, u32& uW
 	if ( hTex != XL_INVALID_TEXTURE )
 	{
 		f32 fRelSizeX, fRelSizeY;
-		s32 nOffsX, nOffsY;
+		int32_t nOffsX, nOffsY;
 		TextureCache::GetTextureSize(nOffsX, nOffsY, uWidth, uHeight, fRelSizeX, fRelSizeY);
 	}
 
 	return hTex;
 }
 
-WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pData, u32 uLen, const string& sFile, s32 worldX, s32 worldY )
+WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const string& sFile, int32_t worldX, int32_t worldY )
 {
 	WorldCell *pCell = NULL;
 	ObjectManager::FreeAllObjects();
 	if ( uLen )
 	{
-		s32 index = 0;
+		int32_t index = 0;
 		ParseHeader((char *)pData, index);
-		s32 offset = FindFirstSector((char *)pData, index);
+		int32_t offset = FindFirstSector((char *)pData, index);
 		if ( offset < 0 )
 		{
 			return NULL;
@@ -423,13 +423,13 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 		const f32 fVertScale = (2048.0f*1.5f);
 		const f32 fFloorTexScale = fHorizScale*128.0f/2048.0f;
 
-		s32 secLink = -1;
-		s32 secLinkBase = -1;
+		int32_t secLink = -1;
+		int32_t secLinkBase = -1;
 
-		for (s32 i=0; i<m_bloodData.secCnt; i++)
+		for (int32_t i=0; i<m_bloodData.secCnt; i++)
 		{
 			Sector_2_5D *pSector = xlNew Sector_2_5D();
-			u32 uWidth, uHeight;
+			uint32_t uWidth, uHeight;
 			if ( EngineSettings::IsServer() == XL_FALSE )
 			{
 				pSector->m_hFloorTex = AddBloodTile( m_pBloodSectors[i].floorpicnum, m_pBloodSectors[i].floorpal, uWidth, uHeight );
@@ -470,7 +470,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 			{
 				if ( pSector->m_uFlags&Sector_2_5D::SEC_FLAGS_EXTERIOR )
 				{
-					for (u32 s=0; s<16; s++)
+					for (uint32_t s=0; s<16; s++)
 					{
 						pCell->SetSkyTex( s, AddBloodTile( m_pBloodSectors[i].ceilingpicnum+s, 0, uWidth, uHeight ), uWidth, uHeight );
 					}
@@ -489,23 +489,23 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 			pSector->m_auSlopeSector[0] = i;
 			pSector->m_auSlopeSector[1] = i;
 
-			s32 nAmbient = 255 - m_pBloodSectors[i].floorshade*4;
+			int32_t nAmbient = 255 - m_pBloodSectors[i].floorshade*4;
 			if ( nAmbient < 0 ) nAmbient = 0;
 			if ( nAmbient > 255 ) nAmbient = 255;
-			pSector->m_uAmbientFloor = (u8)nAmbient;
+			pSector->m_uAmbientFloor = (uint8_t)nAmbient;
 
 			nAmbient = 255 - m_pBloodSectors[i].ceilingshade*4;
 			if ( nAmbient < 0 ) nAmbient = 0;
 			if ( nAmbient > 255 ) nAmbient = 255;
-			pSector->m_uAmbientCeil = (u8)nAmbient;
+			pSector->m_uAmbientCeil = (uint8_t)nAmbient;
 
-			s32 w;
+			int32_t w;
 			//extract vertices.
 			pSector->m_pVertexBase = xlNew Vector2[pSector->m_uVertexCount];
 			pSector->m_pVertexCur  = xlNew Vector2[pSector->m_uVertexCount];
 			for (w=0; w<m_pBloodSectors[i].wallnum; w++)
 			{
-				s32 ww = m_pBloodSectors[i].wallptr + w;
+				int32_t ww = m_pBloodSectors[i].wallptr + w;
 				pSector->m_pVertexBase[w].x =  (f32)m_pBloodWalls[ww].x / fHorizScale;
 				pSector->m_pVertexBase[w].y = -(f32)m_pBloodWalls[ww].y / fHorizScale;
 				pSector->m_pVertexCur[w] = pSector->m_pVertexBase[w];
@@ -514,8 +514,8 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 			/****************** Setup LevelFunc ****************/
 			//is this a sliding door sector?
 			pSector->m_pFunc = NULL;
-			s16 rxID = -1;
-			s16 waitTime = 0;
+			int16_t rxID = -1;
+			int16_t waitTime = 0;
 			bool bLink = false;
 			bool bTriggerAllWalls = false;
 			if ( m_pBloodSectors[i].lotag == 600 )	//Z-Motion
@@ -585,8 +585,8 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 				pSector->m_pFunc = LevelFuncMgr::CreateLevelFunc("SlidingDoor", i, -1);
 
 				//now we have to find the appropriate sprites to set this up...
-				s32 onMarker = -1, offMarker = -1;
-				for (s32 s=0; s<m_bloodData.spriteCnt; s++)
+				int32_t onMarker = -1, offMarker = -1;
+				for (int32_t s=0; s<m_bloodData.spriteCnt; s++)
 				{
 					if ( m_pBloodSprites[s].sectnum != i && m_pBloodSprites[s].owner != i )
 						continue;
@@ -649,8 +649,8 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 				pSector->m_pFunc = LevelFuncMgr::CreateLevelFunc("Slide", i, -1);
 
 				//now we have to find the appropriate sprites to set this up...
-				s32 onMarker = -1, offMarker = -1;
-				for (s32 s=0; s<m_bloodData.spriteCnt; s++)
+				int32_t onMarker = -1, offMarker = -1;
+				for (int32_t s=0; s<m_bloodData.spriteCnt; s++)
 				{
 					if ( m_pBloodSprites[s].sectnum != i && m_pBloodSprites[s].owner != i )
 						continue;
@@ -729,8 +729,8 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 				}
 
 				//now we have to find the appropriate sprites to set this up...
-				s32 pivot = -1;
-				for (s32 s=0; s<m_bloodData.spriteCnt; s++)
+				int32_t pivot = -1;
+				for (int32_t s=0; s<m_bloodData.spriteCnt; s++)
 				{
 					if ( m_pBloodSprites[s].sectnum != i && m_pBloodSprites[s].owner != i )
 						continue;
@@ -754,7 +754,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 
 					pSector->m_pFunc->SetPivot( pivotPos );
 					//use the linked stats...
-					s32 nSec = i;
+					int32_t nSec = i;
 					if ( bLink )
 					{
 						nSec = secLinkBase;
@@ -815,7 +815,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 			pSector->m_Walls = xlNew Wall[pSector->m_uWallCount];
 			for (w=0; w<m_pBloodSectors[i].wallnum; w++)
 			{
-				s32 ww = m_pBloodSectors[i].wallptr + w;
+				int32_t ww = m_pBloodSectors[i].wallptr + w;
 
 				pSector->m_Walls[w].m_pFunc = NULL;
 				if ( (rxID > -1 && m_pBloodWalls[ww].txID == rxID) || bTriggerAllWalls )
@@ -951,11 +951,11 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 			pCell->AddSector( pSector );
 		}
 
-		s32 _nPlayerStart = -1;
-		for (s32 i=0; i<m_bloodData.spriteCnt; i++)
+		int32_t _nPlayerStart = -1;
+		for (int32_t i=0; i<m_bloodData.spriteCnt; i++)
 		{
 			//let's make a unique list of lotags for this level...
-			s32 lotag = m_pBloodSprites[i].lotag;
+			int32_t lotag = m_pBloodSprites[i].lotag;
 
 			if ( (m_pBloodSprites[i].cstat&0x8000) == 0 )
 			{
@@ -965,7 +965,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 					if ( m_pBloodSprites[i].picnum == 0 || m_pBloodSprites[i].lotag == 408 || EngineSettings::IsServer() )
 						continue;
 
-					u32 uWidth, uHeight;
+					uint32_t uWidth, uHeight;
 					TextureHandle hTex = AddBloodTile( m_pBloodSprites[i].picnum, m_pBloodSprites[i].pal, uWidth, uHeight, false );
 
 					Object *pObj = ObjectManager::CreateObject("OrientedSprite");
@@ -974,7 +974,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 						Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( m_pBloodSprites[i].sectnum );
 						f32 fSpriteIntens = 1.0f - ((f32)m_pBloodSprites[i].shade/63.0f);
 
-						u32 uObjID = pObj->GetID();
+						uint32_t uObjID = pObj->GetID();
 						pObj->SetSector( m_pBloodSprites[i].sectnum );
 						
 						Vector3 vLoc;
@@ -1040,13 +1040,13 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 					if ( m_pBloodSprites[i].picnum == 0 || m_pBloodSprites[i].lotag == 408 || EngineSettings::IsServer() )
 						continue;
 
-					u32 uWidth, uHeight;
+					uint32_t uWidth, uHeight;
 					TextureHandle hTex = AddBloodTile( m_pBloodSprites[i].picnum, m_pBloodSprites[i].pal, uWidth, uHeight, false);
 
 					Object *pObj = ObjectManager::CreateObject("OrientedSprite");
 					if ( pObj )
 					{
-						u32 uObjID = pObj->GetID();
+						uint32_t uObjID = pObj->GetID();
 						Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( m_pBloodSprites[i].sectnum );
 						pObj->SetSector( m_pBloodSprites[i].sectnum );
 						
@@ -1101,12 +1101,12 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 
 							//right now there is no raycast collision against oriented sprites, so we can find the closest adjoin wall of the parent sector
 							//and give it a trigger...
-							s32 nClosest = -1;
+							int32_t nClosest = -1;
 							f32 fClosest = 1000000.0f;
 							Vector3 vObjLoc3;
 							pObj->GetLoc(vObjLoc3);
 							Vector2 vObjLoc( vObjLoc3.x, vObjLoc3.y );
-							for (u32 w=0; w<pSector->m_uWallCount; w++)
+							for (uint32_t w=0; w<pSector->m_uWallCount; w++)
 							{
 								if ( pSector->m_Walls[w].m_adjoin[0] != 0xffff )
 								{
@@ -1156,19 +1156,19 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 
 					if ( (lotag < 1 || lotag > 19) && m_pBloodSprites[i].picnum != 0 && m_pBloodSprites[i].picnum != 3566 && m_pBloodSprites[i].xrepeat > 0 && m_pBloodSprites[i].yrepeat > 0 )
 					{
-						u32 uWidth, uHeight;
+						uint32_t uWidth, uHeight;
 						TextureHandle hTex = XL_INVALID_TEXTURE;
 						TextureHandle ahAnimTex[32];
-						u32 auAnimWidth[32];
-						u32 auAnimHeight[32];
-						u32 uFrameCnt = 0;
+						uint32_t auAnimWidth[32];
+						uint32_t auAnimHeight[32];
+						uint32_t uFrameCnt = 0;
 						if ( EngineSettings::IsServer() == XL_FALSE )
 						{
 							hTex = AddBloodTile( m_pBloodSprites[i].picnum, m_pBloodSprites[i].pal, uWidth, uHeight, false);
 							if ( m_pBloodSprites[i].picnum == 570 )
 							{
 								//This is a torch... it's special...
-								for (u32 pn = 2101; pn <= 2114; pn++)
+								for (uint32_t pn = 2101; pn <= 2114; pn++)
 								{
 									ahAnimTex[uFrameCnt] = AddBloodTile( pn, m_pBloodSprites[i].pal, auAnimWidth[uFrameCnt], auAnimHeight[uFrameCnt], false);
 									uFrameCnt++;
@@ -1179,7 +1179,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 						Object *pObj = ObjectManager::CreateObject("Sprite_ZAxis");
 						if ( pObj )
 						{
-							u32 uObjID = pObj->GetID();
+							uint32_t uObjID = pObj->GetID();
 							Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( m_pBloodSprites[i].sectnum );
 							pObj->SetSector( m_pBloodSprites[i].sectnum );
 							
@@ -1226,7 +1226,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 								pSprite->SetUV_Flip(bFlipX, bFlipY);
 								pSprite->SetAlpha( (m_pBloodSprites[i].cstat&2) ? 0.5f : 1.0f );
 
-								for (u32 f=0; f<uFrameCnt; f++)
+								for (uint32_t f=0; f<uFrameCnt; f++)
 								{
 									pSprite->AddFX_Frame(ahAnimTex[f], auAnimWidth[f], auAnimHeight[f]);
 								}
@@ -1243,7 +1243,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 			//lotag = 2, data = player
 			if ( m_pBloodSprites[i].picnum >= 2522 && m_pBloodSprites[i].picnum <= 2529 && m_pBloodSprites[i].lotag == 2 )
 			{
-				s32 player = m_pBloodSprites[i].data[0];
+				int32_t player = m_pBloodSprites[i].data[0];
 
 				//Add a MP start point to the object list.
 				//The game can then find it later when it's time to spawn players.
@@ -1252,7 +1252,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 				Object *pObj = ObjectManager::CreateObject(szMP_Name);
 				if ( pObj )
 				{
-					u32 uObjID = pObj->GetID();
+					uint32_t uObjID = pObj->GetID();
 					Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( m_pBloodSprites[i].sectnum );
 					pObj->SetSector( m_pBloodSprites[i].sectnum );
 					
@@ -1272,15 +1272,15 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 			}
 			if ( m_pBloodSprites[i].picnum == 2332 )
 			{
-				u32 idUpper = m_pBloodSprites[i].data[0];
+				uint32_t idUpper = m_pBloodSprites[i].data[0];
 				//we must look for a lower match...
-				s32 nMatchID = -1;
-				for (s32 ii=0; ii<m_bloodData.spriteCnt; ii++)
+				int32_t nMatchID = -1;
+				for (int32_t ii=0; ii<m_bloodData.spriteCnt; ii++)
 				{
 					if ( m_pBloodSprites[ii].picnum != 2331 )
 						continue;
 
-					u32 idLower = m_pBloodSprites[ii].data[0];
+					uint32_t idLower = m_pBloodSprites[ii].data[0];
 					if ( idUpper != idLower )
 						continue;
 
@@ -1301,8 +1301,8 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 					vLocLower.z = -(f32)m_pBloodSprites[nMatchID].z / fVertScale;
 
 					//for now just shove it in the second adjoin...
-					s32 secUpper = m_pBloodSprites[i].sectnum;
-					s32 secLower = m_pBloodSprites[nMatchID].sectnum;
+					int32_t secUpper = m_pBloodSprites[i].sectnum;
+					int32_t secLower = m_pBloodSprites[nMatchID].sectnum;
 
 					Sector_2_5D *pUpper = (Sector_2_5D *)pCell->GetSector(secUpper);
 					Sector_2_5D *pLower = (Sector_2_5D *)pCell->GetSector(secLower);
@@ -1326,8 +1326,8 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 		}
 
 		//now go through the sectors and setup any LevelFuncs
-		u32 uSecCnt = pCell->GetSectorCount();
-		for (u32 s=0; s<uSecCnt; s++)
+		uint32_t uSecCnt = pCell->GetSectorCount();
+		for (uint32_t s=0; s<uSecCnt; s++)
 		{
 			Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector(s);
 			if ( pSector->m_pFunc )
@@ -1341,10 +1341,10 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pDa
 		if ( player && _nPlayerStart > -1 )
 		{
 			Vector3 vStartLoc;
-			s32 sectnum = -1;
+			int32_t sectnum = -1;
 			if ( !EngineSettings::GetStartPos(vStartLoc, sectnum) )
 			{
-				s32 startID = _nPlayerStart;
+				int32_t startID = _nPlayerStart;
 
 				vStartLoc.x =  (f32)m_pBloodSprites[startID].x / fHorizScale;
 				vStartLoc.y = -(f32)m_pBloodSprites[startID].y / fHorizScale;

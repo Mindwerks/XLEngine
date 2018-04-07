@@ -11,24 +11,24 @@ public:
 	VertexBuffer(IDriver3D *pDriver);
 	~VertexBuffer(void);
 
-	bool Create(u32 uStride, u32 uCount, bool bDynamic, u32 uVBO_Flags);
+	bool Create(uint32_t uStride, uint32_t uCount, bool bDynamic, uint32_t uVBO_Flags);
 	void Destroy();
 	void Fill(void *pData);
 	void *Lock();
 	void Unlock();
 
-	u32 GetStride() { return m_uStride; }
-	u32 GetCount()  { return m_uCount; }
-	u32 GetSize()   { return m_uSize; }
+	uint32_t GetStride() { return m_uStride; }
+	uint32_t GetCount()  { return m_uCount; }
+	uint32_t GetSize()   { return m_uSize; }
 
 	void Set();
 
 private:
-	u32 m_uStride;
-	u32 m_uCount;
-	u32 m_uSize;
-	u32 m_uVBO_ID;
-	u32 m_uVBO_Flags;
+	uint32_t m_uStride;
+	uint32_t m_uCount;
+	uint32_t m_uSize;
+	uint32_t m_uVBO_ID;
+	uint32_t m_uVBO_Flags;
 	bool m_bLocked;
 	bool m_bDynamic;
 	void *m_pMemory;

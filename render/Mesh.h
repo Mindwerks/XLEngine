@@ -23,8 +23,8 @@ public:
 	struct Material
 	{
 		TextureHandle hTex;
-		u32 uIndexOffset;
-		u32 uPrimCount;
+		uint32_t uIndexOffset;
+		uint32_t uPrimCount;
 
 		Vector3 vBounds[2];
 	};

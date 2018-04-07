@@ -80,7 +80,7 @@ DaggerXL_Game::~DaggerXL_Game(void)
 		xlDelete m_NPC_Logic;
 		m_NPC_Logic = NULL;
 	}
-	for (u32 n=0; n<NPC_COUNT; n++)
+	for (uint32_t n=0; n<NPC_COUNT; n++)
 	{
 		xlDelete m_NPC_List[n];
 	}
@@ -104,7 +104,7 @@ void DaggerXL_Game::PostRender(float dt)
 
 //385 - 394
 
-void DaggerXL_Game::KeyDown(s32 key)
+void DaggerXL_Game::KeyDown(int32_t key)
 {
 	m_Player->KeyDown(key);
 
@@ -120,7 +120,7 @@ void DaggerXL_Game::CreateNPCs()
 	if ( m_bNPCs_Created )
 		return;
 
-	for (u32 n=0; n<NPC_COUNT; n++)
+	for (uint32_t n=0; n<NPC_COUNT; n++)
 	{
 		m_NPC_List[n] = new NPC(m_pAPI);
 	}
@@ -128,21 +128,21 @@ void DaggerXL_Game::CreateNPCs()
 	m_bNPCs_Created = true;
 }
 
-void DaggerXL_Game::WorldUpdate(s32 newWorldX, s32 newWorldY, XLEngine_Plugin_API *API, void *pUserData)
+void DaggerXL_Game::WorldUpdate(int32_t newWorldX, int32_t newWorldY, XLEngine_Plugin_API *API, void *pUserData)
 {
 	s_pGamePtr->CreateNPCs();
 
 	//first remove NPCs that are out of range.
-	for (u32 n=0; n<NPC_COUNT; n++)
+	for (uint32_t n=0; n<NPC_COUNT; n++)
 	{
 		NPC *pNPC = s_pGamePtr->m_NPC_List[n];
 		if ( pNPC->IsEnabled() )
 		{
-			s32 wx, wy;
+			int32_t wx, wy;
 			pNPC->GetWorldPos(s_pGamePtr->m_pAPI, wx, wy);
 
-			s32 dx = wx - newWorldX;
-			s32 dy = wy - newWorldY;
+			int32_t dx = wx - newWorldX;
+			int32_t dy = wy - newWorldY;
 
 			if ( dx < 0 ) dx = -dx;
 			if ( dy < 0 ) dy = -dy;
@@ -155,7 +155,7 @@ void DaggerXL_Game::WorldUpdate(s32 newWorldX, s32 newWorldY, XLEngine_Plugin_AP
 	}
 
 	//then add in new NPCs that are in range.
-	for (u32 n=0; n<NPC_COUNT; n++)
+	for (uint32_t n=0; n<NPC_COUNT; n++)
 	{
 		NPC *pNPC = s_pGamePtr->m_NPC_List[n];
 		if ( !pNPC->IsEnabled() )
@@ -165,13 +165,13 @@ void DaggerXL_Game::WorldUpdate(s32 newWorldX, s32 newWorldY, XLEngine_Plugin_AP
 	}
 }
 
-bool DaggerXL_Game::PlaceNPC(s32 newNPC)
+bool DaggerXL_Game::PlaceNPC(int32_t newNPC)
 {
 	bool bNPC_Added = false;
 	//find next inactive NPC.
 	if ( newNPC == -1 )
 	{
-		for (s32 n=0; n<NPC_COUNT; n++)
+		for (int32_t n=0; n<NPC_COUNT; n++)
 		{
 			if ( !m_NPC_List[n]->IsEnabled() )
 			{
@@ -183,9 +183,9 @@ bool DaggerXL_Game::PlaceNPC(s32 newNPC)
 
 	if ( newNPC > -1 )
 	{
-		s32 nodeX, nodeY;
+		int32_t nodeX, nodeY;
 		float x, y, z;
-		s32 sx, sy;
+		int32_t sx, sy;
 		if ( m_pAPI->Pathing_GetRandomNode(nodeX, nodeY, x, y, z, sx, sy) )
 		{
 			float fAngle = (float)(rand()%360) * 0.01745329252f;
@@ -269,7 +269,7 @@ void DaggerXL_Game::LoadPal(struct Color *pPalData, const char *pszFile)
 	memset(pPalData, 0, sizeof(Color)*256);
 	if ( m_pAPI->SysFile_Open(pszFile) )
 	{
-		u32 len = m_pAPI->SysFile_GetLength();
+		uint32_t len = m_pAPI->SysFile_GetLength();
 		m_pAPI->SysFile_Read(pPalData, 0, len);
 		m_pAPI->SysFile_Close();
 	}
@@ -281,26 +281,26 @@ void DaggerXL_Game::LoadCol(Color *pPalData, const char *pszFile)
 	memset(pPalData, 0, sizeOfColor*256);
 	if ( m_pAPI->SysFile_Open(pszFile) )
 	{
-		u32 len = m_pAPI->SysFile_GetLength();
+		uint32_t len = m_pAPI->SysFile_GetLength();
 		m_pAPI->SysFile_Read(pPalData, sizeof(ColHeader), len-sizeof(ColHeader));
 		m_pAPI->SysFile_Close();
 	}
 }
 
-void DaggerXL_Game::LoadColormap(u8 *pColormap, const char *pszFile)
+void DaggerXL_Game::LoadColormap(uint8_t *pColormap, const char *pszFile)
 {
 	memset(pColormap, 0, 256*_Num_Colormap_Levels);
 	if ( m_pAPI->SysFile_Open(pszFile) )
 	{
-		u32 len = m_pAPI->SysFile_GetLength();
+		uint32_t len = m_pAPI->SysFile_GetLength();
 		m_pAPI->SysFile_Read(pColormap, 0, len);
 		m_pAPI->SysFile_Close();
 	}
 }
 
-void DaggerXL_Game::ClearColorToColor(u8 *pColormap, u32 color, u32 newColor)
+void DaggerXL_Game::ClearColorToColor(uint8_t *pColormap, uint32_t color, uint32_t newColor)
 {
-	for (s32 nLevel=0; nLevel<_Num_Colormap_Levels; nLevel++)
+	for (int32_t nLevel=0; nLevel<_Num_Colormap_Levels; nLevel++)
 	{
 		pColormap[ (nLevel<<8)+color ] = pColormap[ (nLevel<<8)+newColor ];
 	}
@@ -308,8 +308,8 @@ void DaggerXL_Game::ClearColorToColor(u8 *pColormap, u32 color, u32 newColor)
 
 void DaggerXL_Game::LoadPals()
 {
-	u8 *new_pal    = xlNew u8[768*3+1];
-	u8 *new_colmap = xlNew u8[256*_Num_Colormap_Levels];
+	uint8_t *new_pal    = xlNew uint8_t[768*3+1];
+	uint8_t *new_colmap = xlNew uint8_t[256*_Num_Colormap_Levels];
 
 	for (int i=0; i<_Pal_Count; i++)
 	{

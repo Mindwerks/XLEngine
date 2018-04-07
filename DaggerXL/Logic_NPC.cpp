@@ -21,24 +21,24 @@ NPC::NPC(const XLEngine_Plugin_API *pAPI)
 	Enable(pAPI, false);
 }
 
-void NPC::Reset(const XLEngine_Plugin_API *pAPI, s32 NPC_file, float x, float y, float z, s32 worldX, s32 worldY, float dirx, float diry)
+void NPC::Reset(const XLEngine_Plugin_API *pAPI, int32_t NPC_file, float x, float y, float z, int32_t worldX, int32_t worldY, float dirx, float diry)
 {
 	char szTexName[64];
 	sprintf(szTexName, "TEXTURE.%03d", NPC_file);
 	m_Data.ahTex[0] = pAPI->Texture_LoadTexList(2, 7, 0xff, "", szTexName, 0, XL_FALSE);
 	pAPI->Object_SetRenderTexture(m_Data.uObjID, m_Data.ahTex[0]);
 
-	s32 ox, oy;
-	u32 w, h;
+	int32_t ox, oy;
+	uint32_t w, h;
 	float fw, fh;
 	pAPI->Texture_GetSize(ox, oy, w, h, fw, fh);
 
 	ObjectPhysicsData *physics = pAPI->Object_GetPhysicsData(m_Data.uObjID);
 
 	//sprite scale...
-	s16 *pSpriteScale = (s16 *)pAPI->Texture_GetExtraData();
-	s32 newWidth  = w*(256+pSpriteScale[0])>>8;
-	s32 newHeight = h*(256+pSpriteScale[1])>>8;
+	int16_t *pSpriteScale = (int16_t *)pAPI->Texture_GetExtraData();
+	int32_t newWidth  = w*(256+pSpriteScale[0])>>8;
+	int32_t newHeight = h*(256+pSpriteScale[1])>>8;
 
 	Vector3 vScale;
 	vScale.x = (f32)newWidth  / 8.0f;
@@ -59,7 +59,7 @@ void NPC::Reset(const XLEngine_Plugin_API *pAPI, s32 NPC_file, float x, float y,
 	pAPI->Object_SetWorldBounds( m_Data.uObjID, vMin.x, vMin.y, vMin.z, vMax.x, vMax.y, vMax.z );
 				
 	//Load the rest of the textures.
-	for (s32 t=1; t<6; t++)
+	for (int32_t t=1; t<6; t++)
 	{
 		m_Data.ahTex[t] = pAPI->Texture_LoadTexList(2, 7, 0xff, "", szTexName, t, XL_FALSE);
 	}
@@ -81,7 +81,7 @@ void NPC::Enable(const XLEngine_Plugin_API *pAPI, bool bEnable)
 	}
 }
 
-void NPC::GetWorldPos(const XLEngine_Plugin_API *pAPI, s32& x, s32& y)
+void NPC::GetWorldPos(const XLEngine_Plugin_API *pAPI, int32_t& x, int32_t& y)
 {
 	ObjectPhysicsData *pPhysics = pAPI->Object_GetPhysicsData(m_Data.uObjID);
 	if ( pPhysics )
@@ -115,16 +115,16 @@ Logic_NPC::~Logic_NPC(void)
 {
 }
 
-void Logic_NPC::LogicSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void Logic_NPC::LogicSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 	m_pAPI->Logic_SetMessageMask(LMSG_ACTIVATE);
 }
 
-void Logic_NPC::ObjectSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void Logic_NPC::ObjectSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }
 
-void Logic_NPC::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
+void Logic_NPC::Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 	NPC::GameData *pData = (NPC::GameData *)m_pAPI->Object_GetGameData(uObjID);
 
@@ -153,7 +153,7 @@ void Logic_NPC::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 
 		XL_BOOL bFlipX = XL_FALSE;
 		float angle = -pPhysics->m_Dir.Dot(vDir);
-		s32 image = (s32)( (angle*0.5f+0.5f) * 5.0f );
+		int32_t image = (int32_t)( (angle*0.5f+0.5f) * 5.0f );
 		if ( image > 4 ) image = 4;
 
 		Vector3 vPerp;
@@ -166,7 +166,7 @@ void Logic_NPC::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	}
 }
 
-void Logic_NPC::Message(u32 uObjID, u32 uParamCount, LogicParam *param)
+void Logic_NPC::Message(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 	//If this is an ACTIVATE message start up the door animation
 	//if the door is not already animating.

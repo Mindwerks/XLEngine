@@ -23,7 +23,7 @@ struct CollisionPacket;
 struct RaycastPacket;
 
 #define INVALID_SECTOR 0xffff
-#define LOC_KEY(x,y) (u32)(y*1000+x)
+#define LOC_KEY(x,y) (uint32_t)(y*1000+x)
 
 #define TERRAIN_DESERT		 0
 #define TERRAIN_MOUNTAIN   100
@@ -47,9 +47,9 @@ public:
 
 	//Add a dynamic object to the terrain Sector.
 	//This is done for objects that are fully dynamic and do not belong to specific cells.
-	void AddDynamicObject(u32 uID);
+	void AddDynamicObject(uint32_t uID);
 
-	void SetHeightmap(s32 width, s32 height, u8 *pData, float fScale, float fBias);
+	void SetHeightmap(int32_t width, int32_t height, uint8_t *pData, float fScale, float fBias);
 
 	//Whether the terrain is currently active or not.
 	//If its not active, then no rendering or collision takes place.
@@ -57,7 +57,7 @@ public:
 	bool IsActive() { return m_bActive; }
 
 	//Update the terrain mesh and texturing based on the world position.
-	bool Update(s32 x, s32 y, s32 nRectCnt=0, LocationRect *pRects=NULL);
+	bool Update(int32_t x, int32_t y, int32_t nRectCnt=0, LocationRect *pRects=NULL);
 
 	//Render the terrain.
 	void Render(Camera *pCamera);
@@ -66,10 +66,10 @@ public:
 	float GetHeight(float xPos, float yPos);
 
 	//Get the terrain height at the current "map scale"
-	float GetHeight_MapScale(s32 x, s32 y);
+	float GetHeight_MapScale(int32_t x, int32_t y);
 
 	//Get the climate for a map cell.
-	u32 GetClimate_MapScale(s32 x, s32 y);
+	uint32_t GetClimate_MapScale(int32_t x, int32_t y);
 
 	//Is the current terrain point in water?
 	bool IsPointInWater(float xPos, float yPos);
@@ -86,23 +86,23 @@ public:
 	};
 
 private:
-	void RenderLOD(Camera *pCamera, s32 lod);
-	void RenderChunk(Camera *pCamera, s32 lod, s32 chunkNum);
+	void RenderLOD(Camera *pCamera, int32_t lod);
+	void RenderChunk(Camera *pCamera, int32_t lod, int32_t chunkNum);
 	void BuildTerrainMeshes();
-	void BuildHeightmap(s32 newX, s32 newY, s32 prevX, s32 prevY, s32 nRectCnt, LocationRect *pRects);
+	void BuildHeightmap(int32_t newX, int32_t newY, int32_t prevX, int32_t prevY, int32_t nRectCnt, LocationRect *pRects);
 	void Animate();
 	void GenTextureTileMapping();
 	float SampleBaseHeightmap(int lod, int x, int y);
 	float SampleCoastalDistance(int x, int y);
-	void ComputeNormal(s32 x, s32 y);
-	s32 GetClimate(int x, int y, int *pnFlat=NULL);
-	s32 GetSkyIndex(int x, int y);
+	void ComputeNormal(int32_t x, int32_t y);
+	int32_t GetClimate(int x, int y, int *pnFlat=NULL);
+	int32_t GetSkyIndex(int x, int y);
 
-	void RenderSky(s32 skyIndex, s32 timeIndex, Camera *pCamera);
+	void RenderSky(int32_t skyIndex, int32_t timeIndex, Camera *pCamera);
 	
 	void LoadHeightmap();
 	void BinLocations();
-	void FilterHeightMap(u8 *pAltMap, float *pAltMapF, float *pCoastalDist);
+	void FilterHeightMap(uint8_t *pAltMap, float *pAltMapF, float *pCoastalDist);
 
 	enum
 	{
@@ -117,13 +117,13 @@ private:
 	bool m_bActive;
 	bool m_bMeshBuilt;
 
-	s32 m_nWidth;
-	s32 m_nHeight;
-	s32 m_x;
-	s32 m_y;
+	int32_t m_nWidth;
+	int32_t m_nHeight;
+	int32_t m_x;
+	int32_t m_y;
 	float *m_afHeightmap;
 	float *m_afCoastalDist;
-	u8 *m_pClimate;
+	uint8_t *m_pClimate;
 	Sector_GeoBlock *m_pSector;
 	WorldCell *m_pWorldCell;
 	World *m_pWorld;
@@ -138,7 +138,7 @@ private:
 	struct Chunk
 	{
 		IndexBuffer *m_pChunkIB;
-		u16 m_TileTexArray[TILE_QUAD_COUNT];
+		uint16_t m_TileTexArray[TILE_QUAD_COUNT];
 		AABB m_aChunkBounds;
 		float dist;
 	};
@@ -154,14 +154,14 @@ private:
 		Chunk		  m_aChunks[CHUNK_COUNT];
 	};
 
-	typedef map<u32, Location_Daggerfall *> LocationMap;
+	typedef map<uint32_t, Location_Daggerfall *> LocationMap;
 
 	LOD m_LOD[2];
 	vector<Chunk *> m_ChunkRenderList;
 	LocationMap m_LocationMap;
 	SkyLoader *m_pSkyLoader;
 
-	inline Location_Daggerfall *FindLocation(s32 x, s32 y)
+	inline Location_Daggerfall *FindLocation(int32_t x, int32_t y)
 	{
 		LocationMap::iterator iLoc = m_LocationMap.find( LOC_KEY(x, y) );
 		Location_Daggerfall *pLoc = NULL;
@@ -179,8 +179,8 @@ private:
 	static const float c_fTotalWidth;
 	static const float c_fTotalHeight;
 	static const Vector3 c_startPos;
-	static s32 s_anMapClimate[];
-	static s32 s_anMapFlat[];
+	static int32_t s_anMapClimate[];
+	static int32_t s_anMapFlat[];
 };
 
 #endif //TERRAIN_H

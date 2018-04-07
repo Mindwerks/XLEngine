@@ -23,41 +23,41 @@ public:
 	void PreRender(float dt);
 	void PostRender(float dt);
 
-	void KeyDown(s32 key);
+	void KeyDown(int32_t key);
 
-	void GetVersion(s32& major, s32& minor) { major = m_nVersionMajor; minor = m_nVersionMinor; }
+	void GetVersion(int32_t& major, int32_t& minor) { major = m_nVersionMajor; minor = m_nVersionMinor; }
 
 	void NewGame();
 
-	bool PlaceNPC(s32 newNPC=-1);
+	bool PlaceNPC(int32_t newNPC=-1);
 	void CreateNPCs();
 
-	static void WorldUpdate(s32 newWorldX, s32 newWorldY, XLEngine_Plugin_API *API, void *pUserData);
+	static void WorldUpdate(int32_t newWorldX, int32_t newWorldY, XLEngine_Plugin_API *API, void *pUserData);
 
 private:
 	struct Color
 	{
-		u8 red;
-		u8 green;
-		u8 blue;
+		uint8_t red;
+		uint8_t green;
+		uint8_t blue;
 	};
 
 	struct ColHeader
 	{
-		s32 fileSize;
-		u16 FileFormatMajor;
-		u16 FileFormatMinor;
+		int32_t fileSize;
+		uint16_t FileFormatMajor;
+		uint16_t FileFormatMinor;
 	};
 
 	void LoadPals();
 	void LoadPal(struct Color *pPalData, const char *pszFile);
 	void LoadCol(struct Color *pPalData, const char *pszFile);
-	void LoadColormap(u8 *pColormap, const char *pszFile);
-	void ClearColorToColor(u8 *pColormap, u32 color, u32 newColor);
+	void LoadColormap(uint8_t *pColormap, const char *pszFile);
+	void ClearColorToColor(uint8_t *pColormap, uint32_t color, uint32_t newColor);
 
 	const XLEngine_Plugin_API *m_pAPI;
-	s32 m_nVersionMajor;
-	s32 m_nVersionMinor;
+	int32_t m_nVersionMajor;
+	int32_t m_nVersionMinor;
 	DaggerXL_Player *m_Player;
 	Logic_Door *m_DoorLogic;
 	Logic_Obj_Action *m_ObjActionLogic;

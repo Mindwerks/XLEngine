@@ -19,7 +19,7 @@ public:
 	void Render(Object *pObj, IDriver3D *pDriver, f32 fIntensity, const Vector3& vOffset);
 	void SetUV_Flip(bool bFlipX, bool bFlipY, bool bFlipAxis=false) { m_aFlip[0] = bFlipX?1:0; m_aFlip[1] = bFlipY?1:0; m_aFlip[2] = bFlipAxis?1:0; }
 	void SetAlpha(f32 fAlpha=1.0f) { m_fAlpha = fAlpha; }
-	void AddFX_Frame(TextureHandle frameTex, u32 uWidth, u32 uHeight)
+	void AddFX_Frame(TextureHandle frameTex, uint32_t uWidth, uint32_t uHeight)
 	{
 		FX_Frame frame;
 		frame.hTex    = frameTex;
@@ -32,8 +32,8 @@ public:
 	void SetTextureHandle(TextureHandle hTex) { m_hTex = hTex; }
 	void SetBaseIntensity(f32 fBaseItens) { m_fBaseItens = fBaseItens; }
 
-	void SetFlag(u32 uFlag) { m_uFlags |= uFlag; }
-	bool IsFlagSet(u32 uFlag) { return (m_uFlags&uFlag)!=0; }
+	void SetFlag(uint32_t uFlag) { m_uFlags |= uFlag; }
+	bool IsFlagSet(uint32_t uFlag) { return (m_uFlags&uFlag)!=0; }
 public:
 	enum
 	{
@@ -44,17 +44,17 @@ private:
 	struct FX_Frame
 	{
 		TextureHandle hTex;
-		u32 uWidth;
-		u32 uHeight;
+		uint32_t uWidth;
+		uint32_t uHeight;
 	};
 
 	TextureHandle m_hTex;
 	vector<FX_Frame> m_fxFrames;
-	u32 m_uFlags;
-	u32 m_uCurFrame;
-	s32 m_nFrameDelay;
-	u8 m_aFlip[3];
-	u8 m_uPad;
+	uint32_t m_uFlags;
+	uint32_t m_uCurFrame;
+	int32_t m_nFrameDelay;
+	uint8_t m_aFlip[3];
+	uint8_t m_uPad;
 	f32 m_fBaseItens;
 	f32 m_fAlpha;
 };

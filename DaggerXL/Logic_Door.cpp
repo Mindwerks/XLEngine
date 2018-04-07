@@ -19,16 +19,16 @@ Logic_Door::~Logic_Door(void)
 {
 }
 
-void Logic_Door::LogicSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void Logic_Door::LogicSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 	m_pAPI->Logic_SetMessageMask(LMSG_ACTIVATE);
 }
 
-void Logic_Door::ObjectSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void Logic_Door::ObjectSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }
 
-void Logic_Door::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
+void Logic_Door::Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 	float *pData = (float *)m_pAPI->Object_GetGameData(uObjID);
 	float animTime = pData[2];
@@ -67,7 +67,7 @@ void Logic_Door::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	}
 }
 
-void Logic_Door::Message(u32 uObjID, u32 uParamCount, LogicParam *param)
+void Logic_Door::Message(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 	//If this is an ACTIVATE message start up the door animation
 	//if the door is not already animating.

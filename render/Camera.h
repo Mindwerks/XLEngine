@@ -26,13 +26,13 @@ class Camera
 		void SetLoc(Vector3& loc);
 		const Vector3& GetLoc() { return m_vLoc; }
 
-		void SetWorldPos(s32 x, s32 y)
+		void SetWorldPos(int32_t x, int32_t y)
 		{
 			m_worldPosX = x;
 			m_worldPosY = y;
 		}
-		s32 GetWorldPosX() { return m_worldPosX; }
-		s32 GetWorldPosY() { return m_worldPosY; }
+		int32_t GetWorldPosX() { return m_worldPosX; }
+		int32_t GetWorldPosY() { return m_worldPosY; }
 
 		void SetDir(Vector3& dir);
 		const Vector3& GetDir() { return m_vDir; }
@@ -48,8 +48,8 @@ class Camera
 		void SetSpeed(f32 fSpeed) { m_fSpeed = fSpeed; }
 		f32 GetSpeed() { return m_fSpeed; }
 
-		void SetSector(u16 uSector) { m_uSector = uSector; }
-		u16 GetSector() { return m_uSector; }
+		void SetSector(uint16_t uSector) { m_uSector = uSector; }
+		uint16_t GetSector() { return m_uSector; }
 
 		void Set(IDriver3D *pDriver3D, bool bCompute=true);
 		void GetViewMatrix(Matrix *pViewMtx);
@@ -59,12 +59,12 @@ class Camera
 		void Update(f32 fDeltaTime);
 		f32 GetFrustumWidth() { return m_fFrustumWidth; }
 
-		void TransformPointsSS(u32 uCount, Vector3 *wsPos, Vector3 *ssPos);
-		void TransformPointsSS_2D(u32 uCount, const Vector2 *wsPos, Vector2 *ssPos, const Vector2& offset);
+		void TransformPointsSS(uint32_t uCount, Vector3 *wsPos, Vector3 *ssPos);
+		void TransformPointsSS_2D(uint32_t uCount, const Vector2 *wsPos, Vector2 *ssPos, const Vector2& offset);
 		void InverseTransformPointsSS_2D(f32 x, f32 oow, Vector2& worldPos);
 
 		int SphereInsideFrustum(Vector3& vCen, float fRadius);
-		int AABBInsideFrustum(Vector3& vMin, Vector3& vMax, s32 worldX, s32 worldY);
+		int AABBInsideFrustum(Vector3& vMin, Vector3& vMax, int32_t worldX, int32_t worldY);
 
 		void SetMaxRenderDistance(f32 fDist) { m_fMaxRenderDist = fDist; }
 
@@ -95,11 +95,11 @@ class Camera
 		bool m_bComputeViewMtx;
 		bool m_bComputeProjMtx;
 
-		u16 m_uSector;
-		u16 m_uPad;
+		uint16_t m_uSector;
+		uint16_t m_uPad;
 
-		s32 m_worldPosX;
-		s32 m_worldPosY;
+		int32_t m_worldPosX;
+		int32_t m_worldPosY;
 
 		static bool s_bUpdateFrustum;
 

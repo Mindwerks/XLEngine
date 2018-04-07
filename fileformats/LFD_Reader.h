@@ -15,8 +15,8 @@ public:
 
 	bool OpenFile(const char *pszFile);
 	void CloseFile();
-	u32 GetFileLen();
-	bool ReadFile(void *pData, u32 uLength);
+	uint32_t GetFileLen();
+	bool ReadFile(void *pData, uint32_t uLength);
 
 private:
 
@@ -50,7 +50,7 @@ private:
 
 	LFD_Entry_t m_Header;
 	LFD_Index_t m_FileList;
-	s32 m_CurFile;
+	int32_t m_CurFile;
 
 	FILE *m_pFile;
 	char m_szFileName[64];

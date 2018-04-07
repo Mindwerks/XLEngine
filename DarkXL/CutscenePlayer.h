@@ -17,24 +17,24 @@ public:
 	static void Update();
 	static void Render(f32 fDeltaTime);
 
-	static void KeyDown(s32 key);
+	static void KeyDown(int32_t key);
 
 private:
 	struct Cutscene
 	{
-		s16 num;
-		s16 speed;
-		s16 nextScene;
-		s16 skipScene;
-		s16 midiSeq;
-		s16 midiVol;
+		int16_t num;
+		int16_t speed;
+		int16_t nextScene;
+		int16_t skipScene;
+		int16_t midiSeq;
+		int16_t midiVol;
 		char resLFD[32];
 		char scene[32];
 	};
 
 	static Cutscene m_CutSceneList[256];
-	static s32 m_nCutSceneCount;
-	static s32 m_nCutSceneNum;
+	static int32_t m_nCutSceneCount;
+	static int32_t m_nCutSceneNum;
 	static bool m_bCutscenePlaying;
 
 	static Cutscene *m_pCurCutScene;

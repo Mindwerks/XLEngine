@@ -41,9 +41,9 @@ TextureHandle m_hDebugGroundTex;
 TextureHandle m_hPosMarker;
 
 bool m_bShowTerrainDebug = false;
-s32  m_nTerrainMapX = 0;
-s32  m_nTerrainMapY = 0;
-s32  m_nTerrainMapScale = 1;
+int32_t  m_nTerrainMapX = 0;
+int32_t  m_nTerrainMapY = 0;
+int32_t  m_nTerrainMapScale = 1;
 
 const f32 m_fSkyTop =  136.0f;
 const f32 m_fSkyBot =   -4.0f;
@@ -51,11 +51,11 @@ const f32 m_fSkyBot =   -4.0f;
 //Texture Tile Mapping Data
 #define E(a,b,c,d) a+(b<<2)+(c<<4)+(d<<6)
 
-static const s32 _baseTileCnt=4;
-static const s32 _comboCount = _baseTileCnt*_baseTileCnt*_baseTileCnt*_baseTileCnt;
-static s32 _anTileMapping[_comboCount];
-static const s32 _workSetSize = 56;
-static s32 _anWorkingSet[]=
+static const int32_t _baseTileCnt=4;
+static const int32_t _comboCount = _baseTileCnt*_baseTileCnt*_baseTileCnt*_baseTileCnt;
+static int32_t _anTileMapping[_comboCount];
+static const int32_t _workSetSize = 56;
+static int32_t _anWorkingSet[]=
 {
 	E(0,0,0,0), E(1,1,1,1), E(2,2,2,2), E(3,3,3,3),         -1, E(1,0,0,0), 
 	E(1,0,1,0), E(1,1,1,0),         -1,         -1, E(2,1,1,1), E(2,1,2,1),
@@ -68,7 +68,7 @@ static s32 _anWorkingSet[]=
 	E(1,0,0,1), E(2,0,0,2), E(3,0,0,3), E(2,1,1,2), E(3,1,1,3), E(3,2,2,3),
 		    -1,         -1
 };
-static s32 m_anMapSky[]=
+static int32_t m_anMapSky[]=
 {
 	29,
 	 9,
@@ -82,7 +82,7 @@ static s32 m_anMapSky[]=
 	17
 };
 
-s32 Terrain::s_anMapClimate[]=
+int32_t Terrain::s_anMapClimate[]=
 {
 	CLIMATE_SWAMP,
 	CLIMATE_DESERT,
@@ -96,7 +96,7 @@ s32 Terrain::s_anMapClimate[]=
 	CLIMATE_TEMPERATE,
 };
 
-s32 Terrain::s_anMapFlat[]=
+int32_t Terrain::s_anMapFlat[]=
 {
 	502,
 	503,
@@ -110,7 +110,7 @@ s32 Terrain::s_anMapFlat[]=
 	508
 };
 
-void TerrainDebug_KeyDownCB(s32 key)
+void TerrainDebug_KeyDownCB(int32_t key)
 {
 	if ( key == XL_F3 )
 	{
@@ -143,7 +143,7 @@ Terrain::Terrain(IDriver3D *pDriver, World *pWorld)
 	m_pSector = NULL;
 	m_pWorldCell = NULL;
 
-	for (u32 l=0; l<LOD_COUNT; l++)
+	for (uint32_t l=0; l<LOD_COUNT; l++)
 	{
 		m_LOD[l].m_pVB       = NULL;
 		for (int i=0; i<CHUNK_COUNT; i++) m_LOD[l].m_aChunks[i].m_pChunkIB  = NULL;
@@ -177,7 +177,7 @@ Terrain::~Terrain()
 	{
 		xlDelete [] m_pClimate;
 	}
-	for (u32 l=0; l<LOD_COUNT; l++)
+	for (uint32_t l=0; l<LOD_COUNT; l++)
 	{
 		if ( m_LOD[l].m_pVB )
 		{
@@ -206,16 +206,16 @@ void Terrain::BinLocations()
 	m_LocationMap.clear();
 	
 	//now place locations on the map...
-	for (u32 r=0; r<WorldMap::m_uRegionCount; r++)
+	for (uint32_t r=0; r<WorldMap::m_uRegionCount; r++)
 	{
-		for (u32 l=0; l<WorldMap::m_pRegions[r].m_uLocationCount; l++)
+		for (uint32_t l=0; l<WorldMap::m_pRegions[r].m_uLocationCount; l++)
 		{
-			u32 x = (u32)(WorldMap::m_pRegions[r].m_pLocations[l].m_x/8.0f);
-			u32 y = (u32)(WorldMap::m_pRegions[r].m_pLocations[l].m_y/8.0f);
+			uint32_t x = (uint32_t)(WorldMap::m_pRegions[r].m_pLocations[l].m_x/8.0f);
+			uint32_t y = (uint32_t)(WorldMap::m_pRegions[r].m_pLocations[l].m_y/8.0f);
 			assert(x >= 0 && x < 1000);
 			assert(y >= 0 && y < 500);
 
-			u32 key = LOC_KEY(x,y);
+			uint32_t key = LOC_KEY(x,y);
 			m_LocationMap[key] = &WorldMap::m_pRegions[r].m_pLocations[l];
 		}
 	}
@@ -227,15 +227,15 @@ void Terrain::BinLocations()
 //////////////////////////////////////////////////////
 struct MapPixelData
 {
-	u16 FileIndex;
-	u8 Climate;
-	u8 ClimateNoise;
-	u8 ElevNoise[25];	//5x5 noise?
+	uint16_t FileIndex;
+	uint8_t Climate;
+	uint8_t ClimateNoise;
+	uint8_t ElevNoise[25];	//5x5 noise?
 };
 
 void Terrain::LoadHeightmap()
 {
-	static u32 uHM_Data[1000*500];
+	static uint32_t uHM_Data[1000*500];
 
 	const char *szFile = "WOODS.WLD";
 	if ( ArchiveManager::File_Open(szFile) )
@@ -243,20 +243,20 @@ void Terrain::LoadHeightmap()
 		ScratchPad::StartFrame();
 
 		//Read the file.
-		u32 uLen  = ArchiveManager::File_GetLength();
-		u8 *pData = (u8 *)ScratchPad::AllocMem( uLen+1 );
+		uint32_t uLen  = ArchiveManager::File_GetLength();
+		uint8_t *pData = (uint8_t *)ScratchPad::AllocMem( uLen+1 );
 		ArchiveManager::File_Read(pData, 0, uLen);
 		ArchiveManager::File_Close();
 
 		//Process the contents.
-		s32 index = 0;
-		u32 OffsetSize = *((u32 *)&pData[index]); index += 4;
-		u32 Width = *((u32 *)&pData[index]); index += 4;
-		u32 Height = *((u32 *)&pData[index]); index += 4;
+		int32_t index = 0;
+		uint32_t OffsetSize = *((uint32_t *)&pData[index]); index += 4;
+		uint32_t Width = *((uint32_t *)&pData[index]); index += 4;
+		uint32_t Height = *((uint32_t *)&pData[index]); index += 4;
 		index += 4;	//NullValue
-		u32 DataSec1Offs = *((u32 *)&pData[index]); index += 4;
+		uint32_t DataSec1Offs = *((uint32_t *)&pData[index]); index += 4;
 		index += 8; //unknown * 2
-		u32 AltMapOffs = *((u32 *)&pData[index]); index += 4;
+		uint32_t AltMapOffs = *((uint32_t *)&pData[index]); index += 4;
 		index += 28*4; //uint32 * 28
 
 		assert(Width == 1000);
@@ -264,15 +264,15 @@ void Terrain::LoadHeightmap()
 
 		//500000 offsets...
 #if 0
-		u32 *pDataOffs = (u32 *)&pData[index];
+		uint32_t *pDataOffs = (uint32_t *)&pData[index];
 		MapPixelData *pMapPixData = (MapPixelData *)ScratchPad::AllocMem(Width*Height*sizeof(MapPixelData));
-		for (u32 i=0; i<Width*Height; i++)
+		for (uint32_t i=0; i<Width*Height; i++)
 		{
 			index = pDataOffs[i];
 			index += 2; index += 4;	//unknown, null
-			pMapPixData[i].FileIndex = *((u16 *)&pData[index]); index += 2;
-			pMapPixData[i].Climate = *((u8 *)&pData[index]); index++;
-			pMapPixData[i].ClimateNoise = *((u8 *)&pData[index]); index++;
+			pMapPixData[i].FileIndex = *((uint16_t *)&pData[index]); index += 2;
+			pMapPixData[i].Climate = *((uint8_t *)&pData[index]); index++;
+			pMapPixData[i].ClimateNoise = *((uint8_t *)&pData[index]); index++;
 			index += 4*3;	//null
 			memcpy(pMapPixData[i].ElevNoise, &pData[index], 25);
 		}
@@ -280,7 +280,7 @@ void Terrain::LoadHeightmap()
 
 		//Read altitude...
 		index = AltMapOffs;
-		u8 *pAltMap = (u8 *)&pData[index];
+		uint8_t *pAltMap = (uint8_t *)&pData[index];
 
 		m_nWidth  = Width;
 		m_nHeight = Height;
@@ -291,12 +291,12 @@ void Terrain::LoadHeightmap()
 
 		//DEBUG
 		float fOO64 = (1.0f/64.0f);
-		for (u32 i=0; i<1000*500; i++)
+		for (uint32_t i=0; i<1000*500; i++)
 		{
-			u32 I = (u32)Math::clamp( m_afHeightmap[i]*fOO64, 0.0f, 255.0f );
+			uint32_t I = (uint32_t)Math::clamp( m_afHeightmap[i]*fOO64, 0.0f, 255.0f );
 			uHM_Data[i] = I | (I<<8) | (I<<16) | (0xff<<24);
 		}
-		m_hDebugHM = m_pDriver->CreateTexture(1000, 500, IDriver3D::TEX_FORMAT_FORCE_32bpp, (u8 *)&uHM_Data[0], false);
+		m_hDebugHM = m_pDriver->CreateTexture(1000, 500, IDriver3D::TEX_FORMAT_FORCE_32bpp, (uint8_t *)&uHM_Data[0], false);
 		//
 
 		ScratchPad::FreeFrame();
@@ -308,25 +308,25 @@ void Terrain::LoadHeightmap()
 		ScratchPad::StartFrame();
 
 		//Read the file.
-		u32 uLen  = ArchiveManager::File_GetLength();
-		u8 *pData = (u8 *)ScratchPad::AllocMem( uLen+1 );
+		uint32_t uLen  = ArchiveManager::File_GetLength();
+		uint8_t *pData = (uint8_t *)ScratchPad::AllocMem( uLen+1 );
 		ArchiveManager::File_Read(pData, 0, uLen);
 		ArchiveManager::File_Close();
 
 		//read climate data.
-		m_pClimate = xlNew u8[1001*500];
-		u32 index = 0;
-		u32 *pOffsList = (u32 *)&pData[index];
+		m_pClimate = xlNew uint8_t[1001*500];
+		uint32_t index = 0;
+		uint32_t *pOffsList = (uint32_t *)&pData[index];
 		for (int y=0, yOffs=0; y<500; y++, yOffs+=1000)
 		{
 			index = pOffsList[y];
-			s32 x = 0;
+			int32_t x = 0;
 			while (x < 1000)
 			{
-				u16 Count = *((u16 *)&pData[index]); index += 2;
-				u8  Value = *((u8 *)&pData[index]); index++;
+				uint16_t Count = *((uint16_t *)&pData[index]); index += 2;
+				uint8_t  Value = *((uint8_t *)&pData[index]); index++;
 
-				for (u32 i=0; i<Count; i++, x++)
+				for (uint32_t i=0; i<Count; i++, x++)
 				{
 					m_pClimate[yOffs+x] = Value;
 				}
@@ -334,8 +334,8 @@ void Terrain::LoadHeightmap()
 		}
 
 		//DEBUG
-		static u32 uClimate_Data[1000*500];
-		static u32 _aClimateColors[]=
+		static uint32_t uClimate_Data[1000*500];
+		static uint32_t _aClimateColors[]=
 		{
 			0xff004000,
 			0xff004080,
@@ -348,7 +348,7 @@ void Terrain::LoadHeightmap()
 			0xff009000,
 			0xff00a000,
 		};
-		for (u32 i=0; i<1000*500; i++)
+		for (uint32_t i=0; i<1000*500; i++)
 		{
 			if ( (uHM_Data[i]&0xff) == 0 )
 			{
@@ -360,11 +360,11 @@ void Terrain::LoadHeightmap()
 			else
 			{
 				uClimate_Data[i] = _aClimateColors[ m_pClimate[i]-223 ];
-				u32 R = uClimate_Data[i]&0xff;
-				u32 G = (uClimate_Data[i]>>8)&0xff;
-				u32 B = (uClimate_Data[i]>>16)&0xff;
+				uint32_t R = uClimate_Data[i]&0xff;
+				uint32_t G = (uClimate_Data[i]>>8)&0xff;
+				uint32_t B = (uClimate_Data[i]>>16)&0xff;
 
-				u32 H = Math::clamp((uHM_Data[i]&0xff)*2, 0, 255);
+				uint32_t H = Math::clamp((uHM_Data[i]&0xff)*2, 0, 255);
 				R = (R * H)>>8;
 				G = (G * H)>>8;
 				B = (B * H)>>8;
@@ -380,19 +380,19 @@ void Terrain::LoadHeightmap()
 		}
 
 		//now place locations on the map...
-		for (u32 r=0; r<WorldMap::m_uRegionCount; r++)
+		for (uint32_t r=0; r<WorldMap::m_uRegionCount; r++)
 		{
-			for (u32 l=0; l<WorldMap::m_pRegions[r].m_uLocationCount; l++)
+			for (uint32_t l=0; l<WorldMap::m_pRegions[r].m_uLocationCount; l++)
 			{
-				s32 x = (s32)(WorldMap::m_pRegions[r].m_pLocations[l].m_x/8.0f);
-				s32 y = 499 - (s32)(WorldMap::m_pRegions[r].m_pLocations[l].m_y/8.0f);
+				int32_t x = (int32_t)(WorldMap::m_pRegions[r].m_pLocations[l].m_x/8.0f);
+				int32_t y = 499 - (int32_t)(WorldMap::m_pRegions[r].m_pLocations[l].m_y/8.0f);
 				assert(x >= 0 && x < 1000);
 				assert(y >= 0 && y < 500);
 
 				if ( WorldMap::m_pRegions[r].m_pLocations[l].m_BlockWidth || WorldMap::m_pRegions[r].m_pLocations[l].m_BlockHeight )
 				{
-					s32 lumR = Math::Min( (WorldMap::m_pRegions[r].m_pLocations[l].m_BlockWidth*WorldMap::m_pRegions[r].m_pLocations[l].m_BlockHeight)<<2, 255 );
-					s32 lumGB = Math::Min( lumR+64, 255 );
+					int32_t lumR = Math::Min( (WorldMap::m_pRegions[r].m_pLocations[l].m_BlockWidth*WorldMap::m_pRegions[r].m_pLocations[l].m_BlockHeight)<<2, 255 );
+					int32_t lumGB = Math::Min( lumR+64, 255 );
 					uClimate_Data[y*1000+x] = 0xff000000 | (lumGB<<16) | (lumGB<<8) | lumR;
 				}
 				else
@@ -402,40 +402,40 @@ void Terrain::LoadHeightmap()
 			}
 		}
 
-		m_hDebugClimate = m_pDriver->CreateTexture(1000, 500, IDriver3D::TEX_FORMAT_FORCE_32bpp, (u8 *)&uClimate_Data[0], false);
-		u32 uRed = 0xff000080, uDkRed = 0xff000040;
-		u32 auMarkerArr[] = { uDkRed, uDkRed, uDkRed, uDkRed, uRed, uDkRed, uDkRed, uDkRed, uDkRed, uDkRed };
-		m_hPosMarker = m_pDriver->CreateTexture(3, 3, IDriver3D::TEX_FORMAT_FORCE_32bpp, (u8 *)&auMarkerArr[0], false);
+		m_hDebugClimate = m_pDriver->CreateTexture(1000, 500, IDriver3D::TEX_FORMAT_FORCE_32bpp, (uint8_t *)&uClimate_Data[0], false);
+		uint32_t uRed = 0xff000080, uDkRed = 0xff000040;
+		uint32_t auMarkerArr[] = { uDkRed, uDkRed, uDkRed, uDkRed, uRed, uDkRed, uDkRed, uDkRed, uDkRed, uDkRed };
+		m_hPosMarker = m_pDriver->CreateTexture(3, 3, IDriver3D::TEX_FORMAT_FORCE_32bpp, (uint8_t *)&auMarkerArr[0], false);
 
 		//debug ground texture.
-		u32 _groundTex[256*256];
+		uint32_t _groundTex[256*256];
 		Vector3 p(0.2f, 0.2f, 0.675f);
 		float delta = 8.0f/256.0f;
-		static const u32 colors[]=
+		static const uint32_t colors[]=
 		{
 			0xff3c5c7b, 0xff25402d, 0xff636363
 		};
-		for (s32 y=0; y<256; y++)
+		for (int32_t y=0; y<256; y++)
 		{
 			p.x = 0.2f;
-			for (s32 x=0; x<256; x++)
+			for (int32_t x=0; x<256; x++)
 			{
 				float f = ProceduralFunc::fBm(p, 4);
-				s32 I = (s32)Math::clamp(255.0f*(f*0.5f+0.5f), 0.0f, 255.0f);
+				int32_t I = (int32_t)Math::clamp(255.0f*(f*0.5f+0.5f), 0.0f, 255.0f);
 
-				s32 index = Math::clamp( I/85, 0, 2 );
+				int32_t index = Math::clamp( I/85, 0, 2 );
 				_groundTex[ y*256 + x ] = colors[index];
 
 				p.x += delta;
 			}
 			p.y += delta;
 		}
-		m_hDebugGroundTex = m_pDriver->CreateTexture(256, 256, IDriver3D::TEX_FORMAT_FORCE_32bpp, (u8 *)&_groundTex[0], false);
+		m_hDebugGroundTex = m_pDriver->CreateTexture(256, 256, IDriver3D::TEX_FORMAT_FORCE_32bpp, (uint8_t *)&_groundTex[0], false);
 		//
 	}
 }
 
-void Terrain::FilterHeightMap(u8 *pAltMap, float *pAltMapF, float *pCoastalDist)
+void Terrain::FilterHeightMap(uint8_t *pAltMap, float *pAltMapF, float *pCoastalDist)
 {
 	static float afHeights0[1000*500];
 	static float afHeights1[1000*500];
@@ -763,12 +763,12 @@ void Terrain::FilterHeightMap(u8 *pAltMap, float *pAltMapF, float *pCoastalDist)
 #endif
 }
 
-void Terrain::AddDynamicObject(u32 uID)
+void Terrain::AddDynamicObject(uint32_t uID)
 {
 	m_pSector->AddObject( uID );
 }
 
-void Terrain::SetHeightmap(s32 width, s32 height, u8 *pData, float fScale, float fBias)
+void Terrain::SetHeightmap(int32_t width, int32_t height, uint8_t *pData, float fScale, float fBias)
 {
 	m_nWidth  = width;
 	m_nHeight = height;
@@ -790,7 +790,7 @@ void Terrain::Activate(bool bActive)
 }
 
 //Update the terrain mesh and texturing based on the world position.
-bool Terrain::Update(s32 x, s32 y, s32 nRectCnt, LocationRect *pRects)
+bool Terrain::Update(int32_t x, int32_t y, int32_t nRectCnt, LocationRect *pRects)
 {
 	bool bUpdateNeeded = false;
 	if ( !m_bActive )
@@ -840,7 +840,7 @@ bool Terrain::Update(s32 x, s32 y, s32 nRectCnt, LocationRect *pRects)
 	return bUpdateNeeded;
 }
 
-void Terrain::RenderSky(s32 skyIndex, s32 timeIndex, Camera *pCamera)
+void Terrain::RenderSky(int32_t skyIndex, int32_t timeIndex, Camera *pCamera)
 {
 	m_pSkyLoader->LoadSky(skyIndex);
 	SkyData *pSkyData = (SkyData *)m_pSkyLoader->GetSkyData(skyIndex);
@@ -860,7 +860,7 @@ void Terrain::RenderSky(s32 skyIndex, s32 timeIndex, Camera *pCamera)
 	TextureHandle ahTex[] = { pSkyData->ahTexEast[timeIndex], pSkyData->ahTexWest[timeIndex], pSkyData->ahTexWest[timeIndex], pSkyData->ahTexWest[timeIndex] };
 
 	//Render Sky Cylinder...
-	const s32 cylinderCnt = 32;
+	const int32_t cylinderCnt = 32;
 
 	f32 dA = MATH_TWO_PI / (float)cylinderCnt;
 	f32 A = 0.0f;
@@ -872,7 +872,7 @@ void Terrain::RenderSky(s32 skyIndex, s32 timeIndex, Camera *pCamera)
 	Vector3 posList[4];
 	Vector2 uvList[4];
 
-	u32 uSkyTexCnt = 4;
+	uint32_t uSkyTexCnt = 4;
 
 	uvList[0].Set( 0.01f, 0.99f );
 	uvList[1].Set( 0.99f, 0.99f );
@@ -886,11 +886,11 @@ void Terrain::RenderSky(s32 skyIndex, s32 timeIndex, Camera *pCamera)
 	f32 zTop = vLoc.z + m_fSkyTop*topScale;
 	f32 zBot = vLoc.z + m_fSkyBot;
 
-	u32 uDiv = cylinderCnt/uSkyTexCnt;
+	uint32_t uDiv = cylinderCnt/uSkyTexCnt;
 	f32 fWidth = 1.0f/(f32)uDiv;
-	for (u32 s=0; s<cylinderCnt; s++)
+	for (uint32_t s=0; s<cylinderCnt; s++)
 	{
-		u32 idx = s%uDiv;
+		uint32_t idx = s%uDiv;
 		f32 fStart = (f32)idx * fWidth;
 
 		uvList[0].x = fStart;
@@ -935,15 +935,15 @@ void Terrain::Render(Camera *pCamera)
 	
 	if ( m_bShowTerrainDebug )
 	{
-		s32 x = (m_nTerrainMapX-500)*m_nTerrainMapScale + 500;
-		s32 y = (m_nTerrainMapY-250)*m_nTerrainMapScale + 250;
+		int32_t x = (m_nTerrainMapX-500)*m_nTerrainMapScale + 500;
+		int32_t y = (m_nTerrainMapY-250)*m_nTerrainMapScale + 250;
 
 		m_pDriver->AddOverlay(x, y, m_nTerrainMapScale, m_hDebugClimate);
 
 		if ( m_x >= 0 && m_y >= 0 )
 		{
-			s32 px = m_nTerrainMapX + ( (m_x+8)>>3 );
-			s32 py = m_nTerrainMapY + ( 499 - ((m_y-8)>>3) );
+			int32_t px = m_nTerrainMapX + ( (m_x+8)>>3 );
+			int32_t py = m_nTerrainMapY + ( 499 - ((m_y-8)>>3) );
 
 			px = (px-500)*m_nTerrainMapScale + 500 - 1;
 			py = (py-250)*m_nTerrainMapScale + 250 - 1;
@@ -955,7 +955,7 @@ void Terrain::Render(Camera *pCamera)
 	{
 		m_pDriver->ForceMipmapping(false);
 
-		s32 skyIndex = GetSkyIndex(7, 7);
+		int32_t skyIndex = GetSkyIndex(7, 7);
 		m_pDriver->EnableFog(false);
 		RenderSky(skyIndex, 20, pCamera);
 		m_pDriver->Clear(false);
@@ -965,7 +965,7 @@ void Terrain::Render(Camera *pCamera)
 		extern float m_fZRange;
 		m_pDriver->ForceMipmapping(true);
 
-		s32 bEnable = 1;
+		int32_t bEnable = 1;
 		m_pDriver->SetExtension_Data( IDriver3D::EXT_GOURAUD, &bEnable, NULL);
 
 		//m_fZRange = 8000.0f * 4.0f;
@@ -1010,7 +1010,7 @@ bool Terrain::IsPointInWater(float xPos, float yPos)
 	return bWater0 && bWater1 && bWater2 && bWater3;
 }
 
-float Terrain::GetHeight_MapScale(s32 x, s32 y)
+float Terrain::GetHeight_MapScale(int32_t x, int32_t y)
 {
 	if ( !m_bMeshBuilt )
 	{
@@ -1027,7 +1027,7 @@ float Terrain::GetHeight_MapScale(s32 x, s32 y)
 	return m_afHeightmap[y*1000+x];
 }
 
-u32 Terrain::GetClimate_MapScale(s32 x, s32 y)
+uint32_t Terrain::GetClimate_MapScale(int32_t x, int32_t y)
 {
 	if ( !m_bMeshBuilt )
 	{
@@ -1041,7 +1041,7 @@ u32 Terrain::GetClimate_MapScale(s32 x, s32 y)
 	x = Math::clamp(x, 0, 999);
 	y = Math::clamp(499 - y, 0, 499);
 
-	s32 idx = (int)m_pClimate[y*1000+x]-223;
+	int32_t idx = (int)m_pClimate[y*1000+x]-223;
 	assert( idx >= 0 && idx < 10 );
 	return s_anMapClimate[idx];
 }
@@ -1086,7 +1086,7 @@ bool Terrain::SortCB_Chunks(Chunk*& d1, Chunk*& d2)
 	return false;
 }
 
-void Terrain::RenderLOD(Camera *pCamera, s32 lod)
+void Terrain::RenderLOD(Camera *pCamera, int32_t lod)
 {
 	//Set Identity for now, later we'll have a real world matrix.
 	m_pDriver->SetWorldMatrix( &Matrix::s_Identity, m_x, m_y );
@@ -1124,7 +1124,7 @@ void Terrain::RenderLOD(Camera *pCamera, s32 lod)
 	m_pDriver->SetExtension_Data(IDriver3D::EXT_TEXTURE_INDEX, NULL, NULL);
 }
 
-void Terrain::RenderChunk(Camera *pCamera, s32 lod, s32 chunkNum)
+void Terrain::RenderChunk(Camera *pCamera, int32_t lod, int32_t chunkNum)
 {
 	if ( lod > 0 || pCamera->AABBInsideFrustum(m_LOD[lod].m_aChunks[chunkNum].m_aChunkBounds.vMin, m_LOD[lod].m_aChunks[chunkNum].m_aChunkBounds.vMax, m_x, m_y)!=Camera::FRUSTUM_OUT )
 	{
@@ -1140,9 +1140,9 @@ struct FoliageData
 };
 
 FoliageData m_aFoliageData[32];
-const u32 uPlantsOnAxis = 56;
-u32 m_auObjID[uPlantsOnAxis*uPlantsOnAxis];
-u8  m_auIndex[uPlantsOnAxis*uPlantsOnAxis];
+const uint32_t uPlantsOnAxis = 56;
+uint32_t m_auObjID[uPlantsOnAxis*uPlantsOnAxis];
+uint8_t  m_auIndex[uPlantsOnAxis*uPlantsOnAxis];
 
 void Terrain::BuildTerrainMeshes()
 {
@@ -1162,18 +1162,18 @@ void Terrain::BuildTerrainMeshes()
 
 		//preload foliage textures.
 		const char *szTexName = "TEXTURE.508";
-		for (s32 i=0; i<32; i++)
+		for (int32_t i=0; i<32; i++)
 		{
 			TextureHandle hTex = TextureCache::GameFile_LoadTexture_TexList( TEXTURETYPE_IMG, 7, ARCHIVETYPE_NONE, "", szTexName, i );
 			f32 fw, fh;
-			s32 ox, oy;
-			u32 w, h;
+			int32_t ox, oy;
+			uint32_t w, h;
 			TextureCache::GetTextureSize(ox, oy, w, h, fw, fh);
-			s16 *pSpriteScale = (s16 *)TextureCache::GetTexExtraData();
+			int16_t *pSpriteScale = (int16_t *)TextureCache::GetTexExtraData();
 
 			//sprite scale...
-			s32 newWidth  = w*(256+pSpriteScale[0])>>8;
-			s32 newHeight = h*(256+pSpriteScale[1])>>8;
+			int32_t newWidth  = w*(256+pSpriteScale[0])>>8;
+			int32_t newHeight = h*(256+pSpriteScale[1])>>8;
 
 			Vector3 vScale;
 			vScale.x = (f32)newWidth  / 8.0f;
@@ -1186,17 +1186,17 @@ void Terrain::BuildTerrainMeshes()
 
 		//now create the foliage objects...
 		float yPos = -512.0f;
-		for (s32 y=0; y<uPlantsOnAxis; y++)
+		for (int32_t y=0; y<uPlantsOnAxis; y++)
 		{
 			float xPos = -512.0f;
-			for (s32 x=0; x<uPlantsOnAxis; x++)
+			for (int32_t x=0; x<uPlantsOnAxis; x++)
 			{
-				s32 f = rand()&31;
+				int32_t f = rand()&31;
 
 				Object *pObj = ObjectManager::CreateObject("Sprite_ZAxis");
 				pObj->SetWorldPos(m_x, m_y);
 				
-				u32 uObjID = pObj->GetID();
+				uint32_t uObjID = pObj->GetID();
 				m_pSector->AddObject( uObjID );
 				m_auObjID[y*uPlantsOnAxis+x] = uObjID;
 				m_auIndex[y*uPlantsOnAxis+x] = f;
@@ -1227,15 +1227,15 @@ void Terrain::BuildTerrainMeshes()
 		}
 	}
 
-	for (u32 l=0; l<LOD_COUNT; l++)
+	for (uint32_t l=0; l<LOD_COUNT; l++)
 	{
 		m_LOD[l].m_pVB = xlNew VertexBuffer(m_pDriver);
 		m_LOD[l].m_pVB->Create(sizeof(TerrainVtx), c_numVertexEdge*c_numVertexEdge, true, IDriver3D::VBO_HAS_NORMALS | IDriver3D::VBO_HAS_TEXCOORDS | IDriver3D::VBO_WORLDSPACE);
 
-		s32 numQuads = TILE_QUAD_COUNT * CHUNK_COUNT;
+		int32_t numQuads = TILE_QUAD_COUNT * CHUNK_COUNT;
 
 		m_LOD[l].m_pGlobalIB = xlNew IndexBuffer(m_pDriver);
-		m_LOD[l].m_pGlobalIB->Create( numQuads*6, sizeof(u16), false );
+		m_LOD[l].m_pGlobalIB->Create( numQuads*6, sizeof(uint16_t), false );
 
 		Vector3 pos;
 
@@ -1294,9 +1294,9 @@ void Terrain::BuildTerrainMeshes()
 			{
 				int chunkIndex = y*CHUNK_TILE_WIDTH+x;
 				m_LOD[l].m_aChunks[chunkIndex].m_pChunkIB = xlNew IndexBuffer(m_pDriver);
-				m_LOD[l].m_aChunks[chunkIndex].m_pChunkIB->Create( TILE_QUAD_WIDTH*TILE_QUAD_WIDTH*6, sizeof(u16), false );
+				m_LOD[l].m_aChunks[chunkIndex].m_pChunkIB->Create( TILE_QUAD_WIDTH*TILE_QUAD_WIDTH*6, sizeof(uint16_t), false );
 
-				u16 *pChunkIndices = (u16 *)m_LOD[l].m_aChunks[chunkIndex].m_pChunkIB->Lock();
+				uint16_t *pChunkIndices = (uint16_t *)m_LOD[l].m_aChunks[chunkIndex].m_pChunkIB->Lock();
 				assert( pChunkIndices );
 				if ( pChunkIndices )
 				{
@@ -1330,12 +1330,12 @@ void Terrain::BuildTerrainMeshes()
 	}
 }
 
-s32 _climateTexOffs[]=
+int32_t _climateTexOffs[]=
 {
 	112, 56, 0, 168
 };
 
-s32 Terrain::GetSkyIndex(int x, int y)
+int32_t Terrain::GetSkyIndex(int x, int y)
 {
 	int xp = x + ((m_x-7)<<4);
 	int yp = y + ((m_y-7)<<4);
@@ -1348,7 +1348,7 @@ s32 Terrain::GetSkyIndex(int x, int y)
 	return m_anMapSky[idx];
 }
 
-s32 Terrain::GetClimate(int x, int y, int *pnFlat/*=NULL*/)
+int32_t Terrain::GetClimate(int x, int y, int *pnFlat/*=NULL*/)
 {
 	int xp = x + ((m_x-7)<<4);
 	int yp = y + ((m_y-7)<<4);
@@ -1454,7 +1454,7 @@ float Terrain::SampleBaseHeightmap(int lod, int x, int y)
 #endif
 }
 
-void Terrain::ComputeNormal(s32 x, s32 y)
+void Terrain::ComputeNormal(int32_t x, int32_t y)
 {
 	Vector3 N(0,0,1);
 
@@ -1476,15 +1476,15 @@ void Terrain::ComputeNormal(s32 x, s32 y)
 	m_LOD[0].m_pLocalNM[y*c_numVertexEdge+x] = N;
 }
 
-s32 ApplyFlip(s32 value, s32 flip)
+int32_t ApplyFlip(int32_t value, int32_t flip)
 {
-	s32 flip_value = value;
+	int32_t flip_value = value;
 	if ( flip&1 )
 	{
-		s32 A =  flip_value&3;
-		s32 B = (flip_value>>2)&3;
-		s32 C = (flip_value>>4)&3;
-		s32 D = (flip_value>>6)&3;
+		int32_t A =  flip_value&3;
+		int32_t B = (flip_value>>2)&3;
+		int32_t C = (flip_value>>4)&3;
+		int32_t D = (flip_value>>6)&3;
 
 		flip_value  = B;
 		flip_value |= A<<2;
@@ -1493,10 +1493,10 @@ s32 ApplyFlip(s32 value, s32 flip)
 	}
 	if ( flip&2 )
 	{
-		s32 A =  flip_value&3;
-		s32 B = (flip_value>>2)&3;
-		s32 C = (flip_value>>4)&3;
-		s32 D = (flip_value>>6)&3;
+		int32_t A =  flip_value&3;
+		int32_t B = (flip_value>>2)&3;
+		int32_t C = (flip_value>>4)&3;
+		int32_t D = (flip_value>>6)&3;
 
 		flip_value  = C;
 		flip_value |= D<<2;
@@ -1505,10 +1505,10 @@ s32 ApplyFlip(s32 value, s32 flip)
 	}
 	if ( flip&4 )
 	{
-		s32 A =  flip_value&3;
-		s32 B = (flip_value>>2)&3;
-		s32 C = (flip_value>>4)&3;
-		s32 D = (flip_value>>6)&3;
+		int32_t A =  flip_value&3;
+		int32_t B = (flip_value>>2)&3;
+		int32_t C = (flip_value>>4)&3;
+		int32_t D = (flip_value>>6)&3;
 
 		flip_value  = A;
 		flip_value |= C<<2;
@@ -1536,7 +1536,7 @@ void Terrain::GenTextureTileMapping()
 				break;
 			}
 			//next try the various flip/rotation combinations.
-			static const s32 _flipCombos[7] = { 1, 2, 4, 1|2, 1|4, 2|4, 1|2|4 };
+			static const int32_t _flipCombos[7] = { 1, 2, 4, 1|2, 1|4, 2|4, 1|2|4 };
 			for (int f=0; f<7; f++)
 			{
 				if ( c == ApplyFlip(_anWorkingSet[w], _flipCombos[f]) )
@@ -1556,11 +1556,11 @@ void Terrain::GenTextureTileMapping()
 		//if no mapping is found, just pick a default based on the top left corner.
 		if ( bFound == false )
 		{
-			s32 c0 = c&3, c1 = (c>>2)&3, c2 = (c>>4)&3, c3 = (c>>6)&3;
-			s32 ct0 = 1 + (c1 == c0 ? 1 : 0) + (c2 == c0 ? 1 : 0) + (c3 == c0 ? 1 : 0);
-			s32 ct1 = 1 + (c0 == c1 ? 1 : 0) + (c2 == c1 ? 1 : 0) + (c3 == c1 ? 1 : 0);
-			s32 ct2 = 1 + (c0 == c2 ? 1 : 0) + (c1 == c2 ? 1 : 0) + (c3 == c2 ? 1 : 0);
-			s32 ct3 = 1 + (c0 == c3 ? 1 : 0) + (c1 == c3 ? 1 : 0) + (c2 == c3 ? 1 : 0);
+			int32_t c0 = c&3, c1 = (c>>2)&3, c2 = (c>>4)&3, c3 = (c>>6)&3;
+			int32_t ct0 = 1 + (c1 == c0 ? 1 : 0) + (c2 == c0 ? 1 : 0) + (c3 == c0 ? 1 : 0);
+			int32_t ct1 = 1 + (c0 == c1 ? 1 : 0) + (c2 == c1 ? 1 : 0) + (c3 == c1 ? 1 : 0);
+			int32_t ct2 = 1 + (c0 == c2 ? 1 : 0) + (c1 == c2 ? 1 : 0) + (c3 == c2 ? 1 : 0);
+			int32_t ct3 = 1 + (c0 == c3 ? 1 : 0) + (c1 == c3 ? 1 : 0) + (c2 == c3 ? 1 : 0);
 
 			if ( ct0 >= ct1 && ct0 >= ct2 && ct0 >= ct3 )
 				_anTileMapping[c] = c0;
@@ -1584,14 +1584,14 @@ void Terrain::Animate()
 	static float time = 0.0f;
 	time += (1.0f/60.0f)*0.2f;
 
-	s32 vIndexY = 0;
+	int32_t vIndexY = 0;
 	pos.y = c_startPos.y;
 	float largeWaveScaleBlend = 1.0f / 200.0f;
 	float smallWaveScale = 16.0f;
 	float fDeadZone = (2.0f/32.0f);
 	for (int y=0; y<c_numVertexEdge; y++)
 	{
-		s32 vIndex = vIndexY;
+		int32_t vIndex = vIndexY;
 		pos.x = c_startPos.x;
 		for (int x=0; x<c_numVertexEdge; x++, vIndex++)
 		{
@@ -1631,7 +1631,7 @@ void Terrain::Animate()
 	m_LOD[0].m_pVB->Unlock();
 }
 
-void Terrain::BuildHeightmap(s32 newX, s32 newY, s32 prevX, s32 prevY, s32 nRectCnt, LocationRect *pRects)
+void Terrain::BuildHeightmap(int32_t newX, int32_t newY, int32_t prevX, int32_t prevY, int32_t nRectCnt, LocationRect *pRects)
 {
 	//for now build a single LOD.
 	int vIndex = 0;
@@ -1647,9 +1647,9 @@ void Terrain::BuildHeightmap(s32 newX, s32 newY, s32 prevX, s32 prevY, s32 nRect
 	const float angle = 0.753f;
 	const float ca = cosf(angle);
 	const float sa = sinf(angle);
-	static u8 _auGroundMap[c_numVertexEdge*c_numVertexEdge];
-	static u8 _auGroundMapTmp[c_numVertexEdge*c_numVertexEdge];
-	static u16 _auGroundMapOverride[c_numVertexEdge*c_numVertexEdge];
+	static uint8_t _auGroundMap[c_numVertexEdge*c_numVertexEdge];
+	static uint8_t _auGroundMapTmp[c_numVertexEdge*c_numVertexEdge];
+	static uint16_t _auGroundMapOverride[c_numVertexEdge*c_numVertexEdge];
 
 	float fZ = 0.0f;
 	Vector3 procStart( (float)newX, (float)newY, 0.0f );
@@ -1659,7 +1659,7 @@ void Terrain::BuildHeightmap(s32 newX, s32 newY, s32 prevX, s32 prevY, s32 nRect
 	static float *pTmpBuffer = NULL;
 	static Vector3 *pTmpV3Buffer = NULL;
 	static float *pTmpFltBuffer = NULL;
-	s32 bufferSize = (CHUNK_TILE_WIDTH*TILE_QUAD_WIDTH+1) * (CHUNK_TILE_WIDTH*TILE_QUAD_WIDTH+1);
+	int32_t bufferSize = (CHUNK_TILE_WIDTH*TILE_QUAD_WIDTH+1) * (CHUNK_TILE_WIDTH*TILE_QUAD_WIDTH+1);
 	if ( !pTmpBuffer )
 	{
 		pTmpBuffer   = xlNew float[bufferSize];
@@ -1671,25 +1671,25 @@ void Terrain::BuildHeightmap(s32 newX, s32 newY, s32 prevX, s32 prevY, s32 nRect
 	memcpy(pTmpFltBuffer, m_LOD[0].m_pHM_Flags, bufferSize*sizeof(float));
 	memcpy(_auGroundMapTmp, _auGroundMap, c_numVertexEdge*c_numVertexEdge);
 
-	s32 dx = newX-prevX;
-	s32 dy = newY-prevY;
+	int32_t dx = newX-prevX;
+	int32_t dy = newY-prevY;
 
-	s32 updateRegionCnt;
-	s32 updateRegionX0[4];
-	s32 updateRegionY0[4];
-	s32 updateRegionW[4];
-	s32 updateRegionH[4];
+	int32_t updateRegionCnt;
+	int32_t updateRegionX0[4];
+	int32_t updateRegionY0[4];
+	int32_t updateRegionW[4];
+	int32_t updateRegionH[4];
 
 	if ( (dx || dy) && (abs(dx) <= 1 && abs(dy) <=1) )
 	{
-		s32 startX = dx < 0 ? -dx*TILE_QUAD_WIDTH : 0;
-		s32 startY = dy < 0 ? -dy*TILE_QUAD_WIDTH : 0;
+		int32_t startX = dx < 0 ? -dx*TILE_QUAD_WIDTH : 0;
+		int32_t startY = dy < 0 ? -dy*TILE_QUAD_WIDTH : 0;
 
-		s32 srcY = (dy > 0 ? dy*TILE_QUAD_WIDTH : 0);
-		for (s32 y=startY; y<startY+c_numVertexEdge-abs(dy)*TILE_QUAD_WIDTH; y++, srcY++)
+		int32_t srcY = (dy > 0 ? dy*TILE_QUAD_WIDTH : 0);
+		for (int32_t y=startY; y<startY+c_numVertexEdge-abs(dy)*TILE_QUAD_WIDTH; y++, srcY++)
 		{
-			s32 srcX = (dx > 0 ? dx*TILE_QUAD_WIDTH : 0);
-			for (s32 x=startX; x<startX+c_numVertexEdge-abs(dx)*TILE_QUAD_WIDTH; x++, srcX++)
+			int32_t srcX = (dx > 0 ? dx*TILE_QUAD_WIDTH : 0);
+			for (int32_t x=startX; x<startX+c_numVertexEdge-abs(dx)*TILE_QUAD_WIDTH; x++, srcX++)
 			{
 				m_LOD[0].m_pLocalHM[  y*c_numVertexEdge+x]  = pTmpBuffer[srcY*c_numVertexEdge+srcX];
 				m_LOD[0].m_pLocalNM[  y*c_numVertexEdge+x]  = pTmpV3Buffer[srcY*c_numVertexEdge+srcX];
@@ -1741,41 +1741,41 @@ void Terrain::BuildHeightmap(s32 newX, s32 newY, s32 prevX, s32 prevY, s32 nRect
 	static float locBlend[ c_numVertexEdge*c_numVertexEdge];
 	memset(locHeight, 0, sizeof(float)*c_numVertexEdge*c_numVertexEdge);
 	memset(locBlend,  0, sizeof(float)*c_numVertexEdge*c_numVertexEdge);
-	memset(_auGroundMapOverride, 0xffffffff, sizeof(u16)*c_numVertexEdge*c_numVertexEdge);
+	memset(_auGroundMapOverride, 0xffffffff, sizeof(uint16_t)*c_numVertexEdge*c_numVertexEdge);
 
 	//handle incoming location "rects" - initially just the inner.
-	for (s32 r=0; r<nRectCnt; r++)
+	for (int32_t r=0; r<nRectCnt; r++)
 	{
 		LocationRect *cRect = &pRects[r];
 		//first clip the rect to the terrain area.
-		s32 innerRect[4];
-		s32 outerRect[4];
-		innerRect[0] = Math::Max( (s32)cRect->vRectInner.x, m_x-7 );
-		innerRect[1] = Math::Max( (s32)cRect->vRectInner.y, m_y-7 );
-		innerRect[2] = Math::Min( (s32)cRect->vRectInner.z, m_x+8 );
-		innerRect[3] = Math::Min( (s32)cRect->vRectInner.w, m_y+8 );
+		int32_t innerRect[4];
+		int32_t outerRect[4];
+		innerRect[0] = Math::Max( (int32_t)cRect->vRectInner.x, m_x-7 );
+		innerRect[1] = Math::Max( (int32_t)cRect->vRectInner.y, m_y-7 );
+		innerRect[2] = Math::Min( (int32_t)cRect->vRectInner.z, m_x+8 );
+		innerRect[3] = Math::Min( (int32_t)cRect->vRectInner.w, m_y+8 );
 
-		outerRect[0] = Math::Max( (s32)cRect->vRectOuter.x, m_x-7 );
-		outerRect[1] = Math::Max( (s32)cRect->vRectOuter.y, m_y-7 );
-		outerRect[2] = Math::Min( (s32)cRect->vRectOuter.z, m_x+8 );
-		outerRect[3] = Math::Min( (s32)cRect->vRectOuter.w, m_y+8 );
+		outerRect[0] = Math::Max( (int32_t)cRect->vRectOuter.x, m_x-7 );
+		outerRect[1] = Math::Max( (int32_t)cRect->vRectOuter.y, m_y-7 );
+		outerRect[2] = Math::Min( (int32_t)cRect->vRectOuter.z, m_x+8 );
+		outerRect[3] = Math::Min( (int32_t)cRect->vRectOuter.w, m_y+8 );
 
 		//next modify all tiles in the inner rect so that the height value = location height.
 		const float fBlendScale = 1.0f/64.0f;
-		for (s32 ty=outerRect[1]; ty<outerRect[3]; ty++)
+		for (int32_t ty=outerRect[1]; ty<outerRect[3]; ty++)
 		{
-			s32 y0 = (ty-(m_y-7))*TILE_QUAD_WIDTH;
-			for (s32 tx=outerRect[0]; tx<outerRect[2]; tx++)
+			int32_t y0 = (ty-(m_y-7))*TILE_QUAD_WIDTH;
+			for (int32_t tx=outerRect[0]; tx<outerRect[2]; tx++)
 			{
-				s32 x0 = (tx-(m_x-7))*TILE_QUAD_WIDTH;
+				int32_t x0 = (tx-(m_x-7))*TILE_QUAD_WIDTH;
 				//Inner rect, just set blend to 1.0
 				if ( ty >= innerRect[1] && ty < innerRect[3] && tx >= innerRect[0] && tx < innerRect[2] )
 				{
-					for (s32 y=y0; y<=y0+TILE_QUAD_WIDTH; y++)
+					for (int32_t y=y0; y<=y0+TILE_QUAD_WIDTH; y++)
 					{
-						for (s32 x=x0; x<=x0+TILE_QUAD_WIDTH; x++)
+						for (int32_t x=x0; x<=x0+TILE_QUAD_WIDTH; x++)
 						{
-							s32 vy = y*c_numVertexEdge;
+							int32_t vy = y*c_numVertexEdge;
 							locHeight[vy + x] = cRect->fHeight;
 							locBlend[ vy + x] = 1.0f;
 						}
@@ -1788,13 +1788,13 @@ void Terrain::BuildHeightmap(s32 newX, s32 newY, s32 prevX, s32 prevY, s32 nRect
 					float _xBlend[17*17];
 					if ( tx < innerRect[0] )
 					{
-						for (s32 y=y0; y<=y0+TILE_QUAD_WIDTH; y++)
+						for (int32_t y=y0; y<=y0+TILE_QUAD_WIDTH; y++)
 						{
-							float xOuterEdge = (float)( ((s32)cRect->vRectOuter.x - (m_x-7))*16 );
-							for (s32 x=x0; x<=x0+TILE_QUAD_WIDTH; x++)
+							float xOuterEdge = (float)( ((int32_t)cRect->vRectOuter.x - (m_x-7))*16 );
+							for (int32_t x=x0; x<=x0+TILE_QUAD_WIDTH; x++)
 							{
 								float xBlend = Math::clamp( ( (float)x-xOuterEdge ) * fBlendScale, 0.0f, 1.0f );
-								s32 vy = y*c_numVertexEdge;
+								int32_t vy = y*c_numVertexEdge;
 								if ( locBlend[vy+x] < 1.0f || locHeight[vy+x] == cRect->fHeight )
 								{
 									locHeight[vy + x] = cRect->fHeight;
@@ -1812,13 +1812,13 @@ void Terrain::BuildHeightmap(s32 newX, s32 newY, s32 prevX, s32 prevY, s32 nRect
 					}
 					else if ( tx >= innerRect[2] )
 					{
-						for (s32 y=y0; y<=y0+TILE_QUAD_WIDTH; y++)
+						for (int32_t y=y0; y<=y0+TILE_QUAD_WIDTH; y++)
 						{
-							float xOuterEdge = (float)( ((s32)cRect->vRectOuter.z - (m_x-7))*16 );
-							for (s32 x=x0; x<=x0+TILE_QUAD_WIDTH; x++)
+							float xOuterEdge = (float)( ((int32_t)cRect->vRectOuter.z - (m_x-7))*16 );
+							for (int32_t x=x0; x<=x0+TILE_QUAD_WIDTH; x++)
 							{
 								float xBlend = Math::clamp( ( xOuterEdge - (float)x ) * fBlendScale, 0.0f, 1.0f );
-								s32 vy = y*c_numVertexEdge;
+								int32_t vy = y*c_numVertexEdge;
 								if ( locBlend[vy+x] < 1.0f || locHeight[vy+x] == cRect->fHeight )
 								{
 									locHeight[vy + x] = cRect->fHeight;
@@ -1838,13 +1838,13 @@ void Terrain::BuildHeightmap(s32 newX, s32 newY, s32 prevX, s32 prevY, s32 nRect
 					//Then do Y blend.
 					if ( ty < innerRect[1] )
 					{
-						for (s32 y=y0; y<=y0+TILE_QUAD_WIDTH; y++)
+						for (int32_t y=y0; y<=y0+TILE_QUAD_WIDTH; y++)
 						{
-							float yOuterEdge = (float)( ((s32)cRect->vRectOuter.y - (m_y-7))*16 );
+							float yOuterEdge = (float)( ((int32_t)cRect->vRectOuter.y - (m_y-7))*16 );
 							float yBlend = Math::clamp( ( (float)y-yOuterEdge ) * fBlendScale, 0.0f, 1.0f );
-							for (s32 x=x0; x<=x0+TILE_QUAD_WIDTH; x++)
+							for (int32_t x=x0; x<=x0+TILE_QUAD_WIDTH; x++)
 							{
-								s32 vy = y*c_numVertexEdge;
+								int32_t vy = y*c_numVertexEdge;
 								if ( locBlend[vy+x] < 1.0f || locHeight[vy+x] == cRect->fHeight )
 								{
 									locHeight[vy + x] = cRect->fHeight;
@@ -1858,13 +1858,13 @@ void Terrain::BuildHeightmap(s32 newX, s32 newY, s32 prevX, s32 prevY, s32 nRect
 					}
 					else if ( ty >= innerRect[3] )
 					{
-						for (s32 y=y0; y<=y0+TILE_QUAD_WIDTH; y++)
+						for (int32_t y=y0; y<=y0+TILE_QUAD_WIDTH; y++)
 						{
-							float yOuterEdge = (float)( ((s32)cRect->vRectOuter.w - (m_y-7))*16 );
+							float yOuterEdge = (float)( ((int32_t)cRect->vRectOuter.w - (m_y-7))*16 );
 							float yBlend = Math::clamp( ( yOuterEdge - (float)y ) * fBlendScale, 0.0f, 1.0f );
-							for (s32 x=x0; x<=x0+TILE_QUAD_WIDTH; x++)
+							for (int32_t x=x0; x<=x0+TILE_QUAD_WIDTH; x++)
 							{
-								s32 vy = y*c_numVertexEdge;
+								int32_t vy = y*c_numVertexEdge;
 								if ( locBlend[vy+x] < 1.0f || locHeight[vy+x] == cRect->fHeight )
 								{
 									locHeight[vy + x]  = cRect->fHeight;
@@ -1882,9 +1882,9 @@ void Terrain::BuildHeightmap(s32 newX, s32 newY, s32 prevX, s32 prevY, s32 nRect
 	}
 
 	//then generate the parts that are new.
-	for (s32 r=0; r<updateRegionCnt; r++)
+	for (int32_t r=0; r<updateRegionCnt; r++)
 	{
-		s32 vIndexY = updateRegionY0[r]*c_numVertexEdge + updateRegionX0[r];
+		int32_t vIndexY = updateRegionY0[r]*c_numVertexEdge + updateRegionX0[r];
 		pos.y = c_startPos.y + 64.0f*(float)updateRegionY0[r];
 		for (int y=updateRegionY0[r]; y<updateRegionY0[r]+updateRegionH[r]; y++)
 		{
@@ -1942,7 +1942,7 @@ void Terrain::BuildHeightmap(s32 newX, s32 newY, s32 prevX, s32 prevY, s32 nRect
 
 						p.Set(proc_pos.x*2.0f, proc_pos.y*2.0f, 0.5f);
 						float noise = ProceduralFunc::fBm(p, 4)*0.5f+0.5f;
-						_auGroundMap[vIndex] = Math::clamp( (s32)(noise*3.0f+1.0f), 1, 3 );
+						_auGroundMap[vIndex] = Math::clamp( (int32_t)(noise*3.0f+1.0f), 1, 3 );
 						m_LOD[0].m_pHM_Flags[vIndex] = 0;
 					}
 				}
@@ -1957,20 +1957,20 @@ void Terrain::BuildHeightmap(s32 newX, s32 newY, s32 prevX, s32 prevY, s32 nRect
 
 	//update foliage...
 	//now create the foliage objects...
-	s32 vIndexY = 4*16;
-	s32 vIndexX = 4*16;
-	for (s32 y=0; y<uPlantsOnAxis; y++)
+	int32_t vIndexY = 4*16;
+	int32_t vIndexX = 4*16;
+	for (int32_t y=0; y<uPlantsOnAxis; y++)
 	{
-		s32 vOffsetY = vIndexY*c_numVertexEdge;
-		for (s32 x=0; x<uPlantsOnAxis; x++)
+		int32_t vOffsetY = vIndexY*c_numVertexEdge;
+		for (int32_t x=0; x<uPlantsOnAxis; x++)
 		{
 			Object *pObj = ObjectManager::GetObjectFromID( m_auObjID[y*uPlantsOnAxis+x] );
 			
-			s32 vIndex = vOffsetY + vIndexX + x*2;
+			int32_t vIndex = vOffsetY + vIndexX + x*2;
 
 			float h = m_LOD[0].m_pLocalHM[ vIndex ];
-			u8 f = (s32)(h * 32.0f) & 31;
-			u8 prob = (s32)(h * 100.0f)%100;
+			uint8_t f = (int32_t)(h * 32.0f) & 31;
+			uint8_t prob = (int32_t)(h * 100.0f)%100;
 
 			if ( locBlend[vIndex] < 1.0f && _auGroundMap[vIndex] != 0 && prob > 50 )
 			{
@@ -2018,7 +2018,7 @@ void Terrain::BuildHeightmap(s32 newX, s32 newY, s32 prevX, s32 prevY, s32 nRect
 	}
 
 	//finally generate the vertex normals for regions that need updating.
-	for (s32 r=0; r<updateRegionCnt; r++)
+	for (int32_t r=0; r<updateRegionCnt; r++)
 	{
 		for (int y=updateRegionY0[r]; y<updateRegionY0[r]+updateRegionH[r]; y++)
 		{
@@ -2042,19 +2042,19 @@ void Terrain::BuildHeightmap(s32 newX, s32 newY, s32 prevX, s32 prevY, s32 nRect
 
 	for (int y=0, yOffs=0; y<c_numVertexEdge-1; y++, yOffs+=c_numVertexEdge)
 	{
-		s32 chunkY = (y>>4)*CHUNK_TILE_WIDTH;
-		s32 quadY  = (y&15)*TILE_QUAD_WIDTH;
+		int32_t chunkY = (y>>4)*CHUNK_TILE_WIDTH;
+		int32_t quadY  = (y&15)*TILE_QUAD_WIDTH;
 		for (int x=0; x<c_numVertexEdge-1; x++)
 		{
-			s32 v0 = _auGroundMap[ yOffs + x ];
-			s32 v1 = _auGroundMap[ yOffs + x + 1 ];
-			s32 v2 = _auGroundMap[ yOffs + c_numVertexEdge + x ];
-			s32 v3 = _auGroundMap[ yOffs + c_numVertexEdge + x + 1 ];
+			int32_t v0 = _auGroundMap[ yOffs + x ];
+			int32_t v1 = _auGroundMap[ yOffs + x + 1 ];
+			int32_t v2 = _auGroundMap[ yOffs + c_numVertexEdge + x ];
+			int32_t v3 = _auGroundMap[ yOffs + c_numVertexEdge + x + 1 ];
 
-			s32 lOcc = E(v0, v1, v2, v3);
-			s32 climateTexOffs = _climateTexOffs[GetClimate(x,y)];
-			s32 chunk = chunkY + (x>>4);
-			s32 quad  = quadY  + (x&15);
+			int32_t lOcc = E(v0, v1, v2, v3);
+			int32_t climateTexOffs = _climateTexOffs[GetClimate(x,y)];
+			int32_t chunk = chunkY + (x>>4);
+			int32_t quad  = quadY  + (x&15);
 
 			m_LOD[0].m_aChunks[chunk].m_TileTexArray[quad] = _anTileMapping[lOcc] + climateTexOffs;
 			assert( ( (m_LOD[0].m_aChunks[chunk].m_TileTexArray[quad])&0xff ) < (56*4) );

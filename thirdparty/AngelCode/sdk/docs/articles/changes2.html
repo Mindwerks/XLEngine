@@ -134,7 +134,7 @@ BODY { FONT-SIZE: 12px; FONT-FAMILY: Arial; }
 </ul>
 <li>Virtual machine
 <ul>
-<li>Added bytecode instructions DIVu, MODu, DIVu64, MODu64
+<li>Added bytecode instructions DIVu, MODu, DIVuint64_t, MODuint64_t
 <li>Unified a good part of the platform specific code into one common function
 </ul>
 <li>Library
@@ -339,7 +339,7 @@ BODY { FONT-SIZE: 12px; FONT-FAMILY: Arial; }
 <li>Fixed bug with incremental garbage collector (Thanks hoboaki)
 <li>Saving byte code that used template classes didn't work properly (Thanks hoboaki)
 <li>Fixed bug with property accessors in type conversions (Thanks Philip Bennefall)
-<li>Fixed assert failure on compílation error with undeclared variable (Thanks Philip Bennefall)
+<li>Fixed assert failure on compï¿½lation error with undeclared variable (Thanks Philip Bennefall)
 <li>Fixed bug with implicit ref casts for global variables (Thanks Gilad Novik)
 <li>Fixes to the Xbox 360 calling convention codes (Thanks Cyril Tissier)
 <li>Fixed bug in the bytecode optimization on big endian CPUs (Thanks Remi Gillig)
@@ -1268,11 +1268,11 @@ BODY { FONT-SIZE: 12px; FONT-FAMILY: Arial; }
 <li>Virtual machine
 <ul>
 <li>New byte codes:
-    i64TOi, uTOi64, iTOi64, fTOi64, dTOi64, fTOu64, dTOu64, i64TOf, u64TOf, i64TOd, u64TOd,
+    i64TOi, uTOi64, iTOi64, fTOi64, dTOi64, fTOuint64_t, dTOuint64_t, i64TOf, uint64_tTOf, i64TOd, uint64_tTOd,
     NEGi64, INCi64, DECi64, BNOT64,
     ADDi64, SUBi64, MULi64, DIVi64, MODi64,
     BAND64, BOR64, BXOR64, BSLL64, BSRL64, BSRA64
-    CMPi64, CMPu64
+    CMPi64, CMPuint64_t
 </ul>
 <li>Project
 <ul>
@@ -1294,7 +1294,7 @@ BODY { FONT-SIZE: 12px; FONT-FAMILY: Arial; }
 <ul>
 <li>Bug fixes
 <ul>
-<li>Constant bits8 and bits16 variables didn't work properly (Thanks Cheetah3d)
+<li>Constant bitint8_t and bitint16_t variables didn't work properly (Thanks Cheetah3d)
 </ul>
 </ul>
 
@@ -1615,7 +1615,7 @@ BODY { FONT-SIZE: 12px; FONT-FAMILY: Arial; }
 <ul>
 <li>Bug fixes
 <ul>
-<li>Structure definitions and function declarations where not order independent. (Thanks Carl Ådahl)
+<li>Structure definitions and function declarations where not order independent. (Thanks Carl ï¿½dahl)
 <li>Added the old CreateContext() and GetGlobalVarPointer() as deprecated methods.
 <li>Fixed some more compiler warnings.
 </ul>
@@ -1740,7 +1740,7 @@ BODY { FONT-SIZE: 12px; FONT-FAMILY: Arial; }
 <li>GetGlobalVarPointer() was returning a pointer to a pointer for registered object types. (Thanks Rain Dog)
 <li>Fixed a possible crash when calling AddScriptSection() with 0 for section name.
 <li>The operands for overloaded operators are now evaluated left-to-right.
-<li>Output parameters weren't working correctly for object methods (Thanks Mårten Svanfeldt, a.k.a thebolt00)
+<li>Output parameters weren't working correctly for object methods (Thanks Mï¿½rten Svanfeldt, a.k.a thebolt00)
 <li>The engine failed when calling registered functions that received objects both by value and by reference (Thanks Lennart Denninger)
 <li>Registered object types without registered constructor couldn't be used to create temporary objects in expressions.
 <li>Global variables couldn't use overloaded assignment operators to initialize the variables.

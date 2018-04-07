@@ -66,7 +66,7 @@ struct DisplayMessage
 };
 #define MAX_MESSAGE_COUNT 32
 DisplayMessage m_aMessages[MAX_MESSAGE_COUNT];
-s32 m_nMessageCnt=0;
+int32_t m_nMessageCnt=0;
 
 IDriver3D *g_pDriver3D = NULL;
 
@@ -96,13 +96,13 @@ Engine::~Engine()
 	Destroy();
 }
 
-bool Engine::Init(void **winParam, s32 paramCnt, s32 w, s32 h)
+bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
 {
     //Initialize 3D.
 	if ( EngineSettings::IsServer() == false )
 	{
 		//Create the low-level renderer
-		s32 nRenderer = EngineSettings::GetRenderer();
+		int32_t nRenderer = EngineSettings::GetRenderer();
 		if ( nRenderer == EngineSettings::RENDERER_OPENGL )
 		{
 			m_pDriver3D = xlNew Driver3D_OGL();
@@ -231,8 +231,8 @@ bool Engine::Init(void **winParam, s32 paramCnt, s32 w, s32 h)
 
 	if ( EngineSettings::IsServer() || EngineSettings::IsClient_MP() )
 	{
-		u32 uWaitFrame = 0;
-		s32 nExitFrameCnt = -2;
+		uint32_t uWaitFrame = 0;
+		int32_t nExitFrameCnt = -2;
 
 		if ( NetworkMgr::Init(this) == false )
 		{
@@ -281,14 +281,14 @@ bool Engine::Init(void **winParam, s32 paramCnt, s32 w, s32 h)
 					FontManager::BeginTextRendering();
 					{
 						char szWaitMsg[128];
-						s32 xOffs;
+						int32_t xOffs;
 
 						if ( nExitFrameCnt < 0 )
 						{
-							u32 uDotCnt = (uWaitFrame>>3)%10;
+							uint32_t uDotCnt = (uWaitFrame>>3)%10;
 							strcpy(szWaitMsg, "Waiting for server response");
 							size_t l = strlen(szWaitMsg);
-							u32 d=0;
+							uint32_t d=0;
 							for (; d<uDotCnt; d++)
 							{
 								szWaitMsg[l+d] = '.';
@@ -381,7 +381,7 @@ void Engine::InitGame(const char *pszGameLib)
 	PluginManager::InitGame( pszGameLib );
 }
 
-XLFont *Engine::GetSystemFont(s32 size)
+XLFont *Engine::GetSystemFont(int32_t size)
 {
 	XLFont *pFont = NULL;
 
@@ -400,7 +400,7 @@ void Engine::AddDisplayMessage(const char *pszMsg, Vector4 *color, f32 fShowTime
 	if ( m_nMessageCnt >= MAX_MESSAGE_COUNT )
 	{
 		//must remove the first message.
-		for (s32 m=0; m<m_nMessageCnt-1; m++)
+		for (int32_t m=0; m<m_nMessageCnt-1; m++)
 		{
 			m_aMessages[m] = m_aMessages[m+1];
 		}
@@ -440,7 +440,7 @@ f32 Engine::GetCurrentSpeed()
 }
 
 //XL Engine Plugin API layer.
-s32 Game_SetUpdateCallback(XAPI_Game_Update pGameUpdate, void *pUserData)
+int32_t Game_SetUpdateCallback(XAPI_Game_Update pGameUpdate, void *pUserData)
 {
 	m_pGameUpdate    = pGameUpdate;
 	m_pGameUpdate_UD = pUserData;
@@ -448,7 +448,7 @@ s32 Game_SetUpdateCallback(XAPI_Game_Update pGameUpdate, void *pUserData)
 	return 1;
 }
 
-s32 Game_SetRenderCallback(XAPI_Game_Render pGameRender, void *pUserData)
+int32_t Game_SetRenderCallback(XAPI_Game_Render pGameRender, void *pUserData)
 {
 	m_pGameRender    = pGameRender;
 	m_pGameRender_UD = pUserData;
@@ -456,7 +456,7 @@ s32 Game_SetRenderCallback(XAPI_Game_Render pGameRender, void *pUserData)
 	return 1;
 }
 
-s32 World_SetUpdateCallback(XAPI_World_Update pWorldUpdate, void *pUserData)
+int32_t World_SetUpdateCallback(XAPI_World_Update pWorldUpdate, void *pUserData)
 {
 	m_pWorldUpdate    = pWorldUpdate;
 	m_pWorldUpdate_UD = pUserData;
@@ -464,7 +464,7 @@ s32 World_SetUpdateCallback(XAPI_World_Update pWorldUpdate, void *pUserData)
 	return 1;
 }
 
-void Engine::WorldUpdate(s32 newWorldX, s32 newWorldY)
+void Engine::WorldUpdate(int32_t newWorldX, int32_t newWorldY)
 {
 	if ( m_pWorldUpdate )
 	{
@@ -490,7 +490,7 @@ void Game_LoadWorldMap(void)
 	WorldMap::Load();
 }
 
-void Engine::Engine_SetCameraData(f32 *pos, f32 *dir, f32 fSkew, f32 fSpeed, u32 uSector)
+void Engine::Engine_SetCameraData(f32 *pos, f32 *dir, f32 fSkew, f32 fSpeed, uint32_t uSector)
 {
 	Camera *pCamera = m_pEngineForAPI->m_pCamera;
 	Vector3 vLoc = Vector3(pos[0], pos[1], pos[2]);
@@ -512,7 +512,7 @@ void UnloadAllWorldCells(void)
 	m_pEngineForAPI->GetWorld()->UnloadWorldCells();
 }
 
-void LoadWorldCell(u32 cellType, u32 archiveType, const char *pszArchive, const char *pszFile, s32 worldX, s32 worldY)
+void LoadWorldCell(uint32_t cellType, uint32_t archiveType, const char *pszArchive, const char *pszFile, int32_t worldX, int32_t worldY)
 {
 	Archive *pArchive = ArchiveManager::OpenArchive(archiveType, pszArchive);
 	if ( pArchive )
@@ -527,7 +527,7 @@ void LoadWorldCell(u32 cellType, u32 archiveType, const char *pszArchive, const 
 	m_pEngineForAPI->GetWorld()->SetPlayer( player );
 }
 
-void World_CreateTerrain(s32 width, s32 height)
+void World_CreateTerrain(int32_t width, int32_t height)
 {
 	//Create the terrain.
 	Terrain *pTerrain = xlNew Terrain( m_pEngineForAPI->GetDriver(), m_pEngineForAPI->GetWorld() );
@@ -551,7 +551,7 @@ XL_BOOL World_IsPointInWater(void *p0)
 	return pWorld->GetTerrain()->IsPointInWater(pos->x, pos->y);
 }
 
-void Engine::Object_GetCameraVector(u32 uObjID, float& x, float& y, float& z)
+void Engine::Object_GetCameraVector(uint32_t uObjID, float& x, float& y, float& z)
 {
 	Object *pObj = ObjectManager::GetObjectFromID(uObjID);
 	if ( pObj )
@@ -569,7 +569,7 @@ void Engine::Object_GetCameraVector(u32 uObjID, float& x, float& y, float& z)
 	}
 }
 
-XL_BOOL Pathing_GetRandomNode(s32& nodeX, s32& nodeY, float& x, float& y, float& z, s32& sx, s32& sy)
+XL_BOOL Pathing_GetRandomNode(int32_t& nodeX, int32_t& nodeY, float& x, float& y, float& z, int32_t& sx, int32_t& sy)
 {
 	Vector3 outPos;
 	bool bFound = m_pEngineForAPI->GetWorld()->GetRandomNode(nodeX, nodeY, outPos, sx, sy);
@@ -579,12 +579,12 @@ XL_BOOL Pathing_GetRandomNode(s32& nodeX, s32& nodeY, float& x, float& y, float&
 	return bFound ? XL_TRUE : XL_FALSE;
 }
 
-XL_BOOL Pathing_CheckNode(s32 nodeX, s32 nodeY)
+XL_BOOL Pathing_CheckNode(int32_t nodeX, int32_t nodeY)
 {
 	return m_pEngineForAPI->GetWorld()->CheckNode(nodeX, nodeY);
 }
 
-void Pathing_GetNodeVector(float& vx, float& vy, float cx, float cy, s32 wx, s32 wy, s32 nodeX, s32 nodeY)
+void Pathing_GetNodeVector(float& vx, float& vy, float cx, float cy, int32_t wx, int32_t wy, int32_t nodeX, int32_t nodeY)
 {
 	Vector3 curPos(cx, cy, 0.0f);
 	Vector2 vOffset;
@@ -593,12 +593,12 @@ void Pathing_GetNodeVector(float& vx, float& vy, float cx, float cy, s32 wx, s32
 	vy = vOffset.y;
 }
 
-void World_Collide(void *p0, void *p1, u32& uSector, f32 fRadius, s32 bPassThruAdjoins)
+void World_Collide(void *p0, void *p1, uint32_t& uSector, f32 fRadius, int32_t bPassThruAdjoins)
 {
 	m_pEngineForAPI->GetWorld()->Collide((Vector3 *)p0, (Vector3 *)p1, uSector, fRadius, bPassThruAdjoins ? true : false);
 }
 
-void World_Activate(void *p0, void *p1, u32& uSector)
+void World_Activate(void *p0, void *p1, uint32_t& uSector)
 {
 	m_pEngineForAPI->GetWorld()->RayCastAndActivate((Vector3 *)p0, (Vector3 *)p1, uSector);
 }
@@ -677,7 +677,7 @@ void Engine::SetupPluginAPI()
 	m_pPluginAPI->SysFile_Close		  = ArchiveManager::File_Close;
 	//Parser
 	m_pPluginAPI->Parser_SetData	     = Parser::SetData;
-	m_pPluginAPI->Parser_SearchKeyword_S32 = Parser::SearchKeyword_S32;
+	m_pPluginAPI->Parser_SearchKeyword_int32_t = Parser::SearchKeyword_int32_t;
 	m_pPluginAPI->Parser_GetFilePtr	     = Parser::GetFilePtr;
 	//Movie playback
 	m_pPluginAPI->MoviePlayer_SetPlayer  = MovieManager::SetPlayerType;
@@ -692,7 +692,7 @@ void Engine::SetupPluginAPI()
 	//World
 	m_pPluginAPI->World_CreateTerrain    = World_CreateTerrain;
 	m_pPluginAPI->World_UnloadAllCells   = UnloadAllWorldCells;		//void World_UnloadAllCells(void);
-	m_pPluginAPI->World_LoadCell	     = LoadWorldCell;			//void World_LoadCell(u32 cellType, u32 archiveType, const char *pszArchive, const char *pszFile, s32 worldX, s32 worldY);
+	m_pPluginAPI->World_LoadCell	     = LoadWorldCell;			//void World_LoadCell(uint32_t cellType, uint32_t archiveType, const char *pszArchive, const char *pszFile, int32_t worldX, int32_t worldY);
 	m_pPluginAPI->World_Collide		     = World_Collide;
 	m_pPluginAPI->World_Activate	     = World_Activate;
 	m_pPluginAPI->World_Raycast		     = World_Raycast;
@@ -734,7 +734,7 @@ void Engine::SetupPluginAPI()
 	PluginManager::Init( m_pPluginAPI );
 }
 
-void Engine::ChangeWindowSize(s32 w, s32 h)
+void Engine::ChangeWindowSize(int32_t w, int32_t h)
 {
     m_pDriver3D->ChangeWindowSize(w, h);
 }
@@ -872,7 +872,7 @@ bool Engine::Loop(f32 fDeltaTime, bool bFullspeed)
 void Engine::DisplayMessages(f32 fDeltaTime)
 {
 	//1. remove old messages. Only one at a time though.
-	for (s32 m=0; m<m_nMessageCnt; m++)
+	for (int32_t m=0; m<m_nMessageCnt; m++)
 	{
 		m_aMessages[m].displayTime -= fDeltaTime;
 	}
@@ -880,7 +880,7 @@ void Engine::DisplayMessages(f32 fDeltaTime)
 	if ( m_nMessageCnt > 0 && m_aMessages[0].displayTime <= 0 )
 	{
 		//must remove the first message.
-		for (s32 m=0; m<m_nMessageCnt-1; m++)
+		for (int32_t m=0; m<m_nMessageCnt-1; m++)
 		{
 			m_aMessages[m] = m_aMessages[m+1];
 		}
@@ -892,7 +892,7 @@ void Engine::DisplayMessages(f32 fDeltaTime)
 		FontManager::BeginTextRendering();
 		{
 			//display FPS
-			s32 y=10;
+			int32_t y=10;
 			/*
 			char szFPS[64];
 			sprintf(szFPS, "FPS %2.2f", m_FPS);
@@ -904,7 +904,7 @@ void Engine::DisplayMessages(f32 fDeltaTime)
 			y += 24;
 			*/
 
-			for (s32 m=0; m<m_nMessageCnt; m++, y+= 18)
+			for (int32_t m=0; m<m_nMessageCnt; m++, y+= 18)
 			{
 				f32 alpha = m_aMessages[m].color.w * Math::clamp(m_aMessages[m].displayTime, 0.0f, 1.0f);
 				Vector4 color(m_aMessages[m].color.x, m_aMessages[m].color.y, m_aMessages[m].color.z, alpha);

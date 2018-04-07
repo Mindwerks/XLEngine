@@ -40,15 +40,15 @@ BloodXL_Player::~BloodXL_Player(void)
 {
 }
 
-void BloodXL_Player::LogicSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void BloodXL_Player::LogicSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }
 
-void BloodXL_Player::ObjectSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void BloodXL_Player::ObjectSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }
 
-void BloodXL_Player::KeyDown(s32 key)
+void BloodXL_Player::KeyDown(int32_t key)
 {
 	if ( key == XL_SPACE )
 	{
@@ -56,12 +56,12 @@ void BloodXL_Player::KeyDown(s32 key)
 		p0 = m_PhysicsData->m_Loc; p0.z += m_PlayerHeight;
 		p1 = p0 + m_PhysicsData->m_Dir*10.0f;
 
-		u32 uSector = m_PhysicsData->m_uSector;
+		uint32_t uSector = m_PhysicsData->m_uSector;
 		m_pAPI->World_Activate(&p0, &p1, uSector);
 	}
 }
 
-void BloodXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
+void BloodXL_Player::Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 	XL_BOOL bUpdateControls = m_pAPI->Engine_AllowPlayerControls();
 
@@ -222,6 +222,6 @@ void BloodXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	m_pAPI->Engine_SetCameraData( &vLoc.x, &vDir.x, m_PlayerData.m_fPitch, fMoveSpeed, m_PhysicsData->m_uSector );
 }
 
-void BloodXL_Player::Message(u32 uObjID, u32 uParamCount, LogicParam *param)
+void BloodXL_Player::Message(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }

@@ -102,7 +102,7 @@
 		7526F58F0BEE457800BAE32D /* testexecutemixedargs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7526F51B0BEE457800BAE32D /* testexecutemixedargs.cpp */; };
 		7526F5900BEE457800BAE32D /* testexecutescript.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7526F51C0BEE457800BAE32D /* testexecutescript.cpp */; };
 		7526F5910BEE457800BAE32D /* testexecutestring.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7526F51D0BEE457800BAE32D /* testexecutestring.cpp */; };
-		7526F5920BEE457800BAE32D /* testexecutethis32mixedargs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7526F51E0BEE457800BAE32D /* testexecutethis32mixedargs.cpp */; };
+		7526F5920BEE457800BAE32D /* testexecutethiint32_tmixedargs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7526F51E0BEE457800BAE32D /* testexecutethiint32_tmixedargs.cpp */; };
 		7526F5930BEE457800BAE32D /* testglobalvar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7526F51F0BEE457800BAE32D /* testglobalvar.cpp */; };
 		7526F5940BEE457800BAE32D /* testint64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7526F5200BEE457800BAE32D /* testint64.cpp */; };
 		7526F5950BEE457800BAE32D /* testlongtoken.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7526F5210BEE457800BAE32D /* testlongtoken.cpp */; };
@@ -262,7 +262,7 @@
 		7526F51B0BEE457800BAE32D /* testexecutemixedargs.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = testexecutemixedargs.cpp; path = ../../source/testexecutemixedargs.cpp; sourceTree = SOURCE_ROOT; };
 		7526F51C0BEE457800BAE32D /* testexecutescript.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = testexecutescript.cpp; path = ../../source/testexecutescript.cpp; sourceTree = SOURCE_ROOT; };
 		7526F51D0BEE457800BAE32D /* testexecutestring.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = testexecutestring.cpp; path = ../../source/testexecutestring.cpp; sourceTree = SOURCE_ROOT; };
-		7526F51E0BEE457800BAE32D /* testexecutethis32mixedargs.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = testexecutethis32mixedargs.cpp; path = ../../source/testexecutethis32mixedargs.cpp; sourceTree = SOURCE_ROOT; };
+		7526F51E0BEE457800BAE32D /* testexecutethiint32_tmixedargs.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = testexecutethiint32_tmixedargs.cpp; path = ../../source/testexecutethiint32_tmixedargs.cpp; sourceTree = SOURCE_ROOT; };
 		7526F51F0BEE457800BAE32D /* testglobalvar.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = testglobalvar.cpp; path = ../../source/testglobalvar.cpp; sourceTree = SOURCE_ROOT; };
 		7526F5200BEE457800BAE32D /* testint64.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = testint64.cpp; path = ../../source/testint64.cpp; sourceTree = SOURCE_ROOT; };
 		7526F5210BEE457800BAE32D /* testlongtoken.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = testlongtoken.cpp; path = ../../source/testlongtoken.cpp; sourceTree = SOURCE_ROOT; };
@@ -440,7 +440,7 @@
 				7526F51B0BEE457800BAE32D /* testexecutemixedargs.cpp */,
 				7526F51C0BEE457800BAE32D /* testexecutescript.cpp */,
 				7526F51D0BEE457800BAE32D /* testexecutestring.cpp */,
-				7526F51E0BEE457800BAE32D /* testexecutethis32mixedargs.cpp */,
+				7526F51E0BEE457800BAE32D /* testexecutethiint32_tmixedargs.cpp */,
 				7526F51F0BEE457800BAE32D /* testglobalvar.cpp */,
 				7526F5200BEE457800BAE32D /* testint64.cpp */,
 				7526F5210BEE457800BAE32D /* testlongtoken.cpp */,
@@ -613,7 +613,7 @@
 				7526F58F0BEE457800BAE32D /* testexecutemixedargs.cpp in Sources */,
 				7526F5900BEE457800BAE32D /* testexecutescript.cpp in Sources */,
 				7526F5910BEE457800BAE32D /* testexecutestring.cpp in Sources */,
-				7526F5920BEE457800BAE32D /* testexecutethis32mixedargs.cpp in Sources */,
+				7526F5920BEE457800BAE32D /* testexecutethiint32_tmixedargs.cpp in Sources */,
 				7526F5930BEE457800BAE32D /* testglobalvar.cpp in Sources */,
 				7526F5940BEE457800BAE32D /* testint64.cpp in Sources */,
 				7526F5950BEE457800BAE32D /* testlongtoken.cpp in Sources */,

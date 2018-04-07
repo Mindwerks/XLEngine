@@ -14,24 +14,24 @@ public:
 
 	bool Load_Image(const char *pszImage);
 	void FreeImageData();
-	u8 *GetImageData() { return m_pImageData; }
-	u32 GetWidth()  { return m_uWidth;  }
-	u32 GetHeight() { return m_uHeight; }
-	u32 GetOffsetX(){ return m_uOffsX; }
-	u32 GetOffsetY(){ return m_uOffsY; }
+	uint8_t *GetImageData() { return m_pImageData; }
+	uint32_t GetWidth()  { return m_uWidth;  }
+	uint32_t GetHeight() { return m_uHeight; }
+	uint32_t GetOffsetX(){ return m_uOffsX; }
+	uint32_t GetOffsetY(){ return m_uOffsY; }
 
-	bool Save_ImageRGBA(const char *pszImage, u8 *pData, u32 uWidth, u32 uHeight);
+	bool Save_ImageRGBA(const char *pszImage, uint8_t *pData, uint32_t uWidth, uint32_t uHeight);
 
 	void SetPath(const char *pszPath);
 	const char *GetPath() { return m_szPath; }
 private:
 	char m_szPath[260];
-	u32 m_uWidth;
-	u32 m_uHeight;
-	u32 m_uOffsX;
-	u32 m_uOffsY;
-	u8 *m_pImageData;
-	u8 *m_pImageData_Work;
+	uint32_t m_uWidth;
+	uint32_t m_uHeight;
+	uint32_t m_uOffsX;
+	uint32_t m_uOffsY;
+	uint8_t *m_pImageData;
+	uint8_t *m_pImageData_Work;
 };
 
 #endif //IMAGELOADER_H

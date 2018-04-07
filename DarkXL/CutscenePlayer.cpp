@@ -8,8 +8,8 @@
 
 bool CutscenePlayer::m_bCutscenePlaying;
 CutscenePlayer::Cutscene CutscenePlayer::m_CutSceneList[256];
-s32 CutscenePlayer::m_nCutSceneCount;
-s32 CutscenePlayer::m_nCutSceneNum;
+int32_t CutscenePlayer::m_nCutSceneCount;
+int32_t CutscenePlayer::m_nCutSceneNum;
 CutscenePlayer::Cutscene *CutscenePlayer::m_pCurCutScene;
 const XLEngine_Plugin_API *CutscenePlayer::m_pAPI;
 
@@ -37,7 +37,7 @@ void CutscenePlayer::LoadCutsceneData()
 {
 	if ( m_pAPI->GameFile_Open(ARCHIVETYPE_GOB, "DARK.GOB", "CUTSCENE.LST") )
 	{
-		u32 len = m_pAPI->GameFile_GetLength();
+		uint32_t len = m_pAPI->GameFile_GetLength();
 		char *pData = xlNew char[len+1];
 		m_pAPI->GameFile_Read(pData, len);
 		m_pAPI->GameFile_Close();
@@ -45,13 +45,13 @@ void CutscenePlayer::LoadCutsceneData()
 		//Set the data to parse: memory, length, filePtr
 		m_pAPI->Parser_SetData( pData, len, 0 );
 		//Now start parsing the file.
-		s32 nCuts=0;
-		m_pAPI->Parser_SearchKeyword_S32("CUTS", nCuts);
+		int32_t nCuts=0;
+		m_pAPI->Parser_SearchKeyword_int32_t("CUTS", nCuts);
 		//now parse each line...
 		char *pszCur = &pData[ m_pAPI->Parser_GetFilePtr() ];
 		char szLine[256];
-		s32 lineIdx = 0;
-		s32 sl = (s32)strlen(pszCur);
+		int32_t lineIdx = 0;
+		int32_t sl = (int32_t)strlen(pszCur);
 		for (int l=0; l<sl; l++)
 		{
 			if ( pszCur[l] == '\r' || pszCur[l] == '\n' )
@@ -82,11 +82,11 @@ void CutscenePlayer::CutScene_ParseLine(char *pszLine)
 {
 	if ( pszLine[0] == '#' ) { return; }
 
-	s32 l = (s32)strlen(pszLine);
+	int32_t l = (int32_t)strlen(pszLine);
 	char szElem[64];
-	s32 nElemIdx=0, n=0;
+	int32_t nElemIdx=0, n=0;
 	//now acquire each component.
-	for (s32 i=0; i<l; i++)
+	for (int32_t i=0; i<l; i++)
 	{
 		if ( pszLine[i] != ' ' )
 		{
@@ -170,7 +170,7 @@ void CutscenePlayer::StartCutscene(int nID)
 	m_nCutSceneNum = nID;
 
 	//now find the cutscene index.
-	s32 c, cindex=-1;
+	int32_t c, cindex=-1;
 	for (c=0; c<m_nCutSceneCount; c++)
 	{
 		if ( m_CutSceneList[c].num == nID )
@@ -221,7 +221,7 @@ void CutscenePlayer::Update()
 	}
 }
 
-void CutscenePlayer::KeyDown(s32 key)
+void CutscenePlayer::KeyDown(int32_t key)
 {
 	//allow escape sequence.
 	if ( key == XL_ESCAPE )

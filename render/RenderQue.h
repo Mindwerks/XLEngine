@@ -35,10 +35,10 @@ struct MaterialEntry
 	Matrix *mWorld;
 	VertexBuffer *pVB;
 	IndexBuffer  *pIB;
-	u16 startIndex;
-	u16 primCount;
-	s32 worldX;
-	s32 worldY;
+	uint16_t startIndex;
+	uint16_t primCount;
+	int32_t worldX;
+	int32_t worldY;
 
 	//lights.
 	int nLightCnt;
@@ -74,11 +74,11 @@ private:
 	static IDriver3D *m_pDriver;
 
 	static RenderQuad *m_pQuads;
-	static u32 m_uQuadCnt;
+	static uint32_t m_uQuadCnt;
 
 	static vector<MaterialEntry *> m_apRenderBuckets[RBUCKET_COUNT];
 	static vector<MaterialEntry>   m_RenderEntryPool;
-	static u32 m_uRenderEntryLoc;
+	static uint32_t m_uRenderEntryLoc;
 
 	static int m_nCurLightCnt;
 	static const LightObject **m_pCurLightList;

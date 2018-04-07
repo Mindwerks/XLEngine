@@ -11,9 +11,9 @@ class LevelFunc;
 extern void SetupDefaultLevelFuncs();
 
 //SlidingDoor
-extern void LFunc_SlidingDoor_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool bInstant);
+extern void LFunc_SlidingDoor_SetValue(LevelFunc *pFunc, int32_t nSector, f32 value, bool bInstant);
 
 //TriggerToggle
-extern void LFunc_TriggerToggle_Activate(LevelFunc *pFunc, s32 mask, s32 items, bool bForce);
+extern void LFunc_TriggerToggle_Activate(LevelFunc *pFunc, int32_t mask, int32_t items, bool bForce);
 
 #endif //LEVELFUNC_DEFAULT_H

@@ -8,7 +8,7 @@
 vector<Object *> ObjectManager::m_ObjectPool;
 vector<Object *> ObjectManager::m_FreeObjects;
 vector<Object *> ObjectManager::m_ActiveObjects;
-u32 ObjectManager::m_uReservedCount;
+uint32_t ObjectManager::m_uReservedCount;
 World *ObjectManager::m_pWorld;
 
 #define OBJCOUNT_PER_BANK 128
@@ -24,7 +24,7 @@ bool ObjectManager::Init(World *pWorld)
 	//objects are added in reverse order so that they are allocated from the free
 	//list in chronological order.
 	//The free list works by popping elements off the back for speed (no need to shuffle memory around).
-	for (s32 i=OBJCOUNT_PER_BANK-1; i>=0; i--)
+	for (int32_t i=OBJCOUNT_PER_BANK-1; i>=0; i--)
 	{
 		objPool[i].SetID(i);
 		m_FreeObjects.push_back( &objPool[i] );
@@ -64,12 +64,12 @@ Object *ObjectManager::CreateObject(const string& sName)
 	else
 	{
 		//otherwise allocate another bank for the pool...
-		u32 uID_Start = (u32)m_ObjectPool.size()*OBJCOUNT_PER_BANK;
+		uint32_t uID_Start = (uint32_t)m_ObjectPool.size()*OBJCOUNT_PER_BANK;
 
 		Object *objPool = xlNew Object[OBJCOUNT_PER_BANK];
 		m_ObjectPool.push_back( objPool );
 
-		for (s32 i=OBJCOUNT_PER_BANK-2; i>=0; i--)
+		for (int32_t i=OBJCOUNT_PER_BANK-2; i>=0; i--)
 		{
 			objPool[i].SetID(i+uID_Start);
 			m_FreeObjects.push_back( &objPool[i] );
@@ -88,7 +88,7 @@ Object *ObjectManager::CreateObject(const string& sName)
 	return pObj;
 }
 
-void ObjectManager::SetRenderComponent(u32 uID, const char *pszComponent)
+void ObjectManager::SetRenderComponent(uint32_t uID, const char *pszComponent)
 {
 	Object *pObj = GetObjectFromID(uID);
 	if ( pObj == NULL )
@@ -104,7 +104,7 @@ void ObjectManager::SetRenderComponent(u32 uID, const char *pszComponent)
 	}
 }
 
-void ObjectManager::SetRenderTexture(u32 uID, TextureHandle hTex)
+void ObjectManager::SetRenderTexture(uint32_t uID, TextureHandle hTex)
 {
 	Object *pObj = GetObjectFromID(uID);
 	if ( pObj )
@@ -117,7 +117,7 @@ void ObjectManager::SetRenderTexture(u32 uID, TextureHandle hTex)
 	}
 }
 
-void ObjectManager::SetRenderFlip(u32 uID, XL_BOOL bFlipX, XL_BOOL bFlipY)
+void ObjectManager::SetRenderFlip(uint32_t uID, XL_BOOL bFlipX, XL_BOOL bFlipY)
 {
 	Object *pObj = GetObjectFromID(uID);
 	if ( pObj )
@@ -130,7 +130,7 @@ void ObjectManager::SetRenderFlip(u32 uID, XL_BOOL bFlipX, XL_BOOL bFlipY)
 	}
 }
 
-void ObjectManager::SetActive(u32 uID, XL_BOOL bActive)
+void ObjectManager::SetActive(uint32_t uID, XL_BOOL bActive)
 {
 	Object *pObj = GetObjectFromID(uID);
 	if ( pObj )
@@ -146,7 +146,7 @@ void ObjectManager::SetActive(u32 uID, XL_BOOL bActive)
 	}
 }
 
-void ObjectManager::SetWorldBounds_API(u32 uID, float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
+void ObjectManager::SetWorldBounds_API(uint32_t uID, float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
 {
 	Object *pObj = GetObjectFromID(uID);
 	if ( pObj )
@@ -155,7 +155,7 @@ void ObjectManager::SetWorldBounds_API(u32 uID, float minX, float minY, float mi
 	}
 }
 
-u32 ObjectManager::CreateObjectID(const char *pszName, s32 nSector)
+uint32_t ObjectManager::CreateObjectID(const char *pszName, int32_t nSector)
 {
 	Object *pObj = CreateObject(pszName);
 	if ( pObj )
@@ -222,11 +222,11 @@ Object *ObjectManager::FindObject(const string& sName)
 	return NULL;
 }
 
-Object *ObjectManager::GetObjectFromID(u32 uID)
+Object *ObjectManager::GetObjectFromID(uint32_t uID)
 {
 	//1. Which bank is it in?
-	u32 uBank  = uID / OBJCOUNT_PER_BANK;
-	u32 uIndex = uID - uBank*OBJCOUNT_PER_BANK;
+	uint32_t uBank  = uID / OBJCOUNT_PER_BANK;
+	uint32_t uIndex = uID - uBank*OBJCOUNT_PER_BANK;
 
 	Object *pool = m_ObjectPool[uBank];
 	
@@ -251,7 +251,7 @@ void ObjectManager::FreeObject(Object *pObj)
 	}
 }
 
-void ObjectManager::FreeObjectID(u32 uID)
+void ObjectManager::FreeObjectID(uint32_t uID)
 {
 	Object *pObj = GetObjectFromID(uID);
 	if ( pObj )
@@ -263,13 +263,13 @@ void ObjectManager::FreeObjectID(u32 uID)
 void ObjectManager::FreeAllObjects()
 {
 	m_FreeObjects.clear();
-	u32 uStartObj = m_uReservedCount;
+	uint32_t uStartObj = m_uReservedCount;
 	vector<Object *>::iterator iBank = m_ObjectPool.begin();
 	vector<Object *>::iterator eBank = m_ObjectPool.end();
 	for (; iBank != eBank; ++iBank)
 	{
 		Object *pool = *iBank;
-		for (u32 i=uStartObj; i<OBJCOUNT_PER_BANK; i++)
+		for (uint32_t i=uStartObj; i<OBJCOUNT_PER_BANK; i++)
 		{
 			pool[i].Reset();
 			m_FreeObjects.push_back( &pool[i] );
@@ -280,7 +280,7 @@ void ObjectManager::FreeAllObjects()
 	m_ActiveObjects.clear();
 	//make only "reserved" objects active.
 	Object *pool = m_ObjectPool[0];
-	for (u32 i=0; i<m_uReservedCount; i++)
+	for (uint32_t i=0; i<m_uReservedCount; i++)
 	{
 		m_ActiveObjects.push_back( &pool[i] );
 	}
@@ -296,7 +296,7 @@ void ObjectManager::Update()
 	}
 }
 
-void ObjectManager::AddLogicToObjID(u32 uID, const char *szLogicName)
+void ObjectManager::AddLogicToObjID(uint32_t uID, const char *szLogicName)
 {
 	Object *pObj = GetObjectFromID(uID);
 	if ( pObj )
@@ -309,7 +309,7 @@ void ObjectManager::AddLogicToObjID(u32 uID, const char *szLogicName)
 	}
 }
 
-ObjectPhysicsData *ObjectManager::GetObjectPhysicsData(u32 uID)
+ObjectPhysicsData *ObjectManager::GetObjectPhysicsData(uint32_t uID)
 {
 	Object *pObj = GetObjectFromID(uID);
 	if ( pObj )
@@ -319,7 +319,7 @@ ObjectPhysicsData *ObjectManager::GetObjectPhysicsData(u32 uID)
 	return NULL;
 }
 
-void *ObjectManager::GetObjectGameData(u32 uID)
+void *ObjectManager::GetObjectGameData(uint32_t uID)
 {
 	Object *pObj = GetObjectFromID(uID);
 	if ( pObj )
@@ -329,7 +329,7 @@ void *ObjectManager::GetObjectGameData(u32 uID)
 	return NULL;
 }
 
-void ObjectManager::SetObjectGameData(u32 uID, void *pData)
+void ObjectManager::SetObjectGameData(uint32_t uID, void *pData)
 {
 	Object *pObj = GetObjectFromID(uID);
 	if ( pObj )
@@ -339,7 +339,7 @@ void ObjectManager::SetObjectGameData(u32 uID, void *pData)
 	}
 }
 
-void ObjectManager::SetObjectAngles(u32 uID, float x, float y, float z)
+void ObjectManager::SetObjectAngles(uint32_t uID, float x, float y, float z)
 {
 	Object *pObj = GetObjectFromID(uID);
 	if ( pObj )
@@ -360,7 +360,7 @@ void ObjectManager::SetObjectAngles(u32 uID, float x, float y, float z)
 	}
 }
 
-void ObjectManager::SetObjectPos(u32 uID, float x, float y, float z)
+void ObjectManager::SetObjectPos(uint32_t uID, float x, float y, float z)
 {
 	Object *pObj = GetObjectFromID(uID);
 	if ( pObj )
@@ -376,7 +376,7 @@ void ObjectManager::SetObjectPos(u32 uID, float x, float y, float z)
 	}
 }
 
-void ObjectManager::EnableObjectCollision(u32 uID, s32 enable)
+void ObjectManager::EnableObjectCollision(uint32_t uID, int32_t enable)
 {
 	Object *pObj = GetObjectFromID(uID);
 	if ( pObj )
@@ -385,7 +385,7 @@ void ObjectManager::EnableObjectCollision(u32 uID, s32 enable)
 	}
 }
 
-void ObjectManager::SendMessage(u32 uID, u32 uMsg, f32 fValue)
+void ObjectManager::SendMessage(uint32_t uID, uint32_t uMsg, f32 fValue)
 {
 	Object *pObj = GetObjectFromID(uID);
 	if ( pObj )

@@ -22,7 +22,7 @@ bool TestExecute4Argsf();
 bool TestExecute32Args();
 bool TestExecuteMixedArgs();
 bool TestExecute32MixedArgs();
-bool TestExecuteThis32MixedArgs();
+bool TestExecuteThiint32_tMixedArgs();
 bool TestReturn();
 bool TestReturnF();
 bool TestReturnD();
@@ -197,7 +197,7 @@ int main(int argc, char **argv)
 	if( TestScriptClassMethod::Test() ) goto failed; else printf("-- TestScriptClassMethod passed\n");
 	if( TestSingleton::Test()         ) goto failed; else printf("-- TestSingleton passed\n");
 	if( TestInt8::Test()              ) goto failed; else printf("-- TestInt8 passed\n");
-	if( TestExecuteThis32MixedArgs()  ) goto failed; else printf("-- TestExecuteThis32MixedArgs passed\n");
+	if( TestExecuteThiint32_tMixedArgs()  ) goto failed; else printf("-- TestExecuteThiint32_tMixedArgs passed\n");
 	if( TestReturnWithCDeclObjFirst() ) goto failed; else printf("-- TestReturnWithCDeclObjFirst passed\n");
 	if( TestNotComplexThisCall()      ) goto failed; else printf("-- TestNotComplexThisCall passed\n");
 	if( TestVirtualMethod()           ) goto failed; else printf("-- TestVirtualMethod passed\n");

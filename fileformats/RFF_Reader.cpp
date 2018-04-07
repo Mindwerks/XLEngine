@@ -16,37 +16,37 @@ enum
 
 struct RffHeader
 {
-    u8  Magic[4];
-    u32 Version;
-    u32 DirOffset;
-    u32 fileCount;
-    u32 Unknown1;
-    u32 Unknown2;
-    u32 Unknown3;
-    u32 Unknown4;
+    uint8_t  Magic[4];
+    uint32_t Version;
+    uint32_t DirOffset;
+    uint32_t fileCount;
+    uint32_t Unknown1;
+    uint32_t Unknown2;
+    uint32_t Unknown3;
+    uint32_t Unknown4;
 };
 
 // Directory entry for a file
 struct DirectoryEntry
 {
-    u8  Unknown0[16];
-    u32 Offset;
-    u32 Size;
-    u32 Unknown1;
-    u32 Time;           // Obtained with the "time" standard function
-    u8  Flags;
+    uint8_t  Unknown0[16];
+    uint32_t Offset;
+    uint32_t Size;
+    uint32_t Unknown1;
+    uint32_t Time;           // Obtained with the "time" standard function
+    uint8_t  Flags;
     char Name[11];
-    u32 Unknown2;       // ID ? Maybe for an enumeration function...
+    uint32_t Unknown2;       // ID ? Maybe for an enumeration function...
 };
 
 // Informations about a packed file
 struct FileInfo
 {
     char Name[13];
-    u8  Flags;
-    u32 Time;
-    u32 Size;
-    u32 Offset;
+    uint8_t  Flags;
+    uint32_t Time;
+    uint32_t Size;
+    uint32_t Offset;
 };
 
 RFF_Reader::RFF_Reader() : Archive()
@@ -67,10 +67,10 @@ bool RFF_Reader::Open(const char *pszName)
 	if ( f )
 	{
 		fseek(f, 0, SEEK_END);
-		u32 len = ftell(f)+1;
+		uint32_t len = ftell(f)+1;
 		fseek(f, 0, SEEK_SET);
 		ScratchPad::StartFrame();
-		u8 *pBuffer = (u8 *)ScratchPad::AllocMem(len);
+		uint8_t *pBuffer = (uint8_t *)ScratchPad::AllocMem(len);
 
 		RffHeader header;
 		fread(&header, sizeof(RffHeader), 1, f);
@@ -87,7 +87,7 @@ bool RFF_Reader::Open(const char *pszName)
 		else
 			m_bEncrypt = false;
 
-		u32 uOffset  = header.DirOffset;
+		uint32_t uOffset  = header.DirOffset;
 		m_uFileCount = header.fileCount;
 
 		m_pFileList = xlNew RFF_File[m_uFileCount];
@@ -101,8 +101,8 @@ bool RFF_Reader::Open(const char *pszName)
 		// Decrypt the directory (depend on the version)
 		if ( m_bEncrypt )
 		{
-			u8 CryptoByte = (u8)header.DirOffset;
-			for (u32 i = 0; i < m_uFileCount * sizeof(DirectoryEntry); i += 2)
+			uint8_t CryptoByte = (uint8_t)header.DirOffset;
+			for (uint32_t i = 0; i < m_uFileCount * sizeof(DirectoryEntry); i += 2)
 			{
 				pBuffer[i+0] ^= CryptoByte;
 				pBuffer[i+1] ^= CryptoByte;
@@ -115,7 +115,7 @@ bool RFF_Reader::Open(const char *pszName)
 		//Now go through each file listing and fill out the RFF_File structure.
 		char szFileName[9];
 		char szFileExtension[4];
-		for(u32 i=0, l=0; i<m_uFileCount; i++, l+=48)
+		for(uint32_t i=0, l=0; i<m_uFileCount; i++, l+=48)
 		{
 			strncpy(szFileExtension, pDirectoryEntry[i].Name,     3);
 			strncpy(szFileName,      &pDirectoryEntry[i].Name[3], 8);
@@ -168,7 +168,7 @@ bool RFF_Reader::OpenFile(const char *pszFile)
 	if ( m_pFile )
 	{
 		//search for this file.
-		for (u32 i=0; i<m_uFileCount; i++)
+		for (uint32_t i=0; i<m_uFileCount; i++)
 		{
 			if ( stricmp(pszFile, m_pFileList[i].szName) == 0 )
 			{
@@ -203,12 +203,12 @@ void RFF_Reader::CloseFile()
 	m_CurFile = -1;
 }
 
-u32 RFF_Reader::GetFileLen()
+uint32_t RFF_Reader::GetFileLen()
 {
 	if ( m_pFileLocal )
 	{
 		fseek(m_pFileLocal, 0, SEEK_END);
-		u32 len = ftell(m_pFileLocal)+1;
+		uint32_t len = ftell(m_pFileLocal)+1;
 		fseek(m_pFileLocal, 0, SEEK_SET);
 
 		return len;
@@ -217,7 +217,7 @@ u32 RFF_Reader::GetFileLen()
 	return m_pFileList[m_CurFile].length;
 }
 
-bool RFF_Reader::ReadFile(void *pData, u32 uLength)
+bool RFF_Reader::ReadFile(void *pData, uint32_t uLength)
 {
 	if ( m_pFileLocal )
 	{
@@ -237,9 +237,9 @@ bool RFF_Reader::ReadFile(void *pData, u32 uLength)
 	if ( m_bEncrypt && (m_pFileList[m_CurFile].flags & FLAG_ENCRYPTED) )
 	{
 		// Decrypt the first bytes if they're encrypted (256 bytes max)
-		for (u32 i = 0; i < 256 && i < uLength; i++)
+		for (uint32_t i = 0; i < 256 && i < uLength; i++)
 		{
-			((u8 *)pData)[i] ^= (i >> 1);
+			((uint8_t *)pData)[i] ^= (i >> 1);
 		}
 	}
 
@@ -252,12 +252,12 @@ void *RFF_Reader::ReadFileInfo()
 	return NULL;
 }
 
-s32 RFF_Reader::GetFileCount()
+int32_t RFF_Reader::GetFileCount()
 {
-	return (s32)m_uFileCount;
+	return (int32_t)m_uFileCount;
 }
 
-const char *RFF_Reader::GetFileName(s32 nFileIdx)
+const char *RFF_Reader::GetFileName(int32_t nFileIdx)
 {
 	return m_pFileList[nFileIdx].szName;
 }

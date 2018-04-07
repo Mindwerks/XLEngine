@@ -186,7 +186,7 @@ int Camera::SphereInsideFrustum(Vector3& vCen, float fRadius)
 
 #define SIGN(x) (x)>0 ? 1.0f : (x)<0 ? -1.0f : 0.0f
 
-int Camera::AABBInsideFrustum(Vector3& vMin, Vector3& vMax, s32 worldX, s32 worldY)
+int Camera::AABBInsideFrustum(Vector3& vMin, Vector3& vMax, int32_t worldX, int32_t worldY)
 {
 	Plane *p = m_FrustumPlanes;
 	const int np = 4;
@@ -275,13 +275,13 @@ void Camera::InverseTransformPointsSS_2D(f32 x, f32 oow, Vector2& worldPos)
 	}
 }
 
-void Camera::TransformPointsSS_2D(u32 uCount, const Vector2 *wsPos, Vector2 *ssPos, const Vector2& offset)
+void Camera::TransformPointsSS_2D(uint32_t uCount, const Vector2 *wsPos, Vector2 *ssPos, const Vector2& offset)
 {
 	const Vector3 xT( m_ViewProj.m[0], m_ViewProj.m[4], m_ViewProj.m[12] );
 	const Vector3 wT( m_ViewProj.m[3], m_ViewProj.m[7], m_ViewProj.m[15] );
 
 	f32 fOODepthRange = 1.0f / (m_fFarZ - m_fNearZ);
-	for (u32 i=0; i<uCount; i++)
+	for (uint32_t i=0; i<uCount; i++)
 	{
 		ssPos[i].x = xT.x * (wsPos[i].x+offset.x) + xT.y * (wsPos[i].y+offset.y) + xT.z;
 		f32 w = wT.x * (wsPos[i].x+offset.x) + wT.y * (wsPos[i].y+offset.y) + wT.z;
@@ -300,9 +300,9 @@ void Camera::TransformPointsSS_2D(u32 uCount, const Vector2 *wsPos, Vector2 *ssP
 	}
 }
 
-void Camera::TransformPointsSS(u32 uCount, Vector3 *wsPos, Vector3 *ssPos)
+void Camera::TransformPointsSS(uint32_t uCount, Vector3 *wsPos, Vector3 *ssPos)
 {
-	for (u32 i=0; i<uCount; i++)
+	for (uint32_t i=0; i<uCount; i++)
 	{
 		Vector4 in(wsPos[i].x, wsPos[i].y, wsPos[i].z, 1.0f);
 		Vector4 out = m_ViewProj.TransformVector(in);

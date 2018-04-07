@@ -23,7 +23,7 @@ bool XLFont::Load( const string& szFile, IDriver3D *pDriver )
 	FILE *fntFile = fopen( szFile.c_str(), "rb" );
 	if ( fntFile )
 	{
-		u8 version[4];
+		uint8_t version[4];
 		fread(version, 1, 4, fntFile);
 		if ( version[0] != 'B' || version[1] != 'M' || version[2] != 'F' || version[3] != 0x03 )
 		{
@@ -41,8 +41,8 @@ bool XLFont::Load( const string& szFile, IDriver3D *pDriver )
 		while ( feof(fntFile) == 0 && bDone == false )
 		{
 			//read the block type and size.
-			u8  uBlockType;
-			u32 uBlockSize;
+			uint8_t  uBlockType;
+			uint32_t uBlockSize;
 
 			fread(&uBlockType, 1, 1, fntFile);
 			fread(&uBlockSize, 4, 1, fntFile);
@@ -51,9 +51,9 @@ bool XLFont::Load( const string& szFile, IDriver3D *pDriver )
 			{
 				case 1:	//INFO block
 				{
-					u16 fontSize, stretchH;
-					u8  flags, charSet, aa, spacingHoriz, spacingVert, outline;
-					u8  padding[4];
+					uint16_t fontSize, stretchH;
+					uint8_t  flags, charSet, aa, spacingHoriz, spacingVert, outline;
+					uint8_t  padding[4];
 					char szName[64];
 					fread(&fontSize,	 2, 1, fntFile);
 					fread(&flags,		 1, 1, fntFile);
@@ -72,8 +72,8 @@ bool XLFont::Load( const string& szFile, IDriver3D *pDriver )
 				break;
 				case 2:
 				{
-					u8 flags;
-					u8 channels[4];
+					uint8_t flags;
+					uint8_t channels[4];
 					fread(&m_CharSet.LineHeight, 2, 1, fntFile);
 					fread(&m_CharSet.Base,		 2, 1, fntFile);
 					fread(&m_CharSet.Width,		 2, 1, fntFile);
@@ -93,9 +93,9 @@ bool XLFont::Load( const string& szFile, IDriver3D *pDriver )
 				break;
 				case 4:
 				{
-					u32 ID;
-					u8 page, channel;
-					s32 nBlockSize = (s32)uBlockSize;
+					uint32_t ID;
+					uint8_t page, channel;
+					int32_t nBlockSize = (int32_t)uBlockSize;
 					while ( nBlockSize > 0 )
 					{
 						fread(&ID, 4, 1, fntFile);
@@ -121,8 +121,8 @@ bool XLFont::Load( const string& szFile, IDriver3D *pDriver )
 				break;
 				case 5:	//Kerning pairs - currently unused.
 				{
-					u32 first, second;
-					u16 amount;
+					uint32_t first, second;
+					uint16_t amount;
 					fread(&first,  4, 1, fntFile);
 					fread(&second, 4, 1, fntFile);
 					fread(&amount, 2, 1, fntFile);
@@ -145,21 +145,21 @@ bool XLFont::Load( const string& szFile, IDriver3D *pDriver )
 	return bResult;
 }
 
-u32 XLFont::ComputePixelPos(const string& szString, u32 uPos)
+uint32_t XLFont::ComputePixelPos(const string& szString, uint32_t uPos)
 {
 	const char *pszText = szString.c_str();
-	s32 nCurX = 0;
-	for (u32 i=0; i<uPos; i++)
+	int32_t nCurX = 0;
+	for (uint32_t i=0; i<uPos; i++)
 	{
 		nCurX += m_CharSet.Chars[ pszText[i] ].XAdvance;
 	}
-	return (u32)nCurX;
+	return (uint32_t)nCurX;
 }
 
-s32 XLFont::FillVB(s32 x, s32 y, const string& szString, FontVertex *pVB_Data)
+int32_t XLFont::FillVB(int32_t x, int32_t y, const string& szString, FontVertex *pVB_Data)
 {
-	s32 nCurX = x;
-	s32 nCurY = y;
+	int32_t nCurX = x;
+	int32_t nCurY = y;
 
 	f32 texelX  = 1.0f / (f32)m_CharSet.Width;
 	f32 texelY  = 1.0f / (f32)m_CharSet.Height;
@@ -171,12 +171,12 @@ s32 XLFont::FillVB(s32 x, s32 y, const string& szString, FontVertex *pVB_Data)
 	const char *pszText = szString.c_str();
 	for (size_t i=0, i4=0; i<l; i++, i4+=4)
 	{
-		u16 CharX   = m_CharSet.Chars[ pszText[i] ].x;
-		u16 CharY   = m_CharSet.Chars[ pszText[i] ].y;
-		u16 Width   = m_CharSet.Chars[ pszText[i] ].Width;
-		u16 Height  = m_CharSet.Chars[ pszText[i] ].Height;
-		s16 OffsetX = m_CharSet.Chars[ pszText[i] ].XOffset;
-		s16 OffsetY = m_CharSet.Chars[ pszText[i] ].YOffset;
+		uint16_t CharX   = m_CharSet.Chars[ pszText[i] ].x;
+		uint16_t CharY   = m_CharSet.Chars[ pszText[i] ].y;
+		uint16_t Width   = m_CharSet.Chars[ pszText[i] ].Width;
+		uint16_t Height  = m_CharSet.Chars[ pszText[i] ].Height;
+		int16_t OffsetX = m_CharSet.Chars[ pszText[i] ].XOffset;
+		int16_t OffsetY = m_CharSet.Chars[ pszText[i] ].YOffset;
 
 		//upper left
 		pVB_Data[i4+0].uv.x  = (float)CharX * texelX;
@@ -209,5 +209,5 @@ s32 XLFont::FillVB(s32 x, s32 y, const string& szString, FontVertex *pVB_Data)
 		nCurX += m_CharSet.Chars[ pszText[i] ].XAdvance;
 	}
 
-	return (s32)l;
+	return (int32_t)l;
 }

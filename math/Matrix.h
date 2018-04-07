@@ -25,7 +25,7 @@ public:
 	f32 m[16];
 
 	Matrix(void) {;}
-	Matrix(s32 identity)
+	Matrix(int32_t identity)
 	{
 		if ( identity )
 		{

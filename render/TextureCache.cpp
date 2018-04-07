@@ -15,10 +15,10 @@ IDriver3D *TextureCache::m_pDriver;
 TextureCache::TextureMap TextureCache::m_TextureMap;
 
 //dimensions of the previously loaded texture.
-s32 TextureCache::m_nPrevTexOffsX = 0;
-s32 TextureCache::m_nPrevTexOffsY = 0;
-u32 TextureCache::m_uPrevTexWidth = 0;
-u32 TextureCache::m_uPrevTexHeight= 0;
+int32_t TextureCache::m_nPrevTexOffsX = 0;
+int32_t TextureCache::m_nPrevTexOffsY = 0;
+uint32_t TextureCache::m_uPrevTexWidth = 0;
+uint32_t TextureCache::m_uPrevTexHeight= 0;
 f32 TextureCache::m_fRelSizeX     = 1.0f;
 f32 TextureCache::m_fRelSizeY	  = 1.0f;
 void *TextureCache::m_pPrevExtraData = NULL;
@@ -84,11 +84,11 @@ TextureHandle TextureCache::LoadTexture(const string& szFile, bool bGenMips)
 	// The texture doesn't exist, we can try loading it now...
 	if ( m_pLoader->Load_Image( szFile.c_str() ) )
 	{
-		s32 nOffsX  = m_pLoader->GetOffsetX();
-		s32 nOffsY  = m_pLoader->GetOffsetY();
-		u32 uWidth  = m_pLoader->GetWidth();
-		u32 uHeight = m_pLoader->GetHeight();
-		u8 *pData   = m_pLoader->GetImageData();
+		int32_t nOffsX  = m_pLoader->GetOffsetX();
+		int32_t nOffsY  = m_pLoader->GetOffsetY();
+		uint32_t uWidth  = m_pLoader->GetWidth();
+		uint32_t uHeight = m_pLoader->GetHeight();
+		uint8_t *pData   = m_pLoader->GetImageData();
 
 		//Load the texture into the renderer.
 		TextureHandle uTexHandle = m_pDriver->CreateTexture(uWidth, uHeight, IDriver3D::TEX_FORMAT_RGBA8, pData, bGenMips);
@@ -103,7 +103,7 @@ TextureHandle TextureCache::LoadTexture(const string& szFile, bool bGenMips)
 		tex.fRelSizeY = 1.0f;
 		tex.pExtraData = NULL;
 
-		u32 uDataSize = 0;
+		uint32_t uDataSize = 0;
 		void *pExtraData = TextureLoader::GetTexExtraData(uDataSize);
 		if ( uDataSize > 0 )
 		{
@@ -127,17 +127,17 @@ TextureHandle TextureCache::LoadTexture(const string& szFile, bool bGenMips)
 	return XL_INVALID_TEXTURE;
 }
 
-TextureHandle TextureCache::LoadTextureFromMem(const u8 *pImgBuffer, u32 width, u32 height, bool bGenMips)
+TextureHandle TextureCache::LoadTextureFromMem(const uint8_t *pImgBuffer, uint32_t width, uint32_t height, bool bGenMips)
 {
 	if ( pImgBuffer )
 	{
 		//Load the texture into the renderer.
-		TextureHandle uTexHandle = m_pDriver->CreateTexture(width, height, IDriver3D::TEX_FORMAT_RGBA8, (u8 *)pImgBuffer, bGenMips);
+		TextureHandle uTexHandle = m_pDriver->CreateTexture(width, height, IDriver3D::TEX_FORMAT_RGBA8, (uint8_t *)pImgBuffer, bGenMips);
 		//store previous values so we can get them easily later.
 		m_uPrevTexWidth  = width;
 		m_uPrevTexHeight = height;
 
-		//u32 wr = Math::RoundNextPow2(width), hr = Math::RoundNextPow2(height);
+		//uint32_t wr = Math::RoundNextPow2(width), hr = Math::RoundNextPow2(height);
 		m_fRelSizeX = 1.0f;//(f32)width  / (f32)wr;
 		m_fRelSizeY = 1.0f;//(f32)height / (f32)hr;
 
@@ -147,7 +147,7 @@ TextureHandle TextureCache::LoadTextureFromMem(const u8 *pImgBuffer, u32 width, 
 	return XL_INVALID_TEXTURE;
 }
 
-TextureHandle TextureCache::LoadTextureFromMem_Pal(const u8 *pImgBuffer, u32 uPalIndex, u32 width, u32 height, const string& sName, bool bGenMips)
+TextureHandle TextureCache::LoadTextureFromMem_Pal(const uint8_t *pImgBuffer, uint32_t uPalIndex, uint32_t width, uint32_t height, const string& sName, bool bGenMips)
 {
 	// We have to modify the file name a little...
 	char szName[32];
@@ -167,7 +167,7 @@ TextureHandle TextureCache::LoadTextureFromMem_Pal(const u8 *pImgBuffer, u32 uPa
 
 	if ( TextureLoader::LoadTexture_Mem( pImgBuffer, uPalIndex, width, height ) )
 	{
-		u8 *pConvertedData = TextureLoader::GetData_RGBA8();
+		uint8_t *pConvertedData = TextureLoader::GetData_RGBA8();
 
 		//Load the texture into the renderer.
 		TextureHandle uTexHandle = m_pDriver->CreateTexture(width, height, IDriver3D::TEX_FORMAT_RGBA8, pConvertedData, bGenMips);
@@ -181,7 +181,7 @@ TextureHandle TextureCache::LoadTextureFromMem_Pal(const u8 *pImgBuffer, u32 uPa
 		tex.fRelSizeY = 1.0f;
 		tex.pExtraData = NULL;
 
-		u32 uDataSize = 0;
+		uint32_t uDataSize = 0;
 		void *pExtraData = TextureLoader::GetTexExtraData(uDataSize);
 		if ( uDataSize > 0 )
 		{
@@ -206,12 +206,12 @@ TextureHandle TextureCache::LoadTextureFromMem_Pal(const u8 *pImgBuffer, u32 uPa
 	return XL_INVALID_TEXTURE;
 }
 
-TextureHandle TextureCache::GameFile_LoadTexture_TexList_API(u32 uTextureType, u32 uPalIndex, u32 uArchiveType, const char *pszArchive, const char *pszFile, s32 nRecord, XL_BOOL bGenMips)
+TextureHandle TextureCache::GameFile_LoadTexture_TexList_API(uint32_t uTextureType, uint32_t uPalIndex, uint32_t uArchiveType, const char *pszArchive, const char *pszFile, int32_t nRecord, XL_BOOL bGenMips)
 {
 	return GameFile_LoadTexture_TexList(uTextureType, uPalIndex, uArchiveType, pszArchive, pszFile, nRecord, bGenMips!=0);
 }
 
-TextureHandle TextureCache::GameFile_LoadTexture_TexList(u32 uTextureType, u32 uPalIndex, u32 uArchiveType, const string& sArchive, const string& szFile, s32 nRecord, bool bGenMips)
+TextureHandle TextureCache::GameFile_LoadTexture_TexList(uint32_t uTextureType, uint32_t uPalIndex, uint32_t uArchiveType, const string& sArchive, const string& szFile, int32_t nRecord, bool bGenMips)
 {
 	// We have to modify the file name a little...
 	char szName[32];
@@ -236,13 +236,13 @@ TextureHandle TextureCache::GameFile_LoadTexture_TexList(u32 uTextureType, u32 u
 		Archive *pTexArchive = ArchiveManager::OpenArchive( uArchiveType, sArchive.c_str() );
 		if ( pTexArchive )
 		{
-			u32 uFrameCnt = TextureLoader::LoadTexture_TexList( uTextureType, uPalIndex, pTexArchive, szFile, nRecord );
+			uint32_t uFrameCnt = TextureLoader::LoadTexture_TexList( uTextureType, uPalIndex, pTexArchive, szFile, nRecord );
 			if ( uFrameCnt )
 			{
-				s32 nOffsX, nOffsY;
-				u32 uWidth, uHeight;
+				int32_t nOffsX, nOffsY;
+				uint32_t uWidth, uHeight;
 				TextureLoader::GetTextureSize(nOffsX, nOffsY, uWidth, uHeight);
-				u8 *pConvertedData = TextureLoader::GetData_RGBA8();
+				uint8_t *pConvertedData = TextureLoader::GetData_RGBA8();
 
 				//Load the texture into the renderer.
 				TextureHandle uTexHandle = m_pDriver->CreateTexture(uWidth, uHeight, IDriver3D::TEX_FORMAT_RGBA8, pConvertedData, bGenMips, uFrameCnt);
@@ -258,7 +258,7 @@ TextureHandle TextureCache::GameFile_LoadTexture_TexList(u32 uTextureType, u32 u
 				tex.fRelSizeY = 1.0f;
 				tex.pExtraData = NULL;
 
-				u32 uDataSize = 0;
+				uint32_t uDataSize = 0;
 				void *pExtraData = TextureLoader::GetTexExtraData(uDataSize);
 				if ( uDataSize > 0 )
 				{
@@ -283,13 +283,13 @@ TextureHandle TextureCache::GameFile_LoadTexture_TexList(u32 uTextureType, u32 u
 	}
 	else
 	{
-		u32 uFrameCnt = TextureLoader::LoadTexture_NoArchive_TexList( uTextureType, uPalIndex, szFile, nRecord );
+		uint32_t uFrameCnt = TextureLoader::LoadTexture_NoArchive_TexList( uTextureType, uPalIndex, szFile, nRecord );
 		if ( uFrameCnt )
 		{
-			s32 nOffsX, nOffsY;
-			u32 uWidth, uHeight;
+			int32_t nOffsX, nOffsY;
+			uint32_t uWidth, uHeight;
 			TextureLoader::GetTextureSize(nOffsX, nOffsY, uWidth, uHeight);
-			u8 *pConvertedData = TextureLoader::GetData_RGBA8();
+			uint8_t *pConvertedData = TextureLoader::GetData_RGBA8();
 
 			//Load the texture into the renderer.
 			TextureHandle uTexHandle = m_pDriver->CreateTexture(uWidth, uHeight, IDriver3D::TEX_FORMAT_RGBA8, pConvertedData, bGenMips, uFrameCnt);
@@ -305,7 +305,7 @@ TextureHandle TextureCache::GameFile_LoadTexture_TexList(u32 uTextureType, u32 u
 			tex.fRelSizeY = 1.0f;
 			tex.pExtraData = NULL;
 
-			u32 uDataSize = 0;
+			uint32_t uDataSize = 0;
 			void *pExtraData = TextureLoader::GetTexExtraData(uDataSize);
 			if ( uDataSize > 0 )
 			{
@@ -332,7 +332,7 @@ TextureHandle TextureCache::GameFile_LoadTexture_TexList(u32 uTextureType, u32 u
 	return XL_INVALID_TEXTURE;
 }
 
-TextureHandle TextureCache::GameFile_LoadTexture(u32 uTextureType, u32 uPalIndex, u32 uArchiveType, const string& sArchive, const string& szFile, bool bGenMips, bool bCopyPal)
+TextureHandle TextureCache::GameFile_LoadTexture(uint32_t uTextureType, uint32_t uPalIndex, uint32_t uArchiveType, const string& sArchive, const string& szFile, bool bGenMips, bool bCopyPal)
 {
 	// We have to modify the file name a little...
 	char szName[32];
@@ -360,10 +360,10 @@ TextureHandle TextureCache::GameFile_LoadTexture(u32 uTextureType, u32 uPalIndex
 		{
 			if ( TextureLoader::LoadTexture( uTextureType, uPalIndex, pTexArchive, szFile, bCopyPal ) )
 			{
-				s32 nOffsX, nOffsY;
-				u32 uWidth, uHeight;
+				int32_t nOffsX, nOffsY;
+				uint32_t uWidth, uHeight;
 				TextureLoader::GetTextureSize(nOffsX, nOffsY, uWidth, uHeight);
-				u8 *pConvertedData = TextureLoader::GetData_RGBA8();
+				uint8_t *pConvertedData = TextureLoader::GetData_RGBA8();
 
 				//Load the texture into the renderer.
 				TextureHandle uTexHandle = m_pDriver->CreateTexture(uWidth, uHeight, IDriver3D::TEX_FORMAT_RGBA8, pConvertedData, bGenMips);
@@ -379,7 +379,7 @@ TextureHandle TextureCache::GameFile_LoadTexture(u32 uTextureType, u32 uPalIndex
 				tex.fRelSizeY = 1.0f;
 				tex.pExtraData = NULL;
 
-				u32 uDataSize = 0;
+				uint32_t uDataSize = 0;
 				void *pExtraData = TextureLoader::GetTexExtraData(uDataSize);
 				if ( uDataSize > 0 )
 				{
@@ -406,10 +406,10 @@ TextureHandle TextureCache::GameFile_LoadTexture(u32 uTextureType, u32 uPalIndex
 	{
 		if ( TextureLoader::LoadTexture_NoArchive( uTextureType, uPalIndex, szFile, bCopyPal ) )
 		{
-			s32 nOffsX, nOffsY;
-			u32 uWidth, uHeight;
+			int32_t nOffsX, nOffsY;
+			uint32_t uWidth, uHeight;
 			TextureLoader::GetTextureSize(nOffsX, nOffsY, uWidth, uHeight);
-			u8 *pConvertedData = TextureLoader::GetData_RGBA8();
+			uint8_t *pConvertedData = TextureLoader::GetData_RGBA8();
 
 			//Load the texture into the renderer.
 			TextureHandle uTexHandle = m_pDriver->CreateTexture(uWidth, uHeight, IDriver3D::TEX_FORMAT_RGBA8, pConvertedData, bGenMips);
@@ -425,7 +425,7 @@ TextureHandle TextureCache::GameFile_LoadTexture(u32 uTextureType, u32 uPalIndex
 			tex.fRelSizeY = 1.0f;
 			tex.pExtraData = NULL;
 
-			u32 uDataSize = 0;
+			uint32_t uDataSize = 0;
 			void *pExtraData = TextureLoader::GetTexExtraData(uDataSize);
 			if ( uDataSize > 0 )
 			{
@@ -474,7 +474,7 @@ void TextureCache::FreeTexture(TextureHandle hTex)
 	m_pDriver->FreeTexture( hTex );
 }
 
-void TextureCache::GetTextureSize( s32& nOffsX, s32& nOffsY, u32& uTexWidth, u32& uTexHeight, f32& fRelSizeX, f32& fRelSizeY )
+void TextureCache::GetTextureSize( int32_t& nOffsX, int32_t& nOffsY, uint32_t& uTexWidth, uint32_t& uTexHeight, f32& fRelSizeX, f32& fRelSizeY )
 {
 	nOffsX	   = m_nPrevTexOffsX;
 	nOffsY	   = m_nPrevTexOffsY;

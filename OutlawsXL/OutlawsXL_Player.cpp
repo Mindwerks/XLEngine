@@ -36,15 +36,15 @@ OutlawsXL_Player::~OutlawsXL_Player(void)
 {
 }
 
-void OutlawsXL_Player::LogicSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void OutlawsXL_Player::LogicSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }
 
-void OutlawsXL_Player::ObjectSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void OutlawsXL_Player::ObjectSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }
 
-void OutlawsXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
+void OutlawsXL_Player::Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 	//Handle player control
 	//Look
@@ -123,6 +123,6 @@ void OutlawsXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	m_pAPI->Engine_SetCameraData( &vLoc.x, &vDir.x, m_PlayerData.m_fPitch, 1.0f, m_PhysicsData->m_uSector );
 }
 
-void OutlawsXL_Player::Message(u32 uObjID, u32 uParamCount, LogicParam *param)
+void OutlawsXL_Player::Message(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }

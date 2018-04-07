@@ -7,10 +7,10 @@
 
 f32 Clock::m_fDeltaTime;
 f32 Clock::m_fRealDeltaTime;
-s32 Clock::m_nDeltaTicks;
+int32_t Clock::m_nDeltaTicks;
 
 static LARGE_INTEGER _Timer_Freq;
-static u64 _Start_Tick[16];
+static uint64_t _Start_Tick[16];
 LONGLONG _GetCurTickCnt();
 
 bool Clock::Init()
@@ -24,16 +24,16 @@ void Clock::Destroy()
 	//nothing to do currently.
 }
 
-void Clock::StartTimer(s32 timerID/*=0*/)
+void Clock::StartTimer(int32_t timerID/*=0*/)
 {
 	assert( timerID < 16 );
 	_Start_Tick[timerID] = _GetCurTickCnt();
 }
 
-f32 Clock::GetDeltaTime(f32 fMax, s32 timerID/*=0*/)
+f32 Clock::GetDeltaTime(f32 fMax, int32_t timerID/*=0*/)
 {
 	assert( timerID < 16 );
-	u64 End = _GetCurTickCnt();
+	uint64_t End = _GetCurTickCnt();
 
 	float fTimeDelta = (float)( (double)(End - _Start_Tick[timerID]) / (double)(_Timer_Freq.QuadPart) );
 	if ( fTimeDelta > fMax ) 
@@ -44,11 +44,11 @@ f32 Clock::GetDeltaTime(f32 fMax, s32 timerID/*=0*/)
 	return fTimeDelta;
 }
 
-u64 Clock::GetDeltaTime_uS(s32 timerID/*=0*/)
+uint64_t Clock::GetDeltaTime_uS(int32_t timerID/*=0*/)
 {
-	u64 End = _GetCurTickCnt();
+	uint64_t End = _GetCurTickCnt();
 	f64 quadPart_uS = (f64)(_Timer_Freq.QuadPart) / SEC_TO_uS;
-	return (u64)( (f64)(End - _Start_Tick[timerID]) / quadPart_uS );
+	return (uint64_t)( (f64)(End - _Start_Tick[timerID]) / quadPart_uS );
 }
 
 LONGLONG _GetCurTickCnt()

@@ -42,7 +42,7 @@ public:
 		return x >= 0.0f ? 1.0f : -1.0f;
 	}
 
-	static inline s32 abs(s32 x)
+	static inline int32_t abs(int32_t x)
 	{
 		return (x < 0) ? -x : x;
 	}
@@ -70,9 +70,9 @@ public:
 		return c;
 	}
 
-	static inline s32 clamp(s32 x, s32 a, s32 b)
+	static inline int32_t clamp(int32_t x, int32_t a, int32_t b)
 	{
-		s32 c = (x>a) ? x : a;
+		int32_t c = (x>a) ? x : a;
 		c = (c<b) ? c : b;
 
 		return c;
@@ -196,12 +196,12 @@ public:
 		return (a>b) ? a : b;
 	}
 
-	static s32 Min(s32 a, s32 b)
+	static int32_t Min(int32_t a, int32_t b)
 	{
 		return (a<b) ? a : b;
 	}
 
-	static s32 Max(s32 a, s32 b)
+	static int32_t Max(int32_t a, int32_t b)
 	{
 		return (a>b) ? a : b;
 	}
@@ -212,12 +212,12 @@ public:
 		return logf( n ) / logf( 2.0f );
 	}
 
-	static s32 FloatToInt(float x)
+	static int32_t FloatToInt(float x)
 	{
-		u32 e = (0x7F + 31) - ((*(u32*) &x & 0x7F800000) >> 23);
-        u32 m = 0x80000000 | (*(u32*) &x << 8);
+		uint32_t e = (0x7F + 31) - ((*(uint32_t*) &x & 0x7F800000) >> 23);
+        uint32_t m = 0x80000000 | (*(uint32_t*) &x << 8);
 
-        return s32((m >> e) & -(e < 32));
+        return int32_t((m >> e) & -(e < 32));
 	}
 
 	static float BiCubic_Heightfield(float p[4][4], float x, float y)

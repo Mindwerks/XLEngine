@@ -67,9 +67,9 @@ bool LFD_Reader::OpenFile(const char *pszFile)
 
 	char szName[10];
 	char szType[10];
-	s32 nExt = -1;
-	s32 l = (s32)strlen(pszFile);
-	s32 i;
+	int32_t nExt = -1;
+	int32_t l = (int32_t)strlen(pszFile);
+	int32_t i;
 	for (i=0; i<l; i++)
 	{
 		if ( pszFile[i] == '.' )
@@ -117,17 +117,17 @@ void LFD_Reader::CloseFile()
 	m_CurFile = -1;
 }
 
-u32 LFD_Reader::GetFileLen()
+uint32_t LFD_Reader::GetFileLen()
 {
-	return (u32)m_FileList.pEntries[ m_CurFile ].LENGTH;
+	return (uint32_t)m_FileList.pEntries[ m_CurFile ].LENGTH;
 }
 
-bool LFD_Reader::ReadFile(void *pData, u32 uLength)
+bool LFD_Reader::ReadFile(void *pData, uint32_t uLength)
 {
 	fseek(m_pFile, m_FileList.pEntries[ m_CurFile ].IX, SEEK_SET);
 
 	if ( uLength == 0 )
-		uLength = (u32)m_FileList.pEntries[ m_CurFile ].LENGTH;
+		uLength = (uint32_t)m_FileList.pEntries[ m_CurFile ].LENGTH;
 
 	fread(pData, uLength, 1, m_pFile);
 

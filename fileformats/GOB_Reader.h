@@ -16,11 +16,11 @@ public:
 
 	bool OpenFile(const char *pszFile);
 	void CloseFile();
-	u32 GetFileLen();
-	bool ReadFile(void *pData, u32 uLength);
+	uint32_t GetFileLen();
+	bool ReadFile(void *pData, uint32_t uLength);
 
-	s32 GetFileCount();
-	const char *GetFileName(s32 nFileIdx);
+	int32_t GetFileCount();
+	const char *GetFileName(int32_t nFileIdx);
 
 private:
 
@@ -50,7 +50,7 @@ private:
 
 	GOB_Header_t m_Header;
 	GOB_Index_t m_FileList;
-	s32 m_CurFile;
+	int32_t m_CurFile;
 	bool m_bGOB;
 
 	FILE *m_pFile;

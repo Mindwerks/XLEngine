@@ -663,7 +663,7 @@ A:hover
 <ul>
 <li>bug fix: SetArguments() and GetReturnValue() didn't work
 <li>Change the message for when implicit conversion is not possible to a more descriptive one
-<li>Added int32 as alias to int, uint32 to uint, and bits32 to bits
+<li>Added int32 as alias to int, uint32 to uint, and bitint32_t to bits
 </ul>
 
 <h2>Version 1.4.0 - 2004/01/12</h2>
@@ -700,7 +700,7 @@ A:hover
 <ul>
 <li>Added datatype <code>double</code>
 <li>lots of new byte codes to handle the <code>double</code> data type
-<li>Added missing conversions <code>bits</code> -> <code>bits8</code>, <code>bits16</code> -> <code>bits8</code>, <code>bits</code> -> <code>bits16</code>
+<li>Added missing conversions <code>bits</code> -> <code>bitint8_t</code>, <code>bitint16_t</code> -> <code>bitint8_t</code>, <code>bits</code> -> <code>bitint16_t</code>
 <li>bug fix: Conversions in constant expressions now work
 <li>bug fix: <code>bits</code> constants are now correctly parsed
 </ul>
@@ -735,7 +735,7 @@ A:hover
 <h2>Version 1.3.4 - 2003/09/16</h2>
 
 <ul>
-<li>Added data types: <code>int8</code>, <code>int16</code>, <code>uint8</code>, <code>uint16</code>, <code>bits8</code>, <code>bits16</code>
+<li>Added data types: <code>int8</code>, <code>int16</code>, <code>uint8</code>, <code>uint16</code>, <code>bitint8_t</code>, <code>bitint16_t</code>
 <li>Bitwise shift operators now takes an unsigned integer to the right
 <li>bits, int, and uint can be implicitly converted to a larger type but never to a smaller
 <li>Added byte codes BC_SB, BC_SW, BC_UB, BC_UW, BC_WRT1, BC_WRT2, BC_INCi16, BC_INCi8, BC_DECi16, BC_DECi8

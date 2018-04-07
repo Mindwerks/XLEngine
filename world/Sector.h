@@ -26,8 +26,8 @@ public:
 	Sector();
 	virtual ~Sector();
 
-	void AddObject(u32 uHandle);
-	void RemoveObject(u32 uHandle);
+	void AddObject(uint32_t uHandle);
+	void RemoveObject(uint32_t uHandle);
 
 	void AddLight(const Vector3& rvLoc) { m_Lights.push_back( xlNew LightObject(rvLoc) ); }
 	void AddLight(LightObject *pLight) { m_Lights.push_back( pLight ); }
@@ -38,17 +38,17 @@ public:
 	virtual void Raycast(RaycastPacket *packet, const Vector3& vOffset) {};
 	virtual void Update(float dt) {};
 
-	u32 m_uTypeFlags;
-	u32 m_uID;
-	s32 m_x, m_y;
+	uint32_t m_uTypeFlags;
+	uint32_t m_uID;
+	int32_t m_x, m_y;
 	bool m_bActive;
 	Vector3 m_Bounds[2];	//24 bytes.
-	vector<u32> m_Objects;	//4*cbjCnt + ~8 
+	vector<uint32_t> m_Objects;	//4*cbjCnt + ~8
 	vector<LightObject *> m_Lights;
 	char m_szName[64];
-	u8 *m_pValidNodes;
+	uint8_t *m_pValidNodes;
 
-	static u32 s_MaxSecDrawCnt;
+	static uint32_t s_MaxSecDrawCnt;
 };
 
 #endif //SECTOR_H

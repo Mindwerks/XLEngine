@@ -11,10 +11,10 @@
 char m_Cache[4*1024*1024];
 LFD_Film::Graphic LFD_Film::m_GraphicsCache[1024];
 PLTT_File LFD_Film::m_PalCache[32];
-s32 LFD_Film::m_nGCacheIdx=0;
-s32 LFD_Film::m_nPalCacheIdx=0;
-s32 m_nLastPalSetTime=0;
-s32 last_time=0;
+int32_t LFD_Film::m_nGCacheIdx=0;
+int32_t LFD_Film::m_nPalCacheIdx=0;
+int32_t m_nLastPalSetTime=0;
+int32_t last_time=0;
 
 LFD_Film::Graphic *LFD_Film::m_apAnimQueue[202];
 
@@ -97,7 +97,7 @@ void LFD_Film::Stop()
 
 	if ( m_Commands )
 	{
-		for (s32 i=0; i<m_nFilmLength; i++)
+		for (int32_t i=0; i<m_nFilmLength; i++)
 		{
 			m_Commands[i].commands.clear();
 		}
@@ -110,17 +110,17 @@ void LFD_Film::Stop()
 	m_nFilmLength = 0;
 }
 
-int LFD_Film::ParseCommand(s32 cmd, char *pData)
+int LFD_Film::ParseCommand(int32_t cmd, char *pData)
 {
-	s32 size=0;
-	s32 index=0;
+	int32_t size=0;
+	int32_t index=0;
 	switch (cmd)
 	{
 		case CMD_TIME:
-			last_time = *((s16 *)&pData[index]); index+=2;
+			last_time = *((int16_t *)&pData[index]); index+=2;
 			if ( last_time > m_nFilmLength )	//this is a fixed point time...
 			{
-				//u8 *pTimeFrac = (u8 *)&last_time;
+				//uint8_t *pTimeFrac = (uint8_t *)&last_time;
 				//last_time = (int)pTimeFrac[0];
 				last_time = (last_time*10)/35;
 			}
@@ -128,9 +128,9 @@ int LFD_Film::ParseCommand(s32 cmd, char *pData)
 		break;
 		case CMD_CUT:
 		{
-			s16 cutHow  = *((s16 *)&pData[index]);  index+=2;
-			s16 cutType = *((s16 *)&pData[index]); index+=2;
-			s16 unknown = *((s16 *)&pData[index]); index+=2;
+			int16_t cutHow  = *((int16_t *)&pData[index]);  index+=2;
+			int16_t cutType = *((int16_t *)&pData[index]); index+=2;
+			int16_t unknown = *((int16_t *)&pData[index]); index+=2;
 			printf("cut=%d, %d", cutHow, cutType);
 
 			Command *pCmd = &m_CommandPool[ m_nCmdPoolIdx ]; m_nCmdPoolIdx++;
@@ -140,7 +140,7 @@ int LFD_Film::ParseCommand(s32 cmd, char *pData)
 			pCmd->val[0] = cutHow;
 			pCmd->val[1] = cutType;
 
-			s32 time = (last_time >= m_nFilmLength-1) ? last_time-12 : last_time;
+			int32_t time = (last_time >= m_nFilmLength-1) ? last_time-12 : last_time;
 			m_Commands[ time ].commands.push_back( pCmd );
 
 			size = 6;
@@ -174,11 +174,11 @@ int LFD_Film::ParseCommand(s32 cmd, char *pData)
 		break;
 		case CMD_STEREO:
 		{
-			s16 onOff = *((s16 *)&pData[index]); index+=2;
-			s16 vol   = *((s16 *)&pData[index]); index+=2;
-			s16 vA    = *((s16 *)&pData[index]); index+=2;
-			s16 vB    = *((s16 *)&pData[index]); index+=2;
-			s16 pan   = *((s16 *)&pData[index]); index+=2;
+			int16_t onOff = *((int16_t *)&pData[index]); index+=2;
+			int16_t vol   = *((int16_t *)&pData[index]); index+=2;
+			int16_t vA    = *((int16_t *)&pData[index]); index+=2;
+			int16_t vB    = *((int16_t *)&pData[index]); index+=2;
+			int16_t pan   = *((int16_t *)&pData[index]); index+=2;
 			Command *pCmd = &m_CommandPool[ m_nCmdPoolIdx ]; m_nCmdPoolIdx++;
 			pCmd->pData = pFile;
 			pCmd->type = m_nEntry;
@@ -194,10 +194,10 @@ int LFD_Film::ParseCommand(s32 cmd, char *pData)
 		break;
 		case CMD_SOUND:
 		{
-			s16 onOff = *((s16 *)&pData[index]); index+=2;
-			s16 vol   = *((s16 *)&pData[index]); index+=2;
-			s16 vA    = *((s16 *)&pData[index]); index+=2;
-			s16 vB    = *((s16 *)&pData[index]); index+=2;
+			int16_t onOff = *((int16_t *)&pData[index]); index+=2;
+			int16_t vol   = *((int16_t *)&pData[index]); index+=2;
+			int16_t vA    = *((int16_t *)&pData[index]); index+=2;
+			int16_t vB    = *((int16_t *)&pData[index]); index+=2;
 
 			Command *pCmd = &m_CommandPool[ m_nCmdPoolIdx ]; m_nCmdPoolIdx++;
 			pCmd->pData = pFile;
@@ -223,7 +223,7 @@ int LFD_Film::ParseCommand(s32 cmd, char *pData)
 		break;
 		case CMD_LAYER:
 		{
-			s16 layer = *((s16 *)&pData[index]); index+=2;
+			int16_t layer = *((int16_t *)&pData[index]); index+=2;
 
 			Command *pCmd = &m_CommandPool[ m_nCmdPoolIdx ]; m_nCmdPoolIdx++;
 			pCmd->pData = pFile;
@@ -237,7 +237,7 @@ int LFD_Film::ParseCommand(s32 cmd, char *pData)
 		break;
 		case CMD_SWITCH:
 		{
-			s16 onOff = *((s16 *)&pData[index]); index+=2;
+			int16_t onOff = *((int16_t *)&pData[index]); index+=2;
 
 			Command *pCmd = &m_CommandPool[ m_nCmdPoolIdx ]; m_nCmdPoolIdx++;
 			pCmd->pData = pFile;
@@ -251,8 +251,8 @@ int LFD_Film::ParseCommand(s32 cmd, char *pData)
 		break;
 		case CMD_ANIMATE:
 		{
-			s16 dir  = *((s16 *)&pData[index]); index+=2;
-			s16 move = *((s16 *)&pData[index]); index+=2;
+			int16_t dir  = *((int16_t *)&pData[index]); index+=2;
+			int16_t move = *((int16_t *)&pData[index]); index+=2;
 
 			Command *pCmd = &m_CommandPool[ m_nCmdPoolIdx ]; m_nCmdPoolIdx++;
 			pCmd->pData = pFile;
@@ -267,8 +267,8 @@ int LFD_Film::ParseCommand(s32 cmd, char *pData)
 		break;
 		case CMD_FRAME:
 		{
-			s16 frame = *((s16 *)&pData[index]); index+=2;
-			s16 move  = *((s16 *)&pData[index]); index+=2;
+			int16_t frame = *((int16_t *)&pData[index]); index+=2;
+			int16_t move  = *((int16_t *)&pData[index]); index+=2;
 
 			Command *pCmd = &m_CommandPool[ m_nCmdPoolIdx ]; m_nCmdPoolIdx++;
 			pCmd->pData = pFile;
@@ -283,7 +283,7 @@ int LFD_Film::ParseCommand(s32 cmd, char *pData)
 		break;
 		case CMD_CUE:
 		{
-			s16 cue = *((s16 *)&pData[index]); index+=2;
+			int16_t cue = *((int16_t *)&pData[index]); index+=2;
 
 			Command *pCmd = &m_CommandPool[ m_nCmdPoolIdx ]; m_nCmdPoolIdx++;
 			pCmd->pData = pFile;
@@ -297,8 +297,8 @@ int LFD_Film::ParseCommand(s32 cmd, char *pData)
 		break;
 		case CMD_MOVE:
 		{
-			s16 x = *((s16 *)&pData[index]); index+=2;
-			s16 y = *((s16 *)&pData[index]); index+=2;
+			int16_t x = *((int16_t *)&pData[index]); index+=2;
+			int16_t y = *((int16_t *)&pData[index]); index+=2;
 
 			Command *pCmd = &m_CommandPool[ m_nCmdPoolIdx ]; m_nCmdPoolIdx++;
 			pCmd->pData = pFile;
@@ -313,8 +313,8 @@ int LFD_Film::ParseCommand(s32 cmd, char *pData)
 		break;
 		case CMD_SPEED:
 		{
-			s16 r = *((s16 *)&pData[index]); index+=2;
-			s16 d = *((s16 *)&pData[index]); index+=2;
+			int16_t r = *((int16_t *)&pData[index]); index+=2;
+			int16_t d = *((int16_t *)&pData[index]); index+=2;
 
 			Command *pCmd = &m_CommandPool[ m_nCmdPoolIdx ]; m_nCmdPoolIdx++;
 			pCmd->pData = pFile;
@@ -331,7 +331,7 @@ int LFD_Film::ParseCommand(s32 cmd, char *pData)
 	return size;
 }
 
-bool LFD_Film::Start(Archive *pRes0, Archive *pRes1, const char *pszFile, u32 uFlags, s32 nSpeed)
+bool LFD_Film::Start(Archive *pRes0, Archive *pRes1, const char *pszFile, uint32_t uFlags, int32_t nSpeed)
 {
 	Stop();
 
@@ -350,17 +350,17 @@ bool LFD_Film::Start(Archive *pRes0, Archive *pRes1, const char *pszFile, u32 uF
 
 	//Read the file.
 	m_pReader->OpenFile( pszFile );
-	u32 len = m_pReader->GetFileLen();
+	uint32_t len = m_pReader->GetFileLen();
 	char *pData = xlNew char[len+1];
 	m_pReader->ReadFile(pData, len);
 	m_pReader->CloseFile();
 
-	s16 nNumEntries;
-	s32 index=2, c, cmd, size;
+	int16_t nNumEntries;
+	int32_t index=2, c, cmd, size;
 	char szName[32];
 	char szFile[32];
-	m_nFilmLength = *((s16 *)&pData[index]); index+=2;
-	nNumEntries = *((s16 *)&pData[index]); index+=2;
+	m_nFilmLength = *((int16_t *)&pData[index]); index+=2;
+	nNumEntries = *((int16_t *)&pData[index]); index+=2;
 
 	assert( m_nFilmLength > 0 );
 
@@ -371,7 +371,7 @@ bool LFD_Film::Start(Archive *pRes0, Archive *pRes1, const char *pszFile, u32 uF
 	}
 
 	FilmEntry *pEntry;
-	for (s32 e=0; e<nNumEntries; e++)
+	for (int32_t e=0; e<nNumEntries; e++)
 	{
 		pEntry = (FilmEntry *)&pData[index]; index+=sizeof(FilmEntry);
 		//commands
@@ -415,8 +415,8 @@ bool LFD_Film::Start(Archive *pRes0, Archive *pRes1, const char *pszFile, u32 uF
 					m_pReader->ReadFile(m_Cache, len);
 					m_pReader->CloseFile();
 
-					pal->First = *((u8 *)&m_Cache[0]);
-					pal->Last  = *((u8 *)&m_Cache[1]);
+					pal->First = *((uint8_t *)&m_Cache[0]);
+					pal->Last  = *((uint8_t *)&m_Cache[1]);
 					pal->num_colors = pal->Last - pal->First + 1;
 					memset(pal->colors, 0, 256*3);
 					memcpy(pal->colors, &m_Cache[2], pal->num_colors*3);
@@ -529,8 +529,8 @@ bool LFD_Film::Start(Archive *pRes0, Archive *pRes1, const char *pszFile, u32 uF
 		index -= 2;
 		for (c=0; c<pEntry->nNumCommands; c++)
 		{
-			size = *((s16 *)&pData[index]); index+=2;
-			cmd  = *((s16 *)&pData[index]); index+=2;
+			size = *((int16_t *)&pData[index]); index+=2;
+			cmd  = *((int16_t *)&pData[index]); index+=2;
 			ParseCommand(cmd, &pData[index]);
 			index += size-4;
 		}
@@ -548,7 +548,7 @@ bool LFD_Film::Update()
 {
 	const f32 fDeltaTime = (1.0f/60.0f);
 	bool bFilmFinished = false;
-	s32 len;
+	int32_t len;
 
 	bool bUpdateAnim = false;
 
@@ -963,7 +963,7 @@ void LFD_Film::Render(f32 fDeltaTime)
 	m_pDriver->EnableDepthRead( false );
 	m_pDriver->EnableDepthWrite( false );
 
-	s32 i;
+	int32_t i;
 	for (i=0; i<202; i++)
 	{
 		m_apAnimQueue[i] = NULL;
@@ -1002,7 +1002,7 @@ void LFD_Film::Render(f32 fDeltaTime)
 		}
 	}
 
-	s32 nScrWidth, nScrHeight;
+	int32_t nScrWidth, nScrHeight;
 	m_pDriver->GetWindowSize(nScrWidth, nScrHeight);
 	Vector4 posScale(0.0f, 0.0f, (f32)nScrWidth, (f32)nScrHeight);
 	Vector2 uv(0,0);

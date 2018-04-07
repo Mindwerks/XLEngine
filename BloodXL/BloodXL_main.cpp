@@ -5,7 +5,7 @@
 BloodXL_Game *m_pGame=NULL;
 
 //Interface between Game classes and C library interface.
-void BloodXL_Update(s32 stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData)
+void BloodXL_Update(int32_t stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData)
 {
 	if ( stage == UPDATE_STAGE_FIXED )
 	{
@@ -17,7 +17,7 @@ void BloodXL_Update(s32 stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData
 	}
 }
 
-void BloodXL_Render(s32 stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData)
+void BloodXL_Render(int32_t stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData)
 {
 	if ( stage == RENDER_STAGE_PREWORLD )
 	{
@@ -29,7 +29,7 @@ void BloodXL_Render(s32 stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData
 	}
 }
 
-void BloodXL_KeyDownCallback(s32 key)
+void BloodXL_KeyDownCallback(int32_t key)
 {
 	m_pGame->KeyDown(key);
 }
@@ -49,7 +49,7 @@ void BloodXL_DestroyGame()
 }
 
 //Dynamic library C interface.
-extern "C" PLUGIN_API s32 ExitFunc()
+extern "C" PLUGIN_API int32_t ExitFunc()
 {
 	BloodXL_DestroyGame();
 

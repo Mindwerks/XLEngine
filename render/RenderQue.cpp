@@ -10,11 +10,11 @@
 
 IDriver3D *RenderQue::m_pDriver;
 RenderQuad *RenderQue::m_pQuads=NULL;
-u32 RenderQue::m_uQuadCnt;
+uint32_t RenderQue::m_uQuadCnt;
 
 vector<MaterialEntry *> RenderQue::m_apRenderBuckets[RBUCKET_COUNT];
 vector<MaterialEntry>   RenderQue::m_RenderEntryPool;
-u32 RenderQue::m_uRenderEntryLoc;
+uint32_t RenderQue::m_uRenderEntryLoc;
 
 int RenderQue::m_nCurLightCnt;
 const LightObject **RenderQue::m_pCurLightList;
@@ -155,7 +155,7 @@ void RenderQue::Render()
 
 	//m_pDriver->SetBlendMode( IDriver3D::BLEND_ALPHA );
 	m_pDriver->EnableAlphaTest(true, 32);// m_pQuads[q].bForceZWrite ? false : true, 32 );
-	for (s32 q=(s32)m_uQuadCnt-1; q>=0; q--)
+	for (int32_t q=(int32_t)m_uQuadCnt-1; q>=0; q--)
 	{
 		/*
 		if ( m_pQuads[q].color.w < 1.0f )

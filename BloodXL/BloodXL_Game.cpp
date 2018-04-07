@@ -35,11 +35,11 @@ BloodXL_Game::BloodXL_Game(const XLEngine_Plugin_API *API)
 		m_pAPI->Start_UI_Script( "BloodXL/CoreUI.as" );
 	
 		//load the game palette so that the UI is correct.
-		u8 *pal = xlNew u8[768*3+1];
-		u8 *new_pal = xlNew u8[768*3+1];
+		uint8_t *pal = xlNew uint8_t[768*3+1];
+		uint8_t *new_pal = xlNew uint8_t[768*3+1];
 		if ( m_pAPI->GameFile_Open(ARCHIVETYPE_RFF, "BLOOD.RFF", "BLOOD.PAL") )
 		{
-			u32 len = m_pAPI->GameFile_GetLength();
+			uint32_t len = m_pAPI->GameFile_GetLength();
 			m_pAPI->GameFile_Read(pal, len);
 			m_pAPI->GameFile_Close();
 
@@ -65,16 +65,16 @@ BloodXL_Game::BloodXL_Game(const XLEngine_Plugin_API *API)
 			"P4.PLU"
 		};
 		//load the "PLU" files for different palettes.
-		u8 *pData = xlNew u8[16385];
-		for (u32 i=1; i<14; i++)
+		uint8_t *pData = xlNew uint8_t[16385];
+		for (uint32_t i=1; i<14; i++)
 		{
 			if ( m_pAPI->GameFile_Open(ARCHIVETYPE_RFF, "BLOOD.RFF", aszPLU_Files[i]) )
 			{
-				u32 len = m_pAPI->GameFile_GetLength();
+				uint32_t len = m_pAPI->GameFile_GetLength();
 				m_pAPI->GameFile_Read(pData, len);
 				m_pAPI->GameFile_Close();
 
-				for (u32 c=0; c<256; c++)
+				for (uint32_t c=0; c<256; c++)
 				{
 					new_pal[ c*3 + 0 ] = pal[ pData[c]*3 + 0 ];
 					new_pal[ c*3 + 1 ] = pal[ pData[c]*3 + 1 ];
@@ -123,12 +123,12 @@ void BloodXL_Game::PostRender(float dt)
 {
 }
 
-void BloodXL_Game::KeyDown(s32 key)
+void BloodXL_Game::KeyDown(int32_t key)
 {
 	m_Player->KeyDown(key);
 }
 
-void BloodXL_Game::NewGame(s32 episode, s32 difficulty)
+void BloodXL_Game::NewGame(int32_t episode, int32_t difficulty)
 {
 	char szMapName[32];
 	sprintf(szMapName, "E%dM1.MAP", episode+1);

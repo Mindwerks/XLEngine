@@ -9,11 +9,11 @@ extern "C" {
 
 typedef struct XL_PluginAPI_Version
 {
-  s32 major;
-  s32 minor;
+  int32_t major;
+  int32_t minor;
 } XL_PluginAPI_Version;
 
-typedef s32 (*XL_ExitFunc)();
+typedef int32_t (*XL_ExitFunc)();
 
 /** Type definition of the XL_initPlugin function below (used by PluginManager to initialize plugins)
  * Note the return type is the XL_ExitFunc (used by PluginManager to tell plugins to cleanup). If 

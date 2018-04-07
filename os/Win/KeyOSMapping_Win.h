@@ -3,7 +3,7 @@
 
 #include "../VirtualKeys.h"
 
-const u32 s_OS_KeyMapping[256]=
+const uint32_t s_OS_KeyMapping[256]=
 {
 	0,
 	XL_LBUTTON,

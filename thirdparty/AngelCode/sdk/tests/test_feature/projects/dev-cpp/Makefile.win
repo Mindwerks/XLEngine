@@ -58,7 +58,7 @@ OBJ  = \
   obj/testexecutemixedargs.o \
   obj/testexecutescript.o \
   obj/testexecutestring.o \
-  obj/testexecutethis32mixedargs.o \
+  obj/testexecutethiint32_tmixedargs.o \
   obj/testglobalvar.o \
   obj/testint64.o \
   obj/testlongtoken.o \
@@ -278,8 +278,8 @@ obj/testexecutescript.o: ../../source/testexecutescript.cpp
 obj/testexecutestring.o: ../../source/testexecutestring.cpp
 	$(CPP) -c ../../source/testexecutestring.cpp -o obj/testexecutestring.o $(CXXFLAGS)
 
-obj/testexecutethis32mixedargs.o: ../../source/testexecutethis32mixedargs.cpp
-	$(CPP) -c ../../source/testexecutethis32mixedargs.cpp -o obj/testexecutethis32mixedargs.o $(CXXFLAGS)
+obj/testexecutethiint32_tmixedargs.o: ../../source/testexecutethiint32_tmixedargs.cpp
+	$(CPP) -c ../../source/testexecutethiint32_tmixedargs.cpp -o obj/testexecutethiint32_tmixedargs.o $(CXXFLAGS)
 
 obj/testglobalvar.o: ../../source/testglobalvar.cpp
 	$(CPP) -c ../../source/testglobalvar.cpp -o obj/testglobalvar.o $(CXXFLAGS)

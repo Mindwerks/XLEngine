@@ -52,14 +52,14 @@ MeshLoader_Daggerfall::~MeshLoader_Daggerfall()
 bool MeshLoader_Daggerfall::Load(IDriver3D *pDriver, Mesh *pMesh, MeshCollision *pMeshCol, char *ID, int region, int type)
 {
 	bool bSuccess = false;
-	u32 uMeshID = (ID[0]-'0')*10000 + (ID[1]-'0')*1000 + (ID[2]-'0')*100 + (ID[3]-'0')*10 + (ID[4]-'0');
+	uint32_t uMeshID = (ID[0]-'0')*10000 + (ID[1]-'0')*1000 + (ID[2]-'0')*100 + (ID[3]-'0')*10 + (ID[4]-'0');
 
 	if ( ArchiveManager::GameFile_Open(ARCHIVETYPE_BSA, "ARCH3D.BSA", uMeshID) )
 	{
 		ScratchPad::StartFrame();
 		
 		//Read out the file contents.
-		u32 uLength = ArchiveManager::GameFile_GetLength();
+		uint32_t uLength = ArchiveManager::GameFile_GetLength();
 		char *pData = (char *)ScratchPad::AllocMem( uLength );
 		ArchiveManager::GameFile_Read(pData, uLength);
 		ArchiveManager::GameFile_Close();
@@ -312,7 +312,7 @@ int AdjustTexForRegion(int nRegion, int dungeonType, int FileIndex)
 	return FileIndex;
 }
 
-bool MeshLoader_Daggerfall::LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollision *pMeshCol, char *pData, u32 uLength, int region, int type)
+bool MeshLoader_Daggerfall::LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollision *pMeshCol, char *pData, uint32_t uLength, int region, int type)
 {
 	ObjectHeader header = *(ObjectHeader *)pData;
 	Vector3 *points = new Vector3[ header.nPointCount ];
@@ -375,8 +375,8 @@ bool MeshLoader_Daggerfall::LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollis
 			continue;
 		}
 
-		u32 w, h;
-		s32 ox, oy;
+		uint32_t w, h;
+		int32_t ox, oy;
 		float fw, fh;
 		if ( polygons[i].header.nPlanePointCount >= 3 )
 		{
@@ -403,7 +403,7 @@ bool MeshLoader_Daggerfall::LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollis
 			polygons[i].hTex = TextureCache::GameFile_LoadTexture_TexList( TEXTURETYPE_IMG, 7, ARCHIVETYPE_NONE, "", szTexName, ImageIndex );
 			TextureCache::GetTextureSize(ox, oy, w, h, fw, fh);
 
-			u32 wr = Math::RoundNextPow2(w), hr = Math::RoundNextPow2(h);
+			uint32_t wr = Math::RoundNextPow2(w), hr = Math::RoundNextPow2(h);
 			if ( polygons[i].hTex == 0 ) 
 			{ 
 				w = 64; h = 64; 
@@ -647,10 +647,10 @@ bool MeshLoader_Daggerfall::LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollis
 	////////////////////////////////////////////////////////////////
 	/*******sort polygons based on texture...********/
 	//first figure out how many different textures this model has...
-	s32 nTexCnt = 0;
+	int32_t nTexCnt = 0;
 	TextureHandle matTex[128];
-	s16 matImageIndex[128];
-	s16 matFileIndex[128];
+	int16_t matImageIndex[128];
+	int16_t matFileIndex[128];
 	for (int i=0; i<header.nPlaneCount; i++)
 	{
 		bool bMatFound = false;
@@ -683,11 +683,11 @@ bool MeshLoader_Daggerfall::LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollis
 
 	}
 	//then create a polygon list per material.
-	vector<u16> polyList[128];
+	vector<uint16_t> polyList[128];
 	for (int i=0; i<header.nPlaneCount; i++)
 	{
 		int m = polygons[i].matIdx;
-		polyList[m].push_back( (u16)i );
+		polyList[m].push_back( (uint16_t)i );
 		if ( polygons[i].vBounds[0].x < pMesh->m_pMaterials[m].vBounds[0].x ) pMesh->m_pMaterials[m].vBounds[0].x = polygons[i].vBounds[0].x;
 		if ( polygons[i].vBounds[0].y < pMesh->m_pMaterials[m].vBounds[0].y ) pMesh->m_pMaterials[m].vBounds[0].y = polygons[i].vBounds[0].y;
 		if ( polygons[i].vBounds[0].z < pMesh->m_pMaterials[m].vBounds[0].z ) pMesh->m_pMaterials[m].vBounds[0].z = polygons[i].vBounds[0].z;
@@ -697,7 +697,7 @@ bool MeshLoader_Daggerfall::LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollis
 		if ( polygons[i].vBounds[1].z > pMesh->m_pMaterials[m].vBounds[1].z ) pMesh->m_pMaterials[m].vBounds[1].z = polygons[i].vBounds[1].z;
 	}
 
-	static u16 _aIdxCache[32768];
+	static uint16_t _aIdxCache[32768];
 	static MeshVtx _aVtxCache[32768];
 	int nTotalVtx = 0, nTotalIdx = 0;
 	for (int m=0; m<pMesh->m_nMtlCnt; m++)
@@ -706,7 +706,7 @@ bool MeshLoader_Daggerfall::LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollis
 		pMesh->m_pMaterials[m].uPrimCount   = 0;
 		for (int i=0; i<(int)polyList[m].size(); i++)
 		{
-			u16 t = polyList[m].at(i);
+			uint16_t t = polyList[m].at(i);
 			if ( polygons[t].header.nPlanePointCount < 3 )
 				 continue;
 
@@ -743,8 +743,8 @@ bool MeshLoader_Daggerfall::LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollis
 	pMesh->m_pVB->Fill(_aVtxCache);
 
 	pMesh->m_pIB = xlNew IndexBuffer(pDriver);
-	pMesh->m_pIB->Create(nTotalIdx, sizeof(u16), false);
-	pMesh->m_pIB->Fill((u32 *)_aIdxCache);
+	pMesh->m_pIB->Create(nTotalIdx, sizeof(uint16_t), false);
+	pMesh->m_pIB->Fill((uint32_t *)_aIdxCache);
 
 	return true;
 }

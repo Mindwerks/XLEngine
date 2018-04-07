@@ -13,64 +13,64 @@ public:
 	CellLoader_BloodMap();
 	~CellLoader_BloodMap();
 
-	WorldCell *Load( IDriver3D *pDriver, World *pWorld, u8 *pData, u32 uLen, const string& sFile, s32 worldX, s32 worldY );
+	WorldCell *Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const string& sFile, int32_t worldX, int32_t worldY );
 
 private:
 	struct HeaderPart1
 	{
-		s32 startX;
-		s32 startY;
-		s32 startZ;
-		s16 startAngle;
-		s16 sectorNum;
+		int32_t startX;
+		int32_t startY;
+		int32_t startZ;
+		int16_t startAngle;
+		int16_t sectorNum;
 	};
 
 	struct HeaderPart3
 	{
-		s32 mapRevisions;
-		s16 numSectors;
-		s16 numWalls;
-		s16 numSprites;
+		int32_t mapRevisions;
+		int16_t numSectors;
+		int16_t numWalls;
+		int16_t numSprites;
 	};
 
 	struct BloodMapData
 	{
-		s32 pos[3];
-		s16 angle;
-		s16 startSec;
+		int32_t pos[3];
+		int16_t angle;
+		int16_t startSec;
 
-		s16 secCnt;
-		s16 wallCnt;
-		s16 spriteCnt;
+		int16_t secCnt;
+		int16_t wallCnt;
+		int16_t spriteCnt;
 
-		s32 revisions;
+		int32_t revisions;
 	};
 
 	struct BloodSector
 	{
-		s16 wallptr;
-		s16 wallnum;
-		s32 ceilingz;
-		s32 floorz;
-		s16 ceilingstat;
-		s16 floorstat;
-		s16 ceilingpicnum;
-		s16 ceilingheinum;
-		s8  ceilingshade;
-		u8  ceilingpal;
-		u8  ceilingxpanning;
-		u8  ceilingypanning;
-		s16 floorpicnum;
-		s16 floorheinum;
-		s8  floorshade;
-		u8  floorpal;
-		u8  floorxpanning;
-		u8  floorypanning;
-		u8  visibility;
-		u8  filler; // Filler "should" == 0
-		s16 lotag;
-		s16 hitag;
-		s16 extra;
+		int16_t wallptr;
+		int16_t wallnum;
+		int32_t ceilingz;
+		int32_t floorz;
+		int16_t ceilingstat;
+		int16_t floorstat;
+		int16_t ceilingpicnum;
+		int16_t ceilingheinum;
+		int8_t  ceilingshade;
+		uint8_t  ceilingpal;
+		uint8_t  ceilingxpanning;
+		uint8_t  ceilingypanning;
+		int16_t floorpicnum;
+		int16_t floorheinum;
+		int8_t  floorshade;
+		uint8_t  floorpal;
+		uint8_t  floorxpanning;
+		uint8_t  floorypanning;
+		uint8_t  visibility;
+		uint8_t  filler; // Filler "should" == 0
+		int16_t lotag;
+		int16_t hitag;
+		int16_t extra;
 	};
 
 	enum TriggerFlags_e
@@ -111,174 +111,174 @@ private:
 
 	struct BloodSector_Xtra
 	{
-		s16 wallptr;
-		s16 wallnum;
-		s32 ceilingz;
-		s32 floorz;
-		s16 ceilingstat;
-		s16 floorstat;
-		s16 ceilingpicnum;
-		s16 ceilingheinum;
-		s8  ceilingshade;
-		u8  ceilingpal;
-		u8  ceilingxpanning;
-		u8  ceilingypanning;
-		s16 floorpicnum;
-		s16 floorheinum;
-		s8  floorshade;
-		u8  floorpal;
-		u8  floorxpanning;
-		u8  floorypanning;
-		u8  visibility;
-		u8  filler; // Filler "should" == 0
-		s16 lotag;
-		s16 hitag;
-		s16 extra;
+		int16_t wallptr;
+		int16_t wallnum;
+		int32_t ceilingz;
+		int32_t floorz;
+		int16_t ceilingstat;
+		int16_t floorstat;
+		int16_t ceilingpicnum;
+		int16_t ceilingheinum;
+		int8_t  ceilingshade;
+		uint8_t  ceilingpal;
+		uint8_t  ceilingxpanning;
+		uint8_t  ceilingypanning;
+		int16_t floorpicnum;
+		int16_t floorheinum;
+		int8_t  floorshade;
+		uint8_t  floorpal;
+		uint8_t  floorxpanning;
+		uint8_t  floorypanning;
+		uint8_t  visibility;
+		uint8_t  filler; // Filler "should" == 0
+		int16_t lotag;
+		int16_t hitag;
+		int16_t extra;
 
-		u8 startState;
-		u8 cmd;
-		u8 rxID;
-		u8 txID;
+		uint8_t startState;
+		uint8_t cmd;
+		uint8_t rxID;
+		uint8_t txID;
 
-		u8 triggerFlags;
+		uint8_t triggerFlags;
 		
-		u8 bSendAtOn;
-		u8 offOn_busyTime;
-		u8 offOn_wave;
-		u8 offOn_waitTime;
+		uint8_t bSendAtOn;
+		uint8_t offOn_busyTime;
+		uint8_t offOn_wave;
+		uint8_t offOn_waitTime;
 
-		u8 bSendAtOff;
-		u8 onOff_busyTime;
-		u8 onOff_wave;
-		u8 onOff_waitTime;
+		uint8_t bSendAtOff;
+		uint8_t onOff_busyTime;
+		uint8_t onOff_wave;
+		uint8_t onOff_waitTime;
 
-		u8 triggerOnEvent;
-		u8 exData;
-		u8 key;
-		u8 depth;
+		uint8_t triggerOnEvent;
+		uint8_t exData;
+		uint8_t key;
+		uint8_t depth;
 
-		u8 bUnderwater;
-		u8 bCrushing;
+		uint8_t bUnderwater;
+		uint8_t bCrushing;
 		
-		s32 floorStates[2];
-		s32 ceilStates[2];
+		int32_t floorStates[2];
+		int32_t ceilStates[2];
 
-		u8 lightFX_wave;
-		s8 lightFX_amp;
-		u8 lightFX_freq;
-		u8 lightFX_phase;
-		u8 lightFX_flags;
-		u8 lightFX_ceilPal2;
-		u8 lightFX_floorPal2;
+		uint8_t lightFX_wave;
+		int8_t lightFX_amp;
+		uint8_t lightFX_freq;
+		uint8_t lightFX_phase;
+		uint8_t lightFX_flags;
+		uint8_t lightFX_ceilPal2;
+		uint8_t lightFX_floorPal2;
 
-		u8 motionFX_speed;
-		u16 motionFX_angle;
-		u8 motionFX_flags;
+		uint8_t motionFX_speed;
+		uint16_t motionFX_angle;
+		uint8_t motionFX_flags;
 
-		u16 wind_vel;
-		u16 wind_ang;
-		u8 bWindAlways;
+		uint16_t wind_vel;
+		uint16_t wind_ang;
+		uint8_t bWindAlways;
 	};
 
 	struct BloodSprite
 	{
-		s32 x, y, z;
-		s16 cstat;
-		s16 picnum;
-		s8 shade;
-		u8 pal;
-		u8 clipdist;
-		u8 filler;
-		u8 xrepeat;
-		u8 yrepeat;
-		s8 xoffset;
-		s8 yoffset;
-		s16 sectnum;
-		s16 statnum;
-		s16 ang;
-		s16 owner;
-		s16 xvel;
-		s16 yvel;
-		s16 zvel;
-		s16 lotag;
-		s16 hitag;
-		s16 extra;
+		int32_t x, y, z;
+		int16_t cstat;
+		int16_t picnum;
+		int8_t shade;
+		uint8_t pal;
+		uint8_t clipdist;
+		uint8_t filler;
+		uint8_t xrepeat;
+		uint8_t yrepeat;
+		int8_t xoffset;
+		int8_t yoffset;
+		int16_t sectnum;
+		int16_t statnum;
+		int16_t ang;
+		int16_t owner;
+		int16_t xvel;
+		int16_t yvel;
+		int16_t zvel;
+		int16_t lotag;
+		int16_t hitag;
+		int16_t extra;
 	};
 
 	struct BloodSprite_Xtra
 	{
-		s32 x, y, z;
-		u16 cstat;
-		s16 picnum;
-		s8 shade;
-		u8 pal;
-		u8 clipdist;
-		u8 filler;
-		u8 xrepeat;
-		u8 yrepeat;
-		s8 xoffset;
-		s8 yoffset;
-		s16 sectnum;
-		s16 statnum;
-		s16 ang;
-		s16 owner;
-		s16 xvel;
-		s16 yvel;
-		s16 zvel;
-		s16 lotag;
-		s16 hitag;
-		s16 extra;
-		u8 data[4];
-		u8 txID;
+		int32_t x, y, z;
+		uint16_t cstat;
+		int16_t picnum;
+		int8_t shade;
+		uint8_t pal;
+		uint8_t clipdist;
+		uint8_t filler;
+		uint8_t xrepeat;
+		uint8_t yrepeat;
+		int8_t xoffset;
+		int8_t yoffset;
+		int16_t sectnum;
+		int16_t statnum;
+		int16_t ang;
+		int16_t owner;
+		int16_t xvel;
+		int16_t yvel;
+		int16_t zvel;
+		int16_t lotag;
+		int16_t hitag;
+		int16_t extra;
+		uint8_t data[4];
+		uint8_t txID;
 	};
 
 	struct BloodWall
 	{
-	   s32 x, y;
-	   s16 point2;
-	   s16 nextwall;
-	   s16 nextsector;
-	   s16 cstat;
-	   s16 picnum;
-	   s16 overpicnum;
-	   s8  shade;
-	   u8  pal;
-	   u8  xrepeat;
-	   u8  yrepeat;
-	   u8  xpanning;
-	   u8  ypanning;
-	   s16 lotag;
-	   s16 hitag;
-	   s16 extra;
+	   int32_t x, y;
+	   int16_t point2;
+	   int16_t nextwall;
+	   int16_t nextsector;
+	   int16_t cstat;
+	   int16_t picnum;
+	   int16_t overpicnum;
+	   int8_t  shade;
+	   uint8_t  pal;
+	   uint8_t  xrepeat;
+	   uint8_t  yrepeat;
+	   uint8_t  xpanning;
+	   uint8_t  ypanning;
+	   int16_t lotag;
+	   int16_t hitag;
+	   int16_t extra;
 	};
 
 	struct BloodWall_Xtra
 	{
-	   s32 x, y;
-	   s16 point2;
-	   s16 nextwall;
-	   s16 nextsector;
-	   u16 cstat;
-	   s16 picnum;
-	   s16 overpicnum;
-	   s8  shade;
-	   u8  pal;
-	   u8  xrepeat;
-	   u8  yrepeat;
-	   u8  xpanning;
-	   u8  ypanning;
-	   s16 lotag;
-	   s16 hitag;
-	   s16 extra;
+	   int32_t x, y;
+	   int16_t point2;
+	   int16_t nextwall;
+	   int16_t nextsector;
+	   uint16_t cstat;
+	   int16_t picnum;
+	   int16_t overpicnum;
+	   int8_t  shade;
+	   uint8_t  pal;
+	   uint8_t  xrepeat;
+	   uint8_t  yrepeat;
+	   uint8_t  xpanning;
+	   uint8_t  ypanning;
+	   int16_t lotag;
+	   int16_t hitag;
+	   int16_t extra;
 
-	   s16 rxID;
-	   s16 txID;
+	   int16_t rxID;
+	   int16_t txID;
 	};
 
 	struct MapVersion
     {
-        u8 Minor;
-		u8 Major;
+        uint8_t Minor;
+		uint8_t Major;
     };
 
 	bool m_bIsEncrypted;
@@ -288,13 +288,13 @@ private:
 	BloodSprite_Xtra *m_pBloodSprites;
 
 private:
-	void DecryptBuffer(u8 *pBuffer, const u32 uDataSize, u8 uDecryptKey);
-	bool ParseHeader(char *pData, s32& index);
-	s32  FindFirstSector(char *pData, s32& index);
-	bool ExtractSectors(char *pData, s32& index);
-	bool ExtractWalls(char *pData, s32& index);
-	bool ExtractSprites(char *pData, s32& index);
-	TextureHandle AddBloodTile(s32 picnum, u32 uPalIdx, u32& uWidth, u32& uHeight, bool bMip=true);
+	void DecryptBuffer(uint8_t *pBuffer, const uint32_t uDataSize, uint8_t uDecryptKey);
+	bool ParseHeader(char *pData, int32_t& index);
+	int32_t  FindFirstSector(char *pData, int32_t& index);
+	bool ExtractSectors(char *pData, int32_t& index);
+	bool ExtractWalls(char *pData, int32_t& index);
+	bool ExtractSprites(char *pData, int32_t& index);
+	TextureHandle AddBloodTile(int32_t picnum, uint32_t uPalIdx, uint32_t& uWidth, uint32_t& uHeight, bool bMip=true);
 };
 
 #endif //CELLLOADER_BLOODMAP_H

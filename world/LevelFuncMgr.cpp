@@ -46,7 +46,7 @@ void LevelFuncMgr::AddLevelFuncCB(const string& sFuncName, LevelFunc::LFunc_Acti
 	}
 }
 
-LevelFunc *LevelFuncMgr::CreateLevelFunc(const char *pszFuncName, s32 nSector, s32 nWall)
+LevelFunc *LevelFuncMgr::CreateLevelFunc(const char *pszFuncName, int32_t nSector, int32_t nWall)
 {
 	//first allocate the function.
 	LevelFunc *pFunc = xlNew LevelFunc(m_pWorldCell, nSector, nWall);

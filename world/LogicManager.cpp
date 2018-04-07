@@ -36,7 +36,7 @@ Logic *LogicManager::CreateLogicFromCode(const string& sName, void *pOwner, Logi
 	Logic *pLogic = xlNew Logic(sName, pOwner, LTYPE_CODE);
 	if ( pLogic )
 	{
-		for (u32 cb=0; cb<LCB_COUNT; cb++)
+		for (uint32_t cb=0; cb<LCB_COUNT; cb++)
 		{
 			pLogic->AddCallback(cb, pFunc[cb]);
 		}

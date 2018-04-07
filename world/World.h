@@ -37,35 +37,35 @@ public:
 	void Render(IDriver3D *pDriver);
 
 	//Collision
-	void Collide(Vector3 *p0, Vector3 *p1, u32& uSector, f32 fRadius, bool bPassThruAdjoins=false);
-	void RayCastAndActivate(Vector3 *p0, Vector3 *p1, u32& uSector);
+	void Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, f32 fRadius, bool bPassThruAdjoins=false);
+	void RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector);
 	bool Raycast(Vector3 *p0, Vector3 *p1, Vector3 *pInter);
 
 	//
-	bool IsSectorTypeVis(u32 uType) { return (m_uSectorTypeVis&uType)!=0; }
+	bool IsSectorTypeVis(uint32_t uType) { return (m_uSectorTypeVis&uType)!=0; }
 
 	//Get the world cell that the camera is currently occupying (if any).
 	//Does not include the Terrain world cell.
 	WorldCell *GetCameraWorldCell();
 
 	//pathing.
-	bool GetRandomNode(s32& nodeX, s32& nodeY, Vector3& outPos, s32& outWorldX, s32& outWorldY);
-	void GetNodeVector(Vector2& vOffset, const Vector3& curPos, s32 wx, s32 wy, s32 nodeX, s32 nodeY);
-	bool CheckNode(s32 nodeX, s32 nodeY);
+	bool GetRandomNode(int32_t& nodeX, int32_t& nodeY, Vector3& outPos, int32_t& outWorldX, int32_t& outWorldY);
+	void GetNodeVector(Vector2& vOffset, const Vector3& curPos, int32_t wx, int32_t wy, int32_t nodeX, int32_t nodeY);
+	bool CheckNode(int32_t nodeX, int32_t nodeY);
 
 	//Console commands
 	static void CC_LockCamera(const vector<string>& args, void *pUserData);
 
 protected:
 
-	void ClearPathingNodes(s32 wx, s32 wy);
-	void AddPathingNodes(s32 dwX, s32 dwY, u8 *pValidNodes);
+	void ClearPathingNodes(int32_t wx, int32_t wy);
+	void AddPathingNodes(int32_t dwX, int32_t dwY, uint8_t *pValidNodes);
 
 	vector<WorldCell *> m_WorldCells;
 	Object *m_Player;	//There's only one player (for now).
 	Camera *m_pCamera;	//The current camera.
 	Terrain *m_pTerrain; //World terrain.
-	u32		 m_uSectorTypeVis;	//which sector type(s) is/are visible.
+	uint32_t		 m_uSectorTypeVis;	//which sector type(s) is/are visible.
 };
 
 #endif //WORLD_H
