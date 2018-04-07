@@ -1,4 +1,6 @@
 #include "EngineSettings.h"
+#include <fstream>
+#include <cctype>
 #include <string.h>
 #include <stdio.h>
 #include <memory.h>
@@ -10,6 +12,118 @@
     #include <unistd.h>
     #define GetCurrentDir getcwd
  #endif
+
+namespace
+{
+
+struct Common_Settings
+{
+    char szDataPath[260];
+
+    u16 flags;
+    short resX;
+    short resY;
+
+    Common_Settings() : szDataPath(""), flags(0), resX(0), resY(0)
+    { }
+};
+
+void LoadSettingsFromFile(Common_Settings &settings, std::istream &file)
+{
+    char linestr[64];
+    while(file.good() && !file.eof())
+    {
+        // Read a line from the input (until reaching a \n).
+        std::string line;
+        while(file.peek() != '\n' && file.get(linestr, sizeof(linestr)))
+        {
+            line += linestr;
+            if(file.gcount() < sizeof(linestr)-1)
+                break;
+        }
+        // Ignore the \n
+        file.ignore();
+
+        // Continue to the next line if this one was empty
+        if(line.empty()) continue;
+
+        std::size_t sep = line.find_first_of('=');
+        if(sep == std::string::npos)
+        {
+            fprintf(stderr, "Config syntax error (missing '='): %s\n", line.c_str());
+            break;
+        }
+
+        // Split the line into separate 'key' and 'value' pairs, strip whitespace.
+        std::size_t begin = 0;
+        while(begin < sep && std::isspace(line[begin]))
+            ++sep;
+        std::string key = line.substr(begin, sep);
+        while(!key.empty() && std::isspace(key.back()))
+            key.pop_back();
+
+        ++sep;
+        while(sep < line.size() && std::isspace(line[sep]))
+            ++sep;
+        std::string value = line.substr(sep);
+        while(!value.empty() && std::isspace(value.back()))
+            value.pop_back();
+
+        // Make the key/setting name lower case
+        for(size_t i = 0;i < key.size();i++)
+            key[i] = std::tolower(key[i]);
+
+        if(key == "data-path")
+        {
+            value = value.substr(0, 256);
+            strcpy(settings.szDataPath, value.c_str());
+        }
+        else if(key == "width")
+        {
+            size_t end = 0;
+            int v = !value.empty() ? std::stoi(value, &end) : 0;
+            if(end == value.size() && v >= 320)
+                settings.resX = v;
+            else
+                fprintf(stderr, "Invalid display width: %s\n", value.c_str());
+        }
+        else if(key == "height")
+        {
+            size_t end = 0;
+            int v = !value.empty() ? std::stoi(value, &end) : 0;
+            if(end == value.size() && v >= 200)
+                settings.resY = v;
+            else
+                fprintf(stderr, "Invalid display height: %s\n", value.c_str());
+        }
+        else if(key == "fullscreen")
+        {
+            for(size_t i = 0;i < value.size();i++)
+                value[i] = std::tolower(value[i]);
+
+            if(value == "true" || value == "1")
+                settings.flags |= EngineSettings::FULLSCREEN;
+        }
+        else if(key == "vsync")
+        {
+            for(size_t i = 0;i < value.size();i++)
+                value[i] = std::tolower(value[i]);
+
+            if(value == "true" || value == "1")
+                settings.flags |= EngineSettings::VSYNC;
+        }
+        else if(key == "emulate-low-res")
+        {
+            for(size_t i = 0;i < value.size();i++)
+                value[i] = std::tolower(value[i]);
+
+            if(value == "true" || value == "1")
+                settings.flags |= EngineSettings::EMULATE_320x200;
+        }
+    }
+}
+
+} // namespace
 
 char EngineSettings::m_szGameDataDir[260];
 char EngineSettings::m_szMapName[260];
@@ -31,19 +145,6 @@ u32 EngineSettings::m_uFlags;
 float EngineSettings::m_fBrightness;
 float EngineSettings::m_fContrast;
 float EngineSettings::m_fGamma;
-
-struct Common_Settings
-{
-	int version;
-	char szDataPath[256];
-
-	char texFilter;
-	char lightRange;
-	u16 flags;
-	short resX;
-	short resY;
-	char refresh;
-};
 
 //set default settings.
 void EngineSettings::Init()
@@ -69,32 +170,35 @@ void EngineSettings::Init()
 
 bool EngineSettings::Load( const char *pszSettingsFile )
 {
-	//Load the settings file. For now we just read the common data, 
-	//later we'll handle extra data per-game.
-	FILE *f = fopen(pszSettingsFile, "rb");
-	if ( f )
-	{
-		Common_Settings commonSettings;
-		fread(&commonSettings, sizeof(Common_Settings), 1, f);
-		fclose(f);
+    //Load the settings file. For now we just read the common data,
+    //later we'll handle extra data per-game.
+    std::ifstream infile(pszSettingsFile, std::ios_base::binary);
+    if ( infile.is_open() )
+    {
+        Common_Settings commonSettings;
+        LoadSettingsFromFile(commonSettings, infile);
+        infile.close();
 
-		strcpy(m_szGameDataDir, commonSettings.szDataPath);
-		size_t len = strlen(m_szGameDataDir);
-		if ( len > 0 && m_szGameDataDir[len-1] != '\\' && m_szGameDataDir[len-1] != '/' )
-		{
-			m_szGameDataDir[len] = '/';
-			m_szGameDataDir[len+1] = 0;
-		}
+        strcpy(m_szGameDataDir, commonSettings.szDataPath);
+        size_t len = strlen(m_szGameDataDir);
+        if ( len > 0 && m_szGameDataDir[len-1] != '\\' && m_szGameDataDir[len-1] != '/' )
+        {
+            m_szGameDataDir[len] = '/';
+            m_szGameDataDir[len+1] = 0;
+        }
 
-		m_nScreenWidth  = commonSettings.resX;
-		m_nScreenHeight = commonSettings.resY;
+        if(commonSettings.resX > 0 && commonSettings.resY > 0)
+        {
+            m_nScreenWidth  = commonSettings.resX;
+            m_nScreenHeight = commonSettings.resY;
+        }
 
-		m_uFlags = commonSettings.flags;
-		
-		return true;
-	}
+        m_uFlags = commonSettings.flags;
 
-	return false;
+        return true;
+    }
+
+    return false;
 }
 
 bool EngineSettings::IsFeatureEnabled(u32 uFeature)
