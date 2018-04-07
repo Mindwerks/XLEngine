@@ -23,8 +23,8 @@ void Sector_GeoBlock::Render(IDriver3D *pDriver, Camera *pCamera)
 	if ( !m_bActive )
 		return;
 
-	vector<u32>::iterator iObj = m_Objects.begin();
-	vector<u32>::iterator eObj = m_Objects.end();
+	vector<uint32_t>::iterator iObj = m_Objects.begin();
+	vector<uint32_t>::iterator eObj = m_Objects.end();
 	for (; iObj != eObj; ++iObj)
 	{
 		Object *pObj = ObjectManager::GetObjectFromID( *iObj );
@@ -49,8 +49,8 @@ void Sector_GeoBlock::Collide(CollisionPacket *packet, Vector3 *bounds, const Ve
 	if ( !m_bActive )
 		return;
 
-	vector<u32>::iterator iObj = m_Objects.begin();
-	vector<u32>::iterator eObj = m_Objects.end();
+	vector<uint32_t>::iterator iObj = m_Objects.begin();
+	vector<uint32_t>::iterator eObj = m_Objects.end();
 	for (; iObj != eObj; ++iObj)
 	{
 		Object *pObj = ObjectManager::GetObjectFromID( *iObj );
@@ -70,8 +70,8 @@ void Sector_GeoBlock::Raycast(RaycastPacket *packet, const Vector3& vOffset)
 	if ( !m_bActive )
 		return;
 
-	vector<u32>::iterator iObj = m_Objects.begin();
-	vector<u32>::iterator eObj = m_Objects.end();
+	vector<uint32_t>::iterator iObj = m_Objects.begin();
+	vector<uint32_t>::iterator eObj = m_Objects.end();
 	for (; iObj != eObj; ++iObj)
 	{
 		Object *pObj = ObjectManager::GetObjectFromID( *iObj );

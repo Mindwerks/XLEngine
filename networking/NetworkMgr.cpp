@@ -19,13 +19,13 @@ struct NetworkPlayer
 };
 NetworkPlayer _apPlayers[MAX_PLAYERS];
 
-s32 NetworkMgr::m_nPlayerCount;
+int32_t NetworkMgr::m_nPlayerCount;
 bool NetworkMgr::m_bRecievedStartupMsg;
 char NetworkMgr::m_szLocalPlayer[32];
 Engine *NetworkMgr::m_pEngine;
-u32 NetworkMgr::m_SeqNum;
-u8 NetworkMgr::m_PacketType;
-u32 NetworkMgr::m_PeerSeqNum;
+uint32_t NetworkMgr::m_SeqNum;
+uint8_t NetworkMgr::m_PacketType;
+uint32_t NetworkMgr::m_PeerSeqNum;
 bool m_bInitSeqNum;
 
 Vector4 NetworkMgr::m_aMsgColorTable[] =
@@ -46,19 +46,19 @@ enum PacketType_e
 //Game packet packing and unpacking.
 #define GetPacketOverhead() (1 + sizeof(m_SeqNum))
 
-u8 *NetworkMgr::SetupPacket(u8 *packet, u8 type)
+uint8_t *NetworkMgr::SetupPacket(uint8_t *packet, uint8_t type)
 {
 	packet[0] = type;
-	*((u32 *)&packet[1]) = m_SeqNum;
+	*((uint32_t *)&packet[1]) = m_SeqNum;
 
 	return &packet[1+sizeof(m_SeqNum)];
 }
 
-u8 *NetworkMgr::UnpackPacket(u8 *packet, u32 packetSize, u32& dataSize)
+uint8_t *NetworkMgr::UnpackPacket(uint8_t *packet, uint32_t packetSize, uint32_t& dataSize)
 {
-	u32 uOffset = 0;
+	uint32_t uOffset = 0;
 	m_PacketType = packet[0];				uOffset++;
-	m_PeerSeqNum = *((u32 *)&packet[1]);	uOffset += sizeof(u32);
+	m_PeerSeqNum = *((uint32_t *)&packet[1]);	uOffset += sizeof(uint32_t);
 	dataSize = packetSize - GetPacketOverhead();
 	
 	return &packet[uOffset];
@@ -168,9 +168,9 @@ bool NetworkMgr::CreateServer()
 	address.host = ENET_HOST_ANY;
 	address.port = EngineSettings::GetPort();
 
-	u32 uChannelCount = 2;
-	u32 uIncomingBandwidth = 0;
-	u32 uOutgoingBandwidth = 0;
+	uint32_t uChannelCount = 2;
+	uint32_t uIncomingBandwidth = 0;
+	uint32_t uOutgoingBandwidth = 0;
 	_pServer = enet_host_create(&address, EngineSettings::GetMaxPlayerCount(), uChannelCount, uIncomingBandwidth, uOutgoingBandwidth);
 
 	const char *pszServerIP = EngineSettings::GetServerIP();
@@ -191,9 +191,9 @@ bool NetworkMgr::CreateServer()
 
 bool NetworkMgr::CreateClient()
 {
-	u32 uChannelCount = 1;
-	u32 uIncomingBandwidth = 57600 / 8;	//56K modem with 56 Kbps downstream bandwidth
-	u32 uOutgoingBandwidth = 14400 / 8; //56K modem with 14 Kbps upstream bandwidth
+	uint32_t uChannelCount = 1;
+	uint32_t uIncomingBandwidth = 57600 / 8;	//56K modem with 56 Kbps downstream bandwidth
+	uint32_t uOutgoingBandwidth = 14400 / 8; //56K modem with 14 Kbps upstream bandwidth
     _pClient = enet_host_create(NULL, 1, uChannelCount, uIncomingBandwidth, uOutgoingBandwidth);
 
     if (_pClient == NULL)
@@ -237,10 +237,10 @@ bool NetworkMgr::CreateClient()
 	//now send the server client info.
 	ScratchPad::StartFrame();
 	{
-		u32 uPacketSize = 2 + strlen(m_szLocalPlayer) + sizeof(m_SeqNum);
-		u8 *packet = (u8 *)ScratchPad::AllocMem( uPacketSize );
+		uint32_t uPacketSize = 2 + strlen(m_szLocalPlayer) + sizeof(m_SeqNum);
+		uint8_t *packet = (uint8_t *)ScratchPad::AllocMem( uPacketSize );
 		packet[0] = PTYPE_CLIENT_DATA;								    //type.
-		*((u32 *)&packet[1]) = m_SeqNum;
+		*((uint32_t *)&packet[1]) = m_SeqNum;
 		memcpy(&packet[1+sizeof(m_SeqNum)], m_szLocalPlayer, strlen(m_szLocalPlayer)+1);	//data
 		SendPacket_Client(1, packet, uPacketSize);
 	}
@@ -249,7 +249,7 @@ bool NetworkMgr::CreateClient()
 	return true;
 }
 
-void NetworkMgr::SendChatMessage(const char *pszMsg, u8 uMsgType)
+void NetworkMgr::SendChatMessage(const char *pszMsg, uint8_t uMsgType)
 {
 	if ( pszMsg[0] == 0 )
 		return;
@@ -257,17 +257,17 @@ void NetworkMgr::SendChatMessage(const char *pszMsg, u8 uMsgType)
 	ScratchPad::StartFrame();
 	{
 		//finally send the left the game message.
-		u32 uPacketSize = 3 + strlen(pszMsg) + sizeof(m_SeqNum);
-		u8 *packet = (u8 *)ScratchPad::AllocMem( uPacketSize );
+		uint32_t uPacketSize = 3 + strlen(pszMsg) + sizeof(m_SeqNum);
+		uint8_t *packet = (uint8_t *)ScratchPad::AllocMem( uPacketSize );
 		packet[0] = PTYPE_CHAT_MSG;						//type.
-		*((u32 *)&packet[1]) = m_SeqNum;
+		*((uint32_t *)&packet[1]) = m_SeqNum;
 		packet[1 + sizeof(m_SeqNum)] = uMsgType;					//chat msg type.
 		memcpy(&packet[2+sizeof(m_SeqNum)], pszMsg, strlen(pszMsg)+1);		//data
 
 		if ( _pServer )
 		{
 			//Send a chat message all the clients that the player has joined...
-			for (s32 c=0; c<m_nPlayerCount; c++)
+			for (int32_t c=0; c<m_nPlayerCount; c++)
 			{
 				SendPacket_Server(1, c, packet, uPacketSize);	
 			}
@@ -285,7 +285,7 @@ void NetworkMgr::SetLocalPlayerName(const char *pszName)
 	strcpy(m_szLocalPlayer, pszName);
 }
 
-void NetworkMgr::SendPacket_Client(u32 uChannel, const u8 *data, u32 uDataSize)
+void NetworkMgr::SendPacket_Client(uint32_t uChannel, const uint8_t *data, uint32_t uDataSize)
 {
 	if ( _pServerPeer == NULL )
 		return;
@@ -300,7 +300,7 @@ void NetworkMgr::SendPacket_Client(u32 uChannel, const u8 *data, u32 uDataSize)
     enet_host_flush(_pClient);
 }
 
-void NetworkMgr::SendPacket_Server(u32 uChannel, u32 uClientID, const u8 *data, u32 uDataSize)
+void NetworkMgr::SendPacket_Server(uint32_t uChannel, uint32_t uClientID, const uint8_t *data, uint32_t uDataSize)
 {
     ENetPacket *packet = enet_packet_create(data, uDataSize, ENET_PACKET_FLAG_RELIABLE);
     
@@ -312,8 +312,8 @@ void NetworkMgr::SendPacket_Server(u32 uChannel, u32 uClientID, const u8 *data, 
     enet_host_flush(_pServer);
 }
 
-u32 m_uMPGame_NextStartPoint = 0;
-u32 m_uMPGame_NumStartPoints = 8;
+uint32_t m_uMPGame_NextStartPoint = 0;
+uint32_t m_uMPGame_NumStartPoints = 8;
 
 void NetworkMgr::_ServerLoop()
 {
@@ -335,11 +335,11 @@ void NetworkMgr::_ServerLoop()
 
 				//now that the client has connected, send the startup data.
 				const char *pszMap = EngineSettings::GetStartMap();
-				u32 uPacketSize = 2 + strlen(pszMap) + sizeof(m_SeqNum) + sizeof(Vector3) + sizeof(s32);
-				u32 uPacketIdx = 0;
-				u8 *packet = (u8 *)ScratchPad::AllocMem( uPacketSize );
+				uint32_t uPacketSize = 2 + strlen(pszMap) + sizeof(m_SeqNum) + sizeof(Vector3) + sizeof(int32_t);
+				uint32_t uPacketIdx = 0;
+				uint8_t *packet = (uint8_t *)ScratchPad::AllocMem( uPacketSize );
 				packet[0] = PTYPE_SET_MAP;	uPacketIdx++;
-				*((u32 *)&packet[uPacketIdx]) = m_SeqNum;	uPacketIdx+=sizeof(m_SeqNum);
+				*((uint32_t *)&packet[uPacketIdx]) = m_SeqNum;	uPacketIdx+=sizeof(m_SeqNum);
 				memcpy(&packet[uPacketIdx], pszMap, strlen(pszMap)+1);	//data
 				uPacketIdx += strlen(pszMap)+1;
 
@@ -350,16 +350,16 @@ void NetworkMgr::_ServerLoop()
 				sprintf(szStartName, "mp0_start%d", m_uMPGame_NextStartPoint);
 				Object *start = ObjectManager::FindObject(szStartName);
 				Vector3 start_pos(0,0,0);
-				s32 nSector=0;
+				int32_t nSector=0;
 				if ( start )
 				{
 					start->GetLoc(start_pos);
-					nSector = (s32)start->GetSector();
+					nSector = (int32_t)start->GetSector();
 				}
 				m_uMPGame_NextStartPoint = (m_uMPGame_NextStartPoint+1)%m_uMPGame_NumStartPoints;
 				memcpy(&packet[uPacketIdx], &start_pos, sizeof(Vector3));
 				uPacketIdx += sizeof(Vector3);
-				*((s32 *)&packet[uPacketIdx]) = nSector;
+				*((int32_t *)&packet[uPacketIdx]) = nSector;
 
 				SendPacket_Server(0, m_nPlayerCount-1, packet, uPacketSize);
 			}
@@ -368,11 +368,11 @@ void NetworkMgr::_ServerLoop()
 			case ENET_EVENT_TYPE_RECEIVE:
 				if ( event.packet->dataLength > GetPacketOverhead() )
 				{
-					s32 nClientID = -1 + (s32)(intptr_t)event.peer->data;
+					int32_t nClientID = -1 + (int32_t)(intptr_t)event.peer->data;
 					if ( nClientID > -1 && nClientID < m_nPlayerCount )
 					{
-						u32 dataSize;
-						u8 *data = UnpackPacket( (u8 *)event.packet->data, event.packet->dataLength, dataSize );
+						uint32_t dataSize;
+						uint8_t *data = UnpackPacket( (uint8_t *)event.packet->data, event.packet->dataLength, dataSize );
 
 						Server_ProcessPacket( nClientID, m_PacketType, data, dataSize, event.channelID );
 					}
@@ -386,28 +386,28 @@ void NetworkMgr::_ServerLoop()
 				//now shuffle the client list...
 				if ( event.peer->data && m_nPlayerCount > 0 )
 				{
-					s32 nClientID = -1 + (s32)(intptr_t)event.peer->data;
+					int32_t nClientID = -1 + (int32_t)(intptr_t)event.peer->data;
 
 					char szMsg[64];
 					sprintf(szMsg, "Player \"%s\" has left the game.", _apPlayers[nClientID].szName);
 					XL_Console::PrintF(szMsg);
 
-					for (s32 i=nClientID; i<m_nPlayerCount-1; i++)
+					for (int32_t i=nClientID; i<m_nPlayerCount-1; i++)
 					{
 						_apPlayers[i] = _apPlayers[i+1];
 					}
 					m_nPlayerCount--;
 				
 					//finally send the left the game message.
-					u32 uPacketSize = 3 + strlen(szMsg) + sizeof(m_SeqNum);
-					u8 *packet = (u8 *)ScratchPad::AllocMem( uPacketSize );
+					uint32_t uPacketSize = 3 + strlen(szMsg) + sizeof(m_SeqNum);
+					uint8_t *packet = (uint8_t *)ScratchPad::AllocMem( uPacketSize );
 					packet[0] = PTYPE_CHAT_MSG;						//type.
-					*((u32 *)&packet[1]) = m_SeqNum;
+					*((uint32_t *)&packet[1]) = m_SeqNum;
 					packet[1+sizeof(m_SeqNum)] = CHATMSG_SYS_INFO;					//chat msg type.
 					memcpy(&packet[2 + sizeof(m_SeqNum)], szMsg, strlen(szMsg)+1);		//data
 
 					//Send a chat message all the clients that the player has joined...
-					for (s32 c=0; c<m_nPlayerCount; c++)
+					for (int32_t c=0; c<m_nPlayerCount; c++)
 					{
 						SendPacket_Server(1, c, packet, uPacketSize);	
 					}
@@ -439,8 +439,8 @@ void NetworkMgr::_ClientLoop()
 			case ENET_EVENT_TYPE_RECEIVE:
 				if ( event.packet->dataLength > GetPacketOverhead() )
 				{
-					u32 dataSize;
-					u8 *data = UnpackPacket( (u8 *)event.packet->data, event.packet->dataLength, dataSize );
+					uint32_t dataSize;
+					uint8_t *data = UnpackPacket( (uint8_t *)event.packet->data, event.packet->dataLength, dataSize );
 
 					//if this is the first server packet, we have to sync our sequence numbers.
 					if ( m_bInitSeqNum )
@@ -469,7 +469,7 @@ void NetworkMgr::_ClientLoop()
 }
 
 //this might be moved somewhere else later...
-void NetworkMgr::Client_ProcessPacket( u8 type, const u8 *data, u32 dataSize, u32 channel )
+void NetworkMgr::Client_ProcessPacket( uint8_t type, const uint8_t *data, uint32_t dataSize, uint32_t channel )
 {
 	switch (type)
 	{
@@ -478,7 +478,7 @@ void NetworkMgr::Client_ProcessPacket( u8 type, const u8 *data, u32 dataSize, u3
 			const char *pszMapName = (const char *)data;
 			size_t offset = strlen(pszMapName) + 1;
 			const Vector3 *startPos = (const Vector3 *)&data[offset]; offset += sizeof(Vector3);
-			const s32 *sector = (const s32 *)&data[offset];
+			const int32_t *sector = (const int32_t *)&data[offset];
 			XL_Console::PrintF("Setup MP parameters. Map = %s, start = (%2.2f,%2.2f,%2.2f), %d.", pszMapName, startPos->x, startPos->y, startPos->z, *sector);
 			EngineSettings::SetStartMap( pszMapName );
 			EngineSettings::SetStartPos(startPos, *sector);
@@ -486,13 +486,13 @@ void NetworkMgr::Client_ProcessPacket( u8 type, const u8 *data, u32 dataSize, u3
 		}
 		break;
 		case PTYPE_CHAT_MSG:
-			u8 uMsgType = data[0];
+			uint8_t uMsgType = data[0];
 			m_pEngine->AddDisplayMessage( (const char *)&data[1], &m_aMsgColorTable[uMsgType], 30.0f );
 		break;
 	};
 }
 
-void NetworkMgr::Server_ProcessPacket( s32 nClientID, u8 type, const u8 *data, u32 dataSize, u32 channel )
+void NetworkMgr::Server_ProcessPacket( int32_t nClientID, uint8_t type, const uint8_t *data, uint32_t dataSize, uint32_t channel )
 {
 	ScratchPad::StartFrame();
 	switch (type)
@@ -506,14 +506,14 @@ void NetworkMgr::Server_ProcessPacket( s32 nClientID, u8 type, const u8 *data, u
 			strcpy( _apPlayers[nClientID].szName, (const char *)data );
 
 			//now that the client has connected, send the startup data.
-			u32 uPacketSize = GetPacketOverhead() + 2 + strlen(szMsg);
-			u8 *base_packet = (u8 *)ScratchPad::AllocMem( uPacketSize );
-			u8 *packet = SetupPacket(base_packet, PTYPE_CHAT_MSG);
+			uint32_t uPacketSize = GetPacketOverhead() + 2 + strlen(szMsg);
+			uint8_t *base_packet = (uint8_t *)ScratchPad::AllocMem( uPacketSize );
+			uint8_t *packet = SetupPacket(base_packet, PTYPE_CHAT_MSG);
 			packet[0] = CHATMSG_SYS_INFO;
 			memcpy(&packet[1], szMsg, strlen(szMsg)+1);	//data
 
 			//Send a chat message all the clients that the player has joined...
-			for (s32 c=0; c<m_nPlayerCount; c++)
+			for (int32_t c=0; c<m_nPlayerCount; c++)
 			{
 				SendPacket_Server(1, c, base_packet, uPacketSize);	
 			}
@@ -521,21 +521,21 @@ void NetworkMgr::Server_ProcessPacket( s32 nClientID, u8 type, const u8 *data, u
 		break;
 		case PTYPE_CHAT_MSG:	//we just pass this to all the clients...
 		{
-			u8 uMsgType = data[0];
+			uint8_t uMsgType = data[0];
 			const char *pszMsg = (const char *)&data[1];
 			char szChatMsg[128];
 			sprintf(szChatMsg, "%s: %s", _apPlayers[nClientID].szName, pszMsg);
 			XL_Console::PrintF(szChatMsg);
 
 			//broadcast chat messages.
-			u32 uPacketSize = 2 + strlen(szChatMsg) + GetPacketOverhead();
-			u8 *base_packet = (u8 *)ScratchPad::AllocMem( uPacketSize );
-			u8 *packet = SetupPacket(base_packet, PTYPE_CHAT_MSG);
+			uint32_t uPacketSize = 2 + strlen(szChatMsg) + GetPacketOverhead();
+			uint8_t *base_packet = (uint8_t *)ScratchPad::AllocMem( uPacketSize );
+			uint8_t *packet = SetupPacket(base_packet, PTYPE_CHAT_MSG);
 			packet[0] = uMsgType;					//chat msg type.
 			memcpy(&packet[1], szChatMsg, strlen(szChatMsg)+1);	//data
 
 			//Send a chat message all the clients that the player has joined...
-			for (s32 c=0; c<m_nPlayerCount; c++)
+			for (int32_t c=0; c<m_nPlayerCount; c++)
 			{
 				SendPacket_Server(1, c, base_packet, uPacketSize);	
 			}

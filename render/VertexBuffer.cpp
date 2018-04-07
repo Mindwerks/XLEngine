@@ -35,7 +35,7 @@ void VertexBuffer::Set()
 	m_pDriver->SetVBO(m_uVBO_ID, m_uStride, m_uVBO_Flags);
 }
 
-bool VertexBuffer::Create(u32 uStride, u32 uCount, bool bDynamic, u32 uVBO_Flags)
+bool VertexBuffer::Create(uint32_t uStride, uint32_t uCount, bool bDynamic, uint32_t uVBO_Flags)
 {
 	bool bSuccess = true;
 	m_pMemory = xlMalloc( uStride * uCount );

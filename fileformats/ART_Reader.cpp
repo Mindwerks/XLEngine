@@ -26,9 +26,9 @@ bool ART_Reader::Open(const char *pszName)
 	if ( f )
 	{
 		// Variables
-		static u8 Buffer[MAX_NB_TILES * 4];
-		u32 uVersion, uTilesEndNum;
-		u32 Ind;
+		static uint8_t Buffer[MAX_NB_TILES * 4];
+		uint32_t uVersion, uTilesEndNum;
+		uint32_t Ind;
 		size_t CrtOffset;
 
 		// Read the first part of the header
@@ -37,10 +37,10 @@ bool ART_Reader::Open(const char *pszName)
 			XL_Console::PrintF("^1Error: invalid ART file: not enough header data");
 			return false;
 		}
-		uVersion         = *( (u32 *)(&Buffer[ 0]) );
-		m_uFileCount     = *( (u32 *)(&Buffer[ 4]) );
-		m_uTilesStartNum = *( (u32 *)(&Buffer[ 8]) );
-		uTilesEndNum     = *( (u32 *)(&Buffer[12]) );
+		uVersion         = *( (uint32_t *)(&Buffer[ 0]) );
+		m_uFileCount     = *( (uint32_t *)(&Buffer[ 4]) );
+		m_uTilesStartNum = *( (uint32_t *)(&Buffer[ 8]) );
+		uTilesEndNum     = *( (uint32_t *)(&Buffer[12]) );
 
 		// Compute the real number of tiles contained in the file
 		m_uFileCount = uTilesEndNum - m_uTilesStartNum + 1;
@@ -57,16 +57,16 @@ bool ART_Reader::Open(const char *pszName)
 		// Extract sizes
 		fread(Buffer, 1, m_uFileCount*2, f);
 		for (Ind = 0; Ind < m_uFileCount; Ind++)
-			m_pTilesList[Ind].XSize = *( (u16 *)(&Buffer[Ind * 2]) );
+			m_pTilesList[Ind].XSize = *( (uint16_t *)(&Buffer[Ind * 2]) );
 
 		fread(Buffer, 1, m_uFileCount * 2, f);
 		for (Ind = 0; Ind < m_uFileCount; Ind++)
-			m_pTilesList[Ind].YSize = *( (u16 *)(&Buffer[Ind * 2]) );
+			m_pTilesList[Ind].YSize = *( (uint16_t *)(&Buffer[Ind * 2]) );
 
 		// Extract animation data
 		fread(Buffer, 1, m_uFileCount * 4, f);
 		for (Ind = 0; Ind < m_uFileCount; Ind++)
-			m_pTilesList[Ind].AnimData = *( (u32 *)(&Buffer[Ind * 4]) );
+			m_pTilesList[Ind].AnimData = *( (uint32_t *)(&Buffer[Ind * 4]) );
 
 		// Compute offsets
 		CrtOffset = 16 + m_uFileCount * (2 + 2 + 4);
@@ -106,11 +106,11 @@ bool ART_Reader::OpenFile(const char *pszFile)
 	{
 		//convert from the incoming index into a file index.
 		char *tmp;
-		s32 nIndex = (s32)strtol(pszFile, &tmp, 10);
+		int32_t nIndex = (int32_t)strtol(pszFile, &tmp, 10);
 		//subtract the start out the start tile.
 		nIndex -= m_uTilesStartNum;
 
-		if ( nIndex >= 0 && nIndex < (s32)m_uFileCount )
+		if ( nIndex >= 0 && nIndex < (int32_t)m_uFileCount )
 		{
 			m_CurFile = nIndex;
 		}
@@ -134,12 +134,12 @@ void ART_Reader::CloseFile()
 	m_CurFile = -1;
 }
 
-u32 ART_Reader::GetFileLen()
+uint32_t ART_Reader::GetFileLen()
 {
 	return m_pTilesList[m_CurFile].XSize * m_pTilesList[m_CurFile].YSize;
 }
 
-bool ART_Reader::ReadFile(void *pData, u32 uLength)
+bool ART_Reader::ReadFile(void *pData, uint32_t uLength)
 {
 	if ( !m_pFile ) { return false; }
 
@@ -158,12 +158,12 @@ void *ART_Reader::ReadFileInfo()
 	return (void *)&m_pTilesList[m_CurFile];
 }
 
-s32 ART_Reader::GetFileCount()
+int32_t ART_Reader::GetFileCount()
 {
-	return (s32)m_uFileCount;
+	return (int32_t)m_uFileCount;
 }
 
-const char *ART_Reader::GetFileName(s32 nFileIdx)
+const char *ART_Reader::GetFileName(int32_t nFileIdx)
 {
 	sprintf(_szFileName, "%03d", nFileIdx+m_uTilesStartNum);
 	return _szFileName;

@@ -26,7 +26,7 @@ public:
 	static bool CreateServer();
 	static bool CreateClient();
 	static void SetLocalPlayerName(const char *pszName);
-	static void SendChatMessage(const char *pszMsg, u8 uMsgType=CHATMSG_NORMAL);
+	static void SendChatMessage(const char *pszMsg, uint8_t uMsgType=CHATMSG_NORMAL);
 
 	static bool HasRecievedStartupMsg();
 	static void Loop();
@@ -34,25 +34,25 @@ private:
 	static void _ServerLoop();
 	static void _ClientLoop();
 
-	static void SendPacket_Client(u32 uChannel, const u8 *data, u32 uDataSize);
-	static void SendPacket_Server(u32 uChannel, u32 uClientID, const u8 *data, u32 uDataSize);
+	static void SendPacket_Client(uint32_t uChannel, const uint8_t *data, uint32_t uDataSize);
+	static void SendPacket_Server(uint32_t uChannel, uint32_t uClientID, const uint8_t *data, uint32_t uDataSize);
 
 	//move this somewhere?
-	static void Client_ProcessPacket( u8 type, const u8 *data, u32 dataSize, u32 channel );
-	static void Server_ProcessPacket( s32 nClientID, u8 type, const u8 *data, u32 dataSize, u32 channel );
+	static void Client_ProcessPacket( uint8_t type, const uint8_t *data, uint32_t dataSize, uint32_t channel );
+	static void Server_ProcessPacket( int32_t nClientID, uint8_t type, const uint8_t *data, uint32_t dataSize, uint32_t channel );
 
-	static u8 *SetupPacket(u8 *packet, u8 type);
-	static u8 *UnpackPacket(u8 *packet, u32 packetSize, u32& dataSize);
+	static uint8_t *SetupPacket(uint8_t *packet, uint8_t type);
+	static uint8_t *UnpackPacket(uint8_t *packet, uint32_t packetSize, uint32_t& dataSize);
 
 private:
-	static s32 m_nPlayerCount;
+	static int32_t m_nPlayerCount;
 	static bool m_bRecievedStartupMsg;
 	static char m_szLocalPlayer[32];
 	static Engine *m_pEngine;
 	static Vector4 m_aMsgColorTable[];
-	static u32 m_SeqNum;
-	static u8 m_PacketType;
-	static u32 m_PeerSeqNum;
+	static uint32_t m_SeqNum;
+	static uint8_t m_PacketType;
+	static uint32_t m_PeerSeqNum;
 };
 
 #endif	//NETWORKMGR_H

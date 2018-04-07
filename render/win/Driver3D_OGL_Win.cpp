@@ -58,7 +58,7 @@ void Driver3D_OGL_Win::Present()
 	ReleaseDC( m_hWnd, hdc );
 }
 
-void Driver3D_OGL_Win::SetWindowData(s32 nParam, void **param)
+void Driver3D_OGL_Win::SetWindowData(int32_t nParam, void **param)
 {
     m_hWnd = (HWND)param[0];
 	HDC m_hDC = GetDC(m_hWnd);
@@ -86,7 +86,7 @@ void Driver3D_OGL_Win::SetWindowData(s32 nParam, void **param)
 		0, 0, 0											// Layer Masks Ignored
 	};
 
-	s32 PixelFormat;
+	int32_t PixelFormat;
 	if ( !(PixelFormat=ChoosePixelFormat(m_hDC,&pfd)) )	// Did Windows Find A Matching Pixel Format?
 	{
 		return;

@@ -65,14 +65,14 @@ void World::RemoveWorldCell(WorldCell *pCell)
 	}
 }
 
-void World::Collide(Vector3 *p0, Vector3 *p1, u32& uSector, f32 fRadius, bool bPassThruAdjoins)
+void World::Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, bool bPassThruAdjoins)
 {
 	//only collide with cells that are close enough.
 	if ( m_WorldCells.size() > 0 )
 	{
-		s32 camX = m_pCamera->GetWorldPosX()>>3;
-		s32 camY = m_pCamera->GetWorldPosY()>>3;
-		s32 cx, cy;
+		int32_t camX = m_pCamera->GetWorldPosX()>>3;
+		int32_t camY = m_pCamera->GetWorldPosY()>>3;
+		int32_t cx, cy;
 
 		vector<WorldCell *>::iterator iCell = m_WorldCells.begin();
 		vector<WorldCell *>::iterator eCell = m_WorldCells.end();
@@ -110,14 +110,14 @@ void World::Collide(Vector3 *p0, Vector3 *p1, u32& uSector, f32 fRadius, bool bP
 	}
 }
 
-void World::RayCastAndActivate(Vector3 *p0, Vector3 *p1, u32& uSector)
+void World::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector)
 {
 	//only collide with cells that are close enough.
 	if ( m_WorldCells.size() > 0 )
 	{
-		s32 camX = m_pCamera->GetWorldPosX()>>3;
-		s32 camY = m_pCamera->GetWorldPosY()>>3;
-		s32 cx, cy;
+		int32_t camX = m_pCamera->GetWorldPosX()>>3;
+		int32_t camY = m_pCamera->GetWorldPosY()>>3;
+		int32_t cx, cy;
 
 		vector<WorldCell *>::iterator iCell = m_WorldCells.begin();
 		vector<WorldCell *>::iterator eCell = m_WorldCells.end();
@@ -144,9 +144,9 @@ bool World::Raycast(Vector3 *p0, Vector3 *p1, Vector3 *pInter)
 		//only collide with cells that are close enough.
 		if ( m_WorldCells.size() > 0 )
 		{
-			s32 camX = m_pCamera->GetWorldPosX()>>3;
-			s32 camY = m_pCamera->GetWorldPosY()>>3;
-			s32 cx, cy;
+			int32_t camX = m_pCamera->GetWorldPosX()>>3;
+			int32_t camY = m_pCamera->GetWorldPosY()>>3;
+			int32_t cx, cy;
 
 			vector<WorldCell *>::iterator iCell = m_WorldCells.begin();
 			vector<WorldCell *>::iterator eCell = m_WorldCells.end();
@@ -211,7 +211,7 @@ bool World::Update(float dt, IDriver3D *pDriver)
 		//if we didn't teleport, then see if the player has moved too far...
 		Vector3 vPlayerLoc;
 		player->GetLoc(vPlayerLoc);
-		s32 dx = 0, dy = 0;
+		int32_t dx = 0, dy = 0;
 		const Vector3& vCamLoc = m_pCamera->GetLoc();
 		Vector3 vNewCamLoc = vCamLoc;
 		Vector3 vMove(0,0,0);
@@ -247,8 +247,8 @@ bool World::Update(float dt, IDriver3D *pDriver)
 			vPlayerLoc = vPlayerLoc + vMove;
 			player->SetLoc(vPlayerLoc);
 			
-			s32 tx = player->GetWorldX();
-			s32 ty = player->GetWorldY();
+			int32_t tx = player->GetWorldX();
+			int32_t ty = player->GetWorldY();
 			player->SetWorldPos(tx+dx, ty+dy);
 
 			m_pCamera->SetLoc(vNewCamLoc);
@@ -259,18 +259,18 @@ bool World::Update(float dt, IDriver3D *pDriver)
 	bool bTerrainUpdated = false;
 	if ( m_pTerrain->IsActive() )
 	{
-		s32 nRectCnt = 0;
+		int32_t nRectCnt = 0;
 		LocationRect aLocRect[16];
 
-		s32 x0 = player->GetWorldX()-7, y0 = player->GetWorldY()-7;
-		s32 x1 = x0+15, y1 = y0+15;
+		int32_t x0 = player->GetWorldX()-7, y0 = player->GetWorldY()-7;
+		int32_t x1 = x0+15, y1 = y0+15;
 
-		s32 wx0 = (x0>>3)-1, wy0 = (y0>>3)-1;
-		s32 wx1 = (x1>>3)+1, wy1 = (y1>>3)+1;
+		int32_t wx0 = (x0>>3)-1, wy0 = (y0>>3)-1;
+		int32_t wx1 = (x1>>3)+1, wy1 = (y1>>3)+1;
 
-		for (s32 wy=wy0; wy<=wy1; wy++)
+		for (int32_t wy=wy0; wy<=wy1; wy++)
 		{
-			for (s32 wx=wx0; wx<=wx1; wx++)
+			for (int32_t wx=wx0; wx<=wx1; wx++)
 			{
 				Location_Daggerfall *pLoc = WorldMap::GetLocation(wx, wy);
 				if ( pLoc && !pLoc->m_bLoaded )
@@ -309,11 +309,11 @@ bool World::Update(float dt, IDriver3D *pDriver)
 		if ( pCell )
 		{
 			//collect any sectors in range, +/-1 tile.
-			s32 tx = player->GetWorldX(), ty = player->GetWorldY();
-			for (u32 s=0; s<pCell->GetSectorCount(); s++)
+			int32_t tx = player->GetWorldX(), ty = player->GetWorldY();
+			for (uint32_t s=0; s<pCell->GetSectorCount(); s++)
 			{
 				Sector *pSector = pCell->GetSector(s);
-				s32 worldX = pSector->m_x, worldY = pSector->m_y;
+				int32_t worldX = pSector->m_x, worldY = pSector->m_y;
 
 				if ( Math::abs(worldX-tx) <= 1 && Math::abs(worldY-ty) <= 1 )
 				{
@@ -330,7 +330,7 @@ struct PathNode
 {
 	Vector2 localWorldPos;
 	Vector2 localPos;
-	s32 worldX, worldY;
+	int32_t worldX, worldY;
 
 	bool bOpen;
 };
@@ -338,14 +338,14 @@ struct PathNode
 PathNode m_PathNodes[2304];
 bool m_bNodesAvail = false;
 
-void World::ClearPathingNodes(s32 wx, s32 wy)
+void World::ClearPathingNodes(int32_t wx, int32_t wy)
 {
 	float curY = -1536.0f + 32.0f;	//+32: start in the middle of the cell.
-	for (u32 y=0; y<48; y++)
+	for (uint32_t y=0; y<48; y++)
 	{
 		float curX = -1536.0f + 32.0f;	//+32: start in the middle of the cell.
-		u32 uIndex = y*48;
-		for (u32 x=0; x<48; x++, uIndex++)
+		uint32_t uIndex = y*48;
+		for (uint32_t x=0; x<48; x++, uIndex++)
 		{
 			m_PathNodes[uIndex].localWorldPos.x = curX;
 			m_PathNodes[uIndex].localWorldPos.y = curY;
@@ -382,16 +382,16 @@ void World::ClearPathingNodes(s32 wx, s32 wy)
 	m_bNodesAvail = false;
 }
 
-void World::AddPathingNodes(s32 dwX, s32 dwY, u8 *pValidNodes)
+void World::AddPathingNodes(int32_t dwX, int32_t dwY, uint8_t *pValidNodes)
 {
 	if ( !pValidNodes )
 		return;
 
-	u32 x0 = (u32)(dwX+1)<<4;
-	u32 y0 = (u32)(dwY+1)<<4;
-	for (u32 y=y0; y<y0+16; y++)
+	uint32_t x0 = (uint32_t)(dwX+1)<<4;
+	uint32_t y0 = (uint32_t)(dwY+1)<<4;
+	for (uint32_t y=y0; y<y0+16; y++)
 	{
-		for (u32 x=x0; x<x0+16; x++)
+		for (uint32_t x=x0; x<x0+16; x++)
 		{
 			m_PathNodes[y*48+x].bOpen = pValidNodes[(y-y0)*16+x-x0]!=0;
 			if ( m_PathNodes[y*48+x].bOpen )
@@ -402,7 +402,7 @@ void World::AddPathingNodes(s32 dwX, s32 dwY, u8 *pValidNodes)
 	}
 }
 
-void World::GetNodeVector(Vector2& vOffset, const Vector3& curPos, s32 wx, s32 wy, s32 nodeX, s32 nodeY)
+void World::GetNodeVector(Vector2& vOffset, const Vector3& curPos, int32_t wx, int32_t wy, int32_t nodeX, int32_t nodeY)
 {
 	Vector3 vPos = curPos;
 	vPos.x += (wx - m_pCamera->GetWorldPosX())*1024.0f;
@@ -411,12 +411,12 @@ void World::GetNodeVector(Vector2& vOffset, const Vector3& curPos, s32 wx, s32 w
 	vOffset.Set( m_PathNodes[nodeY*48+nodeX].localWorldPos.x - vPos.x, m_PathNodes[nodeY*48+nodeX].localWorldPos.y - vPos.y );
 }
 
-bool World::CheckNode(s32 nodeX, s32 nodeY)
+bool World::CheckNode(int32_t nodeX, int32_t nodeY)
 {
 	return m_PathNodes[nodeY*48+nodeX].bOpen;
 }
 
-bool World::GetRandomNode(s32& nodeX, s32& nodeY, Vector3& outPos, s32& outWorldX, s32& outWorldY)
+bool World::GetRandomNode(int32_t& nodeX, int32_t& nodeY, Vector3& outPos, int32_t& outWorldX, int32_t& outWorldY)
 {
 	if ( !m_bNodesAvail )
 	{
@@ -424,7 +424,7 @@ bool World::GetRandomNode(s32& nodeX, s32& nodeY, Vector3& outPos, s32& outWorld
 	}
 	
 	bool bFound = false;
-	s32 nIter = 0;
+	int32_t nIter = 0;
 	while (!bFound && nIter < 32)
 	{
 		nodeX = (rand()%46) + 1;

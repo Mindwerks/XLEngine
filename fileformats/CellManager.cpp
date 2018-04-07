@@ -19,7 +19,7 @@ void CellManager::Init()
 
 void CellManager::Destroy()
 {
-	for (u32 c=0; c<CELLTYPE_COUNT; c++)
+	for (uint32_t c=0; c<CELLTYPE_COUNT; c++)
 	{
 		if ( m_CellLoaders[c] )
 		{
@@ -29,7 +29,7 @@ void CellManager::Destroy()
 	}
 }
 
-WorldCell *CellManager::LoadFromLocation(IDriver3D *pDriver, World *pWorld, u32 uCellType, void *pLocPtr)
+WorldCell *CellManager::LoadFromLocation(IDriver3D *pDriver, World *pWorld, uint32_t uCellType, void *pLocPtr)
 {
 	WorldCell *pCell = NULL;
 
@@ -47,7 +47,7 @@ WorldCell *CellManager::LoadFromLocation(IDriver3D *pDriver, World *pWorld, u32 
 	return pCell;
 }
 
-WorldCell *CellManager::LoadCell(IDriver3D *pDriver, World *pWorld, u32 uCellType, Archive *pCellArchive, const string& sFile, s32 worldX, s32 worldY)
+WorldCell *CellManager::LoadCell(IDriver3D *pDriver, World *pWorld, uint32_t uCellType, Archive *pCellArchive, const string& sFile, int32_t worldX, int32_t worldY)
 {
 	WorldCell *pCell = NULL;
 
@@ -64,8 +64,8 @@ WorldCell *CellManager::LoadCell(IDriver3D *pDriver, World *pWorld, u32 uCellTyp
 	{
 		ScratchPad::StartFrame();
 		{
-			u32 uLen  = ArchiveManager::GameFile_GetLength();
-			u8 *pData = (u8 *)ScratchPad::AllocMem( uLen+1 );
+			uint32_t uLen  = ArchiveManager::GameFile_GetLength();
+			uint8_t *pData = (uint8_t *)ScratchPad::AllocMem( uLen+1 );
 
 			if ( pData )
 			{

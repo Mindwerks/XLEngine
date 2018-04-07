@@ -24,12 +24,12 @@ enum
 
 struct ImageHeader
 {
-	s16 XOffset;
-	s16 YOffset;
-	s16 Width;
-	s16 Height;
-	u16 Compression;
-	u16 DataLength;
+	int16_t XOffset;
+	int16_t YOffset;
+	int16_t Width;
+	int16_t Height;
+	uint16_t Compression;
+	uint16_t DataLength;
 };
 
 #pragma pack(pop)
@@ -42,9 +42,9 @@ TextureConv_IMG::~TextureConv_IMG()
 {
 }
 
-u32 TextureConv_IMG::GetHackID(const char *pszImage)
+uint32_t TextureConv_IMG::GetHackID(const char *pszImage)
 {
-	u32 uHackID = 0;
+	uint32_t uHackID = 0;
 	if ( stricmp(pszImage, "COMPASS.IMG") == 0 )
 		uHackID = 1;
 	else if ( stricmp(pszImage, "PICK03I0.IMG") == 0 || stricmp(pszImage, "CHGN00I0.IMG") == 0 || stricmp(pszImage, "DIE_00I0.IMG") == 0 || 
@@ -81,11 +81,11 @@ u32 TextureConv_IMG::GetHackID(const char *pszImage)
 	return uHackID;
 }
 
-bool TextureConv_IMG::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& nOffsY, u32& uWidth, u32& uHeight, const u8 *pSourceData, u32 uLen, const u8 *pPalette, bool bCopyPal, u32 uHackID/*=0*/)
+bool TextureConv_IMG::ConvertTexture_Pal8(uint8_t *pConvertedData, int32_t& nOffsX, int32_t& nOffsY, uint32_t& uWidth, uint32_t& uHeight, const uint8_t *pSourceData, uint32_t uLen, const uint8_t *pPalette, bool bCopyPal, uint32_t uHackID/*=0*/)
 {
 	ImageHeader header;
-	u8 *pImageData=NULL;
-	u8 *pCustomPal=NULL;
+	uint8_t *pImageData=NULL;
+	uint8_t *pCustomPal=NULL;
 	int nPal = PAL_PAL;
 	nOffsX = 0;
 	nOffsY = 0;
@@ -101,7 +101,7 @@ bool TextureConv_IMG::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = 322*14;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 		}
 		break;
@@ -113,10 +113,10 @@ bool TextureConv_IMG::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = 320*200;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 
-			pCustomPal = new u8[768];
+			pCustomPal = new uint8_t[768];
 			memcpy(pCustomPal, &pSourceData[header.DataLength], 768);
 			for (int i=0; i<768; i++)
 			{
@@ -133,7 +133,7 @@ bool TextureConv_IMG::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = 320*200;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 		}
 		break;
@@ -144,7 +144,7 @@ bool TextureConv_IMG::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = 45*22;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 		}
 		break;
@@ -155,7 +155,7 @@ bool TextureConv_IMG::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = header.Width*header.Height;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 		}
 		break;
@@ -166,7 +166,7 @@ bool TextureConv_IMG::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = header.Width*header.Height;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 		}
 		break;
@@ -177,7 +177,7 @@ bool TextureConv_IMG::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = header.Width*header.Height;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 		}
 		break;
@@ -188,7 +188,7 @@ bool TextureConv_IMG::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = header.Width*header.Height;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 		}
 		break;
@@ -200,7 +200,7 @@ bool TextureConv_IMG::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = 22*22;
 
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			int index = 0;
 			int offset = (22*22)*index;
 			memcpy(pImageData, &pSourceData[offset], header.DataLength);
@@ -214,8 +214,8 @@ bool TextureConv_IMG::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = 32*21*16;
 
-			pImageData = new u8[header.Width*header.Height];
-			u8 *pTmp = new u8[32*16];
+			pImageData = new uint8_t[header.Width*header.Height];
+			uint8_t *pTmp = new uint8_t[32*16];
 			for (int i=0; i<21; i++)
 			{
 				int offset = (32*16)*i;
@@ -241,8 +241,8 @@ bool TextureConv_IMG::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 		int pitch = header.Width;
 
 		//now we'll create an RGBA texture and create a hardware texture out of it.
-		u8 *pal = NULL;
-		u32 palStride = 3;
+		uint8_t *pal = NULL;
+		uint32_t palStride = 3;
 		if ( pCustomPal )
 		{
 			pal = pCustomPal;
@@ -304,14 +304,14 @@ bool TextureConv_IMG::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 
 struct TexRecordF
 {
-	s16 w, h;
-	s16 offsetX, offsetY;
+	int16_t w, h;
+	int16_t offsetX, offsetY;
 	TextureHandle hTex;
 };
 
 struct TextureFile
 {
-	s32 nRecordCnt;
+	int32_t nRecordCnt;
 	TexRecordF *pRecords;
 };
 
@@ -320,39 +320,39 @@ struct TextureFile
 
 struct TexRecordHeader
 {
-	s16 type1;
-	s32 recordPos;
-	s16 type2;
-	s32 unknown;
-	s64 NullValue;
+	int16_t type1;
+	int32_t recordPos;
+	int16_t type2;
+	int32_t unknown;
+	int64_t NullValue;
 };
 
 struct TexRecord
 {
-	s16 offsetX;
-	s16 offsetY;
-	s16 width;
-	s16 height;
-	u16 compression;
-	u32 recordSize;
-	u32 dataOffs;
-	s16 IsNormal;
-	u16 frameCount;
-	u16 unknown1;
-	s16 xscale;
-	s16 yscale;
+	int16_t offsetX;
+	int16_t offsetY;
+	int16_t width;
+	int16_t height;
+	uint16_t compression;
+	uint32_t recordSize;
+	uint32_t dataOffs;
+	int16_t IsNormal;
+	uint16_t frameCount;
+	uint16_t unknown1;
+	int16_t xscale;
+	int16_t yscale;
 };
 
 #pragma pack(pop)
 
-const u16 Ctx_RleCompressed = 0x0002;
-const u16 Ctx_Uncompressed  = 0x0000;
-const u16 Ctx_ImageRle      = 0x0108;
-const u16 Ctx_RecordRle     = 0x1108;
+const uint16_t Ctx_RleCompressed = 0x0002;
+const uint16_t Ctx_Uncompressed  = 0x0000;
+const uint16_t Ctx_ImageRle      = 0x0108;
+const uint16_t Ctx_RecordRle     = 0x1108;
 
-void _ReadFromRow_MFU(u8 *row, int w, int& index, const u8 *pData)
+void _ReadFromRow_MFU(uint8_t *row, int w, int& index, const uint8_t *pData)
 {
-	u8 c = pData[index]; index++;
+	uint8_t c = pData[index]; index++;
 	bool isZero = true;
 	int p = 0;
 	do
@@ -377,10 +377,10 @@ void _ReadFromRow_MFU(u8 *row, int w, int& index, const u8 *pData)
 	} while ( p < w );
 }
 
-bool TextureConv_IMG::ConvertTexture_Pal8_TexList(u8 *pConvertedData, s32& nOffsX, s32& nOffsY, u32& uWidth, u32& uHeight, const u8 *pSourceData, u32 uLen, const u8 *pPalette, int nRecord, u32 uHackID)
+bool TextureConv_IMG::ConvertTexture_Pal8_TexList(uint8_t *pConvertedData, int32_t& nOffsX, int32_t& nOffsY, uint32_t& uWidth, uint32_t& uHeight, const uint8_t *pSourceData, uint32_t uLen, const uint8_t *pPalette, int nRecord, uint32_t uHackID)
 {
-	s32 index = 0;
-	s16 nRecordCount = *((s16 *)&pSourceData[index]); index +=  2;
+	int32_t index = 0;
+	int16_t nRecordCount = *((int16_t *)&pSourceData[index]); index +=  2;
 	char *pszName    =  (char *)&pSourceData[index];  index += 24;
 
 	if ( nRecord < 0 || (nRecord) >= nRecordCount )
@@ -391,22 +391,22 @@ bool TextureConv_IMG::ConvertTexture_Pal8_TexList(u8 *pConvertedData, s32& nOffs
 	index = pHeaders[ nRecord ].recordPos;
 	TexRecord *pRec = (TexRecord *)&pSourceData[index];
 	bool bCompressed = (pRec->compression == Ctx_RleCompressed || pRec->compression == Ctx_ImageRle || pRec->compression == Ctx_RecordRle);
-	index = pHeaders[ nRecord ].recordPos + (s32)pRec->dataOffs;
-	u8 *buffer = NULL;
+	index = pHeaders[ nRecord ].recordPos + (int32_t)pRec->dataOffs;
+	uint8_t *buffer = NULL;
 
-	nOffsX  = (s32)pRec->offsetX;
-	nOffsY  = (s32)pRec->offsetY;
-	uWidth  = (u32)pRec->width;
-	uHeight = (u32)pRec->height;
+	nOffsX  = (int32_t)pRec->offsetX;
+	nOffsY  = (int32_t)pRec->offsetY;
+	uWidth  = (uint32_t)pRec->width;
+	uHeight = (uint32_t)pRec->height;
 
 	m_aExtraData[0] = pRec->xscale;
 	m_aExtraData[1] = pRec->yscale;
 
 	if ( pRec->dataOffs == 0 || pRec->frameCount < 1 ) //this is a special file.
 	{
-		u8 color = ((u16)pHeaders[ nRecord ].type1)>>8;
+		uint8_t color = ((uint16_t)pHeaders[ nRecord ].type1)>>8;
 		int pal_index = color*4;
-		u8 r, g, b, a=0xff;
+		uint8_t r, g, b, a=0xff;
 		r = MIN(pPalette[ pal_index+0 ], 255);
 		g = MIN(pPalette[ pal_index+1 ], 255);
 		b = MIN(pPalette[ pal_index+2 ], 255);
@@ -429,7 +429,7 @@ bool TextureConv_IMG::ConvertTexture_Pal8_TexList(u8 *pConvertedData, s32& nOffs
 		assert( pRec->width > 0 && pRec->width < 2048 );
 		assert( pRec->height > 0 && pRec->height < 2048 );
 
-		buffer = new u8[pRec->width*pRec->height];
+		buffer = new uint8_t[pRec->width*pRec->height];
 		int pitch = 256 - pRec->width;
 		int buf_idx = 0;
 		for (int h=0; h<pRec->height; h++)
@@ -461,15 +461,15 @@ bool TextureConv_IMG::ConvertTexture_Pal8_TexList(u8 *pConvertedData, s32& nOffs
 
 		//for now just grab frame 0...
 		index = frameOffsStart + pFrameOffsetList[0];
-		s16 fw = *((s16 *)&pSourceData[index]); index += 2;
-		s16 fh = *((s16 *)&pSourceData[index]); index += 2;
-		uWidth  = (u32)fw;
-		uHeight = (u32)fh;
+		int16_t fw = *((int16_t *)&pSourceData[index]); index += 2;
+		int16_t fh = *((int16_t *)&pSourceData[index]); index += 2;
+		uWidth  = (uint32_t)fw;
+		uHeight = (uint32_t)fh;
 
 		assert( fw > 0 && fw < 2048 );
 		assert( fh > 0 && fh < 2048 );
 
-		buffer = new u8[fw*fh];
+		buffer = new uint8_t[fw*fh];
 		for (int h=0; h<fh; h++)
 		{
 			_ReadFromRow_MFU(&buffer[h*fw], fw, index, pSourceData);
@@ -495,11 +495,11 @@ bool TextureConv_IMG::ConvertTexture_Pal8_TexList(u8 *pConvertedData, s32& nOffs
 
 		struct RleHeader
 		{
-			s16 RowOffset;
-			u16 RowEncoding;
+			int16_t RowOffset;
+			uint16_t RowEncoding;
 		};
 
-		buffer = new u8[pRec->width*pRec->height];
+		buffer = new uint8_t[pRec->width*pRec->height];
 		index = pHeaders[ nRecord ].recordPos+pRec->dataOffs;
 		RleHeader *pRleHeaders = (RleHeader *)&pSourceData[index]; 
 
@@ -509,18 +509,18 @@ bool TextureConv_IMG::ConvertTexture_Pal8_TexList(u8 *pConvertedData, s32& nOffs
 			index = pHeaders->recordPos + pRleHeaders[h].RowOffset;
 			if ( pRleHeaders[h].RowEncoding == 0x8000 )
 			{
-				s16 row_w;
-				s32 p = 0;
-				s16 probe;
-				u8  pixel;
-				row_w = *((s16 *)&pSourceData[index]); index += 2;
+				int16_t row_w;
+				int32_t p = 0;
+				int16_t probe;
+				uint8_t  pixel;
+				row_w = *((int16_t *)&pSourceData[index]); index += 2;
 				do
 				{
-					probe = *((s16 *)&pSourceData[index]); index += 2;
+					probe = *((int16_t *)&pSourceData[index]); index += 2;
 					if ( probe < 0 )
 					{
 						probe = -probe;
-						pixel = *((u8 *)&pSourceData[index]); index++;
+						pixel = *((uint8_t *)&pSourceData[index]); index++;
 						for (int pp=0; pp<probe; pp++)
 						{
 							buffer[buf_idx + p] = pixel;
@@ -531,7 +531,7 @@ bool TextureConv_IMG::ConvertTexture_Pal8_TexList(u8 *pConvertedData, s32& nOffs
 					{
 						for (int pp=0; pp<probe; pp++)
 						{
-							buffer[buf_idx + p] = *((u8 *)&pSourceData[index]); index++;
+							buffer[buf_idx + p] = *((uint8_t *)&pSourceData[index]); index++;
 							p++;
 						}
 					}
@@ -564,11 +564,11 @@ bool TextureConv_IMG::ConvertTexture_Pal8_TexList(u8 *pConvertedData, s32& nOffs
 	return true;
 }
 
-bool TextureConv_IMG::ConvertTexture_8bpp(u8 *pConvertedData, s32& nOffsX, s32& nOffsY, u32& uWidth, u32& uHeight, const u8 *pSourceData, u32 uLen, u32 uHackID/*=0*/)
+bool TextureConv_IMG::ConvertTexture_8bpp(uint8_t *pConvertedData, int32_t& nOffsX, int32_t& nOffsY, uint32_t& uWidth, uint32_t& uHeight, const uint8_t *pSourceData, uint32_t uLen, uint32_t uHackID/*=0*/)
 {
 	ImageHeader header;
-	u8 *pImageData=NULL;
-	u8 *pCustomPal=NULL;
+	uint8_t *pImageData=NULL;
+	uint8_t *pCustomPal=NULL;
 	int nPal = PAL_PAL;
 	nOffsX = 0;
 	nOffsY = 0;
@@ -584,7 +584,7 @@ bool TextureConv_IMG::ConvertTexture_8bpp(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = 322*14;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 		}
 		break;
@@ -596,10 +596,10 @@ bool TextureConv_IMG::ConvertTexture_8bpp(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = 320*200;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 
-			pCustomPal = new u8[768];
+			pCustomPal = new uint8_t[768];
 			memcpy(pCustomPal, &pSourceData[header.DataLength], 768);
 			for (int i=0; i<768; i++)
 			{
@@ -617,7 +617,7 @@ bool TextureConv_IMG::ConvertTexture_8bpp(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = 320*200;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 		}
 		break;
@@ -628,7 +628,7 @@ bool TextureConv_IMG::ConvertTexture_8bpp(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = 45*22;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 		}
 		break;
@@ -639,7 +639,7 @@ bool TextureConv_IMG::ConvertTexture_8bpp(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = header.Width*header.Height;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 		}
 		break;
@@ -650,7 +650,7 @@ bool TextureConv_IMG::ConvertTexture_8bpp(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = header.Width*header.Height;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 		}
 		break;
@@ -661,7 +661,7 @@ bool TextureConv_IMG::ConvertTexture_8bpp(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = header.Width*header.Height;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 		}
 		break;
@@ -672,7 +672,7 @@ bool TextureConv_IMG::ConvertTexture_8bpp(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.Compression = 0;
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = header.Width*header.Height;
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			memcpy(pImageData, pSourceData, header.DataLength);
 		}
 		break;
@@ -684,7 +684,7 @@ bool TextureConv_IMG::ConvertTexture_8bpp(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = 22*22;
 
-			pImageData = new u8[header.Width*header.Height];
+			pImageData = new uint8_t[header.Width*header.Height];
 			int index = 0;
 			int offset = (22*22)*index;
 			memcpy(pImageData, &pSourceData[offset], header.DataLength);
@@ -698,8 +698,8 @@ bool TextureConv_IMG::ConvertTexture_8bpp(u8 *pConvertedData, s32& nOffsX, s32& 
 			header.XOffset = header.YOffset = 0;
 			header.DataLength = 32*21*16;
 
-			pImageData = new u8[header.Width*header.Height];
-			u8 *pTmp = new u8[32*16];
+			pImageData = new uint8_t[header.Width*header.Height];
+			uint8_t *pTmp = new uint8_t[32*16];
 			for (int i=0; i<21; i++)
 			{
 				int offset = (32*16)*i;
@@ -732,10 +732,10 @@ bool TextureConv_IMG::ConvertTexture_8bpp(u8 *pConvertedData, s32& nOffsX, s32& 
 	return true;
 }
 
-u32 TextureConv_IMG::ConvertTexture_8bpp_TexList(u8 *pConvertedData, s32& nOffsX, s32& nOffsY, u32& uWidth, u32& uHeight, const u8 *pSourceData, u32 uLen, int nRecord, u32 uHackID/*=0*/)
+uint32_t TextureConv_IMG::ConvertTexture_8bpp_TexList(uint8_t *pConvertedData, int32_t& nOffsX, int32_t& nOffsY, uint32_t& uWidth, uint32_t& uHeight, const uint8_t *pSourceData, uint32_t uLen, int nRecord, uint32_t uHackID/*=0*/)
 {
-	s32 index = 0;
-	s16 nRecordCount = *((s16 *)&pSourceData[index]); index +=  2;
+	int32_t index = 0;
+	int16_t nRecordCount = *((int16_t *)&pSourceData[index]); index +=  2;
 	char *pszName    =  (char *)&pSourceData[index];  index += 24;
 
 	if ( nRecord < 0 || nRecord >= nRecordCount )
@@ -746,18 +746,18 @@ u32 TextureConv_IMG::ConvertTexture_8bpp_TexList(u8 *pConvertedData, s32& nOffsX
 	index = pHeaders[ nRecord ].recordPos;
 	TexRecord *pRec = (TexRecord *)&pSourceData[index];
 	bool bCompressed = (pRec->compression == Ctx_RleCompressed || pRec->compression == Ctx_ImageRle || pRec->compression == Ctx_RecordRle);
-	index = pHeaders[ nRecord ].recordPos + (s32)pRec->dataOffs;
-	u8 *buffer = NULL;
+	index = pHeaders[ nRecord ].recordPos + (int32_t)pRec->dataOffs;
+	uint8_t *buffer = NULL;
 
-	nOffsX  = (s32)pRec->offsetX;
-	nOffsY  = (s32)pRec->offsetY;
-	uWidth  = (u32)pRec->width;
-	uHeight = (u32)pRec->height;
+	nOffsX  = (int32_t)pRec->offsetX;
+	nOffsY  = (int32_t)pRec->offsetY;
+	uWidth  = (uint32_t)pRec->width;
+	uHeight = (uint32_t)pRec->height;
 
 	m_aExtraData[0] = pRec->xscale;
 	m_aExtraData[1] = pRec->yscale;
 
-	u32 uFrameCnt = 1;
+	uint32_t uFrameCnt = 1;
 	if ( pRec->dataOffs == 0 || pRec->frameCount < 1 ) //this is a special file.
 	{
 		nOffsX  = 0;
@@ -765,7 +765,7 @@ u32 TextureConv_IMG::ConvertTexture_8bpp_TexList(u8 *pConvertedData, s32& nOffsX
 		uWidth  = 4;
 		uHeight = 4;
 
-		u8 color = ((u16)pHeaders[ nRecord ].type1)>>8;
+		uint8_t color = ((uint16_t)pHeaders[ nRecord ].type1)>>8;
 		for (int h=0; h<16; h++)
 		{
 			pConvertedData[h] = color;
@@ -776,7 +776,7 @@ u32 TextureConv_IMG::ConvertTexture_8bpp_TexList(u8 *pConvertedData, s32& nOffsX
 		assert( pRec->width  > 0 && pRec->width  < 2048 );
 		assert( pRec->height > 0 && pRec->height < 2048 );
 
-		buffer = new u8[pRec->width*pRec->height];
+		buffer = new uint8_t[pRec->width*pRec->height];
 		int pitch = 256 - pRec->width;
 		int buf_idx = 0;
 		for (int h=0; h<pRec->height; h++)
@@ -798,28 +798,28 @@ u32 TextureConv_IMG::ConvertTexture_8bpp_TexList(u8 *pConvertedData, s32& nOffsX
 		uFrameCnt = pRec->frameCount;
 
 		//read the frames.
-		u32 uFrameOffset = 0;
-		s32 frame0_w = 0;
-		s32 frame0_h = 0;
-		for (u32 f=0; f<uFrameCnt; f++)
+		uint32_t uFrameOffset = 0;
+		int32_t frame0_w = 0;
+		int32_t frame0_h = 0;
+		for (uint32_t f=0; f<uFrameCnt; f++)
 		{
 			index = frameOffsStart + pFrameOffsetList[f];
-			s16 fw = *((s16 *)&pSourceData[index]); index += 2;
-			s16 fh = *((s16 *)&pSourceData[index]); index += 2;
+			int16_t fw = *((int16_t *)&pSourceData[index]); index += 2;
+			int16_t fh = *((int16_t *)&pSourceData[index]); index += 2;
 	
 			if ( f == 0 )
 			{
 				frame0_w = fw;
 				frame0_h = fh;
-				buffer = new u8[fw*fh*uFrameCnt];
+				buffer = new uint8_t[fw*fh*uFrameCnt];
 			}
 			else
 			{
 				assert( frame0_w == fw && frame0_h == fh );
 			}
 
-			uWidth  = (u32)fw;
-			uHeight = (u32)fh;
+			uWidth  = (uint32_t)fw;
+			uHeight = (uint32_t)fh;
 
 			assert( fw > 0 && fw < 2048 );
 			assert( fh > 0 && fh < 2048 );
@@ -841,11 +841,11 @@ u32 TextureConv_IMG::ConvertTexture_8bpp_TexList(u8 *pConvertedData, s32& nOffsX
 
 		struct RleHeader
 		{
-			s16 RowOffset;
-			u16 RowEncoding;
+			int16_t RowOffset;
+			uint16_t RowEncoding;
 		};
 
-		buffer = new u8[pRec->width*pRec->height];
+		buffer = new uint8_t[pRec->width*pRec->height];
 		index = pHeaders[ nRecord ].recordPos+pRec->dataOffs;
 		RleHeader *pRleHeaders = (RleHeader *)&pSourceData[index]; 
 
@@ -855,18 +855,18 @@ u32 TextureConv_IMG::ConvertTexture_8bpp_TexList(u8 *pConvertedData, s32& nOffsX
 			index = pHeaders->recordPos + pRleHeaders[h].RowOffset;
 			if ( pRleHeaders[h].RowEncoding == 0x8000 )
 			{
-				s16 row_w;
-				s32 p = 0;
-				s16 probe;
-				u8  pixel;
-				row_w = *((s16 *)&pSourceData[index]); index += 2;
+				int16_t row_w;
+				int32_t p = 0;
+				int16_t probe;
+				uint8_t  pixel;
+				row_w = *((int16_t *)&pSourceData[index]); index += 2;
 				do
 				{
-					probe = *((s16 *)&pSourceData[index]); index += 2;
+					probe = *((int16_t *)&pSourceData[index]); index += 2;
 					if ( probe < 0 )
 					{
 						probe = -probe;
-						pixel = *((u8 *)&pSourceData[index]); index++;
+						pixel = *((uint8_t *)&pSourceData[index]); index++;
 						for (int pp=0; pp<probe; pp++)
 						{
 							buffer[buf_idx + p] = pixel;
@@ -877,7 +877,7 @@ u32 TextureConv_IMG::ConvertTexture_8bpp_TexList(u8 *pConvertedData, s32& nOffsX
 					{
 						for (int pp=0; pp<probe; pp++)
 						{
-							buffer[buf_idx + p] = *((u8 *)&pSourceData[index]); index++;
+							buffer[buf_idx + p] = *((uint8_t *)&pSourceData[index]); index++;
 							p++;
 						}
 					}

@@ -60,7 +60,7 @@ void DarkXL_Game::PostRender(float dt)
 	}
 }
 
-void DarkXL_Game::KeyDown(s32 key)
+void DarkXL_Game::KeyDown(int32_t key)
 {
 	if ( CutscenePlayer::IsCutscenePlaying() )
 	{

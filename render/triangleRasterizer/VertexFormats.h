@@ -38,15 +38,15 @@ struct VBO
 	VFmt_Pos_UV_Clip *pVtx_Clipped;
 
 	int nMatrixViewKey;
-	u32 uMatrixWorldKey;
-	u32 uFlags;
+	uint32_t uMatrixWorldKey;
+	uint32_t uFlags;
 };
 
 struct IBO
 {
-	u16 *pIndices;
+	uint16_t *pIndices;
 	void *pRendererData;
-	u32 uFlags;
+	uint32_t uFlags;
 };
 
 #endif // VERTEX_FORMATS_H

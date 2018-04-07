@@ -13,7 +13,7 @@ OrientedSprite::OrientedSprite() : RenderComponent()
 }
 
 
-void OrientedSprite::Render(Object *pObj, IDriver3D *pDriver, f32 fIntensity, const Vector3& vOffset)
+void OrientedSprite::Render(Object *pObj, IDriver3D *pDriver, float fIntensity, const Vector3& vOffset)
 {
 	pDriver->SetTexture(0, m_hTex, IDriver3D::FILTER_NORMAL_NO_MIP, false);
 

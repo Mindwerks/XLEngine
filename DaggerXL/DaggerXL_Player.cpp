@@ -7,10 +7,10 @@
 #include "../fileformats/CellTypes.h"
 
 LOGIC_CB_MAP(DaggerXL_Player);
-const f32 _VertClamp       = 0.90f;
-const f32 m_PlayerHeight   = 16.8f;
-const f32 m_PlayerCrouch   = 1.800618409f;
-const f32 m_PlayerSwimming = 1.800618409f;
+const float _VertClamp       = 0.90f;
+const float m_PlayerHeight   = 16.8f;
+const float m_PlayerCrouch   = 1.800618409f;
+const float m_PlayerSwimming = 1.800618409f;
 #define CAMERA_ROT_INC 0.0021333333f
 
 //#define DAGGERFALL_START_WORLDX  876
@@ -24,8 +24,8 @@ Vector3 m_GravVector(0,0,0);
 Vector3 m_GravityAccel(0,0,-0.0166666667f*10);
 Vector3 m_PrevVel(0,0,0);
 
-f32 m_fAccelInc = 0.01f;
-f32 m_fAccelDec = 0.25f;
+float m_fAccelInc = 0.01f;
+float m_fAccelDec = 0.25f;
 
 DaggerXL_Player::DaggerXL_Player(const XLEngine_Plugin_API *API)
 {
@@ -67,15 +67,15 @@ DaggerXL_Player::~DaggerXL_Player(void)
 {
 }
 
-void DaggerXL_Player::LogicSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void DaggerXL_Player::LogicSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }
 
-void DaggerXL_Player::ObjectSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void DaggerXL_Player::ObjectSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }
 
-void DaggerXL_Player::KeyDown(s32 key)
+void DaggerXL_Player::KeyDown(int32_t key)
 {
 	if ( key == XL_SPACE && m_bOnGround && m_GravVector.z == m_StartGravity.z )
 	{
@@ -88,7 +88,7 @@ void DaggerXL_Player::KeyDown(s32 key)
 		p0 = m_PhysicsData->m_Loc; p0.z += (m_PlayerHeight);
 		p1 = p0 + m_vLookDir*50.0f;
 
-		u32 uSector = 0;//m_PhysicsData->m_uSector;
+		uint32_t uSector = 0;//m_PhysicsData->m_uSector;
 		m_pAPI->World_Activate(&p0, &p1, uSector);
 	}
 	else if ( key == XL_T )
@@ -105,22 +105,22 @@ void DaggerXL_Player::SetPos(Vector3& pos)
 	m_nFrameRotDelay = 8;
 }
 
-void DaggerXL_Player::GetPos(Vector3& pos, s32& worldX, s32& worldY)
+void DaggerXL_Player::GetPos(Vector3& pos, int32_t& worldX, int32_t& worldY)
 {
 	pos = m_PhysicsData->m_Loc;
 	worldX = m_PhysicsData->m_worldX;
 	worldY = m_PhysicsData->m_worldY;
 }
 
-void DaggerXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
+void DaggerXL_Player::Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 	XL_BOOL bUpdateControls = m_pAPI->Engine_AllowPlayerControls();
 	m_PhysicsData->m_uSector = 0;
 
 	//Handle player control
 	//Look
-	f32 fDeltaX = m_pAPI->GetMouseDx();
-	f32 fDeltaY = m_pAPI->GetMouseDy();
+	float fDeltaX = m_pAPI->GetMouseDx();
+	float fDeltaY = m_pAPI->GetMouseDy();
 
 	if ( bUpdateControls && m_nFrameRotDelay > 0 )
 	{
@@ -145,7 +145,7 @@ void DaggerXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	{
 		m_nFrameRotDelay--;
 	}
-	static f32 fOldMoveSpd=0.0f;
+	static float fOldMoveSpd=0.0f;
 	static Vector3 vLastDir(0.0f, 0.0f, 0.0f);
 	static int nLevitateTime = 0;
 
@@ -166,11 +166,11 @@ void DaggerXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	//Movement
 	Vector3 vLoc = m_PhysicsData->m_Loc;
 	Vector3 vel(0.0f, 0.0f, 0.0f);
-	f32 fSpeed = 1.0f;//0.5333333f;
+	float fSpeed = 1.0f;//0.5333333f;
 	bool bCrouch = false;
 	static bool bLevitating = false;
-	static f32 fCameraHeightPrev = m_PlayerHeight;
-	f32 fCameraHeight = m_PlayerHeight;
+	static float fCameraHeightPrev = m_PlayerHeight;
+	float fCameraHeight = m_PlayerHeight;
 	if ( bUpdateControls )
 	{
 		if ( m_pAPI->IsKeyDown( XL_SHIFT ) || m_pAPI->IsKeyDown( XL_R ) || m_bAutoMove )
@@ -242,8 +242,8 @@ void DaggerXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	fCameraHeightPrev = fCameraHeight;
 
 	//now we want to find our final move speed.
-	f32 fDesSpeed = vel.Normalize();
-	f32 fMoveSpeed = fDesSpeed;
+	float fDesSpeed = vel.Normalize();
+	float fMoveSpeed = fDesSpeed;
 	if ( 0 )
 	{
 		float s  = (fDesSpeed-fOldMoveSpd) > 0.0f ? 1.0f : -1.0f;
@@ -256,11 +256,11 @@ void DaggerXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	fOldMoveSpd = fMoveSpeed;
 	vel = vel*fMoveSpeed;
 
-	f32 fDelta = 0.0f;
-	f32 fMoveSpd = vel.Normalize();
-	f32 fPlayerRadius = 1.01f;	//was 1.51
+	float fDelta = 0.0f;
+	float fMoveSpd = vel.Normalize();
+	float fPlayerRadius = 1.01f;	//was 1.51
 	//split collision into 1 unit segments.
-	f32 fPrevZ = vLoc.z;
+	float fPrevZ = vLoc.z;
 
 	vLoc.z += (fCameraHeight+1.0f)*0.5f;
 	if (vel.z == 0 && !bLevitating)
@@ -332,19 +332,19 @@ void DaggerXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	//now do the up/down walking/running movement...
 	if ( !bLevitating )
 	{
-		static f32 time_sum  = 0.0f;
-		static f32 time_sum2 = 0.0f;
-		static f32 fAnimSpd = 0.0f;
-		const f32 K  = 6.0f;//16.0f;
-		const f32 K2 = 4.0f;
-		const f32 A  = 0.33f;//0.25f;
-		const f32 dt = 1.0f/60.0f;
+		static float time_sum  = 0.0f;
+		static float time_sum2 = 0.0f;
+		static float fAnimSpd = 0.0f;
+		const float K  = 6.0f;//16.0f;
+		const float K2 = 4.0f;
+		const float A  = 0.33f;//0.25f;
+		const float dt = 1.0f/60.0f;
 		if ( 1 )//!m_bJumping && !m_bFalling )
 		{
 			time_sum  = fmodf(time_sum +dt*K,  MATH_TWO_PI);
 			time_sum2 = fmodf(time_sum2+dt*K2, MATH_TWO_PI);
 		}
-		f32 zAnim = sinf( time_sum ) * A * fMoveSpeed;// * m_PlayerHeight/fCameraHeight;
+		float zAnim = sinf( time_sum ) * A * fMoveSpeed;// * m_PlayerHeight/fCameraHeight;
 		vLoc.z += zAnim;
 	}
 
@@ -372,6 +372,6 @@ void DaggerXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	}
 }
 
-void DaggerXL_Player::Message(u32 uObjID, u32 uParamCount, LogicParam *param)
+void DaggerXL_Player::Message(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }

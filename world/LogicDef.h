@@ -24,9 +24,9 @@ enum LogicCallback_e
 
 union LogicParam
 {
-	u32 uParam;
-	s32 nParam;
-	f32 fParam;
+	uint32_t uParam;
+	int32_t nParam;
+	float fParam;
 	void *pParam;
 };
 
@@ -37,6 +37,6 @@ enum LogicMessages_e
 	LMSG_CHILD_ACTIVATE = (1<<1),
 };
 
-typedef void (*LogicFunction)(void *pOwner, u32 uObjID, u32 uParamCount, LogicParam *param);
+typedef void (*LogicFunction)(void *pOwner, uint32_t uObjID, uint32_t uParamCount, LogicParam *param);
 
 #endif //LOGICDEF_H

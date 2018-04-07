@@ -1,9 +1,9 @@
 #include "Plane.h"
 #include <assert.h>
 
-f32 Plane::Normalize()
+float Plane::Normalize()
 {
-	f32 mag, oomag;
+	float mag, oomag;
 	mag = sqrtf(a*a + b*b + c*c);
 	if ( mag )
 	{
@@ -18,7 +18,7 @@ f32 Plane::Normalize()
 
 HalfSpace_e Plane::ClassifyPoint(const Vector3& vPt) const
 {
-	f32 dist;
+	float dist;
 	dist = a*vPt.x + b*vPt.y + c*vPt.z + d;
 	if ( dist < 0.0f ) return NEGATIVE;
 	if ( dist > 0.0f ) return POSITIVE;
@@ -45,7 +45,7 @@ bool Plane::Build(const Vector3& v0, const Vector3& v1, const Vector3& v2)
 	vB.Set(v2.x-v0.x, v2.y-v0.y, v2.z-v0.z);
 
 	vN.Cross(vA, vB);
-	f32 m = vN.Normalize();
+	float m = vN.Normalize();
 
 	a =  vN.x; b = vN.y; c = vN.z;
 	d = -vN.Dot(v0);

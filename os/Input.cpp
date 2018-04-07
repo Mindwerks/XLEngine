@@ -8,13 +8,13 @@
 	#include <memory.h>
 #endif
 
-s8 Input::m_aKeyState[512];
+int8_t Input::m_aKeyState[512];
 vector<Input::KeyDownCB_t *> Input::m_KeyDownCB;
 vector<Input::KeyDownCB_t *> Input::m_CharDownCB;
-f32 Input::m_fMouseX;
-f32 Input::m_fMouseY;
-f32 Input::m_fMouseDeltaX;
-f32 Input::m_fMouseDeltaY;
+float Input::m_fMouseX;
+float Input::m_fMouseY;
+float Input::m_fMouseDeltaX;
+float Input::m_fMouseDeltaY;
 XL_BOOL Input::m_bLockMouse;
 
 void Input::Init()
@@ -24,7 +24,7 @@ void Input::Init()
 	m_fMouseY      = 0.0f;
 	m_fMouseDeltaX = 0.0f;
 	m_fMouseDeltaY = 0.0f;
-	m_bLockMouse   = XL_FALSE;
+	m_bLockMouse   = false;
 
 	//setup script functions.
 	ScriptSystem::RegisterFunc("void Input_EnableMouseLocking(int)", asFUNCTION(EnableMouseLocking));
@@ -57,7 +57,7 @@ void Input::EnableMouseLocking(XL_BOOL bEnable)
 	m_fMouseDeltaY = 0.0f; 
 }
 
-void Input::SetKeyDown(s32 key)
+void Input::SetKeyDown(int32_t key)
 {
 	//now remap from local OS keys to global virtual keys (XL_* from VirtualKeys.h)
 	key = s_OS_KeyMapping[key];
@@ -85,7 +85,7 @@ void Input::SetKeyDown(s32 key)
 	}
 }
 
-void Input::SetKeyUp(s32 key)
+void Input::SetKeyUp(int32_t key)
 {
 	key = s_OS_KeyMapping[key];
 	m_aKeyState[key] = 0;
@@ -115,13 +115,13 @@ void Input::ClearAllKeys()
 	memset(m_aKeyState, 0, 512);
 }
 
-void Input::SetMousePos(f32 x, f32 y)
+void Input::SetMousePos(float x, float y)
 {
 	m_fMouseX = x;
 	m_fMouseY = y;
 }
 
-bool Input::AddKeyDownCallback(Input_KeyDownCB pCB, s32 nFlags)
+bool Input::AddKeyDownCallback(Input_KeyDownCB pCB, int32_t nFlags)
 {
 	KeyDownCB_t *pKeyDownCB = xlNew KeyDownCB_t;
 	if (pKeyDownCB == NULL)
@@ -150,27 +150,27 @@ bool Input::AddCharDownCallback( Input_KeyDownCB pCB )
 /*******************************
   Plugin API
  *******************************/
-s32 Input_IsKeyDown(s32 key)
+int32_t Input_IsKeyDown(int32_t key)
 {
 	return Input::IsKeyDown(key) ? 1 : 0;
 }
 
-f32 Input_GetMousePosX(void)
+float Input_GetMousePosX(void)
 {
 	return Input::GetMouseX();
 }
 
-f32 Input_GetMousePosY(void)
+float Input_GetMousePosY(void)
 {
 	return Input::GetMouseY();
 }
 
-s32 Input_AddKeyDownCB(Input_KeyDownCB pCB, s32 nFlags)
+int32_t Input_AddKeyDownCB(Input_KeyDownCB pCB, int32_t nFlags)
 {
 	return Input::AddKeyDownCallback(pCB, nFlags) ? 1 : 0;
 }
 
-s32 Input_AddCharDownCB(Input_KeyDownCB pCB)
+int32_t Input_AddCharDownCB(Input_KeyDownCB pCB)
 {
 	return Input::AddCharDownCallback(pCB) ? 1 : 0;
 }

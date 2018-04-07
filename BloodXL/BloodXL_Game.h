@@ -18,16 +18,16 @@ public:
 	void PreRender(float dt);
 	void PostRender(float dt);
 
-	void KeyDown(s32 key);
+	void KeyDown(int32_t key);
 
-	void GetVersion(s32& major, s32& minor) { major = m_nVersionMajor; minor = m_nVersionMinor; }
+	void GetVersion(int32_t& major, int32_t& minor) { major = m_nVersionMajor; minor = m_nVersionMinor; }
 
-	void NewGame(s32 episode, s32 difficulty);
+	void NewGame(int32_t episode, int32_t difficulty);
 
 private:
 	const XLEngine_Plugin_API *m_pAPI;
-	s32 m_nVersionMajor;
-	s32 m_nVersionMinor;
+	int32_t m_nVersionMajor;
+	int32_t m_nVersionMinor;
 	BloodXL_Player *m_Player;
 
 	//Script commands

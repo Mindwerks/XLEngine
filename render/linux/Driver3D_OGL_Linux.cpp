@@ -25,7 +25,7 @@ void Driver3D_OGL_Linux::Present()
     SDL_GL_SwapWindow(m_hWnd);  /* buffer swap does implicit glFlush */
 }
 
-void Driver3D_OGL_Linux::SetWindowData(s32 nParam, void **param)
+void Driver3D_OGL_Linux::SetWindowData(int32_t nParam, void **param)
 {
     assert(nParam == 1);
     m_hWnd = (SDL_Window*)param[0];

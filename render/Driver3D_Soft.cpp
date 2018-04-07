@@ -29,29 +29,29 @@
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
 Texture *Driver3D_Soft::m_pCurTex;
-u32 Driver3D_Soft::s_uColormapID;
+uint32_t Driver3D_Soft::s_uColormapID;
 
 Matrix *_prevWorldMtxPtr_Soft = NULL;
-s32 _prevWorldX = 0;
-s32 _prevWorldY = 0;
-u32 *m_pFrameBuffer_32bpp;
-u8  *m_pFrameBuffer_8bpp;
-u16 *m_pDepthBuffer;
-u32 m_FrameWidth;
-u32 m_FrameHeight;
+int32_t _prevWorldX = 0;
+int32_t _prevWorldY = 0;
+uint32_t *m_pFrameBuffer_32bpp;
+uint8_t  *m_pFrameBuffer_8bpp;
+uint16_t *m_pDepthBuffer;
+uint32_t m_FrameWidth;
+uint32_t m_FrameHeight;
 GLuint m_VideoFrameBuffer;
 bool m_bVideoMemAllocated=false;
-u8  _fog_table[256];
-u8 m_colorRed=0xff, m_colorGrn=0xff, m_colorBlue=0xff;
+uint8_t  _fog_table[256];
+uint8_t m_colorRed=0xff, m_colorGrn=0xff, m_colorBlue=0xff;
 int m_nMatrixViewKey  = 0;
-u32 m_uMatrixWorldKey = 0;
+uint32_t m_uMatrixWorldKey = 0;
 int m_AffineLength;
 float m_QuadWidthScale  = 1.0f;
 float m_QuadHeightScale = 1.0f;
 float m_fTexAnimFrameRate = 8.0f;
 
-s32 _trianglesPerFrame = 0;
-static u32 *_pCurPal = NULL;
+int32_t _trianglesPerFrame = 0;
+static uint32_t *_pCurPal = NULL;
 
 //#define MAX_FRAMEBUFFER_WIDTH 2048
 #define MAX_FRAMEBUFFER_WIDTH 1024
@@ -97,7 +97,7 @@ Driver3D_Soft::Driver3D_Soft() : IDriver3D()
 	m_uClearColor = 0;
 	m_Textures.clear();
 	TriangleRasterizer::BuildTables();
-	_pCurPal = xlNew u32[256];
+	_pCurPal = xlNew uint32_t[256];
 	m_fTimer = 0.0f;
 
 	m_uExtensions = EXT_TEXTURE_INDEX | EXT_GOURAUD | EXT_POLYGON_DATA;
@@ -116,7 +116,7 @@ Driver3D_Soft::~Driver3D_Soft()
 			if (!pTex)
 				continue;
 
-			for (s32 f=0; f<pTex->m_nFrameCnt; f++)
+			for (int32_t f=0; f<pTex->m_nFrameCnt; f++)
 			{
 				free( pTex->m_pData[f] );
 			}
@@ -132,7 +132,7 @@ Driver3D_Soft::~Driver3D_Soft()
 	xlDelete [] _pCurPal;
 }
 
-void Driver3D_Soft::ChangeWindowSize(s32 w, s32 h)
+void Driver3D_Soft::ChangeWindowSize(int32_t w, int32_t h)
 {
 	m_nWindowWidth  = w;
 	m_nWindowHeight = h;
@@ -147,7 +147,7 @@ Texture *Driver3D_Soft::CreateCheckPattern()
 	pTex->m_nHeight = 64;
 	pTex->m_nMipCnt = 1;
 	pTex->m_bIsPow2 = true;
-	u32 *pImage = (u32 *)malloc(64*64*4);
+	uint32_t *pImage = (uint32_t *)malloc(64*64*4);
 	pTex->m_nFrameCnt = 1;
 	pTex->m_pData[0] = pImage;
 
@@ -173,7 +173,7 @@ Texture *Driver3D_Soft::CreateCheckPattern()
 	return pTex;
 }
 
-bool Driver3D_Soft::Init(s32 w, s32 h)
+bool Driver3D_Soft::Init(int32_t w, int32_t h)
 {
 	//initialize GLEW for extension loading.
 	GLenum err = glewInit();
@@ -239,15 +239,15 @@ bool Driver3D_Soft::Init(s32 w, s32 h)
 	//allocate the depth buffer.
 	if ( m_nBitDepth == 32 )
 	{
-		m_pFrameBuffer_32bpp = (u32 *)aligned_malloc( m_FrameWidth*m_FrameHeight*sizeof(u32), 16 );
+		m_pFrameBuffer_32bpp = (uint32_t *)aligned_malloc( m_FrameWidth*m_FrameHeight*sizeof(uint32_t), 16 );
 		m_pFrameBuffer_8bpp  = NULL;
 	}
 	else
 	{
-		m_pFrameBuffer_8bpp  = (u8 *)aligned_malloc( m_FrameWidth*m_FrameHeight*sizeof(u8), 16 );
-		m_pFrameBuffer_32bpp = (u32 *)aligned_malloc( m_FrameWidth*m_FrameHeight*sizeof(u32), 16 );
+		m_pFrameBuffer_8bpp  = (uint8_t *)aligned_malloc( m_FrameWidth*m_FrameHeight*sizeof(uint8_t), 16 );
+		m_pFrameBuffer_32bpp = (uint32_t *)aligned_malloc( m_FrameWidth*m_FrameHeight*sizeof(uint32_t), 16 );
 	}
-	m_pDepthBuffer = (u16 *)aligned_malloc( m_FrameWidth*m_FrameHeight*sizeof(u16), 16 );
+	m_pDepthBuffer = (uint16_t *)aligned_malloc( m_FrameWidth*m_FrameHeight*sizeof(uint16_t), 16 );
 
 	//init fog table
 	for (int z=0; z<256; z++)
@@ -256,7 +256,7 @@ bool Driver3D_Soft::Init(s32 w, s32 h)
 		float F = 1.0f - fZ;
 		if ( F < 0.0f ) F = 0.0f;
 		if ( F > 1.0f ) F = 1.0f;
-		_fog_table[z] = (u8)(F*255.0f);
+		_fog_table[z] = (uint8_t)(F*255.0f);
 	}
 
 	//Create a default texture.
@@ -291,26 +291,26 @@ void Driver3D_Soft::EnableCulling(bool bEnable)
 {
 }
 
-void Driver3D_Soft::EnableAlphaTest(bool bEnable, u8 uAlphaCutoff)
+void Driver3D_Soft::EnableAlphaTest(bool bEnable, uint8_t uAlphaCutoff)
 {
 	m_bAlphaTest = bEnable;
 }
 
-void Driver3D_Soft::SetBlendMode(u32 uMode)
+void Driver3D_Soft::SetBlendMode(uint32_t uMode)
 {
 	m_uBlendMode = uMode;
 }
 
-void Driver3D_Soft::SetFogDensity(f32 fDensity)
+void Driver3D_Soft::SetFogDensity(float fDensity)
 {
 }
 
-void Driver3D_Soft::EnableFog(bool bEnable, f32 fEnd)
+void Driver3D_Soft::EnableFog(bool bEnable, float fEnd)
 {
 	DrawScanline::_useFog = bEnable;
 }
 
-void Driver3D_Soft::EnableStencilWriting(bool bEnable, u32 uValue)
+void Driver3D_Soft::EnableStencilWriting(bool bEnable, uint32_t uValue)
 {
 }
 
@@ -318,22 +318,22 @@ void Driver3D_Soft::EnableStencilTesting(bool bEnable)
 {
 }
 
-void Driver3D_Soft::SetBitDepth(s32 bitDepth) 
+void Driver3D_Soft::SetBitDepth(int32_t bitDepth)
 { 
 	m_nBitDepth = bitDepth; 
 	TextureLoader::SetTextureColorDepth(8);// m_nBitDepth );
 }
 
-void Driver3D_Soft::SetExtension_Data(u32 uExtension, void *pData0, void *pData1)
+void Driver3D_Soft::SetExtension_Data(uint32_t uExtension, void *pData0, void *pData1)
 {
 	if ( uExtension == EXT_TEXTURE_INDEX )
 	{
 		m_pTexArray = (TextureHandle *)pData0;
-		m_pTexIndex = (u16 *)pData1;
+		m_pTexIndex = (uint16_t *)pData1;
 	}
 	else if ( uExtension == EXT_GOURAUD )
 	{
-		s32 enable = *((s32 *)pData0);
+		int32_t enable = *((int32_t *)pData0);
 		m_bGouraud = enable ? true : false;
 	}
 	else if ( uExtension == EXT_POLYGON_DATA )
@@ -360,16 +360,16 @@ int Driver3D_Soft::GetFrameHeight()
 void Driver3D_Soft::SetClearColorFromTex(TextureHandle hTex)
 {
 	m_pCurTex = m_Textures[hTex];
-	m_uClearColor = ((u8 *)m_pCurTex->m_pData[0])[ (m_pCurTex->m_nHeight-1)*m_pCurTex->m_nWidth ];
+	m_uClearColor = ((uint8_t *)m_pCurTex->m_pData[0])[ (m_pCurTex->m_nHeight-1)*m_pCurTex->m_nWidth ];
 }
 
-void Driver3D_Soft::ConvertFrameBufferTo32bpp(u32 *pal)
+void Driver3D_Soft::ConvertFrameBufferTo32bpp(uint32_t *pal)
 {
-	u8 *pSource = m_pFrameBuffer_8bpp;
-	u32 *pDest  = m_pFrameBuffer_32bpp;
+	uint8_t *pSource = m_pFrameBuffer_8bpp;
+	uint32_t *pDest  = m_pFrameBuffer_32bpp;
 
-	u32 uPixelCount = m_FrameWidth*m_FrameHeight;
-	for (u32 p=0; p<uPixelCount; p++)
+	uint32_t uPixelCount = m_FrameWidth*m_FrameHeight;
+	for (uint32_t p=0; p<uPixelCount; p++)
 	{
 		*pDest++ = pal[ *pSource++ ];
 	}
@@ -379,7 +379,7 @@ void Driver3D_Soft::ConvertFrameBufferTo32bpp(u32 *pal)
 //A*0.5+B*0.5
 void Driver3D_Soft::BuildColorTables_32bpp(int refPalIndex/*=112*/)
 {
-	u8 *pColormap = TextureLoader::GetColormapData(s_uColormapID);
+	uint8_t *pColormap = TextureLoader::GetColormapData(s_uColormapID);
 
 	int min_r = (_pCurPal[ pColormap[0] ]>>16)&0xff;
 	int min_g = (_pCurPal[ pColormap[0] ]>> 8)&0xff;
@@ -455,19 +455,19 @@ void Driver3D_Soft::BuildTransTable()
 				int bAdd = MIN(bSrc + bDst, 0xff);
 
 				//Now search the entire palette for a matching RGB value.
-				u64 uMinDist2 = 0xffffffffffffffff;
+				uint64_t uMinDist2 = 0xffffffffffffffff;
 				int blendIndex = -1;
 				for (int cBld=0; cBld<256; cBld++)
 				{
-					s32 rChk = (_pCurPal[cBld]>>16)&0xff;
-					s32 gChk = (_pCurPal[cBld]>> 8)&0xff;
-					s32 bChk = (_pCurPal[cBld]    )&0xff;
+					int32_t rChk = (_pCurPal[cBld]>>16)&0xff;
+					int32_t gChk = (_pCurPal[cBld]>> 8)&0xff;
+					int32_t bChk = (_pCurPal[cBld]    )&0xff;
 
-					s32 rDiff = rChk - rBld;
-					s32 gDiff = gChk - gBld;
-					s32 bDiff = bChk - bBld;
+					int32_t rDiff = rChk - rBld;
+					int32_t gDiff = gChk - gBld;
+					int32_t bDiff = bChk - bBld;
 
-					u64 rDist2 = (u64)(rDiff*rDiff) + (u64)(gDiff*gDiff) + (u64)(bDiff*bDiff);
+					uint64_t rDist2 = (uint64_t)(rDiff*rDiff) + (uint64_t)(gDiff*gDiff) + (uint64_t)(bDiff*bDiff);
 					if ( rDist2 < uMinDist2 )
 					{
 						uMinDist2 = rDist2;
@@ -482,15 +482,15 @@ void Driver3D_Soft::BuildTransTable()
 				blendIndex = -1;
 				for (int cBld=0; cBld<256; cBld++)
 				{
-					s32 rChk = (_pCurPal[cBld]>>16)&0xff;
-					s32 gChk = (_pCurPal[cBld]>> 8)&0xff;
-					s32 bChk = (_pCurPal[cBld]    )&0xff;
+					int32_t rChk = (_pCurPal[cBld]>>16)&0xff;
+					int32_t gChk = (_pCurPal[cBld]>> 8)&0xff;
+					int32_t bChk = (_pCurPal[cBld]    )&0xff;
 
-					s32 rDiff = rChk - rAdd;
-					s32 gDiff = gChk - gAdd;
-					s32 bDiff = bChk - bAdd;
+					int32_t rDiff = rChk - rAdd;
+					int32_t gDiff = gChk - gAdd;
+					int32_t bDiff = bChk - bAdd;
 
-					u64 rDist2 = (u64)(rDiff*rDiff) + (u64)(gDiff*gDiff) + (u64)(bDiff*bDiff);
+					uint64_t rDist2 = (uint64_t)(rDiff*rDiff) + (uint64_t)(gDiff*gDiff) + (uint64_t)(bDiff*bDiff);
 					if ( rDist2 < uMinDist2 )
 					{
 						uMinDist2 = rDist2;
@@ -516,7 +516,7 @@ void Driver3D_Soft::Present()
 		if ( bTestColormap == false )
 		{
 			bTestColormap = true;
-			u8 *pColormap  = TextureLoader::GetColormapData(4);
+			uint8_t *pColormap  = TextureLoader::GetColormapData(4);
 			hColorMap      = CreateTexture(256, 64, TEX_FORMAT_RGBA8, pColormap);
 		}
 
@@ -534,17 +534,17 @@ void Driver3D_Soft::Present()
 
 	//if ( m_nBitDepth == 8 )
 	{
-		static u32 _palIdx = 0xffffffff;
+		static uint32_t _palIdx = 0xffffffff;
 		if ( _pCurPal == NULL || _palIdx != m_uPaletteID || m_bUpdatePal )
 		{
-			u8 *pal = TextureLoader::GetPaletteData(m_uPaletteID);
+			uint8_t *pal = TextureLoader::GetPaletteData(m_uPaletteID);
 			int index = 0;
-			for (u32 p=0; p<256; p++)
+			for (uint32_t p=0; p<256; p++)
 			{
-				u8 r = pal[ index+0 ];
-				u8 g = pal[ index+1 ];
-				u8 b = pal[ index+2 ];
-				u8 a = pal[ index+3 ];
+				uint8_t r = pal[ index+0 ];
+				uint8_t g = pal[ index+1 ];
+				uint8_t b = pal[ index+2 ];
+				uint8_t a = pal[ index+3 ];
 
 				_pCurPal[p] = (a<<24) | (r<<16) | (g<<8) | b;
 	
@@ -610,15 +610,15 @@ void Driver3D_Soft::Clear(bool bClearColor)
 
 	if ( bClearColor && m_nBitDepth == 32 )
 	{
-		u8 *pColormap = TextureLoader::GetColormapData(m_uColormapID);
-		u32 uColor = _pCurPal ? _pCurPal[ pColormap[0] ] : 0;
-		for (u32 i=0; i<m_FrameWidth*m_FrameHeight; i++) { m_pFrameBuffer_32bpp[i] = uColor; }
+		uint8_t *pColormap = TextureLoader::GetColormapData(m_uColormapID);
+		uint32_t uColor = _pCurPal ? _pCurPal[ pColormap[0] ] : 0;
+		for (uint32_t i=0; i<m_FrameWidth*m_FrameHeight; i++) { m_pFrameBuffer_32bpp[i] = uColor; }
 		//memset(m_pFrameBuffer_32bpp, _pCurPal ? _pCurPal[ pColormap[0] ] : 0, m_FrameWidth*m_FrameHeight*4);
 	}
 	else if ( bClearColor && m_nBitDepth == 8 )
 	{
-		u8 *pColormap = TextureLoader::GetColormapData(m_uColormapID);
-		u8 uColor = m_uClearColor;
+		uint8_t *pColormap = TextureLoader::GetColormapData(m_uColormapID);
+		uint8_t uColor = m_uClearColor;
 		if ( uColor == 0 )
 		{
 			uColor = pColormap[0];
@@ -629,7 +629,7 @@ void Driver3D_Soft::Clear(bool bClearColor)
 	memset(m_pDepthBuffer, 0xff, m_FrameWidth*m_FrameHeight*2);
 }
 
-void Driver3D_Soft::SetWorldMatrix(Matrix *pMtx, s32 worldX, s32 worldY)
+void Driver3D_Soft::SetWorldMatrix(Matrix *pMtx, int32_t worldX, int32_t worldY)
 {
 	if ( pMtx == NULL )
 	{
@@ -677,7 +677,7 @@ void Driver3D_Soft::SetCamera(Camera *pCamera)
 }
 
 /************** TEXTURE SUPPORT ******************/
-void Driver3D_Soft::SetTexture(s32 slot, TextureHandle hTex, u32 uFilter, bool bWrap, s32 frame)
+void Driver3D_Soft::SetTexture(int32_t slot, TextureHandle hTex, uint32_t uFilter, bool bWrap, int32_t frame)
 {
 	if ( hTex == XL_INVALID_TEXTURE )
 		 hTex = 0;
@@ -691,7 +691,7 @@ void Driver3D_Soft::SetTexture(s32 slot, TextureHandle hTex, u32 uFilter, bool b
 	}
 	else if ( frame < 0 )
 	{
-		DrawScanline::_uCurFrame = (u32)(m_fTimer * m_fTexAnimFrameRate) % m_pCurTex->m_nFrameCnt;
+		DrawScanline::_uCurFrame = (uint32_t)(m_fTimer * m_fTexAnimFrameRate) % m_pCurTex->m_nFrameCnt;
 	}
 	else
 	{
@@ -705,7 +705,7 @@ void Driver3D_Soft::SetColor(Vector4 *pColor)
 {
 }
 
-TextureHandle Driver3D_Soft::CreateTexture(u32 uWidth, u32 uHeight, u32 uFormat/*=TEX_FORMAT_RGBA8*/, u8 *pData/*=NULL*/, bool bGenMips/*=false*/, s32 nFrameCnt/*=1*/)
+TextureHandle Driver3D_Soft::CreateTexture(uint32_t uWidth, uint32_t uHeight, uint32_t uFormat/*=TEX_FORMAT_RGBA8*/, uint8_t *pData/*=NULL*/, bool bGenMips/*=false*/, int32_t nFrameCnt/*=1*/)
 {
 	Texture *pTex = new Texture();
 
@@ -715,29 +715,29 @@ TextureHandle Driver3D_Soft::CreateTexture(u32 uWidth, u32 uHeight, u32 uFormat/
 	pTex->m_bIsPow2 = ( Math::RoundNextPow2(uWidth) == uWidth && Math::RoundNextPow2(uHeight) == uHeight ) ? true : false;
 
 	assert( nFrameCnt < 32 );
-	for (s32 f=0; f<32; f++)
+	for (int32_t f=0; f<32; f++)
 	{
 		pTex->m_pData[f] = NULL;
 	}
 
-	s32 nBytesPerPixel = (uFormat!=TEX_FORMAT_FORCE_32bpp) ? (m_nBitDepth>>3) : 4;
+	int32_t nBytesPerPixel = (uFormat!=TEX_FORMAT_FORCE_32bpp) ? (m_nBitDepth>>3) : 4;
 	if ( pTex->m_bIsPow2 == false )
 	{
-		u32 dataSize = (uWidth+2)*(uHeight+2)*nBytesPerPixel;
+		uint32_t dataSize = (uWidth+2)*(uHeight+2)*nBytesPerPixel;
 		m_uDbg_AllocSize = dataSize;
 		pTex->m_nFrameCnt = nFrameCnt;
-		for (s32 f=0; f<nFrameCnt; f++)
+		for (int32_t f=0; f<nFrameCnt; f++)
 		{
-			pTex->m_pData[f] = (u32 *)malloc(dataSize);
+			pTex->m_pData[f] = (uint32_t *)malloc(dataSize);
 			memset(pTex->m_pData[f], 0, dataSize);
 		}
 	}
 	else
 	{
-		u32 dataSize = uWidth*uHeight*nBytesPerPixel;
+		uint32_t dataSize = uWidth*uHeight*nBytesPerPixel;
 		if ( bGenMips )
 		{
-			u32 w=uWidth>>1, h=uHeight>>1;
+			uint32_t w=uWidth>>1, h=uHeight>>1;
 			while (w >= 1 && h >= 1)
 			{
 				dataSize += (w*h);
@@ -747,27 +747,27 @@ TextureHandle Driver3D_Soft::CreateTexture(u32 uWidth, u32 uHeight, u32 uFormat/
 		}
 		m_uDbg_AllocSize = dataSize;
 		pTex->m_nFrameCnt = nFrameCnt;
-		for (s32 f=0; f<nFrameCnt; f++)
+		for (int32_t f=0; f<nFrameCnt; f++)
 		{
-			pTex->m_pData[f] = (u32 *)malloc(dataSize);
+			pTex->m_pData[f] = (uint32_t *)malloc(dataSize);
 		}
 	}
 
 	if ( m_nBitDepth == 32 || uFormat==TEX_FORMAT_FORCE_32bpp )
 	{
-		u32 uFrameOffset = 0;
-		for (s32 f=0; f<nFrameCnt; f++)
+		uint32_t uFrameOffset = 0;
+		for (int32_t f=0; f<nFrameCnt; f++)
 		{
-			s32 yOffs = 0;
-			u32 *pDestData = pTex->m_pData[f];
-			for (u32 y=0; y<uHeight; y++)
+			int32_t yOffs = 0;
+			uint32_t *pDestData = pTex->m_pData[f];
+			for (uint32_t y=0; y<uHeight; y++)
 			{
-				for (u32 x=0; x<uWidth; x++)
+				for (uint32_t x=0; x<uWidth; x++)
 				{
-					u8 r = pData[uFrameOffset + ((yOffs+x)<<2) + 0];
-					u8 g = pData[uFrameOffset + ((yOffs+x)<<2) + 1];
-					u8 b = pData[uFrameOffset + ((yOffs+x)<<2) + 2];
-					u8 a = pData[uFrameOffset + ((yOffs+x)<<2) + 3];
+					uint8_t r = pData[uFrameOffset + ((yOffs+x)<<2) + 0];
+					uint8_t g = pData[uFrameOffset + ((yOffs+x)<<2) + 1];
+					uint8_t b = pData[uFrameOffset + ((yOffs+x)<<2) + 2];
+					uint8_t a = pData[uFrameOffset + ((yOffs+x)<<2) + 3];
 
 					pDestData[yOffs+x] = (a<<24) | (r<<16) | (g<<8) | b;
 				}
@@ -779,13 +779,13 @@ TextureHandle Driver3D_Soft::CreateTexture(u32 uWidth, u32 uHeight, u32 uFormat/
 	}
 	else
 	{	
-		u32 uFrameOffset = 0;
-		for (s32 f=0; f<nFrameCnt; f++)
+		uint32_t uFrameOffset = 0;
+		for (int32_t f=0; f<nFrameCnt; f++)
 		{
 			memcpy(pTex->m_pData[f], &pData[uFrameOffset], uWidth*uHeight);
 			if ( pTex->m_bIsPow2 && bGenMips )
 			{
-				GenerateMips(uWidth, uHeight, (u8 *)pTex->m_pData[f]);
+				GenerateMips(uWidth, uHeight, (uint8_t *)pTex->m_pData[f]);
 			}
 
 			uFrameOffset += (uWidth*uHeight);
@@ -802,38 +802,38 @@ void Driver3D_Soft::FreeTexture(TextureHandle hTex)
 {
 }
 
-void Driver3D_Soft::FillTexture(TextureHandle hTex, u8 *pData, u32 uWidth, u32 uHeight, bool bGenMips/*=false*/)
+void Driver3D_Soft::FillTexture(TextureHandle hTex, uint8_t *pData, uint32_t uWidth, uint32_t uHeight, bool bGenMips/*=false*/)
 {
 	if ( hTex < m_Textures.size() )
 	{
-		s32 nBytesPerPixel = m_nBitDepth>>3;
+		int32_t nBytesPerPixel = m_nBitDepth>>3;
 
 		Texture *pTex = m_Textures[hTex];
 		memcpy(pTex->m_pData[0], pData, uWidth*uHeight*nBytesPerPixel);
 	}
 }
 
-void Driver3D_Soft::GenerateMips(u32 uWidth, u32 uHeight, u8 *pData)
+void Driver3D_Soft::GenerateMips(uint32_t uWidth, uint32_t uHeight, uint8_t *pData)
 {
 	//assume 8 bit for now, for testing.
-	u32 w  = uWidth>>1, h = uHeight>>1;
-	u32 pW = uWidth,   pH = uHeight;
-	u32 uIndex = uWidth*uHeight;
-	u8 *pDstData = &pData[uIndex];
-	u8 *pSrcData = pData;
-	u32 level = 1;
+	uint32_t w  = uWidth>>1, h = uHeight>>1;
+	uint32_t pW = uWidth,   pH = uHeight;
+	uint32_t uIndex = uWidth*uHeight;
+	uint8_t *pDstData = &pData[uIndex];
+	uint8_t *pSrcData = pData;
+	uint32_t level = 1;
 
-	u8 *pal = TextureLoader::GetPaletteData(m_uPaletteID);
+	uint8_t *pal = TextureLoader::GetPaletteData(m_uPaletteID);
 
 	while (w > 1 || h > 1)
 	{
-		for (u32 y=0; y<h; y++)
+		for (uint32_t y=0; y<h; y++)
 		{
-			for (u32 x=0; x<w; x++)
+			for (uint32_t x=0; x<w; x++)
 			{
-				u8 r, g, b;
-				s32 I[4];
-				u8 index[4];
+				uint8_t r, g, b;
+				int32_t I[4];
+				uint8_t index[4];
 
 				index[0] = pSrcData[ (y<<1)*pW + (x<<1) ];
 				index[1] = pSrcData[ (y<<1)*pW + (x<<1) + 1 ];
@@ -860,13 +860,13 @@ void Driver3D_Soft::GenerateMips(u32 uWidth, u32 uHeight, u8 *pData)
 				b = pal[ index[3]*4+2 ];
 				I[3] = r + g + b;
 
-				s32 ave = (I[0] + I[1] + I[2] + I[3])>>2;
+				int32_t ave = (I[0] + I[1] + I[2] + I[3])>>2;
 				I[0] = abs(I[0] - ave);
 				I[1] = abs(I[1] - ave);
 				I[2] = abs(I[2] - ave);
 				I[3] = abs(I[3] - ave);
 
-				u8 finalIdx = 3;
+				uint8_t finalIdx = 3;
 				if ( I[0] <= I[1] && I[0] <= I[2] && I[0] <= I[3] )
 					 finalIdx = 0;
 				else if ( I[1] <= I[0] && I[1] <= I[2] && I[1] <= I[3] )
@@ -892,9 +892,9 @@ void Driver3D_Soft::GenerateMips(u32 uWidth, u32 uHeight, u8 *pData)
 }
 
 /*************** VBO/IBO Support *****************/
-u32 Driver3D_Soft::CreateVBO()
+uint32_t Driver3D_Soft::CreateVBO()
 {
-	u32 uVBO_ID = (u32)m_VBO.size();
+	uint32_t uVBO_ID = (uint32_t)m_VBO.size();
 
 	VBO *pVBO = new VBO;
 	pVBO->nMatrixViewKey = -1;
@@ -904,7 +904,7 @@ u32 Driver3D_Soft::CreateVBO()
 	return uVBO_ID;
 }
 
-void Driver3D_Soft::AllocVBO_Mem(u32 uID, u32 uVtxCnt, u32 uSize, bool bDynamic)
+void Driver3D_Soft::AllocVBO_Mem(uint32_t uID, uint32_t uVtxCnt, uint32_t uSize, bool bDynamic)
 {
 	VBO *pVBO = m_VBO[uID];
 	if ( pVBO )
@@ -916,7 +916,7 @@ void Driver3D_Soft::AllocVBO_Mem(u32 uID, u32 uVtxCnt, u32 uSize, bool bDynamic)
 	}
 }
 
-void Driver3D_Soft::FillVBO(u32 uID, void *pData, u32 uSize, bool bDynamic)
+void Driver3D_Soft::FillVBO(uint32_t uID, void *pData, uint32_t uSize, bool bDynamic)
 {
 	VBO *pVBO = m_VBO[uID];
 	if ( pVBO )
@@ -925,13 +925,13 @@ void Driver3D_Soft::FillVBO(u32 uID, void *pData, u32 uSize, bool bDynamic)
 	}
 }
 
-void Driver3D_Soft::SetVBO(u32 uID, u32 uStride, u32 uVBO_Flags)
+void Driver3D_Soft::SetVBO(uint32_t uID, uint32_t uStride, uint32_t uVBO_Flags)
 {
 	assert(uID < m_VBO.size());
 	m_pCurVBO   = m_VBO[uID];
 	m_PosStream = m_pCurVBO->pSrcVtx;
 
-	u32 uOffset = 12;
+	uint32_t uOffset = 12;
 	if ( uVBO_Flags & VBO_HAS_NORMALS )
 	{
 		m_NrmlStream = &m_pCurVBO->pSrcVtx[uOffset>>2];
@@ -959,14 +959,14 @@ void Driver3D_Soft::SetVBO(u32 uID, u32 uStride, u32 uVBO_Flags)
 	m_pCurVBO->uFlags = uVBO_Flags;
 }
 
-void Driver3D_Soft::DeleteBuffer(u32 uID)
+void Driver3D_Soft::DeleteBuffer(uint32_t uID)
 {
 }
 
-u32 Driver3D_Soft::CreateIB()
+uint32_t Driver3D_Soft::CreateIB()
 {
 	IBO *ibo    = new IBO;
-	u32 uIBO_ID = (u32)m_IBO.size();
+	uint32_t uIBO_ID = (uint32_t)m_IBO.size();
 	ibo->uFlags = 0;
 	ibo->pRendererData = NULL;
 	m_IBO.push_back(ibo);
@@ -974,17 +974,17 @@ u32 Driver3D_Soft::CreateIB()
 	return uIBO_ID;
 }
 
-void Driver3D_Soft::FillIB(u32 uID, void *pData, u32 uSize, bool bDynamic)
+void Driver3D_Soft::FillIB(uint32_t uID, void *pData, uint32_t uSize, bool bDynamic)
 {
 	IBO *ibo = m_IBO[uID];
 	if ( ibo )
 	{
-		ibo->pIndices = new u16[uSize>>1];
+		ibo->pIndices = new uint16_t[uSize>>1];
 		memcpy(ibo->pIndices, pData, uSize);
 	}
 }
 
-void Driver3D_Soft::ResetIBFlags(u32 uID)
+void Driver3D_Soft::ResetIBFlags(uint32_t uID)
 {
 	IBO *ibo = m_IBO[uID];
 	if ( ibo )
@@ -1009,7 +1009,7 @@ void Driver3D_Soft::LocalToWorld(VBO *pVBO)
 	float *posStream  = m_PosStream;
 	float *uvStream   = m_TCoordStream;
 	float *nrmlStream = m_NrmlStream;
-	u32 offset = 0;
+	uint32_t offset = 0;
 	if ( pVBO->uFlags&VBO_WORLDSPACE )
 	{
 		for (int v=0; v<pVBO->nVtxCnt; v++)
@@ -1086,14 +1086,14 @@ void Driver3D_Soft::WorldToClip(VBO *pVBO)
 }
 
 //The function assumes a vertex buffer has already been set.
-void Driver3D_Soft::RenderIndexedTriangles(IndexBuffer *pIB, s32 nTriCnt, s32 startIndex/*=0*/)
+void Driver3D_Soft::RenderIndexedTriangles(IndexBuffer *pIB, int32_t nTriCnt, int32_t startIndex/*=0*/)
 {
 	if ( m_pCurVBO == NULL )
 		return;
 
-	u32 uIB_ID = pIB->GetID();
+	uint32_t uIB_ID = pIB->GetID();
 	IBO *pIbo  = m_IBO[uIB_ID];
-	u16 *pIndices = pIbo->pIndices;
+	uint16_t *pIndices = pIbo->pIndices;
 
 	int alphaMode = 0;
 	if ( m_bAlphaTest )
@@ -1111,7 +1111,7 @@ void Driver3D_Soft::RenderIndexedTriangles(IndexBuffer *pIB, s32 nTriCnt, s32 st
 		PolygonData *polyData = (PolygonData *)pIbo->pRendererData;
 		for (int t=0, i=startIndex; t<nTriCnt; t++, i+=3)
 		{
-			u16 *pIdx = &pIbo->pIndices[i];
+			uint16_t *pIdx = &pIbo->pIndices[i];
 			polyData[t].cenWS.Set(0,0,0);
 			for (int v=0; v<3; v++)
 			{
@@ -1152,7 +1152,7 @@ void Driver3D_Soft::RenderIndexedTriangles(IndexBuffer *pIB, s32 nTriCnt, s32 st
 		//EXT_TEXTURE_INDEX
 		if ( m_pTexArray )
 		{
-			s32 texIndex = m_pTexArray[m_pTexIndex[t>>1]&0xff];
+			int32_t texIndex = m_pTexArray[m_pTexIndex[t>>1]&0xff];
 			assert( (m_pTexIndex[t>>1]&0xff) < (56*4) );
 			DrawScanline::_pCurTex = m_Textures[ texIndex ];
 			DrawScanline::_texFlip = m_pTexIndex[t>>1]>>8;
@@ -1174,43 +1174,43 @@ void _RenderClippedQuad(Vector4 *pvClipSpacePos)
 
 void Driver3D_Soft::RenderOverlays()
 {
-	for (u32 i=0; i<m_uOverlayCount; i++)
+	for (uint32_t i=0; i<m_uOverlayCount; i++)
 	{
-		s32 tw = m_Textures[ m_Overlays[i].hTex ]->m_nWidth;
-		s32 th = m_Textures[ m_Overlays[i].hTex ]->m_nHeight;
+		int32_t tw = m_Textures[ m_Overlays[i].hTex ]->m_nWidth;
+		int32_t th = m_Textures[ m_Overlays[i].hTex ]->m_nHeight;
 
-		s32 tx = m_Overlays[i].x;
-		s32 ty = m_Overlays[i].y;
-		if ( tx >= (s32)m_FrameWidth || ty >= (s32)m_FrameHeight )
+		int32_t tx = m_Overlays[i].x;
+		int32_t ty = m_Overlays[i].y;
+		if ( tx >= (int32_t)m_FrameWidth || ty >= (int32_t)m_FrameHeight )
 			continue;
 
-		s32 tw_Clipped = Math::Min( tx+tw*m_Overlays[i].scale, (s32)m_FrameWidth )-tx;
-		s32 th_Clipped = Math::Min( ty+th*m_Overlays[i].scale, (s32)m_FrameHeight )-ty;
+		int32_t tw_Clipped = Math::Min( tx+tw*m_Overlays[i].scale, (int32_t)m_FrameWidth )-tx;
+		int32_t th_Clipped = Math::Min( ty+th*m_Overlays[i].scale, (int32_t)m_FrameHeight )-ty;
 		if ( tw_Clipped <= 0 || th_Clipped <= 0 )
 			continue;
 
-		u32 *pImage = (u32 *)m_Textures[ m_Overlays[i].hTex ]->m_pData[0];
-		s32 xOffset = 0;
+		uint32_t *pImage = (uint32_t *)m_Textures[ m_Overlays[i].hTex ]->m_pData[0];
+		int32_t xOffset = 0;
 		if ( tx < 0 )
 			 xOffset = -tx;
-		s32 yOffset = 0;
+		int32_t yOffset = 0;
 		if ( ty < 0 )
 			yOffset = -ty;
 
-		s32 texel_xOffset = xOffset/m_Overlays[i].scale;
-		s32 texel_yOffset = yOffset/m_Overlays[i].scale;
-		s32 tex_y = texel_yOffset;
-		s32 stepsPerTexel = m_Overlays[i].scale;
-		s32 stepsY = stepsPerTexel;
-		for (s32 y=0; y<th_Clipped-yOffset; y++)
+		int32_t texel_xOffset = xOffset/m_Overlays[i].scale;
+		int32_t texel_yOffset = yOffset/m_Overlays[i].scale;
+		int32_t tex_y = texel_yOffset;
+		int32_t stepsPerTexel = m_Overlays[i].scale;
+		int32_t stepsY = stepsPerTexel;
+		for (int32_t y=0; y<th_Clipped-yOffset; y++)
 		{
-			u32 *pImageV = &pImage[ tex_y*tw + texel_xOffset ];
-			s32 fy = m_FrameHeight-(ty+y+yOffset)-1;
+			uint32_t *pImageV = &pImage[ tex_y*tw + texel_xOffset ];
+			int32_t fy = m_FrameHeight-(ty+y+yOffset)-1;
 
-			u32 *pLine = &m_pFrameBuffer_32bpp[ fy*m_FrameWidth + tx + xOffset ];
-			s32 tex_x = 0;
-			s32 stepsX = stepsPerTexel;
-			for (s32 x=0; x<tw_Clipped-xOffset; x++)
+			uint32_t *pLine = &m_pFrameBuffer_32bpp[ fy*m_FrameWidth + tx + xOffset ];
+			int32_t tex_x = 0;
+			int32_t stepsX = stepsPerTexel;
+			for (int32_t x=0; x<tw_Clipped-xOffset; x++)
 			{
 				*pLine++ = pImageV[tex_x];
 
@@ -1240,32 +1240,32 @@ void Driver3D_Soft::RenderScreenQuad(const Vector4& posScale, const Vector2& uvT
 		RenderScreenQuad_8bpp(posScale, uvTop, uvBot, colorTop, colorBot);
 		return;
 	}
-	u32 *pImage = (u32 *)m_pCurTex->m_pData[0];
-	u32 *pImageV;
-	s32 tw = m_pCurTex->m_nWidth;
-	s32 th = m_pCurTex->m_nHeight;
+	uint32_t *pImage = (uint32_t *)m_pCurTex->m_pData[0];
+	uint32_t *pImageV;
+	int32_t tw = m_pCurTex->m_nWidth;
+	int32_t th = m_pCurTex->m_nHeight;
 
-	s32 w = (s32)(posScale.z*m_QuadWidthScale);
-	s32 h = (s32)(posScale.w*m_QuadHeightScale);
-	if ( w > (s32)m_FrameWidth )  w = (s32)m_FrameWidth;
-	if ( h > (s32)m_FrameHeight ) h = (s32)m_FrameHeight;
+	int32_t w = (int32_t)(posScale.z*m_QuadWidthScale);
+	int32_t h = (int32_t)(posScale.w*m_QuadHeightScale);
+	if ( w > (int32_t)m_FrameWidth )  w = (int32_t)m_FrameWidth;
+	if ( h > (int32_t)m_FrameHeight ) h = (int32_t)m_FrameHeight;
 
-	s32 x = (s32)(posScale.x*m_QuadWidthScale);
-	s32 y = (s32)(m_FrameHeight-posScale.y*m_QuadHeightScale-h);
+	int32_t x = (int32_t)(posScale.x*m_QuadWidthScale);
+	int32_t y = (int32_t)(m_FrameHeight-posScale.y*m_QuadHeightScale-h);
 	if ( y < 0 ) y = 0;
 	
-	s32 dudx = Fixed16_16Math::FloatToFixed( (float)tw / (float)w );
-	s32 dvdy = Fixed16_16Math::FloatToFixed( (float)th / (float)h );
+	int32_t dudx = Fixed16_16Math::FloatToFixed( (float)tw / (float)w );
+	int32_t dvdy = Fixed16_16Math::FloatToFixed( (float)th / (float)h );
 
-	s32 v = Fixed16_16Math::IntToFixed(th)-1;
+	int32_t v = Fixed16_16Math::IntToFixed(th)-1;
 	if ( m_uBlendMode == BLEND_NONE && m_bAlphaTest == false )
 	{
-		for (s32 yy=y; yy<y+h; yy++)
+		for (int32_t yy=y; yy<y+h; yy++)
 		{
-			s32 u = 0;
+			int32_t u = 0;
 			pImageV = &pImage[ (v>>16)*tw ];
-			u32 *pLine = &m_pFrameBuffer_32bpp[ yy*m_FrameWidth + x ];
-			for (s32 xx=0; xx<w; xx++)
+			uint32_t *pLine = &m_pFrameBuffer_32bpp[ yy*m_FrameWidth + x ];
+			for (int32_t xx=0; xx<w; xx++)
 			{
 				int U = (u>>16);
 				*pLine++ = pImageV[ U ];
@@ -1276,12 +1276,12 @@ void Driver3D_Soft::RenderScreenQuad(const Vector4& posScale, const Vector2& uvT
 	}
 	else
 	{
-		for (s32 yy=y; yy<y+h; yy++)
+		for (int32_t yy=y; yy<y+h; yy++)
 		{
-			s32 u = 0;
+			int32_t u = 0;
 			pImageV = &pImage[ (v>>16)*tw ];
-			u32 *pLine = &m_pFrameBuffer_32bpp[ yy*m_FrameWidth + x ];
-			for (s32 xx=0; xx<w; xx++)
+			uint32_t *pLine = &m_pFrameBuffer_32bpp[ yy*m_FrameWidth + x ];
+			for (int32_t xx=0; xx<w; xx++)
 			{
 				int U = (u>>16);
 				if ( pImageV[U]&0xff000000 )
@@ -1297,32 +1297,32 @@ void Driver3D_Soft::RenderScreenQuad(const Vector4& posScale, const Vector2& uvT
 
 void Driver3D_Soft::RenderScreenQuad_8bpp(const Vector4& posScale, const Vector2& uvTop, const Vector2& uvBot, const Vector4& colorTop, const Vector4& colorBot)
 {
-	u8 *pImage = (u8 *)m_pCurTex->m_pData[0];
-	u8 *pImageV;
-	s32 tw = m_pCurTex->m_nWidth;
-	s32 th = m_pCurTex->m_nHeight;
+	uint8_t *pImage = (uint8_t *)m_pCurTex->m_pData[0];
+	uint8_t *pImageV;
+	int32_t tw = m_pCurTex->m_nWidth;
+	int32_t th = m_pCurTex->m_nHeight;
 
-	s32 w = (s32)(posScale.z*m_QuadWidthScale);
-	s32 h = (s32)(posScale.w*m_QuadHeightScale);
-	if ( w > (s32)m_FrameWidth )  w = (s32)m_FrameWidth;
-	if ( h > (s32)m_FrameHeight ) h = (s32)m_FrameHeight;
+	int32_t w = (int32_t)(posScale.z*m_QuadWidthScale);
+	int32_t h = (int32_t)(posScale.w*m_QuadHeightScale);
+	if ( w > (int32_t)m_FrameWidth )  w = (int32_t)m_FrameWidth;
+	if ( h > (int32_t)m_FrameHeight ) h = (int32_t)m_FrameHeight;
 
-	s32 x = (s32)(posScale.x*m_QuadWidthScale);
-	s32 y = (s32)(m_FrameHeight-posScale.y*m_QuadHeightScale-h);
+	int32_t x = (int32_t)(posScale.x*m_QuadWidthScale);
+	int32_t y = (int32_t)(m_FrameHeight-posScale.y*m_QuadHeightScale-h);
 	if ( y < 0 ) y = 0;
 	
-	s32 dudx = Fixed16_16Math::FloatToFixed( (float)tw / (float)w );
-	s32 dvdy = Fixed16_16Math::FloatToFixed( (float)th / (float)h );
+	int32_t dudx = Fixed16_16Math::FloatToFixed( (float)tw / (float)w );
+	int32_t dvdy = Fixed16_16Math::FloatToFixed( (float)th / (float)h );
 
-	s32 v = Fixed16_16Math::IntToFixed(th)-1;
+	int32_t v = Fixed16_16Math::IntToFixed(th)-1;
 	if ( m_uBlendMode == BLEND_NONE && m_bAlphaTest == false )
 	{
-		for (s32 yy=y, yOffs=yy*m_FrameWidth; yy<y+h; yy++, yOffs+=m_FrameWidth)
+		for (int32_t yy=y, yOffs=yy*m_FrameWidth; yy<y+h; yy++, yOffs+=m_FrameWidth)
 		{
-			s32 u = 0;
+			int32_t u = 0;
 			pImageV = &pImage[ (v>>16)*tw ];
-			u8 *pLine = &m_pFrameBuffer_8bpp[ yOffs + x ];
-			for (s32 xx=0; xx<w; xx++)
+			uint8_t *pLine = &m_pFrameBuffer_8bpp[ yOffs + x ];
+			for (int32_t xx=0; xx<w; xx++)
 			{
 				int U = (u>>16);
 				*pLine++ = pImageV[ U ];
@@ -1333,12 +1333,12 @@ void Driver3D_Soft::RenderScreenQuad_8bpp(const Vector4& posScale, const Vector2
 	}
 	else
 	{
-		for (s32 yy=y, yOffs=yy*m_FrameWidth; yy<y+h; yy++, yOffs+=m_FrameWidth)
+		for (int32_t yy=y, yOffs=yy*m_FrameWidth; yy<y+h; yy++, yOffs+=m_FrameWidth)
 		{
-			s32 u = 0;
+			int32_t u = 0;
 			pImageV = &pImage[ (v>>16)*tw ];
-			u8 *pLine = &m_pFrameBuffer_8bpp[ yOffs + x ];
-			for (s32 xx=0; xx<w; xx++)
+			uint8_t *pLine = &m_pFrameBuffer_8bpp[ yOffs + x ];
+			for (int32_t xx=0; xx<w; xx++)
 			{
 				int U = (u>>16);
 				if ( pImageV[U] )
@@ -1375,7 +1375,7 @@ void Driver3D_Soft::RenderWorldQuad(const Vector3 *posList, const Vector2 *uvLis
 		vbo.pVtx_Clipped = (VFmt_Pos_UV_Clip *)malloc(sizeof(VFmt_Pos_UV_Clip)*4);
 		vbo.pVtx = (VFmt_Pos_UV *)vbo.pSrcVtx;
 
-		ibo.pIndices = xlNew u16[4];
+		ibo.pIndices = xlNew uint16_t[4];
 		ibo.pIndices[0] = 0;
 		ibo.pIndices[1] = 1;
 		ibo.pIndices[2] = 2;

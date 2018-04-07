@@ -38,3 +38,4 @@ build/
 .idea/
 .kdev4/
 *.kdev4
+cmake-build-debug/

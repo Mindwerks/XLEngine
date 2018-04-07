@@ -17,14 +17,14 @@
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-u32 _uPrevVBO = 0xffffffff;
-u32 _uBlendFunc = 0;
-u32 _uBindBufferVB = 0;
-u32 _uBindBufferIB = 0;
+uint32_t _uPrevVBO = 0xffffffff;
+uint32_t _uBlendFunc = 0;
+uint32_t _uBindBufferVB = 0;
+uint32_t _uBindBufferIB = 0;
 
-u32 _uTexCoordStride = 0xffffffff;
-u32 _uTexCoordOffset = 0xffffffff;
-u32 _uVB_Stride = 0xffffffff;
+uint32_t _uTexCoordStride = 0xffffffff;
+uint32_t _uTexCoordOffset = 0xffffffff;
+uint32_t _uVB_Stride = 0xffffffff;
 
 bool _bVtxArrayEnabled   = false;
 bool _bNrmlArrayEnabled  = false;
@@ -42,12 +42,12 @@ bool _bStencilEnable = false;
 bool _bStencilWriteEnabled = false;
 bool _bStencilTestEnabled = false;
 
-u32 _uAlphaCutoff = 0;
-u32 _uStencilValue = 0xff;
+uint32_t _uAlphaCutoff = 0;
+uint32_t _uStencilValue = 0xff;
 
 bool _bFogEnable = false;
-f32 _fFogDensity = 1.0f;
-f32 _fFogEnd = 0.0f;
+float _fFogDensity = 1.0f;
+float _fFogEnd = 0.0f;
 
 Matrix *_prevWorldMtxPtr = NULL;
 
@@ -67,7 +67,7 @@ Driver3D_OGL::~Driver3D_OGL()
 	}
 }
 
-void Driver3D_OGL::ChangeWindowSize(s32 w, s32 h)
+void Driver3D_OGL::ChangeWindowSize(int32_t w, int32_t h)
 {
     glViewport(0, 0, w, h);
 
@@ -75,7 +75,7 @@ void Driver3D_OGL::ChangeWindowSize(s32 w, s32 h)
 	m_nWindowHeight = h;
 }
 
-bool Driver3D_OGL::Init(s32 w, s32 h)
+bool Driver3D_OGL::Init(int32_t w, int32_t h)
 {
 	//initialize GLEW for extension loading.
 	GLenum err = glewInit();
@@ -149,16 +149,16 @@ void Driver3D_OGL::EnableCulling(bool bEnable)
 	_bCullingEnabled = bEnable;
 }
 
-void Driver3D_OGL::EnableAlphaTest(bool bEnable, u8 uAlphaCutoff)
+void Driver3D_OGL::EnableAlphaTest(bool bEnable, uint8_t uAlphaCutoff)
 {
 	if ( bEnable )
 	{
 		if ( _bAlphaTestEnable != bEnable ) glEnable(GL_ALPHA_TEST);
 		if ( _uAlphaCutoff != uAlphaCutoff ) 
 		{ 
-			const f32 fOO255 = (1.0f/255.0f);
+			const float fOO255 = (1.0f/255.0f);
 
-			glAlphaFunc(GL_GREATER, (f32)uAlphaCutoff*fOO255); 
+			glAlphaFunc(GL_GREATER, (float)uAlphaCutoff*fOO255);
 			_uAlphaCutoff = uAlphaCutoff; 
 		}
 	}
@@ -169,7 +169,7 @@ void Driver3D_OGL::EnableAlphaTest(bool bEnable, u8 uAlphaCutoff)
 	_bAlphaTestEnable = bEnable;
 }
 
-void Driver3D_OGL::SetBlendMode(u32 uMode)
+void Driver3D_OGL::SetBlendMode(uint32_t uMode)
 {
 	if ( uMode != _uBlendFunc )
 	{
@@ -192,12 +192,12 @@ void Driver3D_OGL::SetBlendMode(u32 uMode)
 	}
 }
 
-void Driver3D_OGL::SetFogDensity(f32 fDensity)
+void Driver3D_OGL::SetFogDensity(float fDensity)
 {
 	if ( _fFogDensity != fDensity ) { glFogf(GL_FOG_DENSITY, fDensity); _fFogDensity = fDensity; }
 }
 
-void Driver3D_OGL::EnableFog(bool bEnable, f32 fEnd)
+void Driver3D_OGL::EnableFog(bool bEnable, float fEnd)
 {
 	if ( _fFogEnd != fEnd ) { glFogf(GL_FOG_END, fEnd); _fFogEnd = fEnd; }
     if ( bEnable != _bFogEnable )
@@ -210,7 +210,7 @@ void Driver3D_OGL::EnableFog(bool bEnable, f32 fEnd)
     }
 }
 
-void Driver3D_OGL::EnableStencilWriting(bool bEnable, u32 uValue)
+void Driver3D_OGL::EnableStencilWriting(bool bEnable, uint32_t uValue)
 {
     if ( bEnable )
     {
@@ -265,7 +265,7 @@ void Driver3D_OGL::Clear(bool bClearColor)
     glClear( mask );
 }
 
-void Driver3D_OGL::SetWorldMatrix(Matrix *pMtx, s32 worldX, s32 worldY)
+void Driver3D_OGL::SetWorldMatrix(Matrix *pMtx, int32_t worldX, int32_t worldY)
 {
 	if ( pMtx == NULL )
 	{
@@ -298,7 +298,7 @@ void Driver3D_OGL::SetProjMtx(Matrix *pMtx)
 }
 
 /************** TEXTURE SUPPORT ******************/
-void Driver3D_OGL::SetTexture(s32 slot, TextureHandle hTex, u32 uFilter, bool bWrap, s32 frame)
+void Driver3D_OGL::SetTexture(int32_t slot, TextureHandle hTex, uint32_t uFilter, bool bWrap, int32_t frame)
 {
 	if ( hTex != XL_INVALID_TEXTURE )
 	{
@@ -353,7 +353,7 @@ void Driver3D_OGL::SetColor(Vector4 *pColor)
 	}
 }
 
-TextureHandle Driver3D_OGL::CreateTexture(u32 uWidth, u32 uHeight, u32 uFormat/*=TEX_FORMAT_RGBA8*/, u8 *pData/*=NULL*/, bool bGenMips/*=false*/, s32 nFrameCnt/*=1*/)
+TextureHandle Driver3D_OGL::CreateTexture(uint32_t uWidth, uint32_t uHeight, uint32_t uFormat/*=TEX_FORMAT_RGBA8*/, uint8_t *pData/*=NULL*/, bool bGenMips/*=false*/, int32_t nFrameCnt/*=1*/)
 {
 	GLint internalFormat=GL_RGBA8;
 	GLenum type=GL_UNSIGNED_BYTE;
@@ -379,7 +379,7 @@ TextureHandle Driver3D_OGL::CreateTexture(u32 uWidth, u32 uHeight, u32 uFormat/*
 		type = GL_FLOAT;
 		glFormat = GL_RED;
 	}
-	u32 uTextureID = m_uTextureCnt;
+	uint32_t uTextureID = m_uTextureCnt;
 	m_uTextureCnt++;
 
 	glGenTextures(1, (GLuint *)&m_Textures[uTextureID]);
@@ -406,8 +406,8 @@ TextureHandle Driver3D_OGL::CreateTexture(u32 uWidth, u32 uHeight, u32 uFormat/*
 void Driver3D_OGL::FreeTexture(TextureHandle hTex)
 {
 	//remove from the texture list.
-	u32 uFound = 0xffffffff;
-	for (u32 i=0; i<m_uTextureCnt; i++)
+	uint32_t uFound = 0xffffffff;
+	for (uint32_t i=0; i<m_uTextureCnt; i++)
 	{
 		if ( m_Textures[i] == hTex )
 		{
@@ -430,7 +430,7 @@ void Driver3D_OGL::FreeTexture(TextureHandle hTex)
 	}
 }
 
-void Driver3D_OGL::FillTexture(TextureHandle hTex, u8 *pData, u32 uWidth, u32 uHeight, bool bGenMips/*=false*/)
+void Driver3D_OGL::FillTexture(TextureHandle hTex, uint8_t *pData, uint32_t uWidth, uint32_t uHeight, bool bGenMips/*=false*/)
 {
 	GLint internalFormat=GL_RGBA8;
 	GLenum type=GL_UNSIGNED_BYTE;
@@ -445,11 +445,11 @@ void Driver3D_OGL::FillTexture(TextureHandle hTex, u8 *pData, u32 uWidth, u32 uH
 	}
 }
 
-void Driver3D_OGL::GenerateMips(u32 uWidth, u32 uHeight, u8 *pData)
+void Driver3D_OGL::GenerateMips(uint32_t uWidth, uint32_t uHeight, uint8_t *pData)
 {
 	int nLevel=0;
 
-	u8 *prevLevel = pData;
+	uint8_t *prevLevel = pData;
 	uWidth  >>= 1; if ( uWidth < 1 )  uWidth  = 1;
 	uHeight >>= 1; if ( uHeight < 1 ) uHeight = 1;
 	nLevel++;
@@ -457,26 +457,26 @@ void Driver3D_OGL::GenerateMips(u32 uWidth, u32 uHeight, u8 *pData)
 	bool b1x2 = false, b2x1 = false;
 	while (uWidth >= 1 && uHeight >= 1)
 	{
-		u8 *pNextLevel = (u8 *)xlMalloc(uWidth*uHeight*4);
+		uint8_t *pNextLevel = (uint8_t *)xlMalloc(uWidth*uHeight*4);
 
 		//something weird is going on if both of these cases are true at the same time.
 		assert( b1x2 == false || b2x1 == false );
-		for (u32 y=0; y<uHeight; y++)
+		for (uint32_t y=0; y<uHeight; y++)
 		{
-			for (u32 x=0; x<uWidth; x++)
+			for (uint32_t x=0; x<uWidth; x++)
 			{
 				if ( b1x2 )
 				{
-					s32 yy=y*2, xx=x*4;
-					u8 r0 = prevLevel[4*yy*(uWidth)+xx+0];
-					u8 g0 = prevLevel[4*yy*(uWidth)+xx+1];
-					u8 b0 = prevLevel[4*yy*(uWidth)+xx+2];
-					u8 a0 = prevLevel[4*yy*(uWidth)+xx+3];
+					int32_t yy=y*2, xx=x*4;
+					uint8_t r0 = prevLevel[4*yy*(uWidth)+xx+0];
+					uint8_t g0 = prevLevel[4*yy*(uWidth)+xx+1];
+					uint8_t b0 = prevLevel[4*yy*(uWidth)+xx+2];
+					uint8_t a0 = prevLevel[4*yy*(uWidth)+xx+3];
 
-					u8 r2 = prevLevel[4*(yy+1)*(uWidth)+xx+0];
-					u8 g2 = prevLevel[4*(yy+1)*(uWidth)+xx+1];
-					u8 b2 = prevLevel[4*(yy+1)*(uWidth)+xx+2];
-					u8 a2 = prevLevel[4*(yy+1)*(uWidth)+xx+3];
+					uint8_t r2 = prevLevel[4*(yy+1)*(uWidth)+xx+0];
+					uint8_t g2 = prevLevel[4*(yy+1)*(uWidth)+xx+1];
+					uint8_t b2 = prevLevel[4*(yy+1)*(uWidth)+xx+2];
+					uint8_t a2 = prevLevel[4*(yy+1)*(uWidth)+xx+3];
 
 					pNextLevel[4*y*uWidth+4*x+0] = (r0+r2)>>1;
 					pNextLevel[4*y*uWidth+4*x+1] = (g0+g2)>>1;
@@ -485,17 +485,17 @@ void Driver3D_OGL::GenerateMips(u32 uWidth, u32 uHeight, u8 *pData)
 				}
 				else if ( b2x1 )
 				{
-					s32 yy=y, xx=x*2*4;
+					int32_t yy=y, xx=x*2*4;
 
-					u8 r0 = prevLevel[4*yy*(uWidth<<1)+xx+0];
-					u8 g0 = prevLevel[4*yy*(uWidth<<1)+xx+1];
-					u8 b0 = prevLevel[4*yy*(uWidth<<1)+xx+2];
-					u8 a0 = prevLevel[4*yy*(uWidth<<1)+xx+3];
+					uint8_t r0 = prevLevel[4*yy*(uWidth<<1)+xx+0];
+					uint8_t g0 = prevLevel[4*yy*(uWidth<<1)+xx+1];
+					uint8_t b0 = prevLevel[4*yy*(uWidth<<1)+xx+2];
+					uint8_t a0 = prevLevel[4*yy*(uWidth<<1)+xx+3];
 
-					u8 r1 = prevLevel[4*yy*(uWidth<<1)+xx+4];
-					u8 g1 = prevLevel[4*yy*(uWidth<<1)+xx+5];
-					u8 b1 = prevLevel[4*yy*(uWidth<<1)+xx+6];
-					u8 a1 = prevLevel[4*yy*(uWidth<<1)+xx+7];
+					uint8_t r1 = prevLevel[4*yy*(uWidth<<1)+xx+4];
+					uint8_t g1 = prevLevel[4*yy*(uWidth<<1)+xx+5];
+					uint8_t b1 = prevLevel[4*yy*(uWidth<<1)+xx+6];
+					uint8_t a1 = prevLevel[4*yy*(uWidth<<1)+xx+7];
 
 					pNextLevel[4*y*uWidth+4*x+0] = (r0+r1)>>1;
 					pNextLevel[4*y*uWidth+4*x+1] = (g0+g1)>>1;
@@ -504,26 +504,26 @@ void Driver3D_OGL::GenerateMips(u32 uWidth, u32 uHeight, u8 *pData)
 				}
 				else
 				{
-					s32 yy=y*2, xx=x*2*4;
-					u8 r0 = prevLevel[4*yy*(uWidth<<1)+xx+0];
-					u8 g0 = prevLevel[4*yy*(uWidth<<1)+xx+1];
-					u8 b0 = prevLevel[4*yy*(uWidth<<1)+xx+2];
-					u8 a0 = prevLevel[4*yy*(uWidth<<1)+xx+3];
+					int32_t yy=y*2, xx=x*2*4;
+					uint8_t r0 = prevLevel[4*yy*(uWidth<<1)+xx+0];
+					uint8_t g0 = prevLevel[4*yy*(uWidth<<1)+xx+1];
+					uint8_t b0 = prevLevel[4*yy*(uWidth<<1)+xx+2];
+					uint8_t a0 = prevLevel[4*yy*(uWidth<<1)+xx+3];
 
-					u8 r1 = prevLevel[4*yy*(uWidth<<1)+xx+4];
-					u8 g1 = prevLevel[4*yy*(uWidth<<1)+xx+5];
-					u8 b1 = prevLevel[4*yy*(uWidth<<1)+xx+6];
-					u8 a1 = prevLevel[4*yy*(uWidth<<1)+xx+7];
+					uint8_t r1 = prevLevel[4*yy*(uWidth<<1)+xx+4];
+					uint8_t g1 = prevLevel[4*yy*(uWidth<<1)+xx+5];
+					uint8_t b1 = prevLevel[4*yy*(uWidth<<1)+xx+6];
+					uint8_t a1 = prevLevel[4*yy*(uWidth<<1)+xx+7];
 
-					u8 r2 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+0];
-					u8 g2 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+1];
-					u8 b2 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+2];
-					u8 a2 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+3];
+					uint8_t r2 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+0];
+					uint8_t g2 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+1];
+					uint8_t b2 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+2];
+					uint8_t a2 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+3];
 
-					u8 r3 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+4];
-					u8 g3 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+5];
-					u8 b3 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+6];
-					u8 a3 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+7];
+					uint8_t r3 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+4];
+					uint8_t g3 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+5];
+					uint8_t b3 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+6];
+					uint8_t a3 = prevLevel[4*(yy+1)*(uWidth<<1)+xx+7];
 
 					pNextLevel[4*y*uWidth+4*x+0] = ( ((r0+r1)>>1) + ((r2+r3)>>1) )>>1;
 					pNextLevel[4*y*uWidth+4*x+1] = ( ((g0+g1)>>1) + ((g2+g3)>>1) )>>1;
@@ -557,15 +557,15 @@ void Driver3D_OGL::GenerateMips(u32 uWidth, u32 uHeight, u8 *pData)
 }
 
 /*************** VBO/IBO Support *****************/
-u32 Driver3D_OGL::CreateVBO()
+uint32_t Driver3D_OGL::CreateVBO()
 {
-	u32 uVBO_ID;
+	uint32_t uVBO_ID;
 	glGenBuffers(1, (GLuint *)&uVBO_ID);
 
 	return uVBO_ID;
 }
 
-void Driver3D_OGL::AllocVBO_Mem(u32 uID, u32 uVtxCnt, u32 uSize, bool bDynamic)
+void Driver3D_OGL::AllocVBO_Mem(uint32_t uID, uint32_t uVtxCnt, uint32_t uSize, bool bDynamic)
 {
 	if ( uID != _uBindBufferVB ) { glBindBuffer(GL_ARRAY_BUFFER, uID); _uBindBufferVB = uID; }
 	glBufferData(GL_ARRAY_BUFFER, uSize, NULL, bDynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
@@ -573,7 +573,7 @@ void Driver3D_OGL::AllocVBO_Mem(u32 uID, u32 uVtxCnt, u32 uSize, bool bDynamic)
     _uBindBufferVB = 0;
 }
 
-void Driver3D_OGL::FillVBO(u32 uID, void *pData, u32 uSize, bool bDynamic)
+void Driver3D_OGL::FillVBO(uint32_t uID, void *pData, uint32_t uSize, bool bDynamic)
 {
 	if ( uID != _uBindBufferVB ) { glBindBuffer(GL_ARRAY_BUFFER, uID); _uBindBufferVB = uID; }
 
@@ -591,7 +591,7 @@ void Driver3D_OGL::FillVBO(u32 uID, void *pData, u32 uSize, bool bDynamic)
     _uBindBufferVB = 0;
 }
 
-void Driver3D_OGL::SetVBO(u32 uID, u32 uStride, u32 uVBO_Flags)
+void Driver3D_OGL::SetVBO(uint32_t uID, uint32_t uStride, uint32_t uVBO_Flags)
 {
 	if ( _uPrevVBO == uID )
 		return;
@@ -605,7 +605,7 @@ void Driver3D_OGL::SetVBO(u32 uID, u32 uStride, u32 uVBO_Flags)
 		_uVB_Stride = uStride;
 	}
 
-	u32 uOffset = 12;
+	uint32_t uOffset = 12;
 	if ( uVBO_Flags & VBO_HAS_NORMALS )
 	{
 		if ( _bNrmlArrayEnabled == false ) { glEnableClientState(GL_NORMAL_ARRAY); _bNrmlArrayEnabled = true; }
@@ -632,20 +632,20 @@ void Driver3D_OGL::SetVBO(u32 uID, u32 uStride, u32 uVBO_Flags)
 	_uPrevVBO = uID;
 }
 
-void Driver3D_OGL::DeleteBuffer(u32 uID)
+void Driver3D_OGL::DeleteBuffer(uint32_t uID)
 {
 	glDeleteBuffers(1, (GLuint *)&uID);
 }
 
-u32 Driver3D_OGL::CreateIB()
+uint32_t Driver3D_OGL::CreateIB()
 {
-	u32 uIB_ID;
+	uint32_t uIB_ID;
 	glGenBuffers(1, (GLuint *)&uIB_ID);
 
 	return uIB_ID;
 }
 
-void Driver3D_OGL::FillIB(u32 uID, void *pData, u32 uSize, bool bDynamic)
+void Driver3D_OGL::FillIB(uint32_t uID, void *pData, uint32_t uSize, bool bDynamic)
 {
 	if ( _uBindBufferIB != uID ) { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, uID); _uBindBufferIB = uID; }
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, uSize, pData, bDynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
@@ -667,10 +667,10 @@ void Driver3D_OGL::ClearDrawData()
 }
 
 //The function assumes a vertex buffer has already been set.
-void Driver3D_OGL::RenderIndexedTriangles(IndexBuffer *pIB, s32 nTriCnt, s32 startIndex/*=0*/)
+void Driver3D_OGL::RenderIndexedTriangles(IndexBuffer *pIB, int32_t nTriCnt, int32_t startIndex/*=0*/)
 {
-	u32 uIB_ID  = pIB->GetID();
-	u32 uStride = pIB->GetStride();
+	uint32_t uIB_ID  = pIB->GetID();
+	uint32_t uStride = pIB->GetStride();
 
 	if ( _uBindBufferIB != uIB_ID ) { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, uIB_ID); _uBindBufferIB = uIB_ID; }
 	//To render, we can either use glDrawElements or glDrawRangeElements

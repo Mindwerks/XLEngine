@@ -13,22 +13,22 @@ class Object;
 class Logic
 {
 public:
-	Logic(const string& sName, void *pOwner, u32 uType=LTYPE_SCRIPT);
+	Logic(const string& sName, void *pOwner, uint32_t uType=LTYPE_SCRIPT);
 	virtual ~Logic();
 
 	//used for code based logics.
 	//script based logics do this automatically.
-	bool AddCallback(u32 uCallbackID, LogicFunction pCallback);
+	bool AddCallback(uint32_t uCallbackID, LogicFunction pCallback);
 
 	void Update(Object *parent);
 	void InitObject(Object *parent);
-	void SendMessage(Object *parent, u32 uMsgID, f32 fValue);
+	void SendMessage(Object *parent, uint32_t uMsgID, float fValue);
 
-	static void SetMessageMask_CurLogic(u32 uMask);
+	static void SetMessageMask_CurLogic(uint32_t uMask);
 
 protected:
-	u32 m_uType;
-	u32 m_uMsgMask;
+	uint32_t m_uType;
+	uint32_t m_uMsgMask;
 	string m_sName;
 	LogicParam m_ParamList[MAX_LOGIC_PARAM];
 	void *m_pOwner;

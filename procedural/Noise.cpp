@@ -3,8 +3,8 @@
 
 namespace Noise
 {
-	s32 p[512];
-	s32 permutation[] = 
+	int32_t p[512];
+	int32_t permutation[] =
 	{  
 		151,160,137,91,90,15,
 		131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
@@ -23,7 +23,7 @@ namespace Noise
 
 	void Init()
 	{
-		for (s32 i=0; i < 256; i++) 
+		for (int32_t i=0; i < 256; i++)
 		{
 			p[256+i] = permutation[i];
 			p[i]     = permutation[i];
@@ -34,9 +34,9 @@ namespace Noise
 	
 	float lerp(float t, float a, float b) { return a + t * (b - a); }
 
-	float grad(s32 hash, float x, float y, float z) 
+	float grad(int32_t hash, float x, float y, float z)
 	{
-		s32 h = hash & 15;                      // CONVERT LO 4 BITS OF HASH CODE
+		int32_t h = hash & 15;                      // CONVERT LO 4 BITS OF HASH CODE
 		float u = h<8 ? x : y,                  // INTO 12 GRADIENT DIRECTIONS.
 			  v = h<4 ? y : h==12||h==14 ? x : z;
 		return ((h&1) == 0 ? u : -u) + ((h&2) == 0 ? v : -v);
@@ -44,16 +44,16 @@ namespace Noise
 
 	float Noise3D(float x, float y, float z) 
 	{
-		s32 X = (s32)floorf(x) & 255,                  // FIND UNIT CUBE THAT
-			Y = (s32)floorf(y) & 255,                  // CONTAINS POINT.
-			Z = (s32)floorf(z) & 255;
+		int32_t X = (int32_t)floorf(x) & 255,                  // FIND UNIT CUBE THAT
+			Y = (int32_t)floorf(y) & 255,                  // CONTAINS POINT.
+			Z = (int32_t)floorf(z) & 255;
 		x -= floorf(x);                                // FIND RELATIVE X,Y,Z
 		y -= floorf(y);                                // OF POINT IN CUBE.
 		z -= floorf(z);
 		float u = fade(x),                                 // COMPUTE FADE CURVES
 			  v = fade(y),                                 // FOR EACH OF X,Y,Z.
 			  w = fade(z);
-		s32 A = p[X  ]+Y, AA = p[A]+Z, AB = p[A+1]+Z,      // HASH COORDINATES OF
+		int32_t A = p[X  ]+Y, AA = p[A]+Z, AB = p[A+1]+Z,      // HASH COORDINATES OF
 			B = p[X+1]+Y, BA = p[B]+Z, BB = p[B+1]+Z;      // THE 8 CUBE CORNERS,
 
 		return lerp(w, lerp(v, lerp(u, grad(p[AA  ], x  , y  , z   ),  // AND ADD

@@ -19,11 +19,11 @@ struct FontVertex
 struct CharDescriptor
 {
 	//clean 16 bytes
-	u16 x, y;
-	u16 Width, Height;
-	s16 XOffset, YOffset;
-	s16 XAdvance;
-	u16 Page;
+	uint16_t x, y;
+	uint16_t Width, Height;
+	int16_t XOffset, YOffset;
+	int16_t XAdvance;
+	uint16_t Page;
 
 	CharDescriptor() : x( 0 ), y( 0 ), Width( 0 ), Height( 0 ), XOffset( 0 ), YOffset( 0 ),
 		XAdvance( 0 ), Page( 0 )
@@ -32,10 +32,10 @@ struct CharDescriptor
 
 struct Charset
 {
-	u16 LineHeight;
-	u16 Base;
-	u16 Width, Height;
-	u16 Pages;
+	uint16_t LineHeight;
+	uint16_t Base;
+	uint16_t Width, Height;
+	uint16_t Pages;
 	CharDescriptor Chars[256];
 };
 
@@ -47,9 +47,9 @@ public:
 
 	bool Load( const string& szFile, IDriver3D *pDriver );
 	TextureHandle GetTexture() { return m_hTex; }
-	s32 FillVB(s32 x, s32 y, const string& szString, FontVertex *pVB_Data);
+	int32_t FillVB(int32_t x, int32_t y, const string& szString, FontVertex *pVB_Data);
 
-	u32 ComputePixelPos(const string& szString, u32 uPos);
+	uint32_t ComputePixelPos(const string& szString, uint32_t uPos);
 
 private:
 	TextureHandle m_hTex;

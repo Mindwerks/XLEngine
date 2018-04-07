@@ -14,10 +14,10 @@ public:
 private:
 	const XLEngine_Plugin_API *m_pAPI;
 
-	void LogicSetup(u32 uObjID, u32 uParamCount, LogicParam *param);
-	void ObjectSetup(u32 uObjID, u32 uParamCount, LogicParam *param);
-	void Update(u32 uObjID, u32 uParamCount, LogicParam *param);
-	void Message(u32 uObjID, u32 uParamCount, LogicParam *param);
+	void LogicSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param);
+	void ObjectSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param);
+	void Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param);
+	void Message(uint32_t uObjID, uint32_t uParamCount, LogicParam *param);
 
 	LOGIC_CB_FUNC();
 };

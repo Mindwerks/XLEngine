@@ -17,28 +17,28 @@ class LFD_Film : public MoviePlayer
 public:
 	LFD_Film(IDriver3D *pDriver);
 
-	bool Start(Archive *pRes0, Archive *pRes1, const char *pszFile, u32 uFlags, s32 nSpeed);
+	bool Start(Archive *pRes0, Archive *pRes1, const char *pszFile, uint32_t uFlags, int32_t nSpeed);
 	void Stop();
 
 	bool Update();
-	void Render(f32 fDeltaTime);
+	void Render(float fDeltaTime);
 
 private:
 	struct FilmEntry
 	{
 		char szType[4];		// type of the resource
 		char szName[8];		// name of the resource
-		s32 nLength;		// length of the resource including this structure
-		s16 nBlockType;
-		s16 nNumCommands;
-		s16 nBlockM22;
+		int32_t nLength;		// length of the resource including this structure
+		int16_t nBlockType;
+		int16_t nNumCommands;
+		int16_t nBlockM22;
 	};
 
 	struct Command
 	{
-		s16 type;
-		s16 cmd;
-		s32 val[4];
+		int16_t type;
+		int16_t cmd;
+		int32_t val[4];
 		union
 		{
             void *pData;
@@ -55,13 +55,13 @@ private:
 	struct Graphic
 	{
 		LFD_Anim *pAnim;
-		s8 bVisible;
-		s32 nX, nY;
-		s16 nFrame;
-		s16 nLayer;
-		s16 nType;
-		s16 nAnimate;
-		s16 anScroll[2];
+		int8_t bVisible;
+		int32_t nX, nY;
+		int16_t nFrame;
+		int16_t nLayer;
+		int16_t nType;
+		int16_t nAnimate;
+		int16_t anScroll[2];
 		char szFile[32];
 		bool bLoop;
 		bool bNoReverse;
@@ -91,36 +91,36 @@ private:
 
 	vector<Graphic *> m_Graphics;
 	PLTT_File m_Pal[32];
-	s32 m_nPalCount;
-	s16 m_nFilmLength;
+	int32_t m_nPalCount;
+	int16_t m_nFilmLength;
 
 	Command m_CommandPool[1024];
-	s32 m_nCmdPoolIdx;
-	s32 m_nEntry;
+	int32_t m_nCmdPoolIdx;
+	int32_t m_nEntry;
 	void *pFile;
 	CommandSet *m_Commands;
 
 	Archive *m_pReader;
-	s32 m_nTime;
+	int32_t m_nTime;
 
-	f32 m_fFrameDelay;
-	f32 m_fCurDelay;
+	float m_fFrameDelay;
+	float m_fCurDelay;
 
 	bool m_bFirstFrame;
 	bool m_bTextCrawl;
-	s32 m_nCut;
-	f32 m_fCutTime;
-	f32 m_fCurCutTime;
+	int32_t m_nCut;
+	float m_fCutTime;
+	float m_fCurCutTime;
 
 	static Graphic m_GraphicsCache[1024];
 	static PLTT_File m_PalCache[32];
-	static s32 m_nGCacheIdx;
-	static s32 m_nPalCacheIdx;
+	static int32_t m_nGCacheIdx;
+	static int32_t m_nPalCacheIdx;
 	static Graphic *m_apAnimQueue[202];
 
-	s32 ParseCommand(s32 cmd, char *pData);
-	void StartCut(s32 how, s32 type);
-	static void AddGraphicToQueue(Graphic *pGraphic, s32 nLayer);
+	int32_t ParseCommand(int32_t cmd, char *pData);
+	void StartCut(int32_t how, int32_t type);
+	static void AddGraphicToQueue(Graphic *pGraphic, int32_t nLayer);
 };
 
 #endif //LFD_FILM_H

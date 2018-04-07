@@ -20,7 +20,7 @@ Sprite_ZAxis::Sprite_ZAxis() : RenderComponent()
 	m_nFrameDelay = _FRAME_DELAY;
 }
 
-void Sprite_ZAxis::Render(Object *pObj, IDriver3D *pDriver, f32 fIntensity, const Vector3& vOffset)
+void Sprite_ZAxis::Render(Object *pObj, IDriver3D *pDriver, float fIntensity, const Vector3& vOffset)
 {
 	const Matrix& viewMtx = pDriver->GetRenderCam_ViewMtx();
 
@@ -86,7 +86,7 @@ void Sprite_ZAxis::Render(Object *pObj, IDriver3D *pDriver, f32 fIntensity, cons
 	//now render the "FX Frames" - used for things like adding fire to torches.
 	if ( m_fxFrames.size() > 0 )
 	{
-		f32 yScale = (f32)m_fxFrames[ m_uCurFrame ].uHeight / (f32)m_fxFrames[ m_uCurFrame ].uWidth;
+		float yScale = (float)m_fxFrames[ m_uCurFrame ].uHeight / (float)m_fxFrames[ m_uCurFrame ].uWidth;
 		posList[0].z += pData->m_Up.z*pData->m_Scale.z*2.0f;
 		posList[1].z += pData->m_Up.z*pData->m_Scale.z*2.0f;
 		posList[2].z += pData->m_Up.z*pData->m_Scale.z*2.0f;

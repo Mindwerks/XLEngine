@@ -46,7 +46,7 @@ void ArchiveManager::Destroy()
 	TextureLoader::Destroy();
 }
 
-Archive *ArchiveManager::OpenArchive(u32 uArchiveType, const char *pszArchiveName)
+Archive *ArchiveManager::OpenArchive(uint32_t uArchiveType, const char *pszArchiveName)
 {
 	map<string, Archive *>::iterator iArchive = m_OpenArchives.find(pszArchiveName);
 	if ( iArchive != m_OpenArchives.end() )
@@ -107,7 +107,7 @@ void ArchiveManager::CloseArchive(Archive *pArchive)
 	}
 }
 
-s32 ArchiveManager::GameFile_Open(Archive *pArchive, const char *pszFileName)
+int32_t ArchiveManager::GameFile_Open(Archive *pArchive, const char *pszFileName)
 {
 	if ( pArchive && pArchive->OpenFile(pszFileName) )
 	{
@@ -117,7 +117,7 @@ s32 ArchiveManager::GameFile_Open(Archive *pArchive, const char *pszFileName)
 	return 0;
 }
 
-s32 ArchiveManager::GameFile_Open(u32 uArchiveType, const char *pszArchiveName, const char *pszFileName)
+int32_t ArchiveManager::GameFile_Open(uint32_t uArchiveType, const char *pszArchiveName, const char *pszFileName)
 {
 	Archive *pArchive = OpenArchive(uArchiveType, pszArchiveName);
 	if ( pArchive && pArchive->OpenFile(pszFileName) )
@@ -128,7 +128,7 @@ s32 ArchiveManager::GameFile_Open(u32 uArchiveType, const char *pszArchiveName, 
 	return 0;
 }
 
-s32 ArchiveManager::GameFile_Open(u32 uArchiveType, const char *pszArchiveName, u32 fileID)
+int32_t ArchiveManager::GameFile_Open(uint32_t uArchiveType, const char *pszArchiveName, uint32_t fileID)
 {
 	Archive *pArchive = OpenArchive(uArchiveType, pszArchiveName);
 	if ( pArchive && pArchive->OpenFile(fileID) )
@@ -139,7 +139,7 @@ s32 ArchiveManager::GameFile_Open(u32 uArchiveType, const char *pszArchiveName, 
 	return 0;
 }
 
-s32 ArchiveManager::GameFile_SearchForFile(u32 uArchiveType, const char *pszArchiveName, const char *pszFileName, char *pszFileOut)
+int32_t ArchiveManager::GameFile_SearchForFile(uint32_t uArchiveType, const char *pszArchiveName, const char *pszFileName, char *pszFileOut)
 {
 	Archive *pArchive = OpenArchive(uArchiveType, pszArchiveName);
 	if ( pArchive && pArchive->SearchForFile(pszFileName, pszFileOut) )
@@ -150,7 +150,7 @@ s32 ArchiveManager::GameFile_SearchForFile(u32 uArchiveType, const char *pszArch
 	return 0;
 }
 
-u32 ArchiveManager::GameFile_GetLength()
+uint32_t ArchiveManager::GameFile_GetLength()
 {
 	if ( m_pCurArchive )
 	{
@@ -159,7 +159,7 @@ u32 ArchiveManager::GameFile_GetLength()
 	return 0;
 }
 
-void ArchiveManager::GameFile_Read(void *pData, u32 uLength)
+void ArchiveManager::GameFile_Read(void *pData, uint32_t uLength)
 {
 	if ( m_pCurArchive )
 	{
@@ -185,7 +185,7 @@ void ArchiveManager::GameFile_Close()
 	m_pCurArchive=NULL;
 }
 
-s32 ArchiveManager::File_Open(const char *pszFileName)
+int32_t ArchiveManager::File_Open(const char *pszFileName)
 {
 	if ( s_pCurrentSysFile )
 		return 0;
@@ -199,19 +199,19 @@ s32 ArchiveManager::File_Open(const char *pszFileName)
 	return 0;
 }
 
-u32 ArchiveManager::File_GetLength()
+uint32_t ArchiveManager::File_GetLength()
 {
-	u32 uLen = 0;
+	uint32_t uLen = 0;
 	if ( s_pCurrentSysFile )
 	{
 		fseek(s_pCurrentSysFile, 0, SEEK_END);
-		uLen = (u32)ftell(s_pCurrentSysFile);
+		uLen = (uint32_t)ftell(s_pCurrentSysFile);
 		fseek(s_pCurrentSysFile, 0, SEEK_SET);
 	}
 	return uLen;
 }
 
-void ArchiveManager::File_Read(void *pData, u32 uStart, u32 uLength)
+void ArchiveManager::File_Read(void *pData, uint32_t uStart, uint32_t uLength)
 {
 	if ( s_pCurrentSysFile )
 	{

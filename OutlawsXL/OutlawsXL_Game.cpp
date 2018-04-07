@@ -58,11 +58,11 @@ void OutlawsXL_Game::PostRender(float dt)
 {
 }
 
-void OutlawsXL_Game::KeyDown(s32 key)
+void OutlawsXL_Game::KeyDown(int32_t key)
 {
 }
 
-void OutlawsXL_Game::NewGame(s32 episode, s32 difficulty)
+void OutlawsXL_Game::NewGame(int32_t episode, int32_t difficulty)
 {
 	m_pAPI->World_UnloadAllCells();
 	m_pAPI->World_LoadCell( CELLTYPE_OUTLAWS_MAP, ARCHIVETYPE_LAB, "OLGEO_1.LAB", "HIDEOUT.LVT", 0, 0 );

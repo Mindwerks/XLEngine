@@ -15,11 +15,11 @@ public:
 
 	bool OpenFile(const char *pszFile);
 	void CloseFile();
-	u32 GetFileLen();
-	bool ReadFile(void *pData, u32 uLength);
+	uint32_t GetFileLen();
+	bool ReadFile(void *pData, uint32_t uLength);
 
-	s32 GetFileCount();
-	const char *GetFileName(s32 nFileIdx);
+	int32_t GetFileCount();
+	const char *GetFileName(int32_t nFileIdx);
 
 	void *ReadFileInfo();
 
@@ -31,16 +31,16 @@ private:
 	struct RFF_File
 	{
 		char szName[32];
-		u32 offset;
-		u32 length;
-		u32 flags;
+		uint32_t offset;
+		uint32_t length;
+		uint32_t flags;
 	};
 
 #pragma pack(pop)
 
 	RFF_File *m_pFileList;
-	u32 m_uFileCount;
-	s32 m_CurFile;
+	uint32_t m_uFileCount;
+	int32_t m_CurFile;
 
 	FILE *m_pFile;
 	FILE *m_pFileLocal;

@@ -8,17 +8,17 @@ class IDriver3D;
 
 struct RGB_Color
 {
-	u8 r;
-	u8 g;
-	u8 b;
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
 };
 
 struct PLTT_File
 {
-	u8 First;
-	u8 Last;
+	uint8_t First;
+	uint8_t Last;
 	RGB_Color colors[256];
-	s32 num_colors;
+	int32_t num_colors;
 };
 
 class LFD_Anim
@@ -28,30 +28,30 @@ public:
 	~LFD_Anim(void);
 	void Destroy();
 
-	static bool LoadPLTT(char *pData, s32 len);
+	static bool LoadPLTT(char *pData, int32_t len);
 	static bool SetPLTT(PLTT_File *pal, bool bCopyFullPal=true);
 	static PLTT_File *GetPLTT();
 
-	bool Load(char *pData, s32 len, bool bUseProperOffs=false);
-	bool LoadDELT(char *pData, s32 len, bool bUseProperOffs=false);
-	void SetScale(f32 sx=1.0f, f32 sy=1.0f) { m_fScaleX = sx; m_fScaleY = sy; }
-	void Render(s32 frame, f32 x=0.0f, f32 y=0.0f, f32 maxX=1.0f, f32 minY=0.0f, f32 dU=0.0f, f32 dV=0.0f, bool bDistort=false);
-	void GetFrameExtents(s32 frame, f32 x, f32 y, s32& frameX0, s32& frameY0, s32& frameWidth, s32& frameHeight);
+	bool Load(char *pData, int32_t len, bool bUseProperOffs=false);
+	bool LoadDELT(char *pData, int32_t len, bool bUseProperOffs=false);
+	void SetScale(float sx=1.0f, float sy=1.0f) { m_fScaleX = sx; m_fScaleY = sy; }
+	void Render(int32_t frame, float x=0.0f, float y=0.0f, float maxX=1.0f, float minY=0.0f, float dU=0.0f, float dV=0.0f, bool bDistort=false);
+	void GetFrameExtents(int32_t frame, float x, float y, int32_t& frameX0, int32_t& frameY0, int32_t& frameWidth, int32_t& frameHeight);
 
 	void SetOffsScale(float sx, float sy);
-	s32 GetFrameCount() { return m_nNumDelts; }
+	int32_t GetFrameCount() { return m_nNumDelts; }
 private:
 	TextureHandle m_hTex[256];
-	f32 m_Width[256];
-	f32 m_Height[256];
-	f32 m_OffsX[256];
-	f32 m_OffsY[256];
+	float m_Width[256];
+	float m_Height[256];
+	float m_OffsX[256];
+	float m_OffsY[256];
 
-	f32 m_u1[256];
-	f32 m_v1[256];
+	float m_u1[256];
+	float m_v1[256];
 
-	f32 m_fScaleX, m_fScaleY;
-	s32 m_nNumDelts;
+	float m_fScaleX, m_fScaleY;
+	int32_t m_nNumDelts;
 
 	IDriver3D *m_pDriver;
 

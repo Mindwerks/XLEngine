@@ -3,13 +3,13 @@
 #include "../math/Vector3.h"
 
 LOGIC_CB_MAP(BloodXL_Player);
-const f32 _VertClamp = 0.785398f;
-const f32 m_PlayerHeight = 4.697265625f;
-const f32 m_PlayerCrouch = 1.800618409f;
+const float _VertClamp = 0.785398f;
+const float m_PlayerHeight = 4.697265625f;
+const float m_PlayerCrouch = 1.800618409f;
 #define CAMERA_ROT_INC 0.0021333333f
 
-f32 m_fAccelInc = 0.01f;
-f32 m_fAccelDec = 0.25f;
+float m_fAccelInc = 0.01f;
+float m_fAccelDec = 0.25f;
 
 BloodXL_Player::BloodXL_Player(const XLEngine_Plugin_API *API)
 {
@@ -40,15 +40,15 @@ BloodXL_Player::~BloodXL_Player(void)
 {
 }
 
-void BloodXL_Player::LogicSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void BloodXL_Player::LogicSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }
 
-void BloodXL_Player::ObjectSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void BloodXL_Player::ObjectSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }
 
-void BloodXL_Player::KeyDown(s32 key)
+void BloodXL_Player::KeyDown(int32_t key)
 {
 	if ( key == XL_SPACE )
 	{
@@ -56,19 +56,19 @@ void BloodXL_Player::KeyDown(s32 key)
 		p0 = m_PhysicsData->m_Loc; p0.z += m_PlayerHeight;
 		p1 = p0 + m_PhysicsData->m_Dir*10.0f;
 
-		u32 uSector = m_PhysicsData->m_uSector;
+		uint32_t uSector = m_PhysicsData->m_uSector;
 		m_pAPI->World_Activate(&p0, &p1, uSector);
 	}
 }
 
-void BloodXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
+void BloodXL_Player::Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 	XL_BOOL bUpdateControls = m_pAPI->Engine_AllowPlayerControls();
 
 	//Handle player control
 	//Look
-	f32 fDeltaX = m_pAPI->GetMouseDx();
-	f32 fDeltaY = m_pAPI->GetMouseDy();
+	float fDeltaX = m_pAPI->GetMouseDx();
+	float fDeltaY = m_pAPI->GetMouseDy();
 
 	if ( bUpdateControls )
 	{
@@ -89,7 +89,7 @@ void BloodXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 			}
 		}
 	}
-	static f32 fOldMoveSpd=0.0f;
+	static float fOldMoveSpd=0.0f;
 	static Vector3 vLastDir(0.0f, 0.0f, 0.0f);
 
 	Vector3 vDir;
@@ -107,10 +107,10 @@ void BloodXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	//Movement
 	Vector3 vLoc = m_PhysicsData->m_Loc;
 	Vector3 vel(0.0f, 0.0f, 0.0f);
-	f32 fSpeed = 0.45699f;
+	float fSpeed = 0.45699f;
 	bool bCrouch = false;
-	static f32 fCameraHeightPrev = m_PlayerHeight;
-	f32 fCameraHeight = m_PlayerHeight;
+	static float fCameraHeightPrev = m_PlayerHeight;
+	float fCameraHeight = m_PlayerHeight;
 	if ( bUpdateControls )
 	{
 		if ( m_pAPI->IsKeyDown( XL_C ) )
@@ -145,8 +145,8 @@ void BloodXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	fCameraHeightPrev = fCameraHeight;
 
 	//now we want to find our final move speed.
-	f32 fDesSpeed = vel.Normalize();
-	f32 fMoveSpeed = fDesSpeed;
+	float fDesSpeed = vel.Normalize();
+	float fMoveSpeed = fDesSpeed;
 	if ( 1 )
 	{
 		float s  = (fDesSpeed-fOldMoveSpd) > 0.0f ? 1.0f : -1.0f;
@@ -168,11 +168,11 @@ void BloodXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	fOldMoveSpd = fMoveSpeed;
 	vel = vel*fMoveSpeed;
 
-	f32 fDelta = 0.0f;
-	f32 fMoveSpd = vel.Normalize();
-	f32 fPlayerRadius = 1.01f;	//was 1.51
+	float fDelta = 0.0f;
+	float fMoveSpd = vel.Normalize();
+	float fPlayerRadius = 1.01f;	//was 1.51
 	//split collision into 1 unit segments.
-	f32 fPrevZ = vLoc.z;
+	float fPrevZ = vLoc.z;
 	if ( fMoveSpd != 0.0f )
 	{
 		do
@@ -193,19 +193,19 @@ void BloodXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	vLoc.z += fCameraHeight;
 
 	//now do the up/down walking/running movement...
-	static f32 time_sum  = 0.0f;
-	static f32 time_sum2 = 0.0f;
-	static f32 fAnimSpd = 0.0f;
-	const f32 K  = 16.0f;
-	const f32 K2 = 4.0f;
-	const f32 A  = 0.25f;
-	const f32 dt = 1.0f/60.0f;
+	static float time_sum  = 0.0f;
+	static float time_sum2 = 0.0f;
+	static float fAnimSpd = 0.0f;
+	const float K  = 16.0f;
+	const float K2 = 4.0f;
+	const float A  = 0.25f;
+	const float dt = 1.0f/60.0f;
 	if ( 1 )//!m_bJumping && !m_bFalling )
 	{
 		time_sum  = fmodf(time_sum +dt*K,  MATH_TWO_PI);
 		time_sum2 = fmodf(time_sum2+dt*K2, MATH_TWO_PI);
 	}
-	f32 zAnim = sinf( time_sum ) * A * fMoveSpeed * m_PlayerHeight/fCameraHeight;
+	float zAnim = sinf( time_sum ) * A * fMoveSpeed * m_PlayerHeight/fCameraHeight;
 	vLoc.z += zAnim;
 
 	/*
@@ -222,6 +222,6 @@ void BloodXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	m_pAPI->Engine_SetCameraData( &vLoc.x, &vDir.x, m_PlayerData.m_fPitch, fMoveSpeed, m_PhysicsData->m_uSector );
 }
 
-void BloodXL_Player::Message(u32 uObjID, u32 uParamCount, LogicParam *param)
+void BloodXL_Player::Message(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }

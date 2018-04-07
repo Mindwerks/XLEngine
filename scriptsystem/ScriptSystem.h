@@ -9,26 +9,26 @@
 #include <string>
 using namespace std;
 
-typedef s32 SHANDLE;
+typedef int32_t SHANDLE;
 
 enum ScriptArgs_e
 {
-	SC_ARG_U8=0,
-	SC_ARG_U16,
-	SC_ARG_U32,
-	SC_ARG_F32,
+	SC_ARG_uint8_t=0,
+	SC_ARG_uint16_t,
+	SC_ARG_uint32_t,
+	SC_ARG_float,
 	SC_ARG_COUNT
 };
 
 struct ScriptArgument
 {
-	u32 uType;
+	uint32_t uType;
 	union
 	{
-		u8 argU8;
-		u16 argU16;
-		u32 argU32;
-		f32 argF32;
+		uint8_t arguint8_t;
+		uint16_t arguint16_t;
+		uint32_t arguint32_t;
+		float argfloat;
 	};
 };
 
@@ -70,7 +70,7 @@ public:
 	//Execute the current script function.
 	static void ExecuteFunc();
 	//Make this the current function and then execute.
-	static u32 ExecuteFunc(SHANDLE hFunc, s32 nArgCnt=0, const ScriptArgument *pArgs=NULL, bool bRetValueExpected=false);
+	static uint32_t ExecuteFunc(SHANDLE hFunc, int32_t nArgCnt=0, const ScriptArgument *pArgs=NULL, bool bRetValueExpected=false);
 
 	//Global memory store that can be accessed by the scripts...
 	static void SetGlobalStoreVal(int var, float val);

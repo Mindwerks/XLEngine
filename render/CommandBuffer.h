@@ -23,16 +23,16 @@ public:
 	void Destroy();
 
 	//Commands
-	void SetBlendMode(u32 uMode);
-	void SetTexture(s32 slot, TextureHandle hTex, u32 uFilter, bool bWrap);
+	void SetBlendMode(uint32_t uMode);
+	void SetTexture(int32_t slot, TextureHandle hTex, uint32_t uFilter, bool bWrap);
 	void SetVertexBuffer(VertexBuffer *pVB);
-	void DrawIndexed(IndexBuffer *pIB, s32 nStartIndex, s32 nTriCnt);
+	void DrawIndexed(IndexBuffer *pIB, int32_t nStartIndex, int32_t nTriCnt);
 
 	//Higher level commands.
-	void DrawCall(const Matrix& mWorld, TextureHandle hTex, VertexBuffer *pVB, IndexBuffer *pIB, s32 nStartIndex, s32 nTriCnt);
+	void DrawCall(const Matrix& mWorld, TextureHandle hTex, VertexBuffer *pVB, IndexBuffer *pIB, int32_t nStartIndex, int32_t nTriCnt);
 
 	//Custom command, returns memory allocated from the command buffer.
-	void *CB_Command(u32 uSize);
+	void *CB_Command(uint32_t uSize);
 
 	//Execution.
 	void Execute();
@@ -50,38 +50,38 @@ private:
 
 	struct CB_Base
 	{
-		u16 type;
-		u16 size;
+		uint16_t type;
+		uint16_t size;
 	};
 
 	struct CB_BlendMode
 	{
-		u16 type;
-		u16 size;
-		u32 blendMode;
+		uint16_t type;
+		uint16_t size;
+		uint32_t blendMode;
 	};
 
 	struct CB_SetTexture
 	{
-		u16 type;
-		u16 size;
-		s32 slot;
+		uint16_t type;
+		uint16_t size;
+		int32_t slot;
 		TextureHandle hTex;
-		u32 uFilter;
+		uint32_t uFilter;
 		bool bWrap;
 	};
 
 	struct CB_SetVertexBuffer
 	{
-		u16 type;
-		u16 size;
+		uint16_t type;
+		uint16_t size;
 		VertexBuffer *pVB;
 	};
 
 	struct CB_DrawIndexed
 	{
-		u16 type;
-		u16 size;
+		uint16_t type;
+		uint16_t size;
 		IndexBuffer *pIB;
 		int startIndex;
 		int primCount;
@@ -89,14 +89,14 @@ private:
 
 	struct CB_DrawCall
 	{
-		u16 type;
-		u16 size;
+		uint16_t type;
+		uint16_t size;
 		TextureHandle hTex;
 		Matrix mWorld;
 		VertexBuffer *pVB;
 		IndexBuffer *pIB;
-		s32 nStartIndex;
-		s32 nTriCnt;
+		int32_t nStartIndex;
+		int32_t nTriCnt;
 	};
 
 	enum
@@ -107,10 +107,10 @@ private:
 	};
 
 	static IDriver3D *s_pDriver;
-	static u8 *s_pCommandBuffer[ BUFFER_COUNT ];
-	static u32 s_uReadBuffer;
-	static u32 s_uWriteBuffer;
-	static u32 s_uCommandPos;
+	static uint8_t *s_pCommandBuffer[ BUFFER_COUNT ];
+	static uint32_t s_uReadBuffer;
+	static uint32_t s_uWriteBuffer;
+	static uint32_t s_uCommandPos;
 };
 
 #endif //COMMANDBUFFER_H

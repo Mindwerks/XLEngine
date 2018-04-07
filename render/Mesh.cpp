@@ -30,7 +30,7 @@ Mesh::~Mesh()
 	SafeDeleteArr(m_pMaterials);
 }
 
-void Mesh::Render(Object *pObj, IDriver3D *pDriver, f32 fIntensity, const Vector3& vOffset)
+void Mesh::Render(Object *pObj, IDriver3D *pDriver, float fIntensity, const Vector3& vOffset)
 {
 	for (int m=0; m<m_nMtlCnt; m++)
 	{

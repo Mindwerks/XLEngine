@@ -12,26 +12,26 @@ public:
 	~BloodXL_Player(void);
 
 	void SetPassthruAdjoins(bool bPassthru) { m_bPassthruAdjoins = bPassthru; }
-	void KeyDown(s32 key);
+	void KeyDown(int32_t key);
 
 private:
 	struct PlayerData
 	{
-		u32 m_HP;
-		f32 m_fYaw;
-		f32 m_fPitch;
+		uint32_t m_HP;
+		float m_fYaw;
+		float m_fPitch;
 	};
 
 	const XLEngine_Plugin_API *m_pAPI;
-	u32 m_uObjID;
+	uint32_t m_uObjID;
 	PlayerData m_PlayerData;
 	ObjectPhysicsData *m_PhysicsData;
 	bool m_bPassthruAdjoins;
 
-	void LogicSetup(u32 uObjID, u32 uParamCount, LogicParam *param);
-	void ObjectSetup(u32 uObjID, u32 uParamCount, LogicParam *param);
-	void Update(u32 uObjID, u32 uParamCount, LogicParam *param);
-	void Message(u32 uObjID, u32 uParamCount, LogicParam *param);
+	void LogicSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param);
+	void ObjectSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param);
+	void Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param);
+	void Message(uint32_t uObjID, uint32_t uParamCount, LogicParam *param);
 
 	LOGIC_CB_FUNC();
 };

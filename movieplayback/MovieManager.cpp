@@ -32,7 +32,7 @@ void MovieManager::Destroy()
 	m_MoviePlayerList.clear();
 }
 
-void MovieManager::SetPlayerType(u32 uPlayerType)
+void MovieManager::SetPlayerType(uint32_t uPlayerType)
 {
 	if ( m_pCurPlayer )
 	{
@@ -56,7 +56,7 @@ void MovieManager::SetPlayerType(u32 uPlayerType)
 	}
 }
 
-void MovieManager::SetPlayerArchives(u32 uArchiveType, const char *pszArchive0, const char *pszArchive1)
+void MovieManager::SetPlayerArchives(uint32_t uArchiveType, const char *pszArchive0, const char *pszArchive1)
 {
 	m_apArchives[0] = NULL;
 	m_apArchives[1] = NULL;
@@ -70,7 +70,7 @@ void MovieManager::SetPlayerArchives(u32 uArchiveType, const char *pszArchive0, 
 	}
 }
 
-s32 MovieManager::StartMovie(const char *pszFile, u32 uFlags, s32 nSpeed)
+int32_t MovieManager::StartMovie(const char *pszFile, uint32_t uFlags, int32_t nSpeed)
 {
 	//Stop the current movie, if there is one.
 	StopMovie();
@@ -84,7 +84,7 @@ s32 MovieManager::StartMovie(const char *pszFile, u32 uFlags, s32 nSpeed)
 	return 0;
 }
 
-s32 MovieManager::UpdateMovie()
+int32_t MovieManager::UpdateMovie()
 {
 	if ( m_pCurPlayer )
 	{
@@ -101,7 +101,7 @@ void MovieManager::StopMovie(void)
 	}
 }
 
-void MovieManager::RenderMovie(f32 fDeltaTime)
+void MovieManager::RenderMovie(float fDeltaTime)
 {
 	if ( m_pCurPlayer )
 	{

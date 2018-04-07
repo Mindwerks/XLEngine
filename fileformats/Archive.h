@@ -13,15 +13,15 @@ public:
 	virtual void Close() {};
 
 	virtual bool OpenFile(const char *pszFile) {return false;}
-	virtual bool OpenFile(const u32 uID) {return false;}
+	virtual bool OpenFile(const uint32_t uID) {return false;}
 	virtual bool SearchForFile(const char *pszFileIn, char *pszFileOut) {return false;}
 	virtual void CloseFile() {};
-	virtual u32 GetFileLen() {return 0;}
-	virtual bool ReadFile(void *pData, u32 uLength) {return false;}
+	virtual uint32_t GetFileLen() {return 0;}
+	virtual bool ReadFile(void *pData, uint32_t uLength) {return false;}
 
-	virtual s32 GetFileCount() {return 0;}
-	virtual const char *GetFileName(s32 nFileIdx) {return 0;}
-	virtual u32 GetFileID(s32 nFileIdx) {return 0;}
+	virtual int32_t GetFileCount() {return 0;}
+	virtual const char *GetFileName(int32_t nFileIdx) {return 0;}
+	virtual uint32_t GetFileID(int32_t nFileIdx) {return 0;}
 
 	virtual void *ReadFileInfo() {return 0;}
 

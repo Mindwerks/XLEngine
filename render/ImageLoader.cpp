@@ -11,8 +11,8 @@
 ImageLoader::ImageLoader(void)
 {
 	//we're going to allocate a buffer for image loading.
-	m_pImageData      = (u8 *)xlMalloc(MAX_IMAGE_WIDTH*MAX_IMAGE_WIDTH*4);
-	m_pImageData_Work = (u8 *)xlMalloc(MAX_IMAGE_WIDTH*MAX_IMAGE_WIDTH*4);
+	m_pImageData      = (uint8_t *)xlMalloc(MAX_IMAGE_WIDTH*MAX_IMAGE_WIDTH*4);
+	m_pImageData_Work = (uint8_t *)xlMalloc(MAX_IMAGE_WIDTH*MAX_IMAGE_WIDTH*4);
 	m_uWidth = 0;
 	m_uHeight = 0;
 
@@ -48,7 +48,7 @@ void ImageLoader::SetPath(const char *pszPath)
 	strcpy(m_szPath, pszPath);
 }
 
-bool ImageLoader::Save_ImageRGBA(const char *pszImage, u8 *pData, u32 uWidth, u32 uHeight)
+bool ImageLoader::Save_ImageRGBA(const char *pszImage, uint8_t *pData, uint32_t uWidth, uint32_t uHeight)
 {
 	ILuint handle;
 
@@ -93,9 +93,9 @@ bool ImageLoader::Load_Image(const char *pszImage)
 	if (loaded == IL_FALSE)
 		return false; /* error encountered during loading */
 
-	/* Let’s spy on it a little bit */
-	m_uWidth  = (u32)ilGetInteger(IL_IMAGE_WIDTH); // getting image width
-	m_uHeight = (u32)ilGetInteger(IL_IMAGE_HEIGHT); // and height
+	/* Letï¿½s spy on it a little bit */
+	m_uWidth  = (uint32_t)ilGetInteger(IL_IMAGE_WIDTH); // getting image width
+	m_uHeight = (uint32_t)ilGetInteger(IL_IMAGE_HEIGHT); // and height
 
 	/* make sure our buffer is big enough. */
 	assert( m_uWidth <= 2048 && m_uHeight <= 2048 );
@@ -104,8 +104,8 @@ bool ImageLoader::Load_Image(const char *pszImage)
 	ilCopyPixels(0, 0, 0, m_uWidth, m_uHeight, 1, IL_RGBA, IL_UNSIGNED_BYTE, m_pImageData_Work);
 
 	//now flip the image for OpenGL...
-	u32 uStride = 4*m_uWidth;
-	for (u32 y=0; y<m_uHeight; y++)
+	uint32_t uStride = 4*m_uWidth;
+	for (uint32_t y=0; y<m_uHeight; y++)
 	{
 		memcpy(&m_pImageData[y*uStride], &m_pImageData_Work[(m_uHeight-1-y)*uStride], uStride);
 	}

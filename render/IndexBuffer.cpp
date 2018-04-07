@@ -28,12 +28,12 @@ IndexBuffer::~IndexBuffer(void)
 	}
 }
 
-bool IndexBuffer::Create(u32 uCount, u32 uStride, bool bDynamic)
+bool IndexBuffer::Create(uint32_t uCount, uint32_t uStride, bool bDynamic)
 {
 	m_uStride = uStride;
 
 	bool bSuccess = true;
-	m_pMemory = (u32 *)xlMalloc( m_uStride * uCount );
+	m_pMemory = (uint32_t *)xlMalloc( m_uStride * uCount );
 	if ( m_pMemory == NULL )
 		bSuccess = false;
 
@@ -66,18 +66,18 @@ void IndexBuffer::Destroy()
 	m_uSize = 0;
 }
 
-void IndexBuffer::Fill(u32 *pData)
+void IndexBuffer::Fill(uint32_t *pData)
 {
-	u32 *pDest = Lock();
+	uint32_t *pDest = Lock();
 	memcpy(pDest, pData, m_uSize);
 	Unlock();
 
 	m_pDriver->FillIB(m_uIBO_ID, pData, m_uSize, m_bDynamic);
 }
 
-u32 *IndexBuffer::Lock()
+uint32_t *IndexBuffer::Lock()
 {
-	u32 *pRet = NULL;
+	uint32_t *pRet = NULL;
 	assert( m_bLocked == false );
 	if ( m_bLocked == false )
 	{

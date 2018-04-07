@@ -3,8 +3,8 @@
 #include "../math/Vector3.h"
 
 LOGIC_CB_MAP(OutlawsXL_Player);
-const f32 _VertClamp = 0.785398f;
-const f32 m_PlayerHeight = 5.8f;
+const float _VertClamp = 0.785398f;
+const float m_PlayerHeight = 5.8f;
 #define CAMERA_ROT_INC 0.0021333333f
 
 OutlawsXL_Player::OutlawsXL_Player(const XLEngine_Plugin_API *API)
@@ -36,20 +36,20 @@ OutlawsXL_Player::~OutlawsXL_Player(void)
 {
 }
 
-void OutlawsXL_Player::LogicSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void OutlawsXL_Player::LogicSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }
 
-void OutlawsXL_Player::ObjectSetup(u32 uObjID, u32 uParamCount, LogicParam *param)
+void OutlawsXL_Player::ObjectSetup(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }
 
-void OutlawsXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
+void OutlawsXL_Player::Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 	//Handle player control
 	//Look
-	f32 fDeltaX = m_pAPI->GetMouseDx();
-	f32 fDeltaY = m_pAPI->GetMouseDy();
+	float fDeltaX = m_pAPI->GetMouseDx();
+	float fDeltaY = m_pAPI->GetMouseDy();
 
 	if ( fDeltaX )
 	{
@@ -82,7 +82,7 @@ void OutlawsXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	//Movement
 	Vector3 vLoc = m_PhysicsData->m_Loc;
 	Vector3 vel(0.0f, 0.0f, 0.0f);
-	f32 fSpeed = 20.0f/60.0f;
+	float fSpeed = 20.0f/60.0f;
 	if ( m_pAPI->IsKeyDown( XL_W ) )
 	{
 		vel = vel + m_PhysicsData->m_Dir*fSpeed;
@@ -101,8 +101,8 @@ void OutlawsXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 		vel = vel - vRight*fSpeed;
 	}
 
-	f32 fDelta = 0.0f;
-	f32 fMoveSpd = vel.Normalize();
+	float fDelta = 0.0f;
+	float fMoveSpd = vel.Normalize();
 	//split collision into 1 unit segments.
 	if ( fMoveSpd != 0.0f )
 	{
@@ -123,6 +123,6 @@ void OutlawsXL_Player::Update(u32 uObjID, u32 uParamCount, LogicParam *param)
 	m_pAPI->Engine_SetCameraData( &vLoc.x, &vDir.x, m_PlayerData.m_fPitch, 1.0f, m_PhysicsData->m_uSector );
 }
 
-void OutlawsXL_Player::Message(u32 uObjID, u32 uParamCount, LogicParam *param)
+void OutlawsXL_Player::Message(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 {
 }

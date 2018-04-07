@@ -7,7 +7,7 @@
 #include <assert.h>
 
 PLTT_File LFD_Anim::m_PalFile;
-u32 _ImgBuffer[2048*2048];
+uint32_t _ImgBuffer[2048*2048];
 
 LFD_Anim::LFD_Anim(IDriver3D *pDriver)
 {
@@ -28,7 +28,7 @@ LFD_Anim::~LFD_Anim(void)
 
 void LFD_Anim::Destroy()
 {
-	for (s32 i=0; i<m_nNumDelts; i++)
+	for (int32_t i=0; i<m_nNumDelts; i++)
 	{
 		TextureCache::FreeTexture( m_hTex[i] );
 	}
@@ -37,8 +37,8 @@ void LFD_Anim::Destroy()
 
 bool LFD_Anim::LoadPLTT(char *pData, int len)
 {
-	m_PalFile.First = *((u8 *)&pData[0]);
-	m_PalFile.Last  = *((u8 *)&pData[1]);
+	m_PalFile.First = *((uint8_t *)&pData[0]);
+	m_PalFile.Last  = *((uint8_t *)&pData[1]);
 	m_PalFile.num_colors = m_PalFile.Last - m_PalFile.First + 1;
 	memset(m_PalFile.colors, 0, 256*3);
 	memcpy(m_PalFile.colors, &pData[2], m_PalFile.num_colors*3);
@@ -65,22 +65,22 @@ PLTT_File *LFD_Anim::GetPLTT()
 	return &m_PalFile;
 }
 
-bool LFD_Anim::LoadDELT(char *pData, s32 len, bool bUseProperOffs)
+bool LFD_Anim::LoadDELT(char *pData, int32_t len, bool bUseProperOffs)
 {
-	s32 nIdx=0, pIdx;
-	s32 Offs[2], Size[2], SizeAndType, StartX, StartY;
-	u32 texSize[2];
-	s32 num_pixels, count, i=0;
+	int32_t nIdx=0, pIdx;
+	int32_t Offs[2], Size[2], SizeAndType, StartX, StartY;
+	uint32_t texSize[2];
+	int32_t num_pixels, count, i=0;
 	bool bRLE;
-	u8 pixel;
+	uint8_t pixel;
 
 	m_nNumDelts = 1;
-	s32 size = len;
+	int32_t size = len;
 
-	Offs[0] = *((s16 *)&pData[nIdx]); nIdx+=2;
-	Offs[1] = *((s16 *)&pData[nIdx]); nIdx+=2;
-	Size[0] = *((s16 *)&pData[nIdx]); nIdx+=2;
-	Size[1] = *((s16 *)&pData[nIdx]); nIdx+=2;
+	Offs[0] = *((int16_t *)&pData[nIdx]); nIdx+=2;
+	Offs[1] = *((int16_t *)&pData[nIdx]); nIdx+=2;
+	Size[0] = *((int16_t *)&pData[nIdx]); nIdx+=2;
+	Size[1] = *((int16_t *)&pData[nIdx]); nIdx+=2;
 	size -= 8;
 
 	Size[0]++;
@@ -102,12 +102,12 @@ bool LFD_Anim::LoadDELT(char *pData, s32 len, bool bUseProperOffs)
 	memset(_ImgBuffer, 0, 2048*2048);
 	assert( Size[0]*Size[1] <= 2048*2048 );
 
-	s32 y=0;
+	int32_t y=0;
 	while (size > 6)
 	{
-		SizeAndType = *((s16 *)&pData[nIdx]); nIdx+=2;
-		StartX = *((s16 *)&pData[nIdx]); nIdx+=2;
-		StartY = *((s16 *)&pData[nIdx]); nIdx+=2;
+		SizeAndType = *((int16_t *)&pData[nIdx]); nIdx+=2;
+		StartX = *((int16_t *)&pData[nIdx]); nIdx+=2;
+		StartY = *((int16_t *)&pData[nIdx]); nIdx+=2;
 		size -= 6;
 
 		if ( bUseProperOffs )
@@ -121,18 +121,18 @@ bool LFD_Anim::LoadDELT(char *pData, s32 len, bool bUseProperOffs)
 		num_pixels = (SizeAndType>>1)&0x3FFF;
 		bRLE = (SizeAndType&1) ? true : false;
 
-		u8 num_bytes = 0;
-		s32 offs;
+		uint8_t num_bytes = 0;
+		int32_t offs;
 		if ( 0 )//!bRLE )	--? I should look into this
 		{
-			num_bytes = (u8)pData[nIdx]; nIdx++;
+			num_bytes = (uint8_t)pData[nIdx]; nIdx++;
 			if ( num_bytes > num_pixels )
 			{
 				offs = num_bytes - num_pixels;
 			}
 			size--;
 		}
-		u8 *pImgData = (u8 *)pData;
+		uint8_t *pImgData = (uint8_t *)pData;
 		while (num_pixels > 0)
 		{
 			if ( bRLE )
@@ -143,7 +143,7 @@ bool LFD_Anim::LoadDELT(char *pData, s32 len, bool bUseProperOffs)
 				if ( !(count&1) ) //direct
 				{
 					count >>= 1;
-					for (s32 p=0; p<count; p++)
+					for (int32_t p=0; p<count; p++)
 					{
 						pixel = pImgData[nIdx]; nIdx++;
 						_ImgBuffer[pIdx++] = (0xff<<24) | (m_PalFile.colors[pixel].b<<16) | (m_PalFile.colors[pixel].g<<8) | m_PalFile.colors[pixel].r;
@@ -157,7 +157,7 @@ bool LFD_Anim::LoadDELT(char *pData, s32 len, bool bUseProperOffs)
 					pixel = pImgData[nIdx]; nIdx++;
 					size--;
 					//copy all the pixels over...
-					for (s32 p=0; p<count; p++)
+					for (int32_t p=0; p<count; p++)
 					{
 						_ImgBuffer[pIdx++] = (0xff<<24) | (m_PalFile.colors[pixel].b<<16) | (m_PalFile.colors[pixel].g<<8) | m_PalFile.colors[pixel].r;
 					}
@@ -166,7 +166,7 @@ bool LFD_Anim::LoadDELT(char *pData, s32 len, bool bUseProperOffs)
 			}
 			else
 			{
-				for (s32 p=0; p<num_pixels; p++)
+				for (int32_t p=0; p<num_pixels; p++)
 				{
 					pixel = pImgData[nIdx]; nIdx++;
 					_ImgBuffer[pIdx++] = (0xff<<24) | (m_PalFile.colors[pixel].b<<16) | (m_PalFile.colors[pixel].g<<8) | m_PalFile.colors[pixel].r;
@@ -187,61 +187,61 @@ bool LFD_Anim::LoadDELT(char *pData, s32 len, bool bUseProperOffs)
 		*/
 	};
 	//Do the RGBA texture creation...
-	texSize[0] = (u32)Size[0];
-	texSize[1] = (u32)Size[1];
-	m_hTex[i] = TextureCache::LoadTextureFromMem((u8 *)_ImgBuffer, texSize[0], texSize[1], false);
-	s32 nOffsX, nOffsY;
+	texSize[0] = (uint32_t)Size[0];
+	texSize[1] = (uint32_t)Size[1];
+	m_hTex[i] = TextureCache::LoadTextureFromMem((uint8_t *)_ImgBuffer, texSize[0], texSize[1], false);
+	int32_t nOffsX, nOffsY;
 	TextureCache::GetTextureSize(nOffsX, nOffsY, texSize[0], texSize[1], m_u1[i], m_v1[i]);
 
 	return true;
 }
 
-bool LFD_Anim::Load(char *pData, s32 len, bool bUseProperOffs)
+bool LFD_Anim::Load(char *pData, int32_t len, bool bUseProperOffs)
 {	
-	s32 nIdx=0, pIdx;
-	m_nNumDelts = *((u16 *)pData);
+	int32_t nIdx=0, pIdx;
+	m_nNumDelts = *((uint16_t *)pData);
 	assert( m_nNumDelts < 256 );
 	nIdx+=2;
-	s32 Offs[2], Size[2], SizeAndType, StartX, StartY;
-	u32 texSize[2];
-	s32 num_pixels, count;
+	int32_t Offs[2], Size[2], SizeAndType, StartX, StartY;
+	uint32_t texSize[2];
+	int32_t num_pixels, count;
 	bool bRLE;
-	u8 pixel;
-	for (s32 i=0; i<m_nNumDelts; i++)
+	uint8_t pixel;
+	for (int32_t i=0; i<m_nNumDelts; i++)
 	{
-		s32 size = *((s32 *)&pData[nIdx]);
+		int32_t size = *((int32_t *)&pData[nIdx]);
 		nIdx+=4;
-		Offs[0] = *((s16 *)&pData[nIdx]); nIdx+=2;
-		Offs[1] = *((s16 *)&pData[nIdx]); nIdx+=2;
-		Size[0] = *((s16 *)&pData[nIdx]); nIdx+=2;
-		Size[1] = *((s16 *)&pData[nIdx]); nIdx+=2;
+		Offs[0] = *((int16_t *)&pData[nIdx]); nIdx+=2;
+		Offs[1] = *((int16_t *)&pData[nIdx]); nIdx+=2;
+		Size[0] = *((int16_t *)&pData[nIdx]); nIdx+=2;
+		Size[1] = *((int16_t *)&pData[nIdx]); nIdx+=2;
 		size -= 8;
 
 		Size[0]++;
 		Size[1]++;
 
-		m_Width[i]  = (f32)Size[0]/320.0f;
-		m_Height[i] = (f32)Size[1]/200.0f;
+		m_Width[i]  = (float)Size[0]/320.0f;
+		m_Height[i] = (float)Size[1]/200.0f;
 		if ( bUseProperOffs )
 		{
-			m_OffsX[i] = (f32)Offs[0]/320.0f;
-			m_OffsY[i] = /*1.0f - m_Height[i] - */(f32)Offs[1]/200.0f;
+			m_OffsX[i] = (float)Offs[0]/320.0f;
+			m_OffsY[i] = /*1.0f - m_Height[i] - */(float)Offs[1]/200.0f;
 		}
 		else
 		{
 			m_OffsX[i]  = 0.0f;
-			m_OffsY[i]  = ((f32)Offs[1]*0.125f*0.45f/200.0f);
+			m_OffsY[i]  = ((float)Offs[1]*0.125f*0.45f/200.0f);
 		}
 
 		memset(_ImgBuffer, 0, 2048*2048);
-		f32 afAveClr[3]={0.0f, 0.0f, 0.0f};
-		s32 nTotalVisPixels=0;
+		float afAveClr[3]={0.0f, 0.0f, 0.0f};
+		int32_t nTotalVisPixels=0;
 
 		while (size > 6)
 		{
-			SizeAndType = *((s16 *)&pData[nIdx]); nIdx+=2;
-			StartX = *((s16 *)&pData[nIdx]); nIdx+=2;
-			StartY = *((s16 *)&pData[nIdx]); nIdx+=2;
+			SizeAndType = *((int16_t *)&pData[nIdx]); nIdx+=2;
+			StartX = *((int16_t *)&pData[nIdx]); nIdx+=2;
+			StartY = *((int16_t *)&pData[nIdx]); nIdx+=2;
 			size -= 6;
 
 			if ( bUseProperOffs )
@@ -255,18 +255,18 @@ bool LFD_Anim::Load(char *pData, s32 len, bool bUseProperOffs)
 			num_pixels = (SizeAndType>>1)&0x3FFF;
 			bRLE = (SizeAndType&1) ? true : false;
 
-			u8 num_bytes = 0;
-			s32 offs;
+			uint8_t num_bytes = 0;
+			int32_t offs;
 			if ( 0 )//!bRLE )
 			{
-				num_bytes = (u8)pData[nIdx]; nIdx++;
+				num_bytes = (uint8_t)pData[nIdx]; nIdx++;
 				if ( num_bytes > num_pixels )
 				{
 					offs = num_bytes - num_pixels;
 				}
 				size--;
 			}
-			u8 *pImgData = (u8 *)pData;
+			uint8_t *pImgData = (uint8_t *)pData;
 			while (num_pixels > 0)
 			{
 				if ( bRLE )
@@ -281,9 +281,9 @@ bool LFD_Anim::Load(char *pData, s32 len, bool bUseProperOffs)
 						{
 							pixel = pImgData[nIdx]; nIdx++;
 							_ImgBuffer[pIdx++] = (0xff<<24) | (m_PalFile.colors[pixel].b<<16) | (m_PalFile.colors[pixel].g<<8) | m_PalFile.colors[pixel].r;
-							afAveClr[0] += (f32)m_PalFile.colors[pixel].r;
-							afAveClr[1] += (f32)m_PalFile.colors[pixel].g;
-							afAveClr[2] += (f32)m_PalFile.colors[pixel].b;
+							afAveClr[0] += (float)m_PalFile.colors[pixel].r;
+							afAveClr[1] += (float)m_PalFile.colors[pixel].g;
+							afAveClr[2] += (float)m_PalFile.colors[pixel].b;
 							nTotalVisPixels++;
 							size--;
 						}
@@ -295,12 +295,12 @@ bool LFD_Anim::Load(char *pData, s32 len, bool bUseProperOffs)
 						pixel = pImgData[nIdx]; nIdx++;
 						size--;
 						//copy all the pixels over...
-						for (s32 p=0; p<count; p++)
+						for (int32_t p=0; p<count; p++)
 						{
 							_ImgBuffer[pIdx++] = (0xff<<24) | (m_PalFile.colors[pixel].b<<16) | (m_PalFile.colors[pixel].g<<8) | m_PalFile.colors[pixel].r;
-							afAveClr[0] += (f32)m_PalFile.colors[pixel].r;
-							afAveClr[1] += (f32)m_PalFile.colors[pixel].g;
-							afAveClr[2] += (f32)m_PalFile.colors[pixel].b;
+							afAveClr[0] += (float)m_PalFile.colors[pixel].r;
+							afAveClr[1] += (float)m_PalFile.colors[pixel].g;
+							afAveClr[2] += (float)m_PalFile.colors[pixel].b;
 							nTotalVisPixels++;
 						}
 						num_pixels -= count;
@@ -308,13 +308,13 @@ bool LFD_Anim::Load(char *pData, s32 len, bool bUseProperOffs)
 				}
 				else
 				{
-					for (s32 p=0; p<num_pixels; p++)
+					for (int32_t p=0; p<num_pixels; p++)
 					{
 						pixel = pImgData[nIdx]; nIdx++;
 						_ImgBuffer[pIdx++] = (0xff<<24) | (m_PalFile.colors[pixel].b<<16) | (m_PalFile.colors[pixel].g<<8) | m_PalFile.colors[pixel].r;
-						afAveClr[0] += (f32)m_PalFile.colors[pixel].r;
-						afAveClr[1] += (f32)m_PalFile.colors[pixel].g;
-						afAveClr[2] += (f32)m_PalFile.colors[pixel].b;
+						afAveClr[0] += (float)m_PalFile.colors[pixel].r;
+						afAveClr[1] += (float)m_PalFile.colors[pixel].g;
+						afAveClr[2] += (float)m_PalFile.colors[pixel].b;
 						nTotalVisPixels++;
 						size--;
 					}
@@ -325,21 +325,21 @@ bool LFD_Anim::Load(char *pData, s32 len, bool bUseProperOffs)
 
 		if ( bUseProperOffs && 0 )
 		{
-			f32 fOOTPix;
-			fOOTPix = (nTotalVisPixels>0) ? 1.0f / (f32)nTotalVisPixels : 0.0f;
+			float fOOTPix;
+			fOOTPix = (nTotalVisPixels>0) ? 1.0f / (float)nTotalVisPixels : 0.0f;
 			afAveClr[0] *= fOOTPix;
 			afAveClr[1] *= fOOTPix;
 			afAveClr[2] *= fOOTPix;
 
-			s32 yOp=0, yOn;
-			for (s32 y=0, yOffs=0; y<Size[1]; y++, yOffs+=Size[0])
+			int32_t yOp=0, yOn;
+			for (int32_t y=0, yOffs=0; y<Size[1]; y++, yOffs+=Size[0])
 			{
 				yOn = yOffs + Size[0];
-				for (s32 x=0; x<Size[0]; x++)
+				for (int32_t x=0; x<Size[0]; x++)
 				{
 					if ( _ImgBuffer[x+yOffs] == 0x00000000  )	//spread to nearby pixels...
 					{
-						_ImgBuffer[x+yOffs] = (0x00<<24) | (((s32)afAveClr[0])<<16) | (((s32)afAveClr[1])<<8) | ((s32)afAveClr[2]);
+						_ImgBuffer[x+yOffs] = (0x00<<24) | (((int32_t)afAveClr[0])<<16) | (((int32_t)afAveClr[1])<<8) | ((int32_t)afAveClr[2]);
 					}
 				}
 			}
@@ -347,16 +347,16 @@ bool LFD_Anim::Load(char *pData, s32 len, bool bUseProperOffs)
 
 		if ( size > 0 ) { nIdx+=size; }
 		//preprocess the image buffer, we want to "bleed" out pixels into black regions...
-		s32 num_bleed_pass = 1;
-		s32 yOp, yOn;
-		for (s32 b=0; b<num_bleed_pass; b++)
+		int32_t num_bleed_pass = 1;
+		int32_t yOp, yOn;
+		for (int32_t b=0; b<num_bleed_pass; b++)
 		{
-			u32 uMin = (b==0)?0xff000000 : 0x00000000;
+			uint32_t uMin = (b==0)?0xff000000 : 0x00000000;
 			yOp = 0;
-			for (s32 y=0, yOffs=0; y<Size[1]; y++, yOffs+=Size[0])
+			for (int32_t y=0, yOffs=0; y<Size[1]; y++, yOffs+=Size[0])
 			{
 				yOn = yOffs + Size[0];
-				for (s32 x=0; x<Size[0]; x++)
+				for (int32_t x=0; x<Size[0]; x++)
 				{
 					if ( _ImgBuffer[x+yOffs] > uMin  )	//spread to nearby pixels...
 					{
@@ -399,18 +399,18 @@ bool LFD_Anim::Load(char *pData, s32 len, bool bUseProperOffs)
 		}
 
 		//Do the RGBA texture creation...
-		texSize[0] = (u32)Size[0];
-		texSize[1] = (u32)Size[1];
-		m_hTex[i] = TextureCache::LoadTextureFromMem((u8 *)_ImgBuffer, texSize[0], texSize[1], false);
-		s32 nOffsX, nOffsY;
+		texSize[0] = (uint32_t)Size[0];
+		texSize[1] = (uint32_t)Size[1];
+		m_hTex[i] = TextureCache::LoadTextureFromMem((uint8_t *)_ImgBuffer, texSize[0], texSize[1], false);
+		int32_t nOffsX, nOffsY;
 		TextureCache::GetTextureSize(nOffsX, nOffsY, texSize[0], texSize[1], m_u1[i], m_v1[i]);
 	}
 	return true;
 }
 
-void LFD_Anim::SetOffsScale(f32 sx, f32 sy)
+void LFD_Anim::SetOffsScale(float sx, float sy)
 {
-	for (s32 i=0; i<m_nNumDelts; i++)
+	for (int32_t i=0; i<m_nNumDelts; i++)
 	{
 		m_OffsX[i] *= sx;
 		if ( sy != 1.0f )
@@ -420,28 +420,28 @@ void LFD_Anim::SetOffsScale(f32 sx, f32 sy)
 	}
 }
 
-void LFD_Anim::GetFrameExtents(s32 frame, f32 x, f32 y, s32& frameX0, s32& frameY0, s32& frameWidth, s32& frameHeight)
+void LFD_Anim::GetFrameExtents(int32_t frame, float x, float y, int32_t& frameX0, int32_t& frameY0, int32_t& frameWidth, int32_t& frameHeight)
 {
 	if ( frame > m_nNumDelts-1 ) { frame = m_nNumDelts-1; }
 
 	//ok, we need to figure out the scale and offset.
-	s32 nWidth, nHeight;
+	int32_t nWidth, nHeight;
 	m_pDriver->GetWindowSize(nWidth, nHeight);
 	//now we want to impose the 320x200 UI into the 4:3 size.
-	s32 n43_Width = 4*nHeight/3;
-	f32 fOffsetX  = (f32)( (nWidth - n43_Width)>>1 );
-	f32 fOffsetY  = 0.0f;
-	f32 fScaleX   = (f32)n43_Width;
-	f32 fScaleY   = (f32)nHeight;
+	int32_t n43_Width = 4*nHeight/3;
+	float fOffsetX  = (float)( (nWidth - n43_Width)>>1 );
+	float fOffsetY  = 0.0f;
+	float fScaleX   = (float)n43_Width;
+	float fScaleY   = (float)nHeight;
 
-	frameX0 = (s32)( (m_OffsX[frame]+x)*fScaleX+fOffsetX );
-	frameY0 = (s32)( (m_OffsY[frame]+y)*fScaleY+fOffsetY );
+	frameX0 = (int32_t)( (m_OffsX[frame]+x)*fScaleX+fOffsetX );
+	frameY0 = (int32_t)( (m_OffsY[frame]+y)*fScaleY+fOffsetY );
 
-	frameWidth  = (s32)( m_Width[frame]*fScaleX*m_fScaleX );
-	frameHeight = (s32)( m_Height[frame]*fScaleY*m_fScaleY );
+	frameWidth  = (int32_t)( m_Width[frame]*fScaleX*m_fScaleX );
+	frameHeight = (int32_t)( m_Height[frame]*fScaleY*m_fScaleY );
 }
 
-void LFD_Anim::Render(s32 frame, f32 x, f32 y, f32 maxX, f32 minY, f32 dU, f32 dV, bool bDistort)
+void LFD_Anim::Render(int32_t frame, float x, float y, float maxX, float minY, float dU, float dV, bool bDistort)
 {
 	if ( frame > m_nNumDelts-1 ) { frame = m_nNumDelts-1; }
 
@@ -457,14 +457,14 @@ void LFD_Anim::Render(s32 frame, f32 x, f32 y, f32 maxX, f32 minY, f32 dU, f32 d
 	}
 
 	//ok, we need to figure out the scale and offset.
-	s32 nWidth, nHeight;
+	int32_t nWidth, nHeight;
 	m_pDriver->GetWindowSize(nWidth, nHeight);
 	//now we want to impose the 320x200 UI into the 4:3 size.
-	s32 n43_Width = 4*nHeight/3;
-	f32 fOffsetX = (f32)( (nWidth - n43_Width)>>1 );
-	f32 fOffsetY = 0.0f;
-	f32 fScaleX  = (f32)n43_Width;
-	f32 fScaleY  = (f32)nHeight;
+	int32_t n43_Width = 4*nHeight/3;
+	float fOffsetX = (float)( (nWidth - n43_Width)>>1 );
+	float fOffsetY = 0.0f;
+	float fScaleX  = (float)n43_Width;
+	float fScaleY  = (float)nHeight;
 
 	float x0, y0, x1, y1, u0, u1, v0, v1;
 	x0 = (m_OffsX[frame]+x)*fScaleX+fOffsetX; x1 = m_Width[frame] *m_fScaleX*fScaleX+x0;

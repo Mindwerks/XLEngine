@@ -94,39 +94,39 @@ class IDriver3D
         IDriver3D();
         virtual ~IDriver3D();
 
-		virtual bool Init(s32 w, s32 h) {return false;}
+		virtual bool Init(int32_t w, int32_t h) {return false;}
 		virtual void Present() {};
 		virtual void Clear(bool bClearColor=true) {};
 
-		virtual void SetWorldMatrix(Matrix *pMtx, s32 worldX, s32 worldY) {};
+		virtual void SetWorldMatrix(Matrix *pMtx, int32_t worldX, int32_t worldY) {};
 		virtual void SetViewMatrix(Matrix *pMtx, Vector3 *pLoc, Vector3 *pDir) {};
 		virtual void SetProjMtx(Matrix *pMtx) {};
 		virtual void SetCamera(Camera *pCamera) {};
 		virtual Camera *GetCamera() {return 0;}
 
-		virtual void ChangeWindowSize(s32 w, s32 h) {};
+		virtual void ChangeWindowSize(int32_t w, int32_t h) {};
 
 		//Texture Functions.
 		//SetTexture(...) : frame=-1 : use the automatic texture animation system (used for most things).
-		virtual void SetTexture(s32 slot, TextureHandle hTex, u32 uFilter=FILTER_NORMAL, bool bWrap=true, s32 frame=-1) {};
+		virtual void SetTexture(int32_t slot, TextureHandle hTex, uint32_t uFilter=FILTER_NORMAL, bool bWrap=true, int32_t frame=-1) {};
 		virtual void SetColor(Vector4 *pColor=0) {};
-		virtual TextureHandle CreateTexture(u32 uWidth, u32 uHeight, u32 uFormat=TEX_FORMAT_RGBA8, u8 *pData=0, bool bGenMips=false, s32 nFrameCnt=1) {return 0;}
-		virtual void FillTexture(TextureHandle hTex, u8 *pData, u32 uWidth, u32 uHeight, bool bGenMips=false) {};
+		virtual TextureHandle CreateTexture(uint32_t uWidth, uint32_t uHeight, uint32_t uFormat=TEX_FORMAT_RGBA8, uint8_t *pData=0, bool bGenMips=false, int32_t nFrameCnt=1) {return 0;}
+		virtual void FillTexture(TextureHandle hTex, uint8_t *pData, uint32_t uWidth, uint32_t uHeight, bool bGenMips=false) {};
 		virtual void FreeTexture(TextureHandle hTex) {};
 
 		//VBO/IBO Support.
-		virtual u32 CreateVBO() {return 0;}
-		virtual void AllocVBO_Mem(u32 uID, u32 uVtxCnt, u32 uSize, bool bDynamic) {};
-		virtual void FillVBO(u32 uID, void *pData, u32 uSize, bool bDynamic) {};
-		virtual void SetVBO(u32 uID, u32 uStride, u32 uVBO_Flags) {};
-		virtual u32 CreateIB() {return 0;}
-		virtual void FillIB(u32 uID, void *pData, u32 uSize, bool bDynamic) {};
-		virtual void ResetIBFlags(u32 uID) {};
-		virtual void DeleteBuffer(u32 uID) {};
+		virtual uint32_t CreateVBO() {return 0;}
+		virtual void AllocVBO_Mem(uint32_t uID, uint32_t uVtxCnt, uint32_t uSize, bool bDynamic) {};
+		virtual void FillVBO(uint32_t uID, void *pData, uint32_t uSize, bool bDynamic) {};
+		virtual void SetVBO(uint32_t uID, uint32_t uStride, uint32_t uVBO_Flags) {};
+		virtual uint32_t CreateIB() {return 0;}
+		virtual void FillIB(uint32_t uID, void *pData, uint32_t uSize, bool bDynamic) {};
+		virtual void ResetIBFlags(uint32_t uID) {};
+		virtual void DeleteBuffer(uint32_t uID) {};
 		virtual void ClearDrawData() {};
 
 		//Draw!
-		virtual void RenderIndexedTriangles(IndexBuffer *pIB, s32 nTriCnt, s32 startIndex=0) {};
+		virtual void RenderIndexedTriangles(IndexBuffer *pIB, int32_t nTriCnt, int32_t startIndex=0) {};
 		virtual void RenderScreenQuad(const Vector4& posScale, const Vector2& uvTop, const Vector2& uvBot, const Vector4& colorTop, const Vector4& colorBot) {};
 		virtual void RenderWorldQuad(const Vector3& pos0, const Vector3& pos1, const Vector2& uv0, const Vector2& uv1, const Vector4& color) {};
 		virtual void RenderWorldQuad(const Vector3 *posList, const Vector2 *uvList, const Vector4& color, bool bRecieveLighting=false) {};
@@ -135,22 +135,22 @@ class IDriver3D
 		//Render States
 		virtual void EnableDepthWrite(bool bEnable) {};
 		virtual void EnableDepthRead(bool bEnable) {};
-		virtual void EnableStencilWriting(bool bEnable, u32 uValue) {};
+		virtual void EnableStencilWriting(bool bEnable, uint32_t uValue) {};
 		virtual void EnableStencilTesting(bool bEnable) {};
 		virtual void EnableCulling(bool bEnable) {};
-		virtual void EnableAlphaTest(bool bEnable, u8 uAlphaCutoff=128) {};
-		virtual void SetBlendMode(u32 uMode=BLEND_NONE) {};
-		virtual void EnableFog(bool bEnable, f32 fEnd=10000.0f) {};
-		virtual void SetFogDensity(f32 fDensity=1.0f) {};
+		virtual void EnableAlphaTest(bool bEnable, uint8_t uAlphaCutoff=128) {};
+		virtual void SetBlendMode(uint32_t uMode=BLEND_NONE) {};
+		virtual void EnableFog(bool bEnable, float fEnd=10000.0f) {};
+		virtual void SetFogDensity(float fDensity=1.0f) {};
 
 		//Palette
-		void SetCurrentPalette(u32 uPalID, bool UpdatePal=false) { m_uPaletteID = uPalID; m_bUpdatePal = UpdatePal; }
-		void SetCurrentColormap(u32 uColormapID) {m_uColormapID = uColormapID; }
-		void SetCurrentClearColor(u32 uColor) {m_uClearColor = uColor;}
+		void SetCurrentPalette(uint32_t uPalID, bool UpdatePal=false) { m_uPaletteID = uPalID; m_bUpdatePal = UpdatePal; }
+		void SetCurrentColormap(uint32_t uColormapID) {m_uColormapID = uColormapID; }
+		void SetCurrentClearColor(uint32_t uColor) {m_uClearColor = uColor;}
 		virtual void SetClearColorFromTex(TextureHandle hTex) {};
 
 		void SetPlatform( Driver3D_IPlatform *platform ) { m_Platform = platform; }
-		void SetWindowData(s32 nParam, void **param) { m_Platform->SetWindowData(nParam, param); }
+		void SetWindowData(int32_t nParam, void **param) { m_Platform->SetWindowData(nParam, param); }
 
 		//Sorting
 		virtual bool ApplyOpaqueSort() { return false; }
@@ -159,7 +159,7 @@ class IDriver3D
 		//Render Camera
 		const Matrix& GetRenderCam_ViewMtx() { return m_ViewMtx; }
 
-		void GetWindowSize(s32& nWidth, s32& nHeight) 
+		void GetWindowSize(int32_t& nWidth, int32_t& nHeight)
 		{ 
 			nWidth = m_nWindowWidth; nHeight = m_nWindowHeight; 
 		}
@@ -176,21 +176,21 @@ class IDriver3D
 		const Vector3& GetViewDir() { return m_ViewDir; }
 
 		//Overlays
-		void AddOverlay(s32 x, s32 y, s32 scale, TextureHandle hTex);
+		void AddOverlay(int32_t x, int32_t y, int32_t scale, TextureHandle hTex);
 
 		//Driver extensions
-		bool HasExtension(u32 uExtension) { return (m_uExtensions&uExtension)?true:false; }
+		bool HasExtension(uint32_t uExtension) { return (m_uExtensions&uExtension)?true:false; }
 		//Force mipmapping if the renderer has support for it, even in software.
 		void ForceMipmapping(bool bForce) { m_bForceMip = bForce; }
 		bool GetForceMipmapping() { return m_bForceMip; }
-		virtual void SetExtension_Data(u32 uExtension, void *pData0, void *pData1) {};
+		virtual void SetExtension_Data(uint32_t uExtension, void *pData0, void *pData1) {};
 			
     protected:
 		struct Overlay
 		{
-			s32 x;
-			s32 y;
-			s32 scale;
+			int32_t x;
+			int32_t y;
+			int32_t scale;
 			TextureHandle hTex;
 		};
 
@@ -206,15 +206,15 @@ class IDriver3D
 		Vector3 m_Eye;
 		Vector3 m_ViewDir;
 
-		u32 m_uOverlayCount;
+		uint32_t m_uOverlayCount;
 		Overlay m_Overlays[MAX_OVERLAY_COUNT];
 
-		s32 m_nWindowWidth;
-		s32 m_nWindowHeight;
-		u32 m_uPaletteID;
-		u32 m_uColormapID;
-		u32 m_uClearColor;
-		u32 m_uExtensions;
+		int32_t m_nWindowWidth;
+		int32_t m_nWindowHeight;
+		uint32_t m_uPaletteID;
+		uint32_t m_uColormapID;
+		uint32_t m_uClearColor;
+		uint32_t m_uExtensions;
 
 		float m_fAmbient;
 

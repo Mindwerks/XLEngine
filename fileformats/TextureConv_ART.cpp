@@ -9,22 +9,22 @@ TextureConv_ART::~TextureConv_ART()
 {
 }
 
-bool TextureConv_ART::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& nOffsY, u32& uWidth, u32& uHeight, const u8 *pSourceData, u32 uLen, const u8 *pPalette, bool bCopyPal, u32 uHackID/*=0*/)
+bool TextureConv_ART::ConvertTexture_Pal8(uint8_t *pConvertedData, int32_t& nOffsX, int32_t& nOffsY, uint32_t& uWidth, uint32_t& uHeight, const uint8_t *pSourceData, uint32_t uLen, const uint8_t *pPalette, bool bCopyPal, uint32_t uHackID/*=0*/)
 {
-	u16 *pSizeInfo = (u16 *)ArchiveManager::GameFile_GetFileInfo();
+	uint16_t *pSizeInfo = (uint16_t *)ArchiveManager::GameFile_GetFileInfo();
 
 	uWidth  = pSizeInfo[0];
 	uHeight = pSizeInfo[1];
 	nOffsX  = 0;
 	nOffsY  = 0;
 
-	u32 destIdx=0;
-	for (u32 y=0; y<uHeight; y++)
+	uint32_t destIdx=0;
+	for (uint32_t y=0; y<uHeight; y++)
 	{
-		for (u32 x=0; x<uWidth; x++)
+		for (uint32_t x=0; x<uWidth; x++)
 		{
 			//ART images are stored by columns rather then lines.
-			u32 uPalIndex = (pSourceData[x*uHeight+y]<<2);
+			uint32_t uPalIndex = (pSourceData[x*uHeight+y]<<2);
 
 			pConvertedData[destIdx++] = pPalette[uPalIndex+0];
 			pConvertedData[destIdx++] = pPalette[uPalIndex+1];
@@ -34,15 +34,15 @@ bool TextureConv_ART::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 	}
 
 	//dilation process for transparent pixels...
-	u32 yIndex = 0;
-	u32 w4 = uWidth*4;
-	u32 uDilationPassCnt = 4;
-	for (u32 p=0; p<uDilationPassCnt; p++)
+	uint32_t yIndex = 0;
+	uint32_t w4 = uWidth*4;
+	uint32_t uDilationPassCnt = 4;
+	for (uint32_t p=0; p<uDilationPassCnt; p++)
 	{
-		u32 uTransCnt = 0;
-		for (u32 y=0; y<uHeight; y++)
+		uint32_t uTransCnt = 0;
+		for (uint32_t y=0; y<uHeight; y++)
 		{
-			for (u32 x=0, x4=0; x<uWidth; x++, x4+=4)
+			for (uint32_t x=0, x4=0; x<uWidth; x++, x4+=4)
 			{
 				if ( pConvertedData[yIndex + x4 + 3 ] == 0 )
 				{

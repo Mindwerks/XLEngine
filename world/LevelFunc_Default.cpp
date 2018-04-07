@@ -6,18 +6,18 @@
 #include <math.h>
 
 //SlidingDoor
-void LFunc_SlidingDoor_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool bInstant)
+void LFunc_SlidingDoor_SetValue(LevelFunc *pFunc, int32_t nSector, float value, bool bInstant)
 {
 	WorldCell *pCell = pFunc->GetWorldCell();
 	const Vector3& vDir = pFunc->GetDirection();
 	Vector2 dir2D(vDir.x, vDir.y);
 
 	Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( nSector );
-	for (u32 w=0; w<pSector->m_uWallCount; w++)
+	for (uint32_t w=0; w<pSector->m_uWallCount; w++)
 	{
 		Wall *pWall = &pSector->m_Walls[w];
-		u16 i0 = pWall->m_idx[0];
-		u16 i1 = pWall->m_idx[1];
+		uint16_t i0 = pWall->m_idx[0];
+		uint16_t i1 = pWall->m_idx[1];
 		if ( pWall->m_flags&Wall::WALL_FLAGS_MORPH )
 		{
 			pSector->m_pVertexCur[i0] = pSector->m_pVertexBase[i0] + dir2D*value;
@@ -83,8 +83,8 @@ void LFunc_SlidingDoor_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool b
 	}
 
 	//handle sliding objects.
-	u32 uClientObjCnt = pFunc->GetClientObjCount();
-	for (u32 i=0; i<uClientObjCnt; i++)
+	uint32_t uClientObjCnt = pFunc->GetClientObjCount();
+	for (uint32_t i=0; i<uClientObjCnt; i++)
 	{
 		LevelFunc::ClientObject *pObject = pFunc->GetClientObj(i);
 		
@@ -105,18 +105,18 @@ void LFunc_SlidingDoor_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool b
 }
 
 //Slide - like the above, but everything goes.
-void LFunc_Slide_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool bInstant)
+void LFunc_Slide_SetValue(LevelFunc *pFunc, int32_t nSector, float value, bool bInstant)
 {
 	WorldCell *pCell = pFunc->GetWorldCell();
 	const Vector3& vDir = pFunc->GetDirection();
 	Vector2 dir2D(vDir.x, vDir.y);
 
 	Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( nSector );
-	for (u32 w=0; w<pSector->m_uWallCount; w++)
+	for (uint32_t w=0; w<pSector->m_uWallCount; w++)
 	{
 		Wall *pWall = &pSector->m_Walls[w];
-		u16 i0 = pWall->m_idx[0];
-		u16 i1 = pWall->m_idx[1];
+		uint16_t i0 = pWall->m_idx[0];
+		uint16_t i1 = pWall->m_idx[1];
 
 		pSector->m_pVertexCur[i0] = pSector->m_pVertexBase[i0] + dir2D*value;
 		pSector->m_pVertexCur[i1] = pSector->m_pVertexBase[i1] + dir2D*value;
@@ -149,8 +149,8 @@ void LFunc_Slide_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool bInstan
 	}
 
 	//handle sliding objects.
-	u32 uClientObjCnt = pFunc->GetClientObjCount();
-	for (u32 i=0; i<uClientObjCnt; i++)
+	uint32_t uClientObjCnt = pFunc->GetClientObjCount();
+	for (uint32_t i=0; i<uClientObjCnt; i++)
 	{
 		LevelFunc::ClientObject *pObject = pFunc->GetClientObj(i);
 		
@@ -163,7 +163,7 @@ void LFunc_Slide_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool bInstan
 }
 
 //Elevator_MoveFloor
-void LFunc_Elevator_MoveFloor_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool bInstant)
+void LFunc_Elevator_MoveFloor_SetValue(LevelFunc *pFunc, int32_t nSector, float value, bool bInstant)
 {
 	WorldCell *pCell = pFunc->GetWorldCell();
 	Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( nSector );
@@ -171,7 +171,7 @@ void LFunc_Elevator_MoveFloor_SetValue(LevelFunc *pFunc, s32 nSector, f32 value,
 }
 
 //Elevator_MoveCeil
-void LFunc_Elevator_MoveCeil_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool bInstant)
+void LFunc_Elevator_MoveCeil_SetValue(LevelFunc *pFunc, int32_t nSector, float value, bool bInstant)
 {
 	WorldCell *pCell = pFunc->GetWorldCell();
 	Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( nSector );
@@ -179,7 +179,7 @@ void LFunc_Elevator_MoveCeil_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, 
 }
 
 //Rotate
-void LFunc_Rotate_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool bInstant)
+void LFunc_Rotate_SetValue(LevelFunc *pFunc, int32_t nSector, float value, bool bInstant)
 {
 	WorldCell *pCell = pFunc->GetWorldCell();
 	Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( nSector );
@@ -187,14 +187,14 @@ void LFunc_Rotate_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool bInsta
 	const Vector3 pivot3 = pFunc->GetPivot();
 	Vector2 pivot( pivot3.x, pivot3.y );
 
-	f32 cA = cosf(value);
-	f32 sA = sinf(value);
+	float cA = cosf(value);
+	float sA = sinf(value);
 	//go ahead and rotate the verts...
-	for (u32 w=0; w<pSector->m_uWallCount; w++)
+	for (uint32_t w=0; w<pSector->m_uWallCount; w++)
 	{
 		Wall *pWall = &pSector->m_Walls[w];
-		u16 i0 = pWall->m_idx[0];
-		u16 i1 = pWall->m_idx[1];
+		uint16_t i0 = pWall->m_idx[0];
+		uint16_t i1 = pWall->m_idx[1];
 		
 		Vector2 pC = pSector->m_pVertexBase[i0] - pivot;
 		pSector->m_pVertexCur[i0].x = pC.x*cA + pC.y*sA + pivot.x;
@@ -243,12 +243,12 @@ void LFunc_Rotate_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool bInsta
 }
 
 //LightFX
-void LFunc_LightFX_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool bInstant)
+void LFunc_LightFX_SetValue(LevelFunc *pFunc, int32_t nSector, float value, bool bInstant)
 {
 	WorldCell *pCell = pFunc->GetWorldCell();
 	Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( nSector );
 
-	const s32 flickerTable[] = 
+	const int32_t flickerTable[] =
 	{ 
 		1, 3, 6, 
 		1, 3, 6, 
@@ -261,7 +261,7 @@ void LFunc_LightFX_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool bInst
 		1, 3
 	};
 
-	s32 index = (s32)( (value*25.0f) );
+	int32_t index = (int32_t)( (value*25.0f) );
 	index %= 25;
 	
 	pSector->m_aLightFX[0] = -flickerTable[index]*4 + 24;
@@ -270,7 +270,7 @@ void LFunc_LightFX_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool bInst
 }
 
 //MotionFX
-void LFunc_MotionFX_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool bInstant)
+void LFunc_MotionFX_SetValue(LevelFunc *pFunc, int32_t nSector, float value, bool bInstant)
 {
 	WorldCell *pCell = pFunc->GetWorldCell();
 	Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( nSector );
@@ -282,10 +282,10 @@ void LFunc_MotionFX_SetValue(LevelFunc *pFunc, s32 nSector, f32 value, bool bIns
 }
 
 //TriggerToggle
-void LFunc_TriggerToggle_Activate(LevelFunc *pFunc, s32 mask, s32 items, bool bForce)
+void LFunc_TriggerToggle_Activate(LevelFunc *pFunc, int32_t mask, int32_t items, bool bForce)
 {
-	u32 uClientCount = pFunc->GetClientCount();
-	for (u32 c=0; c<uClientCount; c++)
+	uint32_t uClientCount = pFunc->GetClientCount();
+	for (uint32_t c=0; c<uClientCount; c++)
 	{
 		LevelFunc *pClient = pFunc->GetClient(c);
 		pClient->SendMessage( LevelFunc::IMSG_ACTIVATE, 0, 0 );

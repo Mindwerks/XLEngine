@@ -3,7 +3,7 @@
 #include "Object.h"
 #include <math.h>
 
-LevelFunc::LevelFunc(WorldCell *pWorldCell, s32 nSector, s32 nWall)
+LevelFunc::LevelFunc(WorldCell *pWorldCell, int32_t nSector, int32_t nWall)
 {
 	m_bActive = true;
 	m_fInterp = 0.0f;
@@ -43,7 +43,7 @@ LevelFunc::~LevelFunc()
 	}
 }
 
-void LevelFunc::AddState(f32 value, s32 type, s32 delay)
+void LevelFunc::AddState(float value, int32_t type, int32_t delay)
 {
 	State *pState = xlNew State;
 	m_States.push_back( pState );
@@ -53,7 +53,7 @@ void LevelFunc::AddState(f32 value, s32 type, s32 delay)
 	pState->delay = delay;
 }
 
-void LevelFunc::AddClientObj(Object *pObj, u32 uFlags)
+void LevelFunc::AddClientObj(Object *pObj, uint32_t uFlags)
 {
 	ClientObject *pClientObj = xlNew ClientObject;
 	pObj->GetLoc( pClientObj->vInitialPos );
@@ -117,7 +117,7 @@ void LevelFunc::Update()
 
 	if ( m_States.size() > 0 )
 	{
-		f32 fPrevInterp = m_fInterp;
+		float fPrevInterp = m_fInterp;
 		if ( m_fSpeed == 0.0f )
 		{
 			m_fInterp = 1.0f;
@@ -129,7 +129,7 @@ void LevelFunc::Update()
 		}
 		if ( m_fInterp > 1.0f ) { m_fInterp = 1.0f; }
 
-		f32 value = (1.0f-m_fInterp)*m_States[m_nCurState]->value + m_fInterp*m_States[m_nNextState]->value;
+		float value = (1.0f-m_fInterp)*m_States[m_nCurState]->value + m_fInterp*m_States[m_nNextState]->value;
 		SetValue(m_nSector, value, (m_fSpeed==0.0f)?true:false);
 
 		if ( m_fInterp >= 1.0f || m_fSpeed == 0.0f )
@@ -163,7 +163,7 @@ void LevelFunc::Update()
 	}
 }
 
-void LevelFunc::SetInitialState(s32 state, bool bStartOnInit/*=false*/)
+void LevelFunc::SetInitialState(int32_t state, bool bStartOnInit/*=false*/)
 {
 	if ( state == -1 )
 		 state = 0;

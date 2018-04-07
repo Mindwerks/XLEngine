@@ -15,51 +15,51 @@ TextureConv_PCX::~TextureConv_PCX()
 
 struct PCX_Header
 {
-	u8 Manufacturer;	
-	u8 Version;
-	u8 Encoding;
-	u8 BitsPerPixel;	//4
-	u16 XMin;
-	u16 YMin;
-	u16 XMax;
-	u16 YMax;
-	u16 VertDPI;	    //14
-	u8 Palette[48];		//62
-	u8 Reserved;		
-	u8 ColorPlanes;		//64
-	u16 BytesPerLine;	
-	u16 PaletteType;
-	u16 HScrSize;
-	u16 VScrSize;		//72
-	u8 Filler[56];		//128
+	uint8_t Manufacturer;
+	uint8_t Version;
+	uint8_t Encoding;
+	uint8_t BitsPerPixel;	//4
+	uint16_t XMin;
+	uint16_t YMin;
+	uint16_t XMax;
+	uint16_t YMax;
+	uint16_t VertDPI;	    //14
+	uint8_t Palette[48];		//62
+	uint8_t Reserved;
+	uint8_t ColorPlanes;		//64
+	uint16_t BytesPerLine;
+	uint16_t PaletteType;
+	uint16_t HScrSize;
+	uint16_t VScrSize;		//72
+	uint8_t Filler[56];		//128
 };
 
-bool TextureConv_PCX::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& nOffsY, u32& uWidth, u32& uHeight, const u8 *pSourceData, u32 uLen, const u8 *pPalette, bool bCopyPal, u32 uHackID/*=0*/)
+bool TextureConv_PCX::ConvertTexture_Pal8(uint8_t *pConvertedData, int32_t& nOffsX, int32_t& nOffsY, uint32_t& uWidth, uint32_t& uHeight, const uint8_t *pSourceData, uint32_t uLen, const uint8_t *pPalette, bool bCopyPal, uint32_t uHackID/*=0*/)
 {
 	PCX_Header *pHeader = (PCX_Header *)pSourceData;
-	const u8 *pImageData = &pSourceData[sizeof(PCX_Header)];
+	const uint8_t *pImageData = &pSourceData[sizeof(PCX_Header)];
 
 	assert(pHeader->BitsPerPixel == 8);
 	assert(pHeader->Version == 5);
 
-	uWidth  = (u32)pHeader->XMax - (u32)pHeader->XMin + 1;
-	uHeight = (u32)pHeader->YMax - (u32)pHeader->YMin + 1;
+	uWidth  = (uint32_t)pHeader->XMax - (uint32_t)pHeader->XMin + 1;
+	uHeight = (uint32_t)pHeader->YMax - (uint32_t)pHeader->YMin + 1;
 	nOffsX  = 0;
 	nOffsY  = 0;
 
 	//for now just read the palette from the end of the file...
-	u8 *pIndexData = (u8 *)ScratchPad::AllocMem( uWidth*uHeight );
-	u32 destIdx=0;
-	u32 uImgDataIdx = 0;
-	u32 uPixelIdx = 0;
+	uint8_t *pIndexData = (uint8_t *)ScratchPad::AllocMem( uWidth*uHeight );
+	uint32_t destIdx=0;
+	uint32_t uImgDataIdx = 0;
+	uint32_t uPixelIdx = 0;
 	while (uPixelIdx < uWidth*uHeight)
 	{
-		u8 uPixel = pImageData[uImgDataIdx];
+		uint8_t uPixel = pImageData[uImgDataIdx];
 		uImgDataIdx++;
-		s32 nRunLength = 0;
+		int32_t nRunLength = 0;
 		if ( (uPixel&64) && (uPixel&128) )
 		{
-			nRunLength = (s32)( uPixel&63 );
+			nRunLength = (int32_t)( uPixel&63 );
 		}
 		if ( nRunLength == 0 )
 		{
@@ -81,7 +81,7 @@ bool TextureConv_PCX::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 	};
 	assert( uPixelIdx == uWidth*uHeight );
 
-	static u8 pal[768];
+	static uint8_t pal[768];
 	assert( pImageData[uImgDataIdx] == 12 );
 	memcpy(pal, &pImageData[uImgDataIdx+1], 768);
 
@@ -90,11 +90,11 @@ bool TextureConv_PCX::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 		TextureLoader::SetPalette(0, pal, 768, 0);
 	}
 
-	for (u32 y=0; y<uHeight; y++)
+	for (uint32_t y=0; y<uHeight; y++)
 	{
-		for (u32 x=0; x<uWidth; x++)
+		for (uint32_t x=0; x<uWidth; x++)
 		{
-			u32 uPalIndex = pIndexData[y*uWidth+x]*3;
+			uint32_t uPalIndex = pIndexData[y*uWidth+x]*3;
 			assert( uPalIndex < 768*3 );
 
 			pConvertedData[destIdx++] = uPalIndex == 0 ? 0 : pal[uPalIndex+0];
@@ -105,15 +105,15 @@ bool TextureConv_PCX::ConvertTexture_Pal8(u8 *pConvertedData, s32& nOffsX, s32& 
 	}
 
 	//dilation process for transparent pixels...
-	u32 yIndex = 0;
-	u32 w4 = uWidth*4;
-	u32 uDilationPassCnt = 4;
-	for (u32 p=0; p<uDilationPassCnt; p++)
+	uint32_t yIndex = 0;
+	uint32_t w4 = uWidth*4;
+	uint32_t uDilationPassCnt = 4;
+	for (uint32_t p=0; p<uDilationPassCnt; p++)
 	{
-		u32 uTransCnt = 0;
-		for (u32 y=0; y<uHeight; y++)
+		uint32_t uTransCnt = 0;
+		for (uint32_t y=0; y<uHeight; y++)
 		{
-			for (u32 x=0, x4=0; x<uWidth; x++, x4+=4)
+			for (uint32_t x=0, x4=0; x<uWidth; x++, x4+=4)
 			{
 				if ( pConvertedData[yIndex + x4 + 3 ] == 0 )
 				{

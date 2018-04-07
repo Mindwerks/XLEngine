@@ -133,7 +133,7 @@ int main(int argc, char **argv)
     }
 
     SDL_SetRelativeMouseMode(SDL_FALSE);
-    Input::EnableMouseLocking(XL_FALSE);
+    Input::EnableMouseLocking(false);
     bool MouseWasLocked = false;
 
     float fDeltaTime = 0.0f;

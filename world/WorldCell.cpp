@@ -24,7 +24,7 @@ WorldCell::WorldCell()
 
 WorldCell::~WorldCell()
 {
-	for (u32 i=0; i<(u32)m_Sectors.size(); i++)
+	for (uint32_t i=0; i<(uint32_t)m_Sectors.size(); i++)
 	{
 		Sector *pSector = m_Sectors[i];
 		if ( pSector )
@@ -47,26 +47,26 @@ void WorldCell::GetBounds(Vector3& rvMin, Vector3& rvMax)
 	rvMax = m_Bounds[1];
 }
 
-u32 WorldCell::GetSectorCount()
+uint32_t WorldCell::GetSectorCount()
 {
-	return (u32)m_Sectors.size();
+	return (uint32_t)m_Sectors.size();
 }
 
 void WorldCell::AddSector(Sector *pSector)
 {
-	pSector->m_uID = (u32)m_Sectors.size();
+	pSector->m_uID = (uint32_t)m_Sectors.size();
 	m_Sectors.push_back( pSector );
 }
 
-Sector *WorldCell::GetSector(u32 uIndex)
+Sector *WorldCell::GetSector(uint32_t uIndex)
 {
 	return m_Sectors[uIndex];
 }
 
-s32 WorldCell::FindSector(const char *pszName)
+int32_t WorldCell::FindSector(const char *pszName)
 {
 	//for now just render the sectors directly.
-	for (u32 i=0; i<(u32)m_Sectors.size(); i++)
+	for (uint32_t i=0; i<(uint32_t)m_Sectors.size(); i++)
 	{
 		if ( stricmp(m_Sectors[i]->m_szName, pszName) == 0 )
 		{
@@ -76,14 +76,14 @@ s32 WorldCell::FindSector(const char *pszName)
 	return -1;
 }
 
-void WorldCell::SetSkyTex(u32 uSkyIndex, TextureHandle hTex, u32 uWidth, u32 uHeight)
+void WorldCell::SetSkyTex(uint32_t uSkyIndex, TextureHandle hTex, uint32_t uWidth, uint32_t uHeight)
 {
 	m_aSkyTex[ uSkyIndex ] = hTex;
 	m_uSkyWidth  = uWidth;
 	m_uSkyHeight = uHeight;
 }
 
-void WorldCell::Render(IDriver3D *pDriver, Camera *pCamera, u32 uSectorTypeVis)
+void WorldCell::Render(IDriver3D *pDriver, Camera *pCamera, uint32_t uSectorTypeVis)
 {
 	Camera *pUpdateCam = pCamera;
 	if ( m_bLockCamera )
@@ -106,7 +106,7 @@ void WorldCell::Render(IDriver3D *pDriver, Camera *pCamera, u32 uSectorTypeVis)
 	{
 		//for now just render the sectors directly, 
 		//add culling.
-		for (u32 i=0; i<(u32)m_Sectors.size(); i++)
+		for (uint32_t i=0; i<(uint32_t)m_Sectors.size(); i++)
 		{
 			if ( !(m_Sectors[i]->m_uTypeFlags&uSectorTypeVis) )
 				continue;
@@ -129,7 +129,7 @@ void WorldCell::Render(IDriver3D *pDriver, Camera *pCamera, u32 uSectorTypeVis)
 	}
 }
 
-void WorldCell::Collide(Vector3 *p0, Vector3 *p1, u32& uSector, f32 fRadius, u32 uSectorTypeVis, bool bPassThruAdjoins, s32 worldX, s32 worldY)
+void WorldCell::Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, uint32_t uSectorTypeVis, bool bPassThruAdjoins, int32_t worldX, int32_t worldY)
 {
 	Sector *pStartSector = m_Sectors[ uSector ];
 	if ( pStartSector->m_uTypeFlags&SECTOR_TYPE_25D )
@@ -144,7 +144,7 @@ void WorldCell::Collide(Vector3 *p0, Vector3 *p1, u32& uSector, f32 fRadius, u32
 	}
 }
 
-void WorldCell::Collide_Recursive(Vector3 *p0, Vector3 *p1, u32& uSector, f32 fRadius, u32 uSectorTypeVis, bool bPassThruAdjoins, s32 worldX, s32 worldY)
+void WorldCell::Collide_Recursive(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, uint32_t uSectorTypeVis, bool bPassThruAdjoins, int32_t worldX, int32_t worldY)
 {
 	const float veryCloseDistance = 0.00001f;
 	if ( m_nCollisionIter >= MAX_COLLISION_ITER )
@@ -184,7 +184,7 @@ void WorldCell::Collide_Recursive(Vector3 *p0, Vector3 *p1, u32& uSector, f32 fR
 	bounds[0].Set( Math::Min(p0->x,p1->x) - rScaled.x, Math::Min(p0->y,p1->y) - rScaled.y, Math::Min(p0->z,p1->z) - rScaled.z );
 	bounds[1].Set( Math::Max(p0->x,p1->x) + rScaled.x, Math::Max(p0->y,p1->y) + rScaled.y, Math::Max(p0->z,p1->z) + rScaled.z );
 
-	for (u32 i=0; i<(u32)m_Sectors.size(); i++)
+	for (uint32_t i=0; i<(uint32_t)m_Sectors.size(); i++)
 	{
 		if ( !(m_Sectors[i]->m_uTypeFlags&uSectorTypeVis) )
 			continue;
@@ -250,7 +250,7 @@ void WorldCell::Collide_Recursive(Vector3 *p0, Vector3 *p1, u32& uSector, f32 fR
 	}
 }
 
-void WorldCell::RayCastAndActivate(Vector3 *p0, Vector3 *p1, u32& uSector, u32 uSectorTypeVis, s32 worldX, s32 worldY)
+void WorldCell::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector, uint32_t uSectorTypeVis, int32_t worldX, int32_t worldY)
 {
 	Sector *pStartSector = m_Sectors[ uSector ];
 	if ( pStartSector->m_uTypeFlags&SECTOR_TYPE_25D )
@@ -269,7 +269,7 @@ void WorldCell::RayCastAndActivate(Vector3 *p0, Vector3 *p1, u32& uSector, u32 u
 		raycastPacket.pCollisionObj = NULL;
 		raycastPacket.pCollisionSector = NULL;
 
-		for (u32 i=0; i<(u32)m_Sectors.size(); i++)
+		for (uint32_t i=0; i<(uint32_t)m_Sectors.size(); i++)
 		{
 			if ( !(m_Sectors[i]->m_uTypeFlags&uSectorTypeVis) )
 				continue;
@@ -292,7 +292,7 @@ void WorldCell::RayCastAndActivate(Vector3 *p0, Vector3 *p1, u32& uSector, u32 u
 	}
 }
 
-bool WorldCell::Raycast(Vector3 *p0, Vector3 *p1, Vector3 *pInter, u32 uSectorTypeVis, s32 worldX, s32 worldY)
+bool WorldCell::Raycast(Vector3 *p0, Vector3 *p1, Vector3 *pInter, uint32_t uSectorTypeVis, int32_t worldX, int32_t worldY)
 {
 	Sector *pStartSector = m_Sectors[0];
 	if ( pStartSector->m_uTypeFlags&SECTOR_TYPE_25D )
@@ -311,7 +311,7 @@ bool WorldCell::Raycast(Vector3 *p0, Vector3 *p1, Vector3 *pInter, u32 uSectorTy
 		raycastPacket.pCollisionObj = NULL;
 		raycastPacket.pCollisionSector = NULL;
 
-		for (u32 i=0; i<(u32)m_Sectors.size(); i++)
+		for (uint32_t i=0; i<(uint32_t)m_Sectors.size(); i++)
 		{
 			if ( !(m_Sectors[i]->m_uTypeFlags&uSectorTypeVis) )
 				continue;
@@ -337,7 +337,7 @@ bool WorldCell::Raycast(Vector3 *p0, Vector3 *p1, Vector3 *pInter, u32 uSectorTy
 	return false;
 }
 
-void WorldCell::Update(Camera *pCamera, float dt, u32 uSectorTypeVis)
+void WorldCell::Update(Camera *pCamera, float dt, uint32_t uSectorTypeVis)
 {
 	Camera *pUpdateCam = pCamera;
 	if ( m_bLockCamera )
@@ -353,7 +353,7 @@ void WorldCell::Update(Camera *pCamera, float dt, u32 uSectorTypeVis)
 	{
 		//for now just render the sectors directly, 
 		//add culling.
-		for (u32 i=0; i<(u32)m_Sectors.size(); i++)
+		for (uint32_t i=0; i<(uint32_t)m_Sectors.size(); i++)
 		{
 			if ( !(m_Sectors[i]->m_uTypeFlags&uSectorTypeVis) )
 				continue;

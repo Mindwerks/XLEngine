@@ -249,29 +249,29 @@ void ScriptSystem::ExecuteFunc()
 	m_pContext->Execute();
 }
 
-u32 ScriptSystem::ExecuteFunc(SHANDLE hFunc, s32 nArgCnt, const ScriptArgument *pArgs, bool bRetValueExpected)
+uint32_t ScriptSystem::ExecuteFunc(SHANDLE hFunc, int32_t nArgCnt, const ScriptArgument *pArgs, bool bRetValueExpected)
 {
-	u32 uRetValue = 0;
+	uint32_t uRetValue = 0;
 	if ( hFunc >= 0 )
 	{
 		m_pContext->Prepare(hFunc);
 		if ( nArgCnt > 0 && pArgs )
 		{
-			for (s32 i=0; i<nArgCnt; i++)
+			for (int32_t i=0; i<nArgCnt; i++)
 			{
 				switch (pArgs[i].uType)
 				{
-					case SC_ARG_U8:
-						m_pContext->SetArgByte(i, pArgs[i].argU8);
+					case SC_ARG_uint8_t:
+						m_pContext->SetArgByte(i, pArgs[i].arguint8_t);
 						break;
-					case SC_ARG_U16:
-						m_pContext->SetArgWord(i, pArgs[i].argU16);
+					case SC_ARG_uint16_t:
+						m_pContext->SetArgWord(i, pArgs[i].arguint16_t);
 						break;
-					case SC_ARG_U32:
-						m_pContext->SetArgDWord(i, pArgs[i].argU32);
+					case SC_ARG_uint32_t:
+						m_pContext->SetArgDWord(i, pArgs[i].arguint32_t);
 						break;
-					case SC_ARG_F32:
-						m_pContext->SetArgFloat(i, pArgs[i].argF32);
+					case SC_ARG_float:
+						m_pContext->SetArgFloat(i, pArgs[i].argfloat);
 						break;
 				};
 			}
@@ -279,7 +279,7 @@ u32 ScriptSystem::ExecuteFunc(SHANDLE hFunc, s32 nArgCnt, const ScriptArgument *
 		m_pContext->Execute();
 		if ( bRetValueExpected )
 		{
-			uRetValue = (u32)m_pContext->GetReturnDWord();
+			uRetValue = (uint32_t)m_pContext->GetReturnDWord();
 		}
 	}
 	return uRetValue;
@@ -374,7 +374,7 @@ void ScriptSystem::Update()
 /*******************************
   Plugin API
  *******************************/
-s32 ScriptSystem_RegisterScriptFunc(const char *decl, const asSFuncPtr& pFunc)
+int32_t ScriptSystem_RegisterScriptFunc(const char *decl, const asSFuncPtr& pFunc)
 {
 	bool bSuccess = ScriptSystem::RegisterFunc(decl, pFunc);
 	return (bSuccess) ? 1 : 0;

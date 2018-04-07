@@ -253,11 +253,11 @@ void TriEdge::init(const TriGradients& Gradients, const VFmt_Pos_UV_Screen *pVer
 
 	if ( Height )
 	{
-		s32 dN = pVertices[Bottom].y - pVertices[Top].y;
-		s32 dM = pVertices[Bottom].x - pVertices[Top].x;
+		int32_t dN = pVertices[Bottom].y - pVertices[Top].y;
+		int32_t dM = pVertices[Bottom].x - pVertices[Top].x;
 
 		Denominator = dN*16;
-		s32 InitialNumerator = dM*16*Y - dM*pVertices[Top].y + dN*pVertices[Top].x - 1 + Denominator;
+		int32_t InitialNumerator = dM*16*Y - dM*pVertices[Top].y + dN*pVertices[Top].x - 1 + Denominator;
 		Fixed28_4_Math::FloorDivMod( InitialNumerator, Denominator, X, ErrorTerm);
 		Fixed28_4_Math::FloorDivMod( dM*16, Denominator, XStep, Numerator );
 		
@@ -515,7 +515,7 @@ namespace TriangleRasterizer
 		return true;
 	}
 
-	float ComputePolygonData(const VFmt_Pos_UV *pWorld, const u16 *pIdx, const PolygonData *polygonData, s32 vCnt, Vector3& cen, Vector3& N)
+	float ComputePolygonData(const VFmt_Pos_UV *pWorld, const uint16_t *pIdx, const PolygonData *polygonData, int32_t vCnt, Vector3& cen, Vector3& N)
 	{
 		float r2;
 		if ( polygonData )
@@ -617,18 +617,18 @@ namespace TriangleRasterizer
 		}
 	}
 
-	s32 ComputeMipLevel(float dx, float dy, float du, float dv)
+	int32_t ComputeMipLevel(float dx, float dy, float du, float dv)
 	{
 		static bool _bGenLogTable = true;
-		static s32 _anLogTable[33*256]; 
+		static int32_t _anLogTable[33*256];
 		if ( _bGenLogTable )
 		{
-			for (s32 x=0; x<33*256; x++)
+			for (int32_t x=0; x<33*256; x++)
 			{
 				float f = (float)x/256.0f;
 				float l = Math::log2(f);
 
-				_anLogTable[x] = Math::clamp( (s32)l, 0, 5 );
+				_anLogTable[x] = Math::clamp( (int32_t)l, 0, 5 );
 			}
 
 			_bGenLogTable = false;
@@ -637,12 +637,12 @@ namespace TriangleRasterizer
 		float dt = Math::clamp( Math::Max(du, dv), 0.0f, 1.0f );
 		//texels per pixel.
 		float texelsPerPixel = (float)DrawScanline::_pCurTex->m_nWidth*dt / Math::Min( dx, dy );
-		s32 nLogInt = Math::FloatToInt( texelsPerPixel*256.0f );
+		int32_t nLogInt = Math::FloatToInt( texelsPerPixel*256.0f );
 
 		return _anLogTable[ Math::clamp(nLogInt, 0, 8192) ];
 	}
 
-	void DrawClippedNGon_Indexed(Driver3D_Soft *pDriver, VBO *pVertices, int vCnt, const u16 *pIdx, bool bRecLighting, int alphaMode, PolygonData *polygonData)
+	void DrawClippedNGon_Indexed(Driver3D_Soft *pDriver, VBO *pVertices, int vCnt, const uint16_t *pIdx, bool bRecLighting, int alphaMode, PolygonData *polygonData)
 	{
 		//mipmapping only if forced, off by default.
 		bool bComputeMips = pDriver->GetForceMipmapping() && DrawScanline::_pCurTex->m_bIsPow2;
@@ -661,7 +661,7 @@ namespace TriangleRasterizer
 			return;
 
 		//Is the triangle completely outside the frustum?
-		s32 frustumTest = pDriver->GetCamera()->SphereInsideFrustum(cen, sqrtf(r2));
+		int32_t frustumTest = pDriver->GetCamera()->SphereInsideFrustum(cen, sqrtf(r2));
 		if ( frustumTest == Camera::FRUSTUM_OUT )
 			return;
 
@@ -717,7 +717,7 @@ namespace TriangleRasterizer
 			//DrawScanline::_Intensity = 255;
 			const Vector3 sunlight(-0.5773502692f, 0.5773502692f, -0.5773502692f);
 			float SunI = Math::clamp( N.Dot(sunlight), 0.0f, 1.0f );
-			DrawScanline::_Intensity = Math::clamp( (s32)( 255.0f*(pDriver->GetAmbient() + SunI) ), 0, 255 );
+			DrawScanline::_Intensity = Math::clamp( (int32_t)( 255.0f*(pDriver->GetAmbient() + SunI) ), 0, 255 );
 		}
 
 		bool bPolyClipped=false;

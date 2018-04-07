@@ -49,19 +49,19 @@ public:
 		WALL_FLAGS_INV_MORPH = (1<<7),
 	};
 public:
-	u16 m_idx[2];					//vertex indices.
-	u16 m_adjoin[MAX_ADJOIN_COUNT];	//dual-adjoin support
-	u16 m_mirror[MAX_ADJOIN_COUNT];	//
+	uint16_t m_idx[2];					//vertex indices.
+	uint16_t m_adjoin[MAX_ADJOIN_COUNT];	//dual-adjoin support
+	uint16_t m_mirror[MAX_ADJOIN_COUNT];	//
 	
-	u32 m_flags;					//wall flags
-	u32 m_mapFlags;					//map flags (used by the automap)
-	s16 m_lightDelta;
+	uint32_t m_flags;					//wall flags
+	uint32_t m_mapFlags;					//map flags (used by the automap)
+	int16_t m_lightDelta;
 	TextureHandle m_textures[WALL_TEX_COUNT];
 
 	Vector2 m_texOffset[WALL_TEX_COUNT];
 	Vector2 m_texScale[WALL_TEX_COUNT];
 
-	f32 m_wallLen;					//used for computing texture coordinates.
+	float m_wallLen;					//used for computing texture coordinates.
 
 	LevelFunc *m_pFunc;
 };
@@ -73,13 +73,13 @@ public:
 	~Sector_2_5D();
 
 	void Render(IDriver3D *pDriver, Camera *pCamera);
-	bool PointInsideSector(f32 x, f32 y);
-	f32 GetZ_Floor(f32 x, f32 y, const vector<Sector *>& Sectors);
-	f32 GetZ_Ceil(f32 x, f32 y, const vector<Sector *>& Sectors);
+	bool PointInsideSector(float x, float y);
+	float GetZ_Floor(float x, float y, const vector<Sector *>& Sectors);
+	float GetZ_Ceil(float x, float y, const vector<Sector *>& Sectors);
 
 	static void RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pCamera, Sector_2_5D *pStart, const vector<Sector *>& Sectors);
-	static void Collide(Vector3 *p0, Vector3 *p1, u32& uSector, f32 fRadius, const vector<Sector *>& Sectors, bool bPassThruAdjoins);
-	static void RayCastAndActivate(Vector3 *p0, Vector3 *p1, u32& uSector, const vector<Sector *>& Sectors);
+	static void Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, const vector<Sector *>& Sectors, bool bPassThruAdjoins);
+	static void RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector, const vector<Sector *>& Sectors);
 public:
 	enum
 	{
@@ -96,29 +96,29 @@ public:
 	};
 
 	//A sector can currently have up to 65536 vertices.
-	u16 m_uVertexCount;
-	u16 m_uWallCount;
-	u32 m_uFlags;
+	uint16_t m_uVertexCount;
+	uint16_t m_uWallCount;
+	uint32_t m_uFlags;
 
-	u8 m_uLayer;
-	u8 m_uAmbientFloor;
-	u8 m_uAmbientCeil;
-	u8 m_pad[2];
+	uint8_t m_uLayer;
+	uint8_t m_uAmbientFloor;
+	uint8_t m_uAmbientCeil;
+	uint8_t m_pad[2];
 	
 	Vector2 *m_pVertexBase;
 	Vector2 *m_pVertexCur;
 	Vector2 m_ZRangeBase, m_ZRangeCur;
 	Vector2 m_FloorTexScale;
 	Vector2 m_CeilTexScale;
-	f32 m_fFloorSlope;
-	f32 m_fCeilSlope;
-	s32 m_aLightFX[3];	//floor, ceiling, walls.
-	u16 m_auSlopeSector[2];
-	u16 m_auSlopeAnchor[2];
+	float m_fFloorSlope;
+	float m_fCeilSlope;
+	int32_t m_aLightFX[3];	//floor, ceiling, walls.
+	uint16_t m_auSlopeSector[2];
+	uint16_t m_auSlopeAnchor[2];
 	Vector2 m_texOffset[2];
 
 	Wall *m_Walls;
-	u16 m_vAdjoin[2];					//vertical adjoins [top/bottom].
+	uint16_t m_vAdjoin[2];					//vertical adjoins [top/bottom].
 	Vector3 m_vAdjOffset[2];
 
 	TextureHandle m_hFloorTex;
@@ -131,10 +131,10 @@ protected:
 	{
 		Vector2 fL, fR;
 		Vector3 offset;
-		u32 uStartX, uEndX;
+		uint32_t uStartX, uEndX;
 		bool bUsePortalClip;
 		Sector_2_5D *pNext;
-		f32 *depth;	//ignored by primary sectors.
+		float *depth;	//ignored by primary sectors.
 	};
 
 	static Vector2 m_nearPlane[2];
@@ -143,25 +143,25 @@ protected:
 
 	static VisStack m_visStack[];
 	static VisStack m_visStack_VAdjoin[];
-	static s32 m_visStackCnt;
-	static s32 m_visStackIdx;
-	static s32 m_visStackCnt_VAdjoin;
-	static f32 s_fFogRange;
+	static int32_t m_visStackCnt;
+	static int32_t m_visStackIdx;
+	static int32_t m_visStackCnt_VAdjoin;
+	static float s_fFogRange;
 
 	static Camera m_Camera2D;
 	
-	static void VisStack_Push(Vector2& fL, Vector2& fR, u32 uStartX, u32 uEndX, Sector_2_5D *pNext, bool bUsePortalClip=true, Vector3& vOffset=s_vCurrentOffs);
+	static void VisStack_Push(Vector2& fL, Vector2& fR, uint32_t uStartX, uint32_t uEndX, Sector_2_5D *pNext, bool bUsePortalClip=true, Vector3& vOffset=s_vCurrentOffs);
 	static VisStack *VisStack_Pop();
 	static void VisStack_Clear();
-	static void Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, u32 uStartX, u32 uEndX, Sector_2_5D *pCurSec, const vector<Sector *>& Sectors, bool bUsePortalClip, IDriver3D *pDriver);
-	static void WallRasterizer(const Vector3& cPos, u32 uStartX, u32 uEndX, Sector_2_5D *pCurSec, const vector<Sector *>& Sectors);
+	static void Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint32_t uStartX, uint32_t uEndX, Sector_2_5D *pCurSec, const vector<Sector *>& Sectors, bool bUsePortalClip, IDriver3D *pDriver);
+	static void WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t uEndX, Sector_2_5D *pCurSec, const vector<Sector *>& Sectors);
 
-	static void _DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5D *pNextSec, Sector_2_5D *pBotSec, Sector_2_5D *pTopSec, u16 w, Vector2 *worldPos, const vector<Sector *>& Sectors);
+	static void _DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5D *pNextSec, Sector_2_5D *pBotSec, Sector_2_5D *pTopSec, uint16_t w, Vector2 *worldPos, const vector<Sector *>& Sectors);
 	static void _DrawFloor(IDriver3D *pDriver, Sector_2_5D *pCurSec, const Vector2 *worldPos, const Vector2& a, const Vector2& n0, const Vector2& n1, const vector<Sector *>& Sectors);
 	static void _SetupCameraParameters(const Vector3& cPos, const Vector3& cDir, Vector2 fL, Vector2 fR);
 
-	static void _AddSectorToList(s32 s, Vector3 *p0, Vector2& vPathMin, Vector2& vPathMax, const vector<Sector *>& Sectors);
-	static void AddObjectToRender(Object *pObj, f32 fIntensity, const Vector3& vOffs);
+	static void _AddSectorToList(int32_t s, Vector3 *p0, Vector2& vPathMin, Vector2& vPathMax, const vector<Sector *>& Sectors);
+	static void AddObjectToRender(Object *pObj, float fIntensity, const Vector3& vOffs);
 	static void RenderObjects(IDriver3D *pDriver);
 
 	static void RenderSky(IDriver3D *pDriver, WorldCell *pCell);

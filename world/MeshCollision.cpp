@@ -125,7 +125,7 @@ bool MeshCollision::Raycast(RaycastPacket *packet, Matrix *pWorldMtx, Object *pa
 	return bCollisionFound;
 }
 
-#define in(a) ((u32&) a)
+#define in(a) ((uint32_t&) a)
 bool CheckPointInTriangle(const Vector3& point, const Vector3& pa, const Vector3& pb, const Vector3& pc)
 {
 	Vector3 e10 = pb - pa;

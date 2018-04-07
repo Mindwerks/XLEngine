@@ -22,7 +22,7 @@ public:
 	static void BuildTextureName(char *pszTexName, int FileIndex);
 
 private:
-	bool LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollision *pMeshCol, char *pData, u32 uLength, int region, int type);
+	bool LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollision *pMeshCol, char *pData, uint32_t uLength, int region, int type);
 };
 
 #endif //MESHLOADER_DAGGERFALL_H

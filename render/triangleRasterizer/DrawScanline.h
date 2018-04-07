@@ -28,12 +28,12 @@ namespace DrawScanline
 	extern int _nFrameWidth;
 	extern int _nFrameHeight;
 	extern int _Intensity;
-	extern u32 *_pFrameBuffer_32;
-	extern u8  *_pFrameBuffer_8;
-	extern u8 _uColormapID;
-	extern u16 *_pDepthBuffer;
+	extern uint32_t *_pFrameBuffer_32;
+	extern uint8_t  *_pFrameBuffer_8;
+	extern uint8_t _uColormapID;
+	extern uint16_t *_pDepthBuffer;
 	extern Texture *_pCurTex;
-	extern u32 _uCurFrame;
+	extern uint32_t _uCurFrame;
 	extern int _texFlip;
 	extern int _nLightCnt;
 	extern int  _nMip;
@@ -42,10 +42,10 @@ namespace DrawScanline
 	extern float _afIntens[4];
 	extern Vector3 _N;
 	extern float _sqrtTable[65537];
-	extern u32 *_pCurPal;
-	extern u8 _aTransTable_Blend[256*256];
-	extern u8 _aTransTable_Add[256*256];
-	extern u32 _colorMap32[3][256*256];
+	extern uint32_t *_pCurPal;
+	extern uint8_t _aTransTable_Blend[256*256];
+	extern uint8_t _aTransTable_Add[256*256];
+	extern uint32_t _colorMap32[3][256*256];
 	
 	//Get the proper draw function that is specialized to handle the features
 	//requested.

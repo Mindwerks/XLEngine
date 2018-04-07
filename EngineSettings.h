@@ -32,24 +32,24 @@ class EngineSettings
 		static void Init();
 		static bool Load( const char *pszSettingsFile );
 		static void SetStartMap( const char *pszMapName );
-		static void SetStartPos( const Vector3 *pos, s32 nSector );
-		static void SetMultiplayerData( s32 nServer_PlayerCnt, s32 nPort, const char *pszJoinIP );
+		static void SetStartPos( const Vector3 *pos, int32_t nSector );
+		static void SetMultiplayerData( int32_t nServer_PlayerCnt, int32_t nPort, const char *pszJoinIP );
 
 		static const char *GetGameDataDir() { return m_szGameDataDir; }
 		//desired screen width and height (may be different then final screen width and height, so use the Driver3D values
 		//while in-game.
-		static s32 GetScreenWidth()      { return m_nScreenWidth; }
-		static s32 GetScreenHeight()     { return m_nScreenHeight; }
+		static int32_t GetScreenWidth()      { return m_nScreenWidth; }
+		static int32_t GetScreenHeight()     { return m_nScreenHeight; }
 		//the start map.
 		static const char *GetStartMap() { return m_szMapName; }
 		static void GetStartMap_StrOut(string& sMapName) { sMapName = m_szMapName; }
 		//MP data.
-		static XL_BOOL IsServer() { return m_nServerPlayerCnt > 0 ? XL_TRUE : XL_FALSE; }
-		static XL_BOOL IsClient_MP() { return m_szServerIP[0]!=0 ? XL_TRUE : XL_FALSE; }
-		static s32 GetMaxPlayerCount() { return m_nServerPlayerCnt; }
-		static s32 GetPort() { return m_nPort; }
+		static XL_BOOL IsServer() { return m_nServerPlayerCnt > 0 ? true : false; }
+		static XL_BOOL IsClient_MP() { return m_szServerIP[0]!=0 ? true : false; }
+		static int32_t GetMaxPlayerCount() { return m_nServerPlayerCnt; }
+		static int32_t GetPort() { return m_nPort; }
 		static const char *GetServerIP() { return m_szServerIP; }
-		static bool GetStartPos(Vector3& pos, s32& sector) 
+		static bool GetStartPos(Vector3& pos, int32_t& sector)
 		{ 
 			if ( m_bOverridePos )
 			{
@@ -63,28 +63,28 @@ class EngineSettings
 		static void SetDisplaySettings(float brightness=1.0f, float contrast=1.0f, float gamma=1.0f);
 		static void GetDisplaySettings(float& brightness, float& contrast, float& gamma);
 
-		static bool IsFeatureEnabled(u32 uFeature);
+		static bool IsFeatureEnabled(uint32_t uFeature);
 
 		static void SetGameDir(const char *pszGame);
 		static const char *GetGameDir() { return m_szGameDir; }
 
-		static s32 GetRenderer() { return m_nRenderer; }
-		static void SetRenderer(s32 renderer) { m_nRenderer = renderer; }
+		static int32_t GetRenderer() { return m_nRenderer; }
+		static void SetRenderer(int32_t renderer) { m_nRenderer = renderer; }
     private:
 		//Game Data Root.
 		static char m_szGameDataDir[260];
 		static char m_szGameDir[260];
 		static char m_szMapName[260];
-		static s32 m_nScreenWidth;
-		static s32 m_nScreenHeight;
-		static s32 m_nRenderer;
+		static int32_t m_nScreenWidth;
+		static int32_t m_nScreenHeight;
+		static int32_t m_nRenderer;
 
 		//MP Data
-		static s32 m_nServerPlayerCnt;
-		static s32 m_nPort;
+		static int32_t m_nServerPlayerCnt;
+		static int32_t m_nPort;
 		static char m_szServerIP[32];
 		static bool m_bOverridePos;
-		static s32 m_nStartSec;
+		static int32_t m_nStartSec;
 		static Vector3 m_vStartPos;
 
 		//Display settings.
@@ -92,7 +92,7 @@ class EngineSettings
 		static float m_fContrast;
 		static float m_fGamma;
 
-		static u32 m_uFlags;
+		static uint32_t m_uFlags;
 };
 
 #endif // ENGINESETTINGS_H

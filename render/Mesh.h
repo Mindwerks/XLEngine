@@ -13,7 +13,7 @@ public:
 	Mesh();
 	~Mesh();
 
-	void Render(Object *pObj, IDriver3D *pDriver, f32 fIntensity, const Vector3& vOffset);
+	void Render(Object *pObj, IDriver3D *pDriver, float fIntensity, const Vector3& vOffset);
 	void GetBounds(Vector3& vMin, Vector3& vMax);
 
 	bool IsLoaded() { return m_bLoaded; }
@@ -23,8 +23,8 @@ public:
 	struct Material
 	{
 		TextureHandle hTex;
-		u32 uIndexOffset;
-		u32 uPrimCount;
+		uint32_t uIndexOffset;
+		uint32_t uPrimCount;
 
 		Vector3 vBounds[2];
 	};

@@ -5,7 +5,7 @@
 OutlawsXL_Game *m_pGame=NULL;
 
 //Interface between Game classes and C library interface.
-void OutlawsXL_Update(s32 stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData)
+void OutlawsXL_Update(int32_t stage, float dt, XLEngine_Plugin_API *API, void *pUserData)
 {
 	if ( stage == UPDATE_STAGE_FIXED )
 	{
@@ -17,7 +17,7 @@ void OutlawsXL_Update(s32 stage, f32 dt, XLEngine_Plugin_API *API, void *pUserDa
 	}
 }
 
-void OutlawsXL_Render(s32 stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData)
+void OutlawsXL_Render(int32_t stage, float dt, XLEngine_Plugin_API *API, void *pUserData)
 {
 	if ( stage == RENDER_STAGE_PREWORLD )
 	{
@@ -29,7 +29,7 @@ void OutlawsXL_Render(s32 stage, f32 dt, XLEngine_Plugin_API *API, void *pUserDa
 	}
 }
 
-void OutlawsXL_KeyDownCallback(s32 key)
+void OutlawsXL_KeyDownCallback(int32_t key)
 {
 	m_pGame->KeyDown(key);
 }
@@ -49,7 +49,7 @@ void OutlawsXL_DestroyGame()
 }
 
 //Dynamic library C interface.
-extern "C" PLUGIN_API s32 ExitFunc()
+extern "C" PLUGIN_API int32_t ExitFunc()
 {
 	OutlawsXL_DestroyGame();
 

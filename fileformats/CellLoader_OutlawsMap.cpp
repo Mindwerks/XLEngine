@@ -20,8 +20,8 @@
 #include <stdio.h>
 #include <assert.h>
 
-const f32 m_fWorldToTexel_X = 8.0f;
-const f32 m_fWorldToTexel_Z = 8.0f;
+const float m_fWorldToTexel_X = 8.0f;
+const float m_fWorldToTexel_Z = 8.0f;
 
 #define MAX_WALLS 32768
 
@@ -71,107 +71,107 @@ enum
 struct WAX_Header
 {
 	char id[4];
-	s32 Version;	// constant = 0x00100100
-	s32 Nseqs;		// number of SEQUENCES
-	s32 Nframes;	// number of FRAMES
-	s32 Ncells;	// number of CELLS
-	s32 Xscale;	// unused
-	s32 Yscale;	// unused
-	s32 XtraLight;	// unused
-	s32 pad4;		// unused
-	s32 WAXES[32];	// pointers to WAXES
+	int32_t Version;	// constant = 0x00100100
+	int32_t Nseqs;		// number of SEQUENCES
+	int32_t Nframes;	// number of FRAMES
+	int32_t Ncells;	// number of CELLS
+	int32_t Xscale;	// unused
+	int32_t Yscale;	// unused
+	int32_t XtraLight;	// unused
+	int32_t pad4;		// unused
+	int32_t WAXES[32];	// pointers to WAXES
 					// = different actions
 };
 
 struct WAX
 {
-	s32 Wwidth;		// World Width
-	s32 Wheight;	// World Height
-	s32 FrameRate;	// Frames per second
-	s32 Nframes;	// unused = 0
-	s32 pad2;		// unused = 0
-	s32 pad3;		// unused = 0
-	s32 pad4;		// unused = 0
-	s32 SEQS[32];	// pointers to SEQUENCES 
+	int32_t Wwidth;		// World Width
+	int32_t Wheight;	// World Height
+	int32_t FrameRate;	// Frames per second
+	int32_t Nframes;	// unused = 0
+	int32_t pad2;		// unused = 0
+	int32_t pad3;		// unused = 0
+	int32_t pad4;		// unused = 0
+	int32_t SEQS[32];	// pointers to SEQUENCES
 					// = views from different angles
 };
 
 struct SEQUENCE
 {
-	s32 pad1;			// unused = 0
-	s32 pad2;			// unused = 0
-	s32 pad3;			// unused = 0
-	s32 pad4;			// unused = 0
-	s32 FRAMES[32];	// pointers to FRAMES
+	int32_t pad1;			// unused = 0
+	int32_t pad2;			// unused = 0
+	int32_t pad3;			// unused = 0
+	int32_t pad4;			// unused = 0
+	int32_t FRAMES[32];	// pointers to FRAMES
 						// = the animation frames
 };
 
 struct FRAME
 {
-	s32 InsertX;		// Insertion point, X coordinate
+	int32_t InsertX;		// Insertion point, X coordinate
 						// Negative values shift the cell left; Positive values shift the cell right
-	s32 InsertY;		// Insertion point, Y coordinate
+	int32_t InsertY;		// Insertion point, Y coordinate
 						// Negative values shift the cell up; Positive values shift the cell down
-	s32 Flip;			// 0 = not flipped
+	int32_t Flip;			// 0 = not flipped
 						// 1 = flipped horizontally
-	s32 Cell;			// pointer to CELL = single picture
-	s32 UnitWidth;		// Unused
-	s32 UnitHeight;	// Unused
-	s32 pad3;			// Unused
-	s32 pad4;			// Unused
+	int32_t Cell;			// pointer to CELL = single picture
+	int32_t UnitWidth;		// Unused
+	int32_t UnitHeight;	// Unused
+	int32_t pad3;			// Unused
+	int32_t pad4;			// Unused
 };
 
 struct CELL
 {
-	s32 SizeX;			// Size of the CELL, X value
-	s32 SizeY;			// Size of the CELL, Y value
-	s32 Compressed;	// 0 = not compressed
+	int32_t SizeX;			// Size of the CELL, X value
+	int32_t SizeY;			// Size of the CELL, Y value
+	int32_t Compressed;	// 0 = not compressed
 						// 1 = compressed
-	s32 DataSize;		// Datasize for compressed CELL,// equals length of the CELL// If not compressed, DataSize = 0
-	s32 ColOffs;		// Always 0, because columns table 
+	int32_t DataSize;		// Datasize for compressed CELL,// equals length of the CELL// If not compressed, DataSize = 0
+	int32_t ColOffs;		// Always 0, because columns table
 						// follows just after
-	s32 pad1;			// Unused
+	int32_t pad1;			// Unused
 };
 
 struct CELL_NWX
 {
-	u32 size;
-	u32 width;
-	u32 height;
-	u32 flags;
+	uint32_t size;
+	uint32_t width;
+	uint32_t height;
+	uint32_t flags;
 };
 
-TextureHandle LoadNWX(u8 *pData, u32 uLen, const char *pszName, u32& uWidth, u32& uHeight)
+TextureHandle LoadNWX(uint8_t *pData, uint32_t uLen, const char *pszName, uint32_t& uWidth, uint32_t& uHeight)
 {
 	CELL_NWX *pCell0 = (CELL_NWX *)&pData[48];
-	u8 *pImageData  = (u8 *)&pData[48+sizeof(CELL_NWX)];
+	uint8_t *pImageData  = (uint8_t *)&pData[48+sizeof(CELL_NWX)];
 
 	//1. read the column offsets.
-	u32 columnOffsets[1024];
-	u32 *pOffsetTable = (u32 *)pImageData;
-	for (u32 x=0; x<pCell0->width; x++)
+	uint32_t columnOffsets[1024];
+	uint32_t *pOffsetTable = (uint32_t *)pImageData;
+	for (uint32_t x=0; x<pCell0->width; x++)
 	{
 		columnOffsets[x] = pOffsetTable[x];
 	}
-	u8 *pImage = (u8 *)ScratchPad::AllocMem( pCell0->width*pCell0->height );
-	s32 h = (s32)pCell0->height;
+	uint8_t *pImage = (uint8_t *)ScratchPad::AllocMem( pCell0->width*pCell0->height );
+	int32_t h = (int32_t)pCell0->height;
 	//2. now fill in each column.
-	for (u32 x=0; x<pCell0->width; x++)
+	for (uint32_t x=0; x<pCell0->width; x++)
 	{
-		u8 *pColumn = &pImageData[ columnOffsets[x] ];
-		s32 y=0;
-		u32 cidx=0;
-		while (y<(s32)pCell0->height)
+		uint8_t *pColumn = &pImageData[ columnOffsets[x] ];
+		int32_t y=0;
+		uint32_t cidx=0;
+		while (y<(int32_t)pCell0->height)
 		{
 			//read the count.
-			u8 count = pColumn[cidx]; cidx++;
+			uint8_t count = pColumn[cidx]; cidx++;
 			if ( count&1 )
 			{
-				u8 skip  = (count+1)>>1;
-				u8 color = pColumn[cidx]; cidx++;
+				uint8_t skip  = (count+1)>>1;
+				uint8_t color = pColumn[cidx]; cidx++;
 				if ( color < 16 ) color = 0;
 				//fill in color * skip
-				for (s32 y1=y; y1<y+skip; y1++)
+				for (int32_t y1=y; y1<y+skip; y1++)
 				{
 					pImage[x+(h-y1-1)*pCell0->width] = color;
 				}
@@ -179,10 +179,10 @@ TextureHandle LoadNWX(u8 *pData, u32 uLen, const char *pszName, u32& uWidth, u32
 			}
 			else
 			{
-				u8 read = (count+2)>>1;
-				for (s32 y1=y; y1<y+read; y1++)
+				uint8_t read = (count+2)>>1;
+				for (int32_t y1=y; y1<y+read; y1++)
 				{
-					u8 color = pColumn[cidx]; cidx++;
+					uint8_t color = pColumn[cidx]; cidx++;
 					if ( color < 16 ) color = 0;
 					//fill in color
 					pImage[x+(h-y1-1)*pCell0->width] = color;
@@ -201,7 +201,7 @@ TextureHandle LoadNWX(u8 *pData, u32 uLen, const char *pszName, u32& uWidth, u32
 	//CELL_NWX *pCell2 = (CELL_NWX *)&pData[48+sizeof(CELL_NWX)+pCell0->size+4 + sizeof(CELL_NWX)+pCell1->size+4];
 }
 
-WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, u8 *pData, u32 uLen, const string& sFile, s32 worldX, s32 worldY )
+WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const string& sFile, int32_t worldX, int32_t worldY )
 {
 	WorldCell *pCell = NULL;
 	ObjectManager::FreeAllObjects();
@@ -210,21 +210,21 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, u8 *p
 		pCell = xlNew WorldCell();
 		Parser::SetData((char *)pData, uLen);
 
-		s32 nTex;
+		int32_t nTex;
 		char szTexName[64];
-		Parser::SearchKeyword_S32("TEXTURES", nTex);
+		Parser::SearchKeyword_int32_t("TEXTURES", nTex);
 
 		TextureHandle ahLevelTex[1024];
-		f32 afTexScaleX[1024];
-		f32 afTexScaleY[1024];
-		u32 aTexWidth[1024];
-		u32 aTexHeight[1024];
+		float afTexScaleX[1024];
+		float afTexScaleY[1024];
+		uint32_t aTexWidth[1024];
+		uint32_t aTexHeight[1024];
 
 		//load the palette.
 		TextureCache::GameFile_LoadTexture(TEXTURETYPE_PCX, 0, ARCHIVETYPE_LAB, "OUTLAWS.LAB", "HIDEOUT.PCX", false, true);
 		
 		//now load all the textures.
-		for (s32 t=0; t<nTex; t++)
+		for (int32_t t=0; t<nTex; t++)
 		{
 			Parser::SearchKeyword_Str("TEXTURE:", szTexName);
 
@@ -240,42 +240,42 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, u8 *p
 			}
 
 			ahLevelTex[t] = TextureCache::GameFile_LoadTexture(TEXTURETYPE_PCX, 0, ARCHIVETYPE_LAB, "OLTEX.LAB", szTexName, true);
-			u32 uTexWidth, uTexHeight;
-			f32 fRelSizeX, fRelSizeY;
+			uint32_t uTexWidth, uTexHeight;
+			float fRelSizeX, fRelSizeY;
 			assert( ahLevelTex[t] != XL_INVALID_TEXTURE );
 			if ( ahLevelTex[t] != XL_INVALID_TEXTURE )
 			{
-				s32 nOffsX, nOffsY;
+				int32_t nOffsX, nOffsY;
 				TextureCache::GetTextureSize(nOffsX, nOffsY, uTexWidth, uTexHeight, fRelSizeX, fRelSizeY);
 
-				afTexScaleX[t] = m_fWorldToTexel_X/(f32)uTexWidth;
-				afTexScaleY[t] = m_fWorldToTexel_Z/(f32)uTexHeight;
+				afTexScaleX[t] = m_fWorldToTexel_X/(float)uTexWidth;
+				afTexScaleY[t] = m_fWorldToTexel_Z/(float)uTexHeight;
 
 				aTexWidth[t]  = uTexWidth;
 				aTexHeight[t] = uTexHeight;
 			}
 		}
 
-		s32 nSectorCnt = 0;
-		Parser::SearchKeyword_S32("NUMSECTORS", nSectorCnt);
+		int32_t nSectorCnt = 0;
+		Parser::SearchKeyword_int32_t("NUMSECTORS", nSectorCnt);
 
 		//now search for sectors
 		char szSecName[64];
 		char szSecID[64];
-		s32 ambient, vtxCnt;
-		f32 f_fTex, f_cTex;
-		s32 flags0, flags1, layer;
-		u32 uFlags0;
-		f32 secAlt=0.0f;
-		s32 nMinLayer = 10000, nMaxLayer = -10000;
-		for (s32 s=0; s<nSectorCnt; s++)
+		int32_t ambient, vtxCnt;
+		float f_fTex, f_cTex;
+		int32_t flags0, flags1, layer;
+		uint32_t uFlags0;
+		float secAlt=0.0f;
+		int32_t nMinLayer = 10000, nMaxLayer = -10000;
+		for (int32_t s=0; s<nSectorCnt; s++)
 		{
 			Sector_2_5D *pSector = xlNew Sector_2_5D();
 
 			memset(szSecName, 0, 64);
 			Parser::SearchKeyword_Str("SECTOR", szSecID);
 			Parser::SearchKeyword_Str("NAME", szSecName);
-			Parser::SearchKeyword_S32("AMBIENT", ambient);
+			Parser::SearchKeyword_int32_t("AMBIENT", ambient);
 			Parser::SearchKeyword_F1("FLOOR Y", pSector->m_ZRangeBase.x);
 			Parser::SearchKeyword_F_Next(f_fTex);
 			Parser::SearchKeyword_F_Next(pSector->m_texOffset[0].x);
@@ -284,22 +284,22 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, u8 *p
 			Parser::SearchKeyword_F_Next(f_cTex);
 			Parser::SearchKeyword_F_Next(pSector->m_texOffset[1].x);
 			Parser::SearchKeyword_F_Next(pSector->m_texOffset[1].y);
-			Parser::SearchKeyword_S32("FLAGS", flags0);
+			Parser::SearchKeyword_int32_t("FLAGS", flags0);
 			Parser::SearchKeyword_Next(flags1);
 
 			strcpy(pSector->m_szName, szSecID);
 
-			uFlags0 = (u32)flags0;
+			uFlags0 = (uint32_t)flags0;
 
 			pSector->m_ZRangeCur = pSector->m_ZRangeBase;
 
 			assert(f_fTex >= 0 && f_fTex < nTex);
 			assert(f_cTex >= 0 && f_cTex < nTex);
-			pSector->m_hFloorTex = ahLevelTex[ (s32)f_fTex ];
-			pSector->m_hCeilTex  = ahLevelTex[ (s32)f_cTex ];
+			pSector->m_hFloorTex = ahLevelTex[ (int32_t)f_fTex ];
+			pSector->m_hCeilTex  = ahLevelTex[ (int32_t)f_cTex ];
 
-			pSector->m_FloorTexScale.Set( 0.125f * 64.0f / (float)aTexWidth[ (s32)f_fTex], 0.125f * 64.0f / (float)aTexHeight[(s32)f_fTex] );
-			pSector->m_CeilTexScale.Set(  0.125f * 64.0f / (float)aTexWidth[ (s32)f_cTex], 0.125f * 64.0f / (float)aTexHeight[(s32)f_cTex] );
+			pSector->m_FloorTexScale.Set( 0.125f * 64.0f / (float)aTexWidth[ (int32_t)f_fTex], 0.125f * 64.0f / (float)aTexHeight[(int32_t)f_fTex] );
+			pSector->m_CeilTexScale.Set(  0.125f * 64.0f / (float)aTexWidth[ (int32_t)f_cTex], 0.125f * 64.0f / (float)aTexHeight[(int32_t)f_cTex] );
 
 			pSector->m_texOffset[0].x *= pSector->m_FloorTexScale.x;
 			pSector->m_texOffset[0].y *= pSector->m_FloorTexScale.y;
@@ -310,8 +310,8 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, u8 *p
 			pSector->m_uFlags = 0;
 			if ( uFlags0&OSF_SKY )
 			{
-				pCell->SetSkyTex( 0, pSector->m_hCeilTex, aTexWidth[ (s32)f_cTex], aTexHeight[(s32)f_cTex] );
-				pCell->SetSkyTex( 1, pSector->m_hCeilTex, aTexWidth[ (s32)f_cTex], aTexHeight[(s32)f_cTex] );
+				pCell->SetSkyTex( 0, pSector->m_hCeilTex, aTexWidth[ (int32_t)f_cTex], aTexHeight[(int32_t)f_cTex] );
+				pCell->SetSkyTex( 1, pSector->m_hCeilTex, aTexWidth[ (int32_t)f_cTex], aTexHeight[(int32_t)f_cTex] );
 				pCell->SetSkyTexCount(2);
 
 				pSector->m_uFlags |= Sector_2_5D::SEC_FLAGS_EXTERIOR;
@@ -322,84 +322,84 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, u8 *p
 						
 			pSector->m_auSlopeAnchor[0] = 0;
 			pSector->m_auSlopeAnchor[1] = 0;
-			s32 slope[3];
+			int32_t slope[3];
 			Parser::SaveFilePtr();	//We're being extra cautious since these are optional values.
 			if ( uFlags0&OSF_FLOOR_SLOPED )
 			{
-				Parser::SearchKeyword_S32("SLOPEDFLOOR", slope[0]);
+				Parser::SearchKeyword_int32_t("SLOPEDFLOOR", slope[0]);
 				Parser::SearchKeyword_Next(slope[1]);
 				Parser::SearchKeyword_Next(slope[2]);
 
 				pSector->m_uFlags |= Sector_2_5D::SEC_FLAGS_FLOOR_SLOPE;
 				pSector->m_auSlopeSector[0] = slope[0];
 				pSector->m_auSlopeAnchor[0] = slope[1];
-				pSector->m_fFloorSlope = 1.68f*(f32)slope[2] / 4096.0f;
+				pSector->m_fFloorSlope = 1.68f*(float)slope[2] / 4096.0f;
 			}
 			if ( uFlags0&OSF_CEIL_SLOPED )
 			{
-				Parser::SearchKeyword_S32("SLOPEDCEILING", slope[0]);
+				Parser::SearchKeyword_int32_t("SLOPEDCEILING", slope[0]);
 				Parser::SearchKeyword_Next(slope[1]);
 				Parser::SearchKeyword_Next(slope[2]);
 
 				pSector->m_uFlags |= Sector_2_5D::SEC_FLAGS_CEIL_SLOPE;
 				pSector->m_auSlopeSector[1] = slope[0];
 				pSector->m_auSlopeAnchor[1] = slope[1];
-				pSector->m_fCeilSlope = 1.68f*(f32)slope[2] / 4096.0f;
+				pSector->m_fCeilSlope = 1.68f*(float)slope[2] / 4096.0f;
 			}
 			Parser::RestoreFilePtr();
 
-			Parser::SearchKeyword_S32("LAYER", layer);
+			Parser::SearchKeyword_int32_t("LAYER", layer);
 			if ( layer > nMaxLayer ) { nMaxLayer = layer; }
 			if ( layer < nMinLayer ) { nMinLayer = layer; }
-			pSector->m_uLayer = (u32)layer;
+			pSector->m_uLayer = (uint32_t)layer;
 
-			Parser::SearchKeyword_S32("VERTICES", vtxCnt);
-			pSector->m_uVertexCount = (u32)vtxCnt;
+			Parser::SearchKeyword_int32_t("VERTICES", vtxCnt);
+			pSector->m_uVertexCount = (uint32_t)vtxCnt;
 			pSector->m_pVertexBase = xlNew Vector2[vtxCnt];
 			pSector->m_pVertexCur  = xlNew Vector2[vtxCnt];
-			for (s32 v=0; v<vtxCnt; v++)
+			for (int32_t v=0; v<vtxCnt; v++)
 			{
 				Parser::SearchKeyword_F1("X:", pSector->m_pVertexBase[v].x);
 				Parser::SearchKeyword_F1("Z:", pSector->m_pVertexBase[v].y);
 				pSector->m_pVertexCur[v] = pSector->m_pVertexBase[v];
 			}
 
-			s32 wallCnt;
-			Parser::SearchKeyword_S32("WALLS", wallCnt);
+			int32_t wallCnt;
+			Parser::SearchKeyword_int32_t("WALLS", wallCnt);
 			assert(wallCnt <= MAX_WALLS);
-			pSector->m_uWallCount = (u32)wallCnt;
+			pSector->m_uWallCount = (uint32_t)wallCnt;
 			pSector->m_Walls = xlNew Wall[wallCnt];
 
-			for (s32 w=0; w<wallCnt; w++)
+			for (int32_t w=0; w<wallCnt; w++)
 			{
 				Wall *pWall = &pSector->m_Walls[w];
-				s32 idx[2];
-				Parser::SearchKeyword_S32("V1:", idx[0]);
-				Parser::SearchKeyword_S32("V2:", idx[1]);
+				int32_t idx[2];
+				Parser::SearchKeyword_int32_t("V1:", idx[0]);
+				Parser::SearchKeyword_int32_t("V2:", idx[1]);
 
 				assert(idx[0] >= 0 && idx[0] < vtxCnt);
 				assert(idx[1] >= 0 && idx[1] < vtxCnt);
 
-				pWall->m_idx[0] = (u16)idx[0];
-				pWall->m_idx[1] = (u16)idx[1];
+				pWall->m_idx[0] = (uint16_t)idx[0];
+				pWall->m_idx[1] = (uint16_t)idx[1];
 
-				s32 texIdx;
-				Parser::SearchKeyword_S32("MID:", texIdx);
+				int32_t texIdx;
+				Parser::SearchKeyword_int32_t("MID:", texIdx);
 				pWall->m_textures[Wall::WALL_TEX_MID] = ahLevelTex[texIdx];
 				pWall->m_texScale[Wall::WALL_TEX_MID].Set( afTexScaleX[texIdx], afTexScaleY[texIdx] );
 				Parser::SearchKeyword_F_Next(pWall->m_texOffset[Wall::WALL_TEX_MID].x); pWall->m_texOffset[Wall::WALL_TEX_MID].x *= afTexScaleX[texIdx];
 				Parser::SearchKeyword_F_Next(pWall->m_texOffset[Wall::WALL_TEX_MID].y); pWall->m_texOffset[Wall::WALL_TEX_MID].y *= afTexScaleY[texIdx];
-				Parser::SearchKeyword_S32("TOP:", texIdx);
+				Parser::SearchKeyword_int32_t("TOP:", texIdx);
 				pWall->m_textures[Wall::WALL_TEX_TOP] = ahLevelTex[texIdx];
 				pWall->m_texScale[Wall::WALL_TEX_TOP].Set( afTexScaleX[texIdx], afTexScaleY[texIdx] );
 				Parser::SearchKeyword_F_Next(pWall->m_texOffset[Wall::WALL_TEX_TOP].x); pWall->m_texOffset[Wall::WALL_TEX_TOP].x *= afTexScaleX[texIdx];
 				Parser::SearchKeyword_F_Next(pWall->m_texOffset[Wall::WALL_TEX_TOP].y); pWall->m_texOffset[Wall::WALL_TEX_TOP].y *= afTexScaleY[texIdx];
-				Parser::SearchKeyword_S32("BOT:", texIdx);
+				Parser::SearchKeyword_int32_t("BOT:", texIdx);
 				pWall->m_textures[Wall::WALL_TEX_BOT] = ahLevelTex[texIdx];
 				pWall->m_texScale[Wall::WALL_TEX_BOT].Set( afTexScaleX[texIdx], afTexScaleY[texIdx] );
 				Parser::SearchKeyword_F_Next(pWall->m_texOffset[Wall::WALL_TEX_BOT].x); pWall->m_texOffset[Wall::WALL_TEX_BOT].x *= afTexScaleX[texIdx];
 				Parser::SearchKeyword_F_Next(pWall->m_texOffset[Wall::WALL_TEX_BOT].y); pWall->m_texOffset[Wall::WALL_TEX_BOT].y *= afTexScaleY[texIdx];
-				Parser::SearchKeyword_S32("OVERLAY:", texIdx);
+				Parser::SearchKeyword_int32_t("OVERLAY:", texIdx);
 				pWall->m_textures[Wall::WALL_TEX_SIGN] = (texIdx>-1) ? XL_INVALID_TEXTURE : ahLevelTex[texIdx];
 				if ( texIdx > -1 )
 				{
@@ -407,22 +407,22 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, u8 *p
 					Parser::SearchKeyword_F_Next(pWall->m_texOffset[Wall::WALL_TEX_SIGN].x);
 					Parser::SearchKeyword_F_Next(pWall->m_texOffset[Wall::WALL_TEX_SIGN].y);
 				}
-				s32 adjoin, mirror;
-				Parser::SearchKeyword_S32("ADJOIN:", adjoin);
-				Parser::SearchKeyword_S32("MIRROR:", mirror);
-				pWall->m_adjoin[0] = adjoin < 0 ? SOLID_WALL : (u16)adjoin;
-				pWall->m_mirror[0] = mirror < 0 ? SOLID_WALL : (u16)mirror;
-				Parser::SearchKeyword_S32("DADJOIN:", adjoin);
-				Parser::SearchKeyword_S32("DMIRROR:", mirror);
-				pWall->m_adjoin[1] = adjoin < 0 ? SOLID_WALL : (u16)adjoin;
-				pWall->m_mirror[1] = mirror < 0 ? SOLID_WALL : (u16)mirror;
+				int32_t adjoin, mirror;
+				Parser::SearchKeyword_int32_t("ADJOIN:", adjoin);
+				Parser::SearchKeyword_int32_t("MIRROR:", mirror);
+				pWall->m_adjoin[0] = adjoin < 0 ? SOLID_WALL : (uint16_t)adjoin;
+				pWall->m_mirror[0] = mirror < 0 ? SOLID_WALL : (uint16_t)mirror;
+				Parser::SearchKeyword_int32_t("DADJOIN:", adjoin);
+				Parser::SearchKeyword_int32_t("DMIRROR:", mirror);
+				pWall->m_adjoin[1] = adjoin < 0 ? SOLID_WALL : (uint16_t)adjoin;
+				pWall->m_mirror[1] = mirror < 0 ? SOLID_WALL : (uint16_t)mirror;
 				assert( pWall->m_adjoin[1] == SOLID_WALL || pWall->m_adjoin[0] != SOLID_WALL );
-				s32 wflags1, wflags2;
-				Parser::SearchKeyword_S32("FLAGS:", wflags1);
+				int32_t wflags1, wflags2;
+				Parser::SearchKeyword_int32_t("FLAGS:", wflags1);
 				Parser::SearchKeyword_Next(wflags2);
-				s32 light;
-				Parser::SearchKeyword_S32("LIGHT:", light);
-				s32 wallLight = (s16)light;
+				int32_t light;
+				Parser::SearchKeyword_int32_t("LIGHT:", light);
+				int32_t wallLight = (int16_t)light;
 				if ( wallLight > 32767 )
 				{
 					wallLight = wallLight - 65535;
@@ -442,7 +442,7 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, u8 *p
 				{
 					pWall->m_flags |= Wall::WALL_FLAGS_SKY;
 				}
-				if ( ((u32)wflags1)&1 )
+				if ( ((uint32_t)wflags1)&1 )
 				{
 					pWall->m_flags |= Wall::WALL_FLAGS_MASKWALL;
 				}
@@ -465,11 +465,11 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, u8 *p
 		szObjectFile[l]   = 0;
 
 		Vector3 vStartLoc(322.36f, 271.88f, -3.0f);
-		u32 uStartSec = 410;
+		uint32_t uStartSec = 410;
 		if ( ArchiveManager::GameFile_Open(ARCHIVETYPE_LAB, "OLGEO_1.LAB", szObjectFile) )
 		{
-			u32 uObjLen  = ArchiveManager::GameFile_GetLength();
-			u8 *pObjData = (u8 *)ScratchPad::AllocMem( uObjLen+1 );
+			uint32_t uObjLen  = ArchiveManager::GameFile_GetLength();
+			uint8_t *pObjData = (uint8_t *)ScratchPad::AllocMem( uObjLen+1 );
 
 			if ( pObjData )
 			{
@@ -478,20 +478,20 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, u8 *p
 
 				Parser::SetData((char *)pObjData, uObjLen);
 
-				s32 nObjCnt;
-				Parser::SearchKeyword_S32("OBJECTS", nObjCnt);
+				int32_t nObjCnt;
+				Parser::SearchKeyword_int32_t("OBJECTS", nObjCnt);
 
 				char szName[32];
 				char szID[32];
 				char szSecID[32];
 				Vector3 vLoc;
-				f32 yaw, pch, roll;
-				s32 flags0, flags1;
+				float yaw, pch, roll;
+				int32_t flags0, flags1;
 
 				//allocate some temporary memory for all the items...
-				u8 *pItmData = (u8 *)ScratchPad::AllocMem( 2048 );	//Is 2K enough?
+				uint8_t *pItmData = (uint8_t *)ScratchPad::AllocMem( 2048 );	//Is 2K enough?
 
-				for (s32 i=0; i<nObjCnt; i++)
+				for (int32_t i=0; i<nObjCnt; i++)
 				{
 					Parser::SearchKeyword_Str("NAME:",  szName);
 					Parser::SearchKeyword_Str("ID:",    szID);
@@ -502,18 +502,18 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, u8 *p
 					Parser::SearchKeyword_F1("PCH:",	pch);
 					Parser::SearchKeyword_F1("YAW:",	yaw);
 					Parser::SearchKeyword_F1("ROL:",	roll);
-					Parser::SearchKeyword_S32("FLAGS:", flags0);
+					Parser::SearchKeyword_int32_t("FLAGS:", flags0);
 					Parser::SearchKeyword_Next(flags1);
 
 					//find the sector...
-					s32 nSector = pCell->FindSector(szSecID);
+					int32_t nSector = pCell->FindSector(szSecID);
 					if ( nSector == -1 )
 						nSector = 0;
 					//handle the player				
 					if ( strnicmp(szName, "PLAYER", 6) == 0 )
 					{
 						if ( nSector > -1 )
-							uStartSec = (u32)nSector;
+							uStartSec = (uint32_t)nSector;
 
 						vStartLoc = vLoc;
 					}
@@ -524,19 +524,19 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, u8 *p
 						sprintf(szItemFile, "%s.ITM", szName);
 						if ( ArchiveManager::GameFile_Open(ARCHIVETYPE_LAB, "OLOBJ.LAB", szItemFile) )
 						{
-							u32 uItmLen = ArchiveManager::GameFile_GetLength();
+							uint32_t uItmLen = ArchiveManager::GameFile_GetLength();
 							assert(uItmLen <= 2048);
 							if ( uItmLen <= 2048 )
 							{
 								ArchiveManager::GameFile_Read(pItmData, uItmLen);
 								ArchiveManager::GameFile_Close();
 								//for now just read the "ANIM"
-								for (u32 c=0; c<uItmLen; c++)
+								for (uint32_t c=0; c<uItmLen; c++)
 								{
 									if ( pItmData[c] == 'A' && pItmData[c+1] == 'N' && pItmData[c+2] == 'I' && pItmData[c+3] == 'M' )
 									{
 										//ok now find the first non-space...
-										u32 cc=c+4;
+										uint32_t cc=c+4;
 										for (; cc<uItmLen; cc++)
 										{
 											if ( pItmData[cc] != ' ' )
@@ -546,7 +546,7 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, u8 *p
 										}
 										//now read in the filename until a space, newline, etc. is found.
 										char spriteName[32];
-										u32 s=0;
+										uint32_t s=0;
 										for (; cc<uItmLen; cc++)
 										{
 											if ( pItmData[cc] == ' ' || pItmData[cc] == 0 || pItmData[cc] == '\n' || pItmData[cc] == '\t' || pItmData[cc] == 13 )
@@ -564,34 +564,34 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, u8 *p
 											ScratchPad::StartFrame();
 											if ( ArchiveManager::GameFile_Open(ARCHIVETYPE_LAB, "OLOBJ.LAB", spriteName) )
 											{
-												u32 uNWX_Len = ArchiveManager::GameFile_GetLength();
-												u8 *pNWX_Data = (u8 *)ScratchPad::AllocMem( uNWX_Len );
+												uint32_t uNWX_Len = ArchiveManager::GameFile_GetLength();
+												uint8_t *pNWX_Data = (uint8_t *)ScratchPad::AllocMem( uNWX_Len );
 												ArchiveManager::GameFile_Read(pNWX_Data, uNWX_Len);
 												ArchiveManager::GameFile_Close();
 
-												u32 uWidth, uHeight;
+												uint32_t uWidth, uHeight;
 												TextureHandle hTex = LoadNWX(pNWX_Data, uNWX_Len, spriteName, uWidth, uHeight);
 
 												Object *pObj = ObjectManager::CreateObject("Sprite_ZAxis");
 												if ( pObj )
 												{
-													u32 uObjID = pObj->GetID();
+													uint32_t uObjID = pObj->GetID();
 													Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( nSector );
 													pObj->SetSector( nSector );
 													
 													//
 													Vector3 vScale;
-													vScale.x = (f32)uWidth * 0.125f * 0.5f * 0.525f;
-													vScale.y = (f32)uWidth * 0.125f * 0.5f * 0.525f;
-													vScale.z = (f32)uHeight* 0.125f * 0.5f * 0.525f;
+													vScale.x = (float)uWidth * 0.125f * 0.5f * 0.525f;
+													vScale.y = (float)uWidth * 0.125f * 0.5f * 0.525f;
+													vScale.z = (float)uHeight* 0.125f * 0.5f * 0.525f;
 
 													vLoc.z += vScale.z;
 
 													pObj->SetScale(vScale);
 													pObj->SetLoc(vLoc);
 
-													f32 z0 = pSector->GetZ_Floor(vLoc.x, vLoc.y, pCell->GetSectors());
-													f32 z1 = pSector->GetZ_Ceil(vLoc.x, vLoc.y, pCell->GetSectors());
+													float z0 = pSector->GetZ_Floor(vLoc.x, vLoc.y, pCell->GetSectors());
+													float z1 = pSector->GetZ_Ceil(vLoc.x, vLoc.y, pCell->GetSectors());
 
 													if ( vLoc.z-vScale.z < z0 )
 													{
@@ -632,34 +632,34 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, u8 *p
 								//ok load the NWX file...
 								ScratchPad::StartFrame();
 
-								u32 uNWX_Len = ArchiveManager::GameFile_GetLength();
-								u8 *pNWX_Data = (u8 *)ScratchPad::AllocMem( uNWX_Len );
+								uint32_t uNWX_Len = ArchiveManager::GameFile_GetLength();
+								uint8_t *pNWX_Data = (uint8_t *)ScratchPad::AllocMem( uNWX_Len );
 								ArchiveManager::GameFile_Read(pNWX_Data, uNWX_Len);
 								ArchiveManager::GameFile_Close();
 
-								u32 uWidth, uHeight;
+								uint32_t uWidth, uHeight;
 								TextureHandle hTex = LoadNWX(pNWX_Data, uNWX_Len, szItemFile, uWidth, uHeight);
 
 								Object *pObj = ObjectManager::CreateObject("Sprite_ZAxis");
 								if ( pObj )
 								{
-									u32 uObjID = pObj->GetID();
+									uint32_t uObjID = pObj->GetID();
 									Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( nSector );
 									pObj->SetSector( nSector );
 									
 									//
 									Vector3 vScale;
-									vScale.x = (f32)uWidth * 0.125f * 0.5f * 0.525f;
-									vScale.y = (f32)uWidth * 0.125f * 0.5f * 0.525f;
-									vScale.z = (f32)uHeight* 0.125f * 0.5f * 0.525f;
+									vScale.x = (float)uWidth * 0.125f * 0.5f * 0.525f;
+									vScale.y = (float)uWidth * 0.125f * 0.5f * 0.525f;
+									vScale.z = (float)uHeight* 0.125f * 0.5f * 0.525f;
 
 									vLoc.z += vScale.z;
 
 									pObj->SetScale(vScale);
 									pObj->SetLoc(vLoc);
 
-									f32 z0 = pSector->GetZ_Floor(vLoc.x, vLoc.y, pCell->GetSectors());
-									f32 z1 = pSector->GetZ_Ceil(vLoc.x, vLoc.y, pCell->GetSectors());
+									float z0 = pSector->GetZ_Floor(vLoc.x, vLoc.y, pCell->GetSectors());
+									float z1 = pSector->GetZ_Ceil(vLoc.x, vLoc.y, pCell->GetSectors());
 
 									if ( vLoc.z-vScale.z < z0 )
 									{

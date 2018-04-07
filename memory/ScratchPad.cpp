@@ -7,16 +7,16 @@
 #define SCRATCH_PAD_SIZE 64*1024*1024
 #define MAX_FRAME_COUNT 128
 
-u8 *ScratchPad::m_pMemory=NULL;
-u32 ScratchPad::m_uFramePtr=0;
+uint8_t *ScratchPad::m_pMemory=NULL;
+uint32_t ScratchPad::m_uFramePtr=0;
 
-s32 ScratchPad::m_nCurFrame;
-u32 ScratchPad::m_aFrames[MAX_FRAME_COUNT];
+int32_t ScratchPad::m_nCurFrame;
+uint32_t ScratchPad::m_aFrames[MAX_FRAME_COUNT];
 
 bool ScratchPad::Init()
 {
 	m_uFramePtr = 0;
-	m_pMemory = xlNew u8[SCRATCH_PAD_SIZE];
+	m_pMemory = xlNew uint8_t[SCRATCH_PAD_SIZE];
 	m_nCurFrame = 0;
 
 	return m_pMemory ? true : false;
@@ -41,7 +41,7 @@ void ScratchPad::StartFrame()
 	}
 }
 
-void *ScratchPad::AllocMem(u32 uSize)
+void *ScratchPad::AllocMem(uint32_t uSize)
 {
 	if ( m_uFramePtr + uSize >= SCRATCH_PAD_SIZE )
 	{
@@ -49,7 +49,7 @@ void *ScratchPad::AllocMem(u32 uSize)
 		return NULL;
 	}
 
-	u32 uLoc = m_uFramePtr;
+	uint32_t uLoc = m_uFramePtr;
 	m_uFramePtr += uSize;
 
 	return &m_pMemory[uLoc];

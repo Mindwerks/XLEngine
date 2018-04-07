@@ -11,15 +11,15 @@ class ScratchPad
 		static void Destroy();
 
 		static void StartFrame();
-		static void *AllocMem(u32 uSize);
+		static void *AllocMem(uint32_t uSize);
 		static void FreeFrame();
 		static void FreeAllFrames();
     private:
-		static u8 *m_pMemory;
-		static u32 m_uFramePtr;
+		static uint8_t *m_pMemory;
+		static uint32_t m_uFramePtr;
 
-		static s32 m_nCurFrame;
-		static u32 m_aFrames[];
+		static int32_t m_nCurFrame;
+		static uint32_t m_aFrames[];
 };
 
 #endif // SCRATCHPAD_H

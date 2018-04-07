@@ -73,11 +73,11 @@ Console::~Console(void)
 
 bool Console::_Compare_nocase(ConsoleItem first, ConsoleItem second)
 {
-	s32 cmp = stricmp( first.name.c_str(), second.name.c_str() );
+	int32_t cmp = stricmp( first.name.c_str(), second.name.c_str() );
 	return (cmp < 0) ? true : false;
 }
 
-void Console::SetGameInfo(const string& gameName, s32 versionMajor, s32 versionMinor)
+void Console::SetGameInfo(const string& gameName, int32_t versionMajor, int32_t versionMinor)
 {
 	sprintf(m_szGameInfo, "%s version %d.%03d", gameName.c_str(), versionMajor, versionMinor);
 }
@@ -207,7 +207,7 @@ void Console::PassBackspace()
 	}
 }
 
-void Console::PassVirtualKey(s32 key)
+void Console::PassVirtualKey(int32_t key)
 {
 	if ( m_bChatMode == false )
 	{
@@ -250,7 +250,7 @@ void Console::PassVirtualKey(s32 key)
 			if ( m_nCommandHistory > -1 )
 				m_nCommandHistory++;
 
-			if ( m_nCommandHistory >= (s32)m_CommandBuffer.size() )
+			if ( m_nCommandHistory >= (int32_t)m_CommandBuffer.size() )
 				m_nCommandHistory = -1;
 
 			if ( m_nCommandHistory == -1 )
@@ -297,8 +297,8 @@ void Console::PassVirtualKey(s32 key)
 		if ( key == XL_PRIOR )
 		{
 			m_nScrollOffs -= 3;
-			if ( m_nScrollOffs < 23-(s32)m_TextBuffer.size() )
-				m_nScrollOffs = 23-(s32)m_TextBuffer.size();
+			if ( m_nScrollOffs < 23-(int32_t)m_TextBuffer.size() )
+				m_nScrollOffs = 23-(int32_t)m_TextBuffer.size();
 			if ( m_nScrollOffs > 0 )
 				m_nScrollOffs = 0;
 		}
@@ -349,13 +349,13 @@ void Console::Render()
 		}
 	}
 
-	s32 nScrWidth, nScrHeight;
+	int32_t nScrWidth, nScrHeight;
 	m_pDriver->GetWindowSize(nScrWidth, nScrHeight);
 
 	//Draw background.
 	static char szFinalTextLine[256];
-	s32 yOffs = 0;
-	s32 yBase = 460;
+	int32_t yOffs = 0;
+	int32_t yBase = 460;
 	if ( m_bActive )
 	{
 		m_pDriver->EnableDepthRead(false);
@@ -365,9 +365,9 @@ void Console::Render()
 		m_pDriver->SetBlendMode( IDriver3D::BLEND_ALPHA );
 
 		{
-			f32 y2 = m_fAnimDropDown*512.0f;
+			float y2 = m_fAnimDropDown*512.0f;
 
-			Vector4 posScale(0, 0, (f32)nScrWidth, (f32)y2);
+			Vector4 posScale(0, 0, (float)nScrWidth, (float)y2);
 			Vector2 uvTop(0, 1-m_fAnimDropDown+0.004f), uvBot(1, 1);
 
 			m_pDriver->SetTexture(0, m_hBackground, IDriver3D::FILTER_NORMAL_NO_MIP);
@@ -377,22 +377,22 @@ void Console::Render()
 		FontManager::BeginTextRendering();
 
 		//now print stuff.
-		s32 start = 0;
+		int32_t start = 0;
 		if ( m_TextBuffer.size() > 23 )
 		{
-			start = (s32)m_TextBuffer.size() - 23;
+			start = (int32_t)m_TextBuffer.size() - 23;
 			start += m_nScrollOffs;
 		}
 
-		yOffs = (s32)( -(1.0f-m_fAnimDropDown)*480.0f );
+		yOffs = (int32_t)( -(1.0f-m_fAnimDropDown)*480.0f );
 
-		for (s32 y=0; y<23 && y<(s32)m_TextBuffer.size(); y++)
+		for (int32_t y=0; y<23 && y<(int32_t)m_TextBuffer.size(); y++)
 		{
 			const char *pszTextLine = m_TextBuffer[y+start].c_str();
-			s32 l = (s32)strlen(pszTextLine);
-			s32 cIdx=0;
-			s32 color = COLOR_WHITE;
-			for (s32 c=0; c<l; c++)
+			int32_t l = (int32_t)strlen(pszTextLine);
+			int32_t cIdx=0;
+			int32_t color = COLOR_WHITE;
+			for (int32_t c=0; c<l; c++)
 			{
 				if ( pszTextLine[c] == '^' && c < l-1 )
 				{
@@ -407,7 +407,7 @@ void Console::Render()
 				}
 			}
 			szFinalTextLine[cIdx] = 0;
-			FontManager::RenderString( 5, y*20+2+(s32)yOffs, szFinalTextLine, m_pFont, &m_aColorTable[color] );
+			FontManager::RenderString( 5, y*20+2+(int32_t)yOffs, szFinalTextLine, m_pFont, &m_aColorTable[color] );
 		}
 	}
 	else
@@ -420,9 +420,9 @@ void Console::Render()
 		m_pDriver->EnableCulling(false);
 		m_pDriver->SetBlendMode( IDriver3D::BLEND_ALPHA );
 
-		u32 uStrLen = FontManager::GetLength( m_CommandLine, m_CommandLine.size()-1, m_pFont);
+		uint32_t uStrLen = FontManager::GetLength( m_CommandLine, m_CommandLine.size()-1, m_pFont);
 
-		Vector4 posScale(0, (f32)(yBase-5), (f32)MIN(MAX((s32)uStrLen+32,512),nScrWidth), 24);
+		Vector4 posScale(0, (float)(yBase-5), (float)MIN(MAX((int32_t)uStrLen+32,512),nScrWidth), 24);
 		Vector4 color(0,0,0,0.75f);
 		Vector2 uvTop(0, 0), uvBot(1, 1);
 
@@ -440,7 +440,7 @@ void Console::Render()
 	strcpy(szFinalTextLine, m_CommandLine.c_str());
 	if ( m_CaretPos > 0 && szFinalTextLine[m_CaretPos-1] == ' ' )
 		 szFinalTextLine[m_CaretPos-1] = '_';
-	u32 length = FontManager::GetLength(szFinalTextLine, m_CaretPos, m_pFont);
+	uint32_t length = FontManager::GetLength(szFinalTextLine, m_CaretPos, m_pFont);
 	if ( m_nBlinkFrame < 30 )
 	{
 		FontManager::RenderString( 10+length, yBase+yOffs, "_", m_pFont, &m_aColorTable[COLOR_YELLOW] );
@@ -454,7 +454,7 @@ void Console::Render()
 
 	if ( m_bActive )
 	{
-		s32 nGameInfoPos = nScrWidth-200;
+		int32_t nGameInfoPos = nScrWidth-200;
 		FontManager::RenderString( nGameInfoPos, yBase+20+yOffs, m_szGameInfo, m_pFont, &m_aColorTable[COLOR_GREEN] );
 	}
 	
@@ -502,8 +502,8 @@ bool Console::ParseCommandLine()
 		m_CommandBuffer.erase( m_CommandBuffer.begin() );
 
 	//tokenize
-	s32 count;
-	s32 prev_index = 0;
+	int32_t count;
+	int32_t prev_index = 0;
 	bool bInQuotes = false;
 	string::size_type l = m_CommandLine.length();
 	for ( string::size_type c=0; c<l; c++ )
@@ -572,12 +572,12 @@ bool Console::ParseCommandLine()
 					else if ( arguments.size() == 1)
 					{
 						out.str("");	//clear stringstream
-						out << (*iter).name << " = " << *((u32 *)(*iter).varPtr);
+						out << (*iter).name << " = " << *((uint32_t *)(*iter).varPtr);
 						Print(out.str());
 					}
 					else
 					{
-						*((u32 *)(*iter).varPtr) = (u32)atoi(arguments[1].c_str());
+						*((uint32_t *)(*iter).varPtr) = (uint32_t)atoi(arguments[1].c_str());
 					}
 					return true;
 					break;
@@ -586,12 +586,12 @@ bool Console::ParseCommandLine()
 					else if ( arguments.size() == 1)
 					{
 						out.str("");	//clear stringstream
-						out << (*iter).name << " = " << *((s32 *)(*iter).varPtr);
+						out << (*iter).name << " = " << *((int32_t *)(*iter).varPtr);
 						Print(out.str());
 					}
 					else
 					{
-						*((s32 *)(*iter).varPtr) = (s32)atoi(arguments[1].c_str());
+						*((int32_t *)(*iter).varPtr) = (int32_t)atoi(arguments[1].c_str());
 					}
 					return true;
 					break;
@@ -600,12 +600,12 @@ bool Console::ParseCommandLine()
 					else if ( arguments.size() == 1)
 					{
 						out.str("");	//clear stringstream
-						out << (*iter).name << " = " << *((f32 *)(*iter).varPtr);
+						out << (*iter).name << " = " << *((float *)(*iter).varPtr);
 						Print(out.str());
 					}
 					else
 					{
-						*((f32 *)(*iter).varPtr) = (f32)atof(arguments[1].c_str());
+						*((float *)(*iter).varPtr) = (float)atof(arguments[1].c_str());
 					}
 					return true;
 					break;
@@ -662,9 +662,9 @@ bool Console::ParseCommandLine()
 					}
 					else
 					{
-						((Vector3 *)(*iter).varPtr)->x = (f32)atof(arguments[1].c_str());
-						((Vector3 *)(*iter).varPtr)->y = (f32)atof(arguments[2].c_str());
-						((Vector3 *)(*iter).varPtr)->z = (f32)atof(arguments[3].c_str());
+						((Vector3 *)(*iter).varPtr)->x = (float)atof(arguments[1].c_str());
+						((Vector3 *)(*iter).varPtr)->y = (float)atof(arguments[2].c_str());
+						((Vector3 *)(*iter).varPtr)->z = (float)atof(arguments[3].c_str());
 					}
 					return true;
 					break;
@@ -679,10 +679,10 @@ bool Console::ParseCommandLine()
 					}
 					else
 					{
-						((Vector4 *)(*iter).varPtr)->x = (f32)atof(arguments[1].c_str());
-						((Vector4 *)(*iter).varPtr)->y = (f32)atof(arguments[2].c_str());
-						((Vector4 *)(*iter).varPtr)->z = (f32)atof(arguments[3].c_str());
-						((Vector4 *)(*iter).varPtr)->w = (f32)atof(arguments[4].c_str());
+						((Vector4 *)(*iter).varPtr)->x = (float)atof(arguments[1].c_str());
+						((Vector4 *)(*iter).varPtr)->y = (float)atof(arguments[2].c_str());
+						((Vector4 *)(*iter).varPtr)->z = (float)atof(arguments[3].c_str());
+						((Vector4 *)(*iter).varPtr)->w = (float)atof(arguments[4].c_str());
 					}
 					return true;
 					break;

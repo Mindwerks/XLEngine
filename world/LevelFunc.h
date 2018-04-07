@@ -50,42 +50,42 @@ public:
 		EMASK_PLAYER = 2147483648
 	};
 
-	typedef void (*LFunc_ActivateCB)(LevelFunc *, s32, s32, bool);
-	typedef void (*LFunc_SetValueCB)(LevelFunc *, s32, f32, bool);
+	typedef void (*LFunc_ActivateCB)(LevelFunc *, int32_t, int32_t, bool);
+	typedef void (*LFunc_SetValueCB)(LevelFunc *, int32_t, float, bool);
 
 	struct ClientObject
 	{
 		Object *pObj;
 		Vector3 vInitialPos;
-		u32 uFlags;
+		uint32_t uFlags;
 	};
 	
 public:
 	//Setup
-	LevelFunc(WorldCell *pWorldCell, s32 nSector, s32 nWall);
+	LevelFunc(WorldCell *pWorldCell, int32_t nSector, int32_t nWall);
 	~LevelFunc();
 	void SetActivateCB( LevelFunc::LFunc_ActivateCB pCB ) { m_ActivateCB = pCB; }
 	void SetSetValueCB( LevelFunc::LFunc_SetValueCB pCB ) { m_SetValueCB = pCB; }
 
 	//Level Load
-	void AddState(f32 value, s32 type=ST_TIME, s32 delay=240);
+	void AddState(float value, int32_t type=ST_TIME, int32_t delay=240);
 	void AddClient(LevelFunc *pFunc)
 	{
 		m_Clients.push_back( pFunc );
 	}
-	void AddClientObj(Object *pObj, u32 uFlags);
-	void SetSpeed(f32 speed) { m_fSpeed = speed; }
-	void SetAccel(f32 accel=0.0f) { m_fAccel = accel; }
+	void AddClientObj(Object *pObj, uint32_t uFlags);
+	void SetSpeed(float speed) { m_fSpeed = speed; }
+	void SetAccel(float accel=0.0f) { m_fAccel = accel; }
 	
 	//API
 	//Override this function for triggers.
-	void Activate(s32 mask, s32 items, bool bForce=false)
+	void Activate(int32_t mask, int32_t items, bool bForce=false)
 	{
 		if ( m_ActivateCB )
 			 m_ActivateCB(this, mask, items, bForce);
 	}
 	//Override for sector effects.
-	void SetValue(s32 nSector, f32 value, bool bInstant=false)
+	void SetValue(int32_t nSector, float value, bool bInstant=false)
 	{
 		if ( m_SetValueCB )
 		  	 m_SetValueCB(this, nSector, value, bInstant);
@@ -93,14 +93,14 @@ public:
 
 	void SendMessage(int msg, int param0, int param1);
 	void Update();
-	void SetInitialState(s32 state, bool bStartOnInit=false);
+	void SetInitialState(int32_t state, bool bStartOnInit=false);
 
 	WorldCell *GetWorldCell() { return m_pWorldCell; }
-	u32 GetClientCount() { return (u32)m_Clients.size(); }
-	LevelFunc *GetClient(u32 clientID) { return m_Clients[clientID]; }
+	uint32_t GetClientCount() { return (uint32_t)m_Clients.size(); }
+	LevelFunc *GetClient(uint32_t clientID) { return m_Clients[clientID]; }
 
-	u32 GetClientObjCount() { return (u32)m_ClientObjects.size(); }
-	ClientObject *GetClientObj(u32 clientID) { return m_ClientObjects[clientID]; }
+	uint32_t GetClientObjCount() { return (uint32_t)m_ClientObjects.size(); }
+	ClientObject *GetClientObj(uint32_t clientID) { return m_ClientObjects[clientID]; }
 
 	void SetDirection(const Vector3& vDir) { m_vDir = vDir; }
 	const Vector3& GetDirection() { return m_vDir; }
@@ -111,35 +111,35 @@ public:
 protected:
 	struct State
 	{
-		f32 value;
-		s32 delay;
-		u8  type;
+		float value;
+		int32_t delay;
+		uint8_t  type;
 	};
 	vector<State *> m_States;
 	vector<LevelFunc *> m_Clients;
 	vector<ClientObject *> m_ClientObjects;
-	vector<s32> m_Slaves;
+	vector<int32_t> m_Slaves;
 
 	LevelFunc::LFunc_ActivateCB m_ActivateCB;
 	LevelFunc::LFunc_SetValueCB m_SetValueCB;
 
-	s32 m_nInitialState;
-	s32 m_nCurState;
-	s32 m_nNextState;
-	s32 m_nSector;
-	s32 m_nWall;
-	s32 m_nKeyNeeded;
-	s32 m_nEventMask;
-	s32 m_nEntityMask;
-	s32 m_nEvent;
-	s32 m_nDelay;
+	int32_t m_nInitialState;
+	int32_t m_nCurState;
+	int32_t m_nNextState;
+	int32_t m_nSector;
+	int32_t m_nWall;
+	int32_t m_nKeyNeeded;
+	int32_t m_nEventMask;
+	int32_t m_nEntityMask;
+	int32_t m_nEvent;
+	int32_t m_nDelay;
 
-	f32 m_fInterp;
-	f32 m_fDelta;
-	f32 m_fSpeed;
-	f32 m_fAccel;
-	f32 m_fVel;
-	f32 m_fScale;
+	float m_fInterp;
+	float m_fDelta;
+	float m_fSpeed;
+	float m_fAccel;
+	float m_fVel;
+	float m_fScale;
 
 	Vector3 m_vDir;
 	Vector3 m_vPivot;

@@ -13,7 +13,7 @@ public:
 	CellLoader_OutlawsMap();
 	~CellLoader_OutlawsMap();
 
-	WorldCell *Load( IDriver3D *pDriver, World *pWorld, u8 *pData, u32 uLen, const string& sFile, s32 worldX, s32 worldY );
+	WorldCell *Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const string& sFile, int32_t worldX, int32_t worldY );
 
 private:
 

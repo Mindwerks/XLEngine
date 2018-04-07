@@ -13,7 +13,7 @@ public:
 	RenderComponent(){};
 	virtual ~RenderComponent(){};
 
-	virtual void Render(Object *pObj, IDriver3D *pDriver, f32 fIntensity, const Vector3& vOffset) {};
+	virtual void Render(Object *pObj, IDriver3D *pDriver, float fIntensity, const Vector3& vOffset) {};
 	virtual void GetBounds(Vector3& vMin, Vector3& vMax) {};
 	virtual void SetTextureHandle(TextureHandle hTex) {};
 	virtual void SetUV_Flip(bool bFlipX, bool bFlipY, bool bFlipAxis=false) {};

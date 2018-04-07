@@ -21,8 +21,8 @@ public:
 	//This loads a cell from disk and then formats it for the engine.
 	//The WorldCell is then returned, ready to be added to the world.
 	//Cell types include: levels, dungeon tiles, location tiles, etc.
-	static WorldCell *LoadCell(IDriver3D *pDriver, World *pWorld, u32 uCellType, Archive *pCellArchive, const string& sFile, s32 worldX, s32 worldY);
-	static WorldCell *LoadFromLocation(IDriver3D *pDriver, World *pWorld, u32 uCellType, void *pLocPtr);
+	static WorldCell *LoadCell(IDriver3D *pDriver, World *pWorld, uint32_t uCellType, Archive *pCellArchive, const string& sFile, int32_t worldX, int32_t worldY);
+	static WorldCell *LoadFromLocation(IDriver3D *pDriver, World *pWorld, uint32_t uCellType, void *pLocPtr);
 	
 private:
 	static CellLoader *m_CellLoaders[];

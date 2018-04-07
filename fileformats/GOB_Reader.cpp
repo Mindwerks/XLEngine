@@ -38,9 +38,9 @@ bool GOB_Reader::Open(const char *pszName)
 		}
 		else
 		{
-			s32 stringTableSize;
-			fread(&m_FileList.MASTERN, sizeof(s32), 1, f);
-			fread(&stringTableSize, sizeof(s32), 1, f);
+			int32_t stringTableSize;
+			fread(&m_FileList.MASTERN, sizeof(int32_t), 1, f);
+			fread(&stringTableSize, sizeof(int32_t), 1, f);
 			m_FileList.pEntries = xlNew GOB_Entry_t[m_FileList.MASTERN];
 
 			//now read string table.
@@ -50,14 +50,14 @@ bool GOB_Reader::Open(const char *pszName)
 
 			//now read the entries.
 			fseek(f, 16, SEEK_SET);
-			for (s32 e=0; e<m_FileList.MASTERN; e++)
+			for (int32_t e=0; e<m_FileList.MASTERN; e++)
 			{
-				u32 fname_offs;
-				u32 start, size, dummy;
-				fread(&fname_offs, sizeof(u32), 1, f);
-				fread(&start, sizeof(u32), 1, f);
-				fread(&size, sizeof(u32), 1, f);
-				fread(&dummy, sizeof(u32), 1, f);
+				uint32_t fname_offs;
+				uint32_t start, size, dummy;
+				fread(&fname_offs, sizeof(uint32_t), 1, f);
+				fread(&start, sizeof(uint32_t), 1, f);
+				fread(&size, sizeof(uint32_t), 1, f);
+				fread(&dummy, sizeof(uint32_t), 1, f);
 
 				m_FileList.pEntries[e].IX = start;
 				m_FileList.pEntries[e].LEN = size;
@@ -97,7 +97,7 @@ bool GOB_Reader::OpenFile(const char *pszFile)
 	if ( m_pFile )
 	{
 		//search for this file.
-		for (s32 i=0; i<m_FileList.MASTERN; i++)
+		for (int32_t i=0; i<m_FileList.MASTERN; i++)
 		{
 			if ( stricmp(pszFile, m_FileList.pEntries[i].NAME) == 0 )
 			{
@@ -125,30 +125,30 @@ void GOB_Reader::CloseFile()
 	m_CurFile = -1;
 }
 
-u32 GOB_Reader::GetFileLen()
+uint32_t GOB_Reader::GetFileLen()
 {
-	return (u32)m_FileList.pEntries[ m_CurFile ].LEN;
+	return (uint32_t)m_FileList.pEntries[ m_CurFile ].LEN;
 }
 
-bool GOB_Reader::ReadFile(void *pData, u32 uLength)
+bool GOB_Reader::ReadFile(void *pData, uint32_t uLength)
 {
 	if ( !m_pFile ) { return false; }
 
 	fseek(m_pFile, m_FileList.pEntries[ m_CurFile ].IX, SEEK_SET);
 	if ( uLength == 0 )
-		uLength = (u32)m_FileList.pEntries[ m_CurFile ].LEN;
+		uLength = (uint32_t)m_FileList.pEntries[ m_CurFile ].LEN;
 
 	fread(pData, uLength, 1, m_pFile);
 
 	return true;
 }
 
-s32 GOB_Reader::GetFileCount()
+int32_t GOB_Reader::GetFileCount()
 {
 	return m_FileList.MASTERN;
 }
 
-const char *GOB_Reader::GetFileName(s32 nFileIdx)
+const char *GOB_Reader::GetFileName(int32_t nFileIdx)
 {
 	return m_FileList.pEntries[nFileIdx].NAME;
 }

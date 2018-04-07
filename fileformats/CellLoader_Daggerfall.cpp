@@ -59,74 +59,74 @@ struct MeshAction
 //Exterior
 struct BlockPos
 {
-	s32 XPos1;
-	s32 YPos1;
-	s32 XPos2;
-	s32 YPos2;
-	s32 Angle;
+	int32_t XPos1;
+	int32_t YPos1;
+	int32_t XPos2;
+	int32_t YPos2;
+	int32_t Angle;
 };
 
 struct BlockHeader
 {
-	u8  Num3DObjRec;
-	u8  NumFlatObjRec;
-	u8  NumSection3Rec;
-	u8  NumPeopleRec;
-	u8  NumDoorRec;
-	s16 Unknown[6];
+	uint8_t  Num3DObjRec;
+	uint8_t  NumFlatObjRec;
+	uint8_t  NumSection3Rec;
+	uint8_t  NumPeopleRec;
+	uint8_t  NumDoorRec;
+	int16_t Unknown[6];
 };
 
 struct Block3DObj
 {
-	s16 ObjID1;
-	s8  ObjID2;
-	s8  Unknown1;
-	s32 Unknown2[5];
-	s32 XPos1;
-	s32 YPos1;
-	s32 ZPos1;
-	s32 XPos2;
-	s32 YPos2;
-	s32 ZPos2;
-	s32 NullValue;
-	s16 Angle;
-	s16 Unknown3;
-	s32 NullValue2;
-	s32 Unknown4;
-	s16 NullValue3;
+	int16_t ObjID1;
+	int8_t  ObjID2;
+	int8_t  Unknown1;
+	int32_t Unknown2[5];
+	int32_t XPos1;
+	int32_t YPos1;
+	int32_t ZPos1;
+	int32_t XPos2;
+	int32_t YPos2;
+	int32_t ZPos2;
+	int32_t NullValue;
+	int16_t Angle;
+	int16_t Unknown3;
+	int32_t NullValue2;
+	int32_t Unknown4;
+	int16_t NullValue3;
 };
 
 struct BuildingData
 {
-	u16 NameSeed;
-	u64 NullValue[2];
-	u16 FactionID;
-	s16 Sector;
-	u16 LocationID;
-	u8  BuildingType;
-	u8  Quality;
+	uint16_t NameSeed;
+	uint64_t NullValue[2];
+	uint16_t FactionID;
+	int16_t Sector;
+	uint16_t LocationID;
+	uint8_t  BuildingType;
+	uint8_t  Quality;
 };
 
 struct DoorData
 {
-	s32 XPos;
-	s32 YPos;
-	s32 ZPos;
-	u16 unknown;
-	s16 angle;
-	s16 unknown2;
-	u8  null;
+	int32_t XPos;
+	int32_t YPos;
+	int32_t ZPos;
+	uint16_t unknown;
+	int16_t angle;
+	int16_t unknown2;
+	uint8_t  null;
 };
 
 //Dungeon
 struct DT_Header
 {
-	s16 unknown;
-	s16 unknown2;
-	s32 nGridWidth;
-	s32 nGridHeight;
-	u32 uObjOffset;
-	s32 unknown3;
+	int16_t unknown;
+	int16_t unknown2;
+	int32_t nGridWidth;
+	int32_t nGridHeight;
+	uint32_t uObjOffset;
+	int32_t unknown3;
 };
 
 struct DT_Model
@@ -137,11 +137,11 @@ struct DT_Model
 
 struct DT_ObjHeader
 {
-	s32 unknown1;
-	s32 unknown2;
-	s32 unknown3;
-	s32 unknown4;
-	s32 FileSize;
+	int32_t unknown1;
+	int32_t unknown2;
+	int32_t unknown3;
+	int32_t unknown4;
+	int32_t FileSize;
 	char unknown5[32];
 	char TagDAGR[4];
 	char unknown6[456];
@@ -156,45 +156,45 @@ enum ObjectType_e
 
 struct DT_Object
 {
-	s32 offsNext;
-	s32 offsPrev;
-	s32 xLoc;
-	s32 yLoc;
-	s32 zLoc;
+	int32_t offsNext;
+	int32_t offsPrev;
+	int32_t xLoc;
+	int32_t yLoc;
+	int32_t zLoc;
 	char objectType;
-	s32 postRecordOffset;
+	int32_t postRecordOffset;
 };
 
 struct DT_PostObj3D
 {
-	s32 xAngle;
-	s32 yAngle;
-	s32 zAngle;
-	s16 ModelIndex;	//index into m_apModels
-	s32 unknown1;
+	int32_t xAngle;
+	int32_t yAngle;
+	int32_t zAngle;
+	int16_t ModelIndex;	//index into m_apModels
+	int32_t unknown1;
 	char unknown2;
-	s32 ActionOffset;
+	int32_t ActionOffset;
 };
 
 struct DT_PostObjLight
 {
-	s32 unknown1;
-	s32 unknown2;
-	s16 unknown3;
+	int32_t unknown1;
+	int32_t unknown2;
+	int16_t unknown3;
 };
 
 struct DT_PostObjFlat
 {
-	u16 Texture;
-	s16 character;
-	s16 factionID;
+	uint16_t Texture;
+	int16_t character;
+	int16_t factionID;
 	char unknown[9];
 };
 
 struct DT_ActionRecord
 {
 	char DataEntry[5];
-	s32 TargetOffset;
+	int32_t TargetOffset;
 	char Type;
 };
 
@@ -213,8 +213,8 @@ WorldCell *CellLoader_Daggerfall::LoadFromLocation( IDriver3D *pDriver, World *p
 	Location_Daggerfall *pLocation = (Location_Daggerfall *)pLocPtr;
 
 	WorldCell *pCell = NULL;
-	s32 worldX = (s32)pLocation->m_x;
-	s32 worldY = (s32)pLocation->m_y;
+	int32_t worldX = (int32_t)pLocation->m_x;
+	int32_t worldY = (int32_t)pLocation->m_y;
 
 	if ( pLocation )
 	{
@@ -237,11 +237,11 @@ WorldCell *CellLoader_Daggerfall::LoadFromLocation( IDriver3D *pDriver, World *p
 	 to both of the above - they have all 3 parts].
 	 ***************************************************************/
 
-	s32 worldX_Orig = worldX;
-	s32 worldY_Orig = worldY;
+	int32_t worldX_Orig = worldX;
+	int32_t worldY_Orig = worldY;
 
-	s32 nClimate = pWorld->GetTerrain()->GetClimate_MapScale(worldX>>3, worldY>>3);
-	s32 nRegion  = TERRAIN_TEMPERATE;
+	int32_t nClimate = pWorld->GetTerrain()->GetClimate_MapScale(worldX>>3, worldY>>3);
+	int32_t nRegion  = TERRAIN_TEMPERATE;
 	if ( nClimate == Terrain::CLIMATE_DESERT )
 		nRegion  = TERRAIN_DESERT;
 	else if ( nClimate == Terrain::CLIMATE_MOUNTAIN )
@@ -255,24 +255,24 @@ WorldCell *CellLoader_Daggerfall::LoadFromLocation( IDriver3D *pDriver, World *p
 	if ( pLocation->m_BlockWidth > 0 || pLocation->m_BlockHeight > 0 )
 	{
 		Terrain *pTerrain = pWorld->GetTerrain();
-		s32 wx_map = worldX_Orig>>3;
-		s32 wy_map = worldY_Orig>>3;
+		int32_t wx_map = worldX_Orig>>3;
+		int32_t wy_map = worldY_Orig>>3;
 		float fTileHeight = Math::Max( pTerrain->GetHeight_MapScale(wx_map, wy_map), 16.0f );
-		s32 worldY = worldY_Orig;
+		int32_t worldY = worldY_Orig;
 		if ( pLocation->m_pTexData == NULL )
 		{
-			 pLocation->m_pTexData = new u8[256*pLocation->m_BlockWidth*pLocation->m_BlockHeight];
+			 pLocation->m_pTexData = new uint8_t[256*pLocation->m_BlockWidth*pLocation->m_BlockHeight];
 		}
 		for (int y=0; y<pLocation->m_BlockHeight; y++, worldY++)
 		{
-			s32 worldX = worldX_Orig;
+			int32_t worldX = worldX_Orig;
 			for (int x=0; x<pLocation->m_BlockWidth; x++, worldX++)
 			{
 				if ( ArchiveManager::GameFile_Open(ARCHIVETYPE_BSA, "BLOCKS.BSA", pLocation->m_pBlockNames[y*pLocation->m_BlockWidth+x].szName) )
 				{
 					ScratchPad::StartFrame();
 
-					u32 uLength = ArchiveManager::GameFile_GetLength();
+					uint32_t uLength = ArchiveManager::GameFile_GetLength();
 					char *pData = (char *)ScratchPad::AllocMem(uLength);
 					ArchiveManager::GameFile_Read(pData, uLength);
 					ArchiveManager::GameFile_Close();
@@ -307,14 +307,14 @@ WorldCell *CellLoader_Daggerfall::LoadFromLocation( IDriver3D *pDriver, World *p
 			{
 				ScratchPad::StartFrame();
 
-				u32 uLength = ArchiveManager::GameFile_GetLength();
+				uint32_t uLength = ArchiveManager::GameFile_GetLength();
 				char *pData = (char *)ScratchPad::AllocMem(uLength);
 				ArchiveManager::GameFile_Read(pData, uLength);
 				ArchiveManager::GameFile_Close();
 
 				Vector3 vLoc(0.0f, 0.0f, 0.0f);
-				vLoc.x = (f32)pLocation->m_pDungeonBlocks[b].x * 512.0f;
-				vLoc.y = (f32)pLocation->m_pDungeonBlocks[b].y * 512.0f;
+				vLoc.x = (float)pLocation->m_pDungeonBlocks[b].x * 512.0f;
+				vLoc.y = (float)pLocation->m_pDungeonBlocks[b].y * 512.0f;
 
 				int blockType = 1;
 				if ( pLocation->m_pDungeonBlocks[b].szName[0] == 'B' || pLocation->m_pDungeonBlocks[b].szName[0] == 'S' )
@@ -353,7 +353,7 @@ WorldCell *CellLoader_Daggerfall::LoadFromLocation( IDriver3D *pDriver, World *p
 	return pCell;
 }
 
-WorldCell *CellLoader_Daggerfall::Load( IDriver3D *pDriver, World *pWorld, u8 *pData, u32 uLen, const string& sFile, s32 worldX, s32 worldY )
+WorldCell *CellLoader_Daggerfall::Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const string& sFile, int32_t worldX, int32_t worldY )
 {
 	Location_Daggerfall *pLocation = WorldMap::GetLocation(sFile.c_str());
 	//Don't reload a location already in memory.
@@ -403,27 +403,27 @@ bool _IsEntrance( int nModelID )
 	return false;
 }
 
-Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, char *pData, s32 nClimate, float fTileHeight, s32 worldX, s32 worldY, u8 *pTexData)
+Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLength, char *pData, int32_t nClimate, float fTileHeight, int32_t worldX, int32_t worldY, uint8_t *pTexData)
 {
 	Sector_GeoBlock *pSector = xlNew Sector_GeoBlock();
 	pSector->m_x = worldX;
 	pSector->m_y = worldY;
-	pSector->m_pValidNodes = xlNew u8[16*16];
+	pSector->m_pValidNodes = xlNew uint8_t[16*16];
 
-	s32 index      = 0;
-	s8  NumSubRec1 = pData[index]; index++;
-	s8  NumSubRec2 = pData[index]; index++;
-	s8  NumSubRec3 = pData[index]; index++;
+	int32_t index      = 0;
+	int8_t  NumSubRec1 = pData[index]; index++;
+	int8_t  NumSubRec2 = pData[index]; index++;
+	int8_t  NumSubRec3 = pData[index]; index++;
 	BlockPos *pBlockPos = (BlockPos *)&pData[index]; index += 640;
     //Building data.
 	BuildingData *pBuildingData = (BuildingData *)&pData[index]; index += 832;
 	//Section2 = 128 bytes.
 	index += 128;
-	s32 *pBlockSizes = (s32 *)&pData[index]; index += 128;
+	int32_t *pBlockSizes = (int32_t *)&pData[index]; index += 128;
 	//Small map data...
 	char *pSmallMapHeader = &pData[index]; index +=   8;
-	u8 *pTexInfo = (u8 *)&pData[index];	   index += 256;
-	u8 *pObjInfo = (u8 *)&pData[index];	   index += 256;
+	uint8_t *pTexInfo = (uint8_t *)&pData[index];	   index += 256;
+	uint8_t *pObjInfo = (uint8_t *)&pData[index];	   index += 256;
 	memcpy(pTexData, pTexInfo, 256);
 	//Automap data (skip for now)...
 	index += 4096;
@@ -431,7 +431,7 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, ch
 	//FLD filenames.
 	char *pszBlockFileName = &pData[index]; index += 13;
 	char *pszFileNames[32];
-	for (s32 i=0; i<32; i++)
+	for (int32_t i=0; i<32; i++)
 	{
 		pszFileNames[i] = &pData[index]; index += 13;
 	}
@@ -440,18 +440,18 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, ch
 	pSector->m_Bounds[0].Set( FLT_MAX, FLT_MAX, FLT_MAX );
 	pSector->m_Bounds[1] = -pSector->m_Bounds[0];
 
-	s32 outside_index = index;
-	for (s32 j=0; j<NumSubRec1; j++)
+	int32_t outside_index = index;
+	for (int32_t j=0; j<NumSubRec1; j++)
 	{
 		index = outside_index;
-		s32 extIndex = (s32)pSector->m_Objects.size()-1;
+		int32_t extIndex = (int32_t)pSector->m_Objects.size()-1;
 		Object *pExtMesh=NULL;
 		//exterior
 		BlockHeader *pBlockHeader = (BlockHeader *)&pData[index]; index += 17;
-		for (u32 i=0; i<pBlockHeader->Num3DObjRec; i++)
+		for (uint32_t i=0; i<pBlockHeader->Num3DObjRec; i++)
 		{
 			Block3DObj *pObj = (Block3DObj *)&pData[index]; index += 66;
-			s32 objID = pObj->ObjID1*100 + pObj->ObjID2;
+			int32_t objID = pObj->ObjID1*100 + pObj->ObjID2;
 
 			Object *pMeshObj = ObjectManager::CreateObject("exterior");
 			pMeshObj->SetWorldPos(worldX, worldY);
@@ -513,28 +513,28 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, ch
 			if ( vMeshMax.y > pSector->m_Bounds[1].y ) pSector->m_Bounds[1].y = vMeshMax.y;
 			if ( vMeshMax.z > pSector->m_Bounds[1].z ) pSector->m_Bounds[1].z = vMeshMax.z;
 		}
-		for (u32 i=0; i<pBlockHeader->NumFlatObjRec; i++)
+		for (uint32_t i=0; i<pBlockHeader->NumFlatObjRec; i++)
 		{
-			s32 xPos = *((s32 *)&pData[index]); index += 4;
-			s32 yPos = *((s32 *)&pData[index]); index += 4;
-			s32 zPos = *((s32 *)&pData[index]); index += 4;
-			u16 uTex = *((u16 *)&pData[index]); index += 2;
+			int32_t xPos = *((int32_t *)&pData[index]); index += 4;
+			int32_t yPos = *((int32_t *)&pData[index]); index += 4;
+			int32_t zPos = *((int32_t *)&pData[index]); index += 4;
+			uint16_t uTex = *((uint16_t *)&pData[index]); index += 2;
 			index += 2;	//unknown 1
 			index++;	//unknown 2
 
-			s32 ImageIndex = uTex & 0x7f;
-			s32 FileIndex  = uTex / 0x80;
+			int32_t ImageIndex = uTex & 0x7f;
+			int32_t FileIndex  = uTex / 0x80;
 
 			if ( FileIndex != 199 )	//Tags, used for placing certain things.
 			{
 				char szTexName[128];
 				MeshLoader_Daggerfall::BuildTextureName(szTexName, FileIndex);
 				TextureHandle hTex = TextureCache::GameFile_LoadTexture_TexList( TEXTURETYPE_IMG, 7, ARCHIVETYPE_NONE, "", szTexName, ImageIndex );
-				f32 fw, fh;
-				s32 ox, oy;
-				u32 w, h;
+				float fw, fh;
+				int32_t ox, oy;
+				uint32_t w, h;
 				TextureCache::GetTextureSize(ox, oy, w, h, fw, fh);
-				s16 *pSpriteScale = (s16 *)TextureCache::GetTexExtraData();
+				int16_t *pSpriteScale = (int16_t *)TextureCache::GetTexExtraData();
 
 				assert( pSpriteScale[0] >= -256 && pSpriteScale[0] <= 256 );
 				assert( pSpriteScale[1] >= -256 && pSpriteScale[1] <= 256 );
@@ -546,20 +546,20 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, ch
 				Object *pObj = ObjectManager::CreateObject("Sprite_ZAxis");
 				pObj->SetWorldPos(worldX, worldY);
 				
-				u32 uObjID = pObj->GetID();
+				uint32_t uObjID = pObj->GetID();
 				pSector->AddObject( uObjID );
 				pObj->SetSector( pSector->m_uID );
 
 				Vector3 vScale;
-				vScale.x = (f32)newWidth  / 8.0f;
+				vScale.x = (float)newWidth  / 8.0f;
 				vScale.y = vScale.x;
-				vScale.z = (f32)newHeight / 8.0f;
+				vScale.z = (float)newHeight / 8.0f;
 				pObj->SetScale(vScale);
 				
 				Vector3 vLoc;
-				vLoc.x =  (f32)xPos * fFP_Scale;
-				vLoc.z = -(f32)yPos * fFP_Scale + fTileHeight;
-				vLoc.y =  (f32)zPos * fFP_Scale;
+				vLoc.x =  (float)xPos * fFP_Scale;
+				vLoc.z = -(float)yPos * fFP_Scale + fTileHeight;
+				vLoc.y =  (float)zPos * fFP_Scale;
 				pObj->SetLoc(vLoc);
 
 				Sprite_ZAxis *pSprite = xlNew Sprite_ZAxis();
@@ -570,22 +570,22 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, ch
 				pObj->SetBoundingSphere(vLoc, sqrtf(vScale.x*vScale.x + vScale.z*vScale.z));
 			}
 		}
-		for (u32 i=0; i<pBlockHeader->NumSection3Rec; i++)
+		for (uint32_t i=0; i<pBlockHeader->NumSection3Rec; i++)
 		{
 			index += 16;
 		}
-		for (u32 i=0; i<pBlockHeader->NumPeopleRec; i++)
+		for (uint32_t i=0; i<pBlockHeader->NumPeopleRec; i++)
 		{
 			index += 17;
 		}
-		for (u32 i=0; i<pBlockHeader->NumDoorRec; i++)
+		for (uint32_t i=0; i<pBlockHeader->NumDoorRec; i++)
 		{
 			index += 19;
 		}
 		
 		//interior...
 		pBlockHeader = (BlockHeader *)&pData[index]; index += 17;
-		for (u32 i=0; i<pBlockHeader->Num3DObjRec; i++)
+		for (uint32_t i=0; i<pBlockHeader->Num3DObjRec; i++)
 		{
 			//assert( pExtMesh );
 
@@ -596,36 +596,36 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, ch
 			//finish the rest here....
 		}
 
-		for (u32 i=0; i<pBlockHeader->NumFlatObjRec; i++)
+		for (uint32_t i=0; i<pBlockHeader->NumFlatObjRec; i++)
 		{
-			s32 xPos = *((s32 *)&pData[index]); index += 4;
-			s32 yPos = *((s32 *)&pData[index]); index += 4;
-			s32 zPos = *((s32 *)&pData[index]); index += 4;
-			u16 uTex = *((u16 *)&pData[index]); index += 2;
+			int32_t xPos = *((int32_t *)&pData[index]); index += 4;
+			int32_t yPos = *((int32_t *)&pData[index]); index += 4;
+			int32_t zPos = *((int32_t *)&pData[index]); index += 4;
+			uint16_t uTex = *((uint16_t *)&pData[index]); index += 2;
 			index += 2;	//unknown 1
 			index++;	//unknown 2
 			if ( pExtMesh == NULL ) continue;
 
 			//finish the rest here...
 		}
-		for (u32 i=0; i<pBlockHeader->NumSection3Rec; i++)
+		for (uint32_t i=0; i<pBlockHeader->NumSection3Rec; i++)
 		{
 			index += 16;
 		}
-		for (u32 i=0; i<pBlockHeader->NumPeopleRec; i++)
+		for (uint32_t i=0; i<pBlockHeader->NumPeopleRec; i++)
 		{
-			s32 xPos = *((s32 *)&pData[index]); index += 4;
-			s32 yPos = *((s32 *)&pData[index]); index += 4;
-			s32 zPos = *((s32 *)&pData[index]); index += 4;
-			u16 uTex = *((u16 *)&pData[index]); index += 2;
-			u16 factionID = *((u16 *)&pData[index]); index += 2;
+			int32_t xPos = *((int32_t *)&pData[index]); index += 4;
+			int32_t yPos = *((int32_t *)&pData[index]); index += 4;
+			int32_t zPos = *((int32_t *)&pData[index]); index += 4;
+			uint16_t uTex = *((uint16_t *)&pData[index]); index += 2;
+			uint16_t factionID = *((uint16_t *)&pData[index]); index += 2;
 			index++;	//unknown
 
 			if ( pExtMesh == NULL ) continue;
 
 			//finish the rest here...
 		}
-		for (u32 i=0; i<pBlockHeader->NumDoorRec; i++)
+		for (uint32_t i=0; i<pBlockHeader->NumDoorRec; i++)
 		{
 			DoorData *pDoor = (DoorData *)&pData[index];
 			index += 19;
@@ -640,10 +640,10 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, ch
 
 	//additional 3D objects...
 	index = outside_index;
-	for (s32 i=0; i<NumSubRec2; i++)
+	for (int32_t i=0; i<NumSubRec2; i++)
 	{
 		Block3DObj *pObj = (Block3DObj *)&pData[index]; index += 66;
-		s32 objID = pObj->ObjID1*100 + pObj->ObjID2;
+		int32_t objID = pObj->ObjID1*100 + pObj->ObjID2;
 
 		Object *pMeshObj = ObjectManager::CreateObject("exterior");
 		pMeshObj->SetWorldPos(worldX, worldY);
@@ -702,15 +702,15 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, ch
 	//This is done before flats are loaded to avoid confusion...
 	float xPos, yPos;
 	yPos = -512.0f + 32.0f;
-	for (s32 fy=0; fy<16; fy++)
+	for (int32_t fy=0; fy<16; fy++)
 	{
 		xPos = -512.0f + 32.0f;
-		for (s32 fx=0; fx<16; fx++)
+		for (int32_t fx=0; fx<16; fx++)
 		{
 			bool bValidNode = true;
 			//is this point inside a mesh?
-			vector<u32>::iterator iObj = pSector->m_Objects.begin();
-			vector<u32>::iterator eObj = pSector->m_Objects.end();
+			vector<uint32_t>::iterator iObj = pSector->m_Objects.begin();
+			vector<uint32_t>::iterator eObj = pSector->m_Objects.end();
 			for (; iObj != eObj; ++iObj)
 			{
 				Object *pObj = ObjectManager::GetObjectFromID( *iObj );
@@ -732,7 +732,7 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, ch
 
 	//foliage and other stuff comes here.
 	//foilage
-	s32 nFoilageIndex = 504;
+	int32_t nFoilageIndex = 504;
 	if ( nClimate == TERRAIN_DESERT )
 		nFoilageIndex = 501;
 	else if ( nClimate == TERRAIN_MOUNTAIN )
@@ -741,42 +741,42 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, ch
 		nFoilageIndex = 502;
 
 	yPos = -512.0f;
-	for (s32 fy=0; fy<16; fy++)
+	for (int32_t fy=0; fy<16; fy++)
 	{
 		xPos = -512.0f;
-		for (s32 fx=0; fx<16; fx++)
+		for (int32_t fx=0; fx<16; fx++)
 		{
-			u8 foilage = pObjInfo[fy*16+fx];
+			uint8_t foilage = pObjInfo[fy*16+fx];
 			if ( foilage < 0xff )
 			{
-				s32 nIndex = (foilage>>2)&31;
+				int32_t nIndex = (foilage>>2)&31;
 				if (nIndex > 0) nIndex--;
 				
 				//skip the rest for now.
 				char szTexName[128];
 				MeshLoader_Daggerfall::BuildTextureName(szTexName, nFoilageIndex);
 				TextureHandle hTex = TextureCache::GameFile_LoadTexture_TexList( TEXTURETYPE_IMG, 7, ARCHIVETYPE_NONE, "", szTexName, nIndex );
-				f32 fw, fh;
-				s32 ox, oy;
-				u32 w, h;
+				float fw, fh;
+				int32_t ox, oy;
+				uint32_t w, h;
 				TextureCache::GetTextureSize(ox, oy, w, h, fw, fh);
-				s16 *pSpriteScale = (s16 *)TextureCache::GetTexExtraData();
+				int16_t *pSpriteScale = (int16_t *)TextureCache::GetTexExtraData();
 
 				//sprite scale...
-				s32 newWidth  = w*(256+pSpriteScale[0])>>8;
-				s32 newHeight = h*(256+pSpriteScale[1])>>8;
+				int32_t newWidth  = w*(256+pSpriteScale[0])>>8;
+				int32_t newHeight = h*(256+pSpriteScale[1])>>8;
 
 				Object *pObj = ObjectManager::CreateObject("Sprite_ZAxis");
 				pObj->SetWorldPos(worldX, worldY);
 				
-				u32 uObjID = pObj->GetID();
+				uint32_t uObjID = pObj->GetID();
 				pSector->AddObject( uObjID );
 				pObj->SetSector( pSector->m_uID );
 											
 				Vector3 vScale;
-				vScale.x = (f32)newWidth  / 8.0f;
+				vScale.x = (float)newWidth  / 8.0f;
 				vScale.y = vScale.x;
-				vScale.z = (f32)newHeight / 8.0f;
+				vScale.z = (float)newHeight / 8.0f;
 				pObj->SetScale(vScale);
 				
 				Vector3 vLoc;
@@ -798,12 +798,12 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, ch
 		yPos += 64;
 	}
 
-	for (s32 i=0; i<NumSubRec3; i++)
+	for (int32_t i=0; i<NumSubRec3; i++)
 	{
-		s32 xPos = *((s32 *)&pData[index]); index += 4;
-		s32 yPos = *((s32 *)&pData[index]); index += 4;
-		s32 zPos = *((s32 *)&pData[index]); index += 4;
-		unsigned short uTex = *((u16 *)&pData[index]); index += 2;
+		int32_t xPos = *((int32_t *)&pData[index]); index += 4;
+		int32_t yPos = *((int32_t *)&pData[index]); index += 4;
+		int32_t zPos = *((int32_t *)&pData[index]); index += 4;
+		unsigned short uTex = *((uint16_t *)&pData[index]); index += 2;
 		index += 2;	//unknown 1
 		index++;	//unknown 2
 
@@ -879,11 +879,11 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, ch
 			char szTexName[128];
 			MeshLoader_Daggerfall::BuildTextureName(szTexName, FileIndex);
 			TextureHandle hTex = TextureCache::GameFile_LoadTexture_TexList( TEXTURETYPE_IMG, 7, ARCHIVETYPE_NONE, "", szTexName, ImageIndex );
-			f32 fw, fh;
-			s32 ox, oy;
-			u32 w, h;
+			float fw, fh;
+			int32_t ox, oy;
+			uint32_t w, h;
 			TextureCache::GetTextureSize(ox, oy, w, h, fw, fh);
-			s16 *pSpriteScale = (s16 *)TextureCache::GetTexExtraData();
+			int16_t *pSpriteScale = (int16_t *)TextureCache::GetTexExtraData();
 
 			//sprite scale...
 			int newWidth  = w*(256+pSpriteScale[0])>>8;
@@ -892,20 +892,20 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, ch
 			Object *pObj = ObjectManager::CreateObject("Sprite_ZAxis");
 			pObj->SetWorldPos(worldX, worldY);
 			
-			u32 uObjID = pObj->GetID();
+			uint32_t uObjID = pObj->GetID();
 			pSector->AddObject( uObjID );
 			pObj->SetSector( pSector->m_uID );
 										
 			Vector3 vScale;
-			vScale.x = (f32)newWidth  / 8.0f;
+			vScale.x = (float)newWidth  / 8.0f;
 			vScale.y = vScale.x;
-			vScale.z = (f32)newHeight / 8.0f;
+			vScale.z = (float)newHeight / 8.0f;
 			pObj->SetScale(vScale);
 			
 			Vector3 vLoc;
-			vLoc.x =  (f32)xPos * fFP_Scale - 512.0f;
-			vLoc.z = -(f32)yPos * fFP_Scale + fTileHeight + vScale.z;
-			vLoc.y =  (f32)zPos * fFP_Scale + 512.0f;
+			vLoc.x =  (float)xPos * fFP_Scale - 512.0f;
+			vLoc.z = -(float)yPos * fFP_Scale + fTileHeight + vScale.z;
+			vLoc.y =  (float)zPos * fFP_Scale + 512.0f;
 			assert( vLoc.x >= -512.0f && vLoc.x <= 512.0f);
 			assert( vLoc.y >= -512.0f && vLoc.y <= 512.0f);
 			pObj->SetLoc(vLoc);
@@ -923,7 +923,7 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, u32 uLength, ch
 	return pSector;
 }
 
-Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& index, char *pData, const Vector3& vBlockLoc, Vector3& vStartTagLoc, bool bStartBlock, s32 worldX, s32 worldY, int blockType)
+Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, int& index, char *pData, const Vector3& vBlockLoc, Vector3& vStartTagLoc, bool bStartBlock, int32_t worldX, int32_t worldY, int blockType)
 {
 	//for now... fix...
 	int region = 300;
@@ -1029,7 +1029,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 	memcpy(obj_root_offs, &pData[index], obj_roots_size*4);
 	index += obj_roots_size*4;
 
-	f32 fFP_Scale = 1.0f / 4.0f;
+	float fFP_Scale = 1.0f / 4.0f;
 	pSector->m_Bounds[0].Set( FLT_MAX, FLT_MAX, FLT_MAX );
 	pSector->m_Bounds[1] = -pSector->m_Bounds[0];
 
@@ -1084,15 +1084,15 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 					pMeshObj->SetScale( Vector3(1,1,1) );
 
 					Vector3 vPos;
-					vPos.x =  (f32)object.xLoc * fFP_Scale + vBlockLoc.x;
-					vPos.z = -(f32)object.yLoc * fFP_Scale + vBlockLoc.z;
-					vPos.y =  (f32)object.zLoc * fFP_Scale + vBlockLoc.y;
+					vPos.x =  (float)object.xLoc * fFP_Scale + vBlockLoc.x;
+					vPos.z = -(float)object.yLoc * fFP_Scale + vBlockLoc.z;
+					vPos.y =  (float)object.zLoc * fFP_Scale + vBlockLoc.y;
 					pMeshObj->SetLoc( vPos );
 
 					Vector3 vAngles;
-					vAngles.x = (f32)obj3D.zAngle;
-					vAngles.y = (f32)obj3D.xAngle;
-					vAngles.z = (f32)obj3D.yAngle;
+					vAngles.x = (float)obj3D.zAngle;
+					vAngles.y = (float)obj3D.xAngle;
+					vAngles.z = (float)obj3D.yAngle;
 
 					assert( obj3D.ModelIndex < m_nModelCnt && obj3D.ModelIndex >= 0 );
 					pMeshObj->SetRenderComponent( m_apModels[obj3D.ModelIndex] );
@@ -1113,11 +1113,11 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 
 					pMeshObj->SetGameID( m_anMeshID[obj3D.ModelIndex] );
 
-					const f32 piOver2 = 1.5707963267948966192313216916398f;
+					const float piOver2 = 1.5707963267948966192313216916398f;
 					if ( objRecord == 22663 )
 					{
 						bStartFound = true;
-						f32 angle = vAngles.z * piOver2/512.0f;
+						float angle = vAngles.z * piOver2/512.0f;
 
 						//this is the dungeon entrace?
 						pMeshObj->GetLoc(vStartTagLoc);
@@ -1156,8 +1156,8 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 							pGameData->nTargetID = -1;
 							pGameData->nType	 = pActionRec->Type&0x0f;
 							pGameData->nAxis	 = pActionRec->DataEntry[0];
-							pGameData->Duration  = (float)( *((u16 *)&pActionRec->DataEntry[1]) ) / 16.0f;
-							pGameData->Delta     = (float)( *((u16 *)&pActionRec->DataEntry[3]) );
+							pGameData->Duration  = (float)( *((uint16_t *)&pActionRec->DataEntry[1]) ) / 16.0f;
+							pGameData->Delta     = (float)( *((uint16_t *)&pActionRec->DataEntry[3]) );
 
 							pGameData->origPos[0] = vPos.x;
 							pGameData->origPos[1] = vPos.y;
@@ -1169,7 +1169,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 
 							pGameData->fDelta = 0.0f;		//which direction to move in and how much per step.
 							pGameData->fAnim  = 0.0f;		//current animation state.
-							pGameData->bAnim  = XL_FALSE;	//is currently animating?
+							pGameData->bAnim  = false;	//is currently animating?
 
 							objTarget[objCount] = pActionRec->TargetOffset;
 						}
@@ -1203,8 +1203,8 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 						pMeshObj->action.pParent = NULL;
 						pMeshObj->action.Type = pActionRec->Type&0x0f;
 						pMeshObj->action.Axis = pActionRec->DataEntry[0];
-						pMeshObj->action.Duration = (f32)( *((unsigned short *)&pActionRec->DataEntry[1]) ) / 16.0f;
-						pMeshObj->action.Delta    = (f32)( *((unsigned short *)&pActionRec->DataEntry[3]) );
+						pMeshObj->action.Duration = (float)( *((unsigned short *)&pActionRec->DataEntry[1]) ) / 16.0f;
+						pMeshObj->action.Delta    = (float)( *((unsigned short *)&pActionRec->DataEntry[3]) );
 					}
 					else
 					{
@@ -1252,7 +1252,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 					}
 
 				#else
-					f32 fSpriteScale = 1.0f;
+					float fSpriteScale = 1.0f;
 
 					bool bVisible = true;
 					bool bHasGravity = false;
@@ -1270,9 +1270,9 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 							{
 								bStartFound = true;
 
-								vStartTagLoc.x =  (f32)object.xLoc * fFP_Scale + vBlockLoc.x;
-								vStartTagLoc.z = -(f32)object.yLoc * fFP_Scale + vBlockLoc.z;
-								vStartTagLoc.y =  (f32)object.zLoc * fFP_Scale + vBlockLoc.y;
+								vStartTagLoc.x =  (float)object.xLoc * fFP_Scale + vBlockLoc.x;
+								vStartTagLoc.z = -(float)object.yLoc * fFP_Scale + vBlockLoc.z;
+								vStartTagLoc.y =  (float)object.zLoc * fFP_Scale + vBlockLoc.y;
 							}
 							bVisible = false;
 						}
@@ -1330,16 +1330,16 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 					if ( bVisible )
 					{
 						bool bEmissive = false;
-						u32 w, h;
-						s32 ox, oy;
+						uint32_t w, h;
+						int32_t ox, oy;
 						if ( nMonsterID < 0 )
 						{
 							char szTexName[128];
 							MeshLoader_Daggerfall::BuildTextureName(szTexName, FileIndex);
 							TextureHandle hTex = TextureCache::GameFile_LoadTexture_TexList( TEXTURETYPE_IMG, 7, ARCHIVETYPE_NONE, "", szTexName, ImageIndex );
-							f32 fw, fh;
+							float fw, fh;
 							TextureCache::GetTextureSize(ox, oy, w, h, fw, fh);
-							s16 *pSpriteScale = (s16 *)TextureCache::GetTexExtraData();
+							int16_t *pSpriteScale = (int16_t *)TextureCache::GetTexExtraData();
 
 							assert( pSpriteScale[0] >= -256 && pSpriteScale[0] <= 256 );
 							assert( pSpriteScale[1] >= -256 && pSpriteScale[1] <= 256 );
@@ -1351,21 +1351,21 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 							Object *pObj = ObjectManager::CreateObject("Sprite_ZAxis");
 							pObj->SetWorldPos(worldX, worldY);
 							
-							u32 uObjID = pObj->GetID();
+							uint32_t uObjID = pObj->GetID();
 							pSector->AddObject( uObjID );
 							objCount++;
 							pObj->SetSector( pSector->m_uID );
 														
 							Vector3 vScale;
-							vScale.x = (f32)newWidth  / 8.0f;
+							vScale.x = (float)newWidth  / 8.0f;
 							vScale.y = vScale.x;
-							vScale.z = (f32)newHeight / 8.0f;
+							vScale.z = (float)newHeight / 8.0f;
 							pObj->SetScale(vScale);
 							
 							Vector3 vLoc;
-							vLoc.x =  (f32)object.xLoc * fFP_Scale + vBlockLoc.x;
-							vLoc.z = -(f32)object.yLoc * fFP_Scale + vBlockLoc.z;
-							vLoc.y =  (f32)object.zLoc * fFP_Scale + vBlockLoc.y;
+							vLoc.x =  (float)object.xLoc * fFP_Scale + vBlockLoc.x;
+							vLoc.z = -(float)object.yLoc * fFP_Scale + vBlockLoc.z;
+							vLoc.y =  (float)object.zLoc * fFP_Scale + vBlockLoc.y;
 							pObj->SetLoc(vLoc);
 
 							Sprite_ZAxis *pSprite = xlNew Sprite_ZAxis();
@@ -1377,10 +1377,10 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 
 							//texture index: 190 or 210 = lighting (emissive)
 							//DungeonLight_t *pLight = NULL;
-							static s8 _bLit190[] = { 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
-							static s8 _bLit200[] = { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-							static s8 _bLit202[] = { 0, 0, 1, 0, 0, 0, 0 };
-							static s8 _bLit210[] = { 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+							static int8_t _bLit190[] = { 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
+							static int8_t _bLit200[] = { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+							static int8_t _bLit202[] = { 0, 0, 1, 0, 0, 0, 0 };
+							static int8_t _bLit210[] = { 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 													 1, 1, 1, 1};
 							if ( (FileIndex == 190 && _bLit190[ImageIndex]) || (FileIndex == 200 && _bLit200[ImageIndex]) || 
 								 (FileIndex == 202 && _bLit202[ImageIndex]) || (FileIndex == 210 && _bLit210[ImageIndex]) )
@@ -1397,9 +1397,9 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 
 							/*DungeonSprite_t *pSprite = new DungeonSprite_t;
 							pSprite->pSprite = new Sprite();
-							pSprite->vPos.x =  (f32)object.xLoc * fFP_Scale + m_vPos.x;
-							pSprite->vPos.z = -(f32)object.yLoc * fFP_Scale + m_vPos.z;
-							pSprite->vPos.y =  (f32)object.zLoc * fFP_Scale + m_vPos.y;
+							pSprite->vPos.x =  (float)object.xLoc * fFP_Scale + m_vPos.x;
+							pSprite->vPos.z = -(float)object.yLoc * fFP_Scale + m_vPos.z;
+							pSprite->vPos.y =  (float)object.zLoc * fFP_Scale + m_vPos.y;
 							pSprite->bInterior = true;
 							pSprite->bVisible = true;
 
@@ -1447,9 +1447,9 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 							DynamicNPC *pMonster = new DynamicNPC( pWorld );
 														
 							Vector3 vPos;
-							vPos.x =  (f32)object.xLoc * fFP_Scale + m_vPos.x;
-							vPos.z = -(f32)object.yLoc * fFP_Scale + m_vPos.z;
-							vPos.y =  (f32)object.zLoc * fFP_Scale + m_vPos.y;
+							vPos.x =  (float)object.xLoc * fFP_Scale + m_vPos.x;
+							vPos.z = -(float)object.yLoc * fFP_Scale + m_vPos.z;
+							vPos.y =  (float)object.zLoc * fFP_Scale + m_vPos.y;
 							pMonster->SetPos(vPos);
 
 							pMonster->SetType( (unsigned int)nMonsterID, -1, bEnemiesActive );
@@ -1480,8 +1480,8 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 	}
 
 	//now resolve action records.
-	vector<u32>::iterator iObj = pSector->m_Objects.begin();
-	vector<u32>::iterator eObj = pSector->m_Objects.end();
+	vector<uint32_t>::iterator iObj = pSector->m_Objects.begin();
+	vector<uint32_t>::iterator eObj = pSector->m_Objects.end();
 	int idx=0;
 	for (; iObj != eObj; ++iObj)
 	{
@@ -1494,7 +1494,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 			MeshAction *pGameDataParent = (MeshAction *)pObj->GetGameData();
 
 			int idxTarget = 0;
-			vector<u32>::iterator iObjTarget = pSector->m_Objects.begin();
+			vector<uint32_t>::iterator iObjTarget = pSector->m_Objects.begin();
 			for (; iObjTarget != eObj; ++iObjTarget)
 			{
 				if ( objRecordID[idxTarget] == objTarget[idx] )
@@ -1527,11 +1527,11 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 		pObj->Init();
 	}
 
-	const f32 fLightRadius = 64.0f;
-	const f32 fTestRadius = (fLightRadius*0.95f)*(fLightRadius*0.95f);
+	const float fLightRadius = 64.0f;
+	const float fTestRadius = (fLightRadius*0.95f)*(fLightRadius*0.95f);
 	//combine lights.
 	int lightCnt = (int)pLights.size();
-	s8 *lightAdded = xlNew s8[lightCnt];
+	int8_t *lightAdded = xlNew int8_t[lightCnt];
 	memset(lightAdded, 0, lightCnt);
 	Vector3 aveLoc[16];
 	for (int l=0; l<lightCnt; l++)
@@ -1562,7 +1562,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 		}
 		if ( aveCnt > 1 )
 		{
-			cenAve = cenAve * (1.0f/(f32)aveCnt);
+			cenAve = cenAve * (1.0f/(float)aveCnt);
 			pLights[l]->m_vLoc = cenAve;
 		}
 	}
@@ -1591,7 +1591,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, u32 uLength, int& i
 		assert(pObj);
 
 		Vector3 vCen;
-		f32 fRadius = pObj->GetBoundingSphere(vCen);
+		float fRadius = pObj->GetBoundingSphere(vCen);
 
 		for (int l=0; l<(int)lightList.size(); l++)
 		{
