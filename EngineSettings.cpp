@@ -23,8 +23,10 @@ struct Common_Settings
     uint16_t flags;
     short resX;
     short resY;
+    int renderer;
 
-    Common_Settings() : szDataPath(""), flags(0), resX(0), resY(0)
+    Common_Settings()
+      : szDataPath(""), flags(0), resX(0), resY(0), renderer(EngineSettings::RENDERER_SOFT8)
     { }
 };
 
@@ -120,6 +122,20 @@ void LoadSettingsFromFile(Common_Settings &settings, std::istream &file)
             if(value == "true" || value == "1")
                 settings.flags |= EngineSettings::EMULATE_320x200;
         }
+        else if(key == "renderer")
+        {
+            for(size_t i = 0;i < value.size();i++)
+                value[i] = std::tolower(value[i]);
+
+            if(value == "opengl")
+                settings.renderer = EngineSettings::RENDERER_OPENGL;
+            else if(value == "soft32")
+                settings.renderer = EngineSettings::RENDERER_SOFT32;
+            else if(value == "soft8")
+                settings.renderer = EngineSettings::RENDERER_SOFT8;
+            else
+                fprintf(stderr, "Invalid renderer: %s\n", value.c_str());
+        }
     }
 }
 
@@ -194,6 +210,7 @@ bool EngineSettings::Load( const char *pszSettingsFile )
         }
 
         m_uFlags = commonSettings.flags;
+        m_nRenderer = commonSettings.renderer;
 
         return true;
     }
