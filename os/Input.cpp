@@ -87,6 +87,7 @@ void Input::SetKeyDown(s32 key)
 
 void Input::SetKeyUp(s32 key)
 {
+	key = s_OS_KeyMapping[key];
 	m_aKeyState[key] = 0;
 }
 
