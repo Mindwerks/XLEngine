@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.0.2)
 project(XLEngine)
 
 
+set(CMAKE_MODULE_PATH "${XLEngine_SOURCE_DIR}/cmake")
+
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING
         "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel."
@@ -17,6 +19,7 @@ include(CheckLibraryExists)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(DevIL REQUIRED)
+find_package(SDL2)
 find_package(X11)
 find_package(Threads)
 
@@ -118,17 +121,24 @@ else(WIN32)
 endif(WIN32)
 
 
-add_executable(XLEngine ${sources})
-target_link_libraries(XLEngine
-     GLEW::GLEW ${OPENGL_LIBRARIES} ${IL_LIBRARIES} enet Angelscript
-     Threads::Threads
+set(xlengine_include_dirs )
+set(xlengine_libraries
+    GLEW::GLEW ${OPENGL_LIBRARIES} ${IL_LIBRARIES} enet Angelscript Threads::Threads
 )
+if(SDL2_FOUND)
+    set(xlengine_libraries ${xlengine_libraries}  ${SDL2_LIBRARY})
+    set(xlengine_include_dirs ${xlengine_include_dirs}  ${SDL2_INCLUDE_DIR})
+endif(SDL2_FOUND)
 if(X11_FOUND)
-    target_link_libraries(XLEngine ${X11_LIBRARIES})
+    set(xlengine_libraries ${xlengine_libraries}  ${X11_LIBRARIES})
 endif(X11_FOUND)
 if(HAVE_LIBDL)
-    target_link_libraries(XLEngine dl)
+    set(xlengine_libraries ${xlengine_libraries}  dl)
 endif(HAVE_LIBDL)
+
+add_executable(XLEngine ${sources})
+target_include_directories(XLEngine PRIVATE ${xlengine_include_dirs})
+target_link_libraries(XLEngine PRIVATE ${xlengine_libraries})
 
 
 set(darkxl_sources
