@@ -123,6 +123,9 @@ else(WIN32)
 endif(WIN32)
 
 
+# This path is included globally, since XLEngine and all the games use it.
+include_directories(${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/angelscript/include)
+
 set(xlengine_include_dirs )
 set(xlengine_libraries
     GLEW::GLEW ${OPENGL_LIBRARIES} ${IL_LIBRARIES} enet Angelscript Threads::Threads
