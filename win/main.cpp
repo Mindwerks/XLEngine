@@ -127,7 +127,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	//We have to load the engine settings before created the window and setting up
 	//so that we can pick the correct resolution, fullscreen, etc.
 	char szSettingsFile[260];
-	sprintf(szSettingsFile, "%s/%s.set", szGame, szGame);
+	sprintf(szSettingsFile, "%s/%s.conf", szGame, szGame);
 	EngineSettings::SetGameDir(szGame);
 	EngineSettings::Load( szSettingsFile );
 	EngineSettings::SetStartMap( szMap );

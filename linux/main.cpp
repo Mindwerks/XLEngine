@@ -72,13 +72,27 @@ int main(int argc, char **argv)
     //We have to load the engine settings before created the window and setting up
     //so that we can pick the correct resolution, fullscreen, etc.
     {
-        std::string szSettingsFile = game_name;
-        szSettingsFile += '/';
-        szSettingsFile += game_name;
-        szSettingsFile += ".set";
+        std::string settingsFile;
+        const char *conf_dir = getenv("XDG_CONFIG_HOME");
+        if(conf_dir && conf_dir[0])
+            settingsFile = conf_dir;
+        else
+        {
+            const char *home_dir = getenv("HOME");
+            if(home_dir && home_dir[0])
+            {
+                settingsFile = home_dir;
+                settingsFile += "/.config/";
+            }
+        }
+        if(!settingsFile.empty() && settingsFile.back() != '/')
+            settingsFile += '/';
+        settingsFile += "XLEngine/";
+        settingsFile += game_name;
+        settingsFile += ".conf";
 
         EngineSettings::SetGameDir(game_name);
-        EngineSettings::Load(szSettingsFile.c_str());
+        EngineSettings::Load(settingsFile.c_str());
     }
 
   /*** (1) open a connection to the X server ***/
