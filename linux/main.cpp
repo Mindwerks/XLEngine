@@ -132,11 +132,34 @@ int main(int argc, char **argv)
         m_pEngine->InitGame(game_name);
     }
 
+    SDL_SetRelativeMouseMode(SDL_FALSE);
+    Input::EnableMouseLocking(XL_FALSE);
+    bool MouseWasLocked = false;
+
     float fDeltaTime = 0.0f;
     float fMaxDelta  = 0.1f;
     bool bDone = false;
     while(!bDone)
     {
+        if(Input::LockMouse() && (g_bHasFocus || g_bFullScreen))
+        {
+            if(!MouseWasLocked)
+            {
+                // FIXME: At least DaggerXL doesn't release the mouse once it
+                // gets in-game, and there's no way to close the game without
+                // alt-tabbing away and being careful. So for now, just don't
+                // grab the mouse.
+                //SDL_SetRelativeMouseMode(SDL_TRUE);
+                MouseWasLocked = true;
+            }
+        }
+        else if(MouseWasLocked)
+        {
+            SDL_SetRelativeMouseMode(SDL_FALSE);
+            SDL_ShowCursor(SDL_TRUE);
+            MouseWasLocked = false;
+        }
+
         SDL_Event event;
         while(SDL_PollEvent(&event) == 1)
         {
@@ -176,6 +199,13 @@ int main(int argc, char **argv)
                         Input::SetKeyUp(XL_RBUTTON);
                     else
                         Input::SetKeyUp(XL_MBUTTON+event.button.button-2);
+                    break;
+
+                case SDL_MOUSEMOTION:
+                    if(MouseWasLocked)
+                        Input::AddMouseDelta(event.motion.xrel, event.motion.yrel);
+                    else
+                        Input::SetMousePos(event.motion.x, event.motion.y);
                     break;
 
                 case SDL_QUIT:
