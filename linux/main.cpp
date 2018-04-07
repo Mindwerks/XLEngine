@@ -1,55 +1,54 @@
-/* A simple program to show how to set up an X window for OpenGL rendering.
- * X86 compilation: gcc -o -L/usr/X11/lib   main main.c -lGL -lX11
- * X64 compilation: gcc -o -L/usr/X11/lib64 main main.c -lGL -lX11
- */
+
 #include <stdio.h>
 #include <stdlib.h>
-
-#include <GL/glew.h>
-#include <GL/glx.h>    /* this includes the necessary X headers */
-#include <GL/gl.h>
-
-#include <X11/X.h>    /* X11 constant (e.g. TrueColor) */
-#include <X11/keysym.h>
 
 #include <time.h>
 #include <unistd.h>
 #include <string.h>
+
+#include "SDL.h"
 
 #include "../Engine.h"
 #include "../EngineSettings.h"
 #include "../os/Input.h"
 #include "../os/Clock.h"
 
-static int dblBuf[]  = {GLX_RGBA, GLX_RED_SIZE, 8, GLX_GREEN_SIZE, 8, GLX_BLUE_SIZE, 8, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None};
 
-static Display   *dpy;
-static Window     win;
-
-static Engine *m_pEngine;
-
-static bool g_bFullScreen=false;
-static bool g_bHasFocus=true;
-
-static void fatalError(const char *message)
+namespace
 {
-  fprintf(stderr, "main: %s\n", message);
-  exit(1);
+
+SDL_Window *win;
+SDL_GLContext glctx;
+
+Engine *m_pEngine;
+
+bool g_bFullScreen=false;
+bool g_bHasFocus=true;
+
+void fatalError(const char *message)
+{
+    fprintf(stderr, "main: %s\n", message);
+    exit(1);
 }
+
+void checkSDLError(int ret)
+{
+    if(ret != 0)
+    {
+        char msg[256];
+        snprintf(msg, sizeof(msg), "SDL error: %s", SDL_GetError());
+        fatalError(msg);
+    }
+}
+
+} // namespace
+
 
 int main(int argc, char **argv)
 {
-  const char          *game_name = NULL;
-  XVisualInfo         *vi;
-  Colormap             cmap;
-  XSetWindowAttributes swa;
-  GLXContext           cx;
-  XEvent               event;
-  int                  dummy;
-  int                  i;
-  Atom wmDelete;
+  const char *game_name = NULL;
 
-  for(i = 1;i < argc;i++)
+  for(int i = 1;i < argc;i++)
   {
     if(strcmp(argv[i], "-g") == 0)
     {
@@ -95,179 +94,115 @@ int main(int argc, char **argv)
         EngineSettings::Load(settingsFile.c_str());
     }
 
-  /*** (1) open a connection to the X server ***/
-  dpy = XOpenDisplay(NULL);
-  if (dpy == NULL)
-    fatalError("could not open display");
+    // Init everything but audio
+    SDL_Init(SDL_INIT_EVERYTHING & ~SDL_INIT_AUDIO);
 
-  /*** (2) make sure OpenGL's GLX extension supported ***/
-  if(!glXQueryExtension(dpy, &dummy, &dummy))
-    fatalError("X server has no OpenGL GLX extension");
+    Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+    int screen = 0;
+    int pos_x = SDL_WINDOWPOS_CENTERED_DISPLAY(screen);
+    int pos_y = SDL_WINDOWPOS_CENTERED_DISPLAY(screen);
+    int width = EngineSettings::GetScreenWidth();
+    int height = EngineSettings::GetScreenHeight();
 
-  /*** (3) find an appropriate visual ***/
-  /* find an OpenGL-capable RGB visual with depth buffer */
-  vi = glXChooseVisual(dpy, DefaultScreen(dpy), dblBuf);
+    checkSDLError(SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8));
+    checkSDLError(SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8));
+    checkSDLError(SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8));
+    checkSDLError(SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8));
+    checkSDLError(SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24));
+    checkSDLError(SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, SDL_TRUE));
 
-  /*** (4) create an OpenGL rendering context  ***/
-  /* create an OpenGL rendering context */
-  cx = glXCreateContext(dpy, vi, /* no shared dlists */ None, /* direct rendering if possible */ GL_TRUE);
-  if (cx == NULL)
-    fatalError("could not create rendering context");
+    win = SDL_CreateWindow("XL Engine", pos_x, pos_y, width, height, flags);
+    if(!win)
+        fatalError("Failed to create window");
 
-  /*** (5) create an X window with the selected visual ***/
-  /* create an X colormap since probably not using default visual */
-  cmap = XCreateColormap(dpy, RootWindow(dpy, vi->screen), vi->visual, AllocNone);
-  swa.colormap = cmap;
-  swa.border_pixel = 0;
-  swa.event_mask = KeyPressMask | KeyReleaseMask | ExposureMask
-                 | ButtonPressMask | ButtonReleaseMask | StructureNotifyMask;
-  win = XCreateWindow(dpy, RootWindow(dpy, vi->screen), 0, 0,
-                      EngineSettings::GetScreenWidth(), EngineSettings::GetScreenHeight(),
-                      0, vi->depth, InputOutput, vi->visual,
-                      CWBorderPixel | CWColormap | CWEventMask, &swa);
-
-  /* only set window title and handle wm_delete_events if in windowed mode */
-  wmDelete = XInternAtom(dpy, "WM_DELETE_WINDOW", True);
-  XSetWMProtocols(dpy, win, &wmDelete, 1);
-
-  XSetStandardProperties(dpy, win, "XL Engine", "XL Engine", None, argv, argc, NULL);
-
-  XMapRaised(dpy, win);
-
-  /*** (6) bind the rendering context to the window ***/
-  glXMakeCurrent(dpy, win, cx);
-
-  /*** (7) request the X window to be displayed on the screen ***/
-  XMapWindow(dpy, win);
-
-//Setup Engine with Linux specific data.
-  m_pEngine = new Engine();
-  void *linux_param[] = { (void*)dpy, (void*)win };
-  m_pEngine->Init(linux_param, 2, EngineSettings::GetScreenWidth(), EngineSettings::GetScreenHeight());
-  m_pEngine->InitGame( game_name );
-
-  char buffer[32];
-  int bufsize=32;
-  KeySym keysym;
-  XComposeStatus compose;
-  int count;
-  float fDeltaTime = 0.0f;
-  float fMaxDelta  = 0.1f;
-
-  /*** (9) dispatch X events ***/
-  bool bDone = false;
-  while ( !bDone )
-  {
-    while(XPending(dpy) > 0)
+    glctx = SDL_GL_CreateContext(win);
+    if(!glctx)
     {
-      XNextEvent(dpy, &event);
-      switch (event.type)
-      {
-        case Expose:
-            if (event.xexpose.count != 0)
-                break;
-            Clock::StartTimer();
-            {
-                m_pEngine->Loop(fDeltaTime, g_bHasFocus||g_bFullScreen);
-            }
-            fDeltaTime = Clock::GetDeltaTime(fMaxDelta);
-            break;
-        case KeyPress:
-        {
-          /* It is necessary to convert the keycode to a
-           * keysym before checking if it is an escape */
-          XKeyEvent *kevent = (XKeyEvent *) &event;
-          count = XLookupString(kevent, buffer, bufsize, &keysym, &compose);
-
-          if ( count > 0 )
-          {
-            Input::SetKeyDown( (int)keysym&0xff );
-            if ( keysym >= 32 && keysym < 128 )
-            {
-                Input::SetCharacterDown( (char)keysym );
-            }
-          }
-          break;
-        }
-        case KeyRelease:
-        {
-          /* It is necessary to convert the keycode to a
-           * keysym before checking if it is an escape */
-          XKeyEvent *kevent = (XKeyEvent *) &event;
-          count = XLookupString(kevent, buffer, bufsize, &keysym, &compose);
-
-          if ( count > 0 )
-            Input::SetKeyUp( (int)keysym&0xff );
-          break;
-        }
-        case ButtonPress:
-          switch (event.xbutton.button)
-          {
-            case 1:
-              Input::SetKeyDown( XL_LBUTTON );
-              break;
-            case 2:
-              Input::SetKeyDown( XL_RBUTTON );
-              break;
-            default:
-              if ( event.xbutton.button > 0 )
-              {
-                Input::SetKeyDown( XL_MBUTTON+event.xbutton.button-3 );
-              }
-              break;
-          }
-          break;
-        case ButtonRelease:
-          switch (event.xbutton.button)
-          {
-            case 1:
-              Input::SetKeyUp( XL_LBUTTON );
-              break;
-            case 2:
-              Input::SetKeyUp( XL_RBUTTON );
-              break;
-            default:
-              if ( event.xbutton.button > 0 )
-              {
-                Input::SetKeyUp( XL_MBUTTON+event.xbutton.button-3 );
-              }
-              break;
-          }
-          break;
-        case ClientMessage:
-            if (strcmp(XGetAtomName(dpy, event.xclient.message_type), "WM_PROTOCOLS") == 0)
-            {
-                bDone = True;
-            }
-            break;
-      }
-    }; /* loop to compress events */
-    Clock::StartTimer();
-    {
-        m_pEngine->Loop(fDeltaTime, g_bHasFocus||g_bFullScreen);
+        SDL_DestroyWindow(win);
+        win = nullptr;
+        fatalError("Failed to create OpenGL context");
     }
-    fDeltaTime = Clock::GetDeltaTime(fMaxDelta);
 
-    usleep(1000);
-  }
+    //Setup Engine with Linux specific data.
+    {
+        m_pEngine = new Engine();
+        void *linux_param[] = { (void*)win };
+        m_pEngine->Init(linux_param, 1, EngineSettings::GetScreenWidth(),
+                        EngineSettings::GetScreenHeight());
+        m_pEngine->InitGame(game_name);
+    }
 
-  if ( m_pEngine )
-  {
+    float fDeltaTime = 0.0f;
+    float fMaxDelta  = 0.1f;
+    bool bDone = false;
+    while(!bDone)
+    {
+        SDL_Event event;
+        while(SDL_PollEvent(&event) == 1)
+        {
+            switch(event.type)
+            {
+                case SDL_KEYDOWN:
+                    if(event.key.repeat)
+                        break;
+                    Input::SetKeyDown(event.key.keysym.sym&0xff);
+                    break;
+                case SDL_KEYUP:
+                    if(event.key.repeat)
+                        break;
+                    Input::SetKeyUp(event.key.keysym.sym&0xff);
+                    break;
+                case SDL_TEXTINPUT:
+                    // This ignores non-ASCII-7 characters (Unicode/UTF-8)
+                    for(size_t i = 0;i < sizeof(event.text.text) && event.text.text[i];i++)
+                    {
+                        if(event.text.text[i] >= 32)
+                            Input::SetCharacterDown(event.text.text[i]);
+                    }
+                    break;
+
+                case SDL_MOUSEBUTTONDOWN:
+                    if(event.button.button == 0)
+                        Input::SetKeyDown(XL_LBUTTON);
+                    else if(event.button.button == 1)
+                        Input::SetKeyDown(XL_RBUTTON);
+                    else
+                        Input::SetKeyDown(XL_MBUTTON+event.button.button-2);
+                    break;
+                case SDL_MOUSEBUTTONUP:
+                    if(event.button.button == 0)
+                        Input::SetKeyUp(XL_LBUTTON);
+                    else if(event.button.button == 1)
+                        Input::SetKeyUp(XL_RBUTTON);
+                    else
+                        Input::SetKeyUp(XL_MBUTTON+event.button.button-2);
+                    break;
+
+                case SDL_QUIT:
+                    bDone = true;
+                    break;
+            }
+        }
+
+        Clock::StartTimer();
+        {
+            m_pEngine->Loop(fDeltaTime, g_bHasFocus||g_bFullScreen);
+        }
+        fDeltaTime = Clock::GetDeltaTime(fMaxDelta);
+
+        usleep(1000);
+    }
+
     delete m_pEngine;
-  }
-  m_pEngine = NULL;
+    m_pEngine = NULL;
 
-    if( cx )
-    {
-        if( !glXMakeCurrent(dpy, None, NULL))
-        {
-            printf("Could not release drawing context.\n");
-        }
-        /* destroy the context */
-        glXDestroyContext(dpy, cx);
-        cx = NULL;
-    }
-    XCloseDisplay(dpy);
+    SDL_GL_MakeCurrent(0, 0);
+    SDL_GL_DeleteContext(glctx);
+    glctx = 0;
+    SDL_DestroyWindow(win);
+    win = 0;
 
-  return 0;
+    SDL_Quit();
+
+    return 0;
 }
