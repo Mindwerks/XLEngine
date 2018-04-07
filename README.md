@@ -11,6 +11,7 @@ Dependancies
 * DevIL (libdevil-dev) Cross-platform image loading and manipulation toolkit
 * enet (libenet-dev) Thin network communication layer on top of UDP
 * GLEW (libglew-dev) OpenGL Extension Wrangler Library
+* SDL2 (libsdl2-dev) Cross-platform low-level I/O access
 * cmake
 
 
