@@ -25,6 +25,7 @@ class Driver3D_OGL : public IDriver3D
 		void SetWorldMatrix(Matrix *pMtx, int32_t worldX, int32_t worldY);
 		void SetViewMatrix(Matrix *pMtx, Vector3 *pLoc, Vector3 *pDir);
 		void SetProjMtx(Matrix *pMtx);
+        void SetCamera(Camera *pCamera);
 
         void ChangeWindowSize(int32_t w, int32_t h);
 
@@ -67,6 +68,8 @@ class Driver3D_OGL : public IDriver3D
 		bool ApplyOpaqueSort() { return true; }
 		bool ApplyTransSort()  { return true; }
 
+        Camera *GetCamera() { return m_pRenderCamera; }
+
     protected:
 
 		void GenerateMips(uint32_t uWidth, uint32_t uHeight, uint8_t *pData);
@@ -74,6 +77,8 @@ class Driver3D_OGL : public IDriver3D
     private:
 		uint32_t m_Textures[16384];
 		uint32_t m_uTextureCnt;
+
+        Camera *m_pRenderCamera;
 };
 
 #endif // DRIVER3D_OGL_H

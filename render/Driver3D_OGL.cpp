@@ -53,7 +53,7 @@ Matrix *_prevWorldMtxPtr = NULL;
 
 Vector4 _prevColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-Driver3D_OGL::Driver3D_OGL() : IDriver3D()
+Driver3D_OGL::Driver3D_OGL() : IDriver3D(), m_pRenderCamera(0)
 {
 	m_uTextureCnt = 0;
 }
@@ -295,6 +295,11 @@ void Driver3D_OGL::SetProjMtx(Matrix *pMtx)
 {
 	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 	glLoadMatrixf( pMtx->GetFloatPtr() );
+}
+
+void Driver3D_OGL::SetCamera(Camera *pCamera)
+{
+    m_pRenderCamera = pCamera;
 }
 
 /************** TEXTURE SUPPORT ******************/
