@@ -9,14 +9,14 @@ class Vector4
 {
 public:
 	Vector4(void) { x = 0.0f; y = 0.0f; z = 0.0f; w = 0.0f; }
-	Vector4(f32 _x, f32 _y, f32 _z, f32 _w) { x = _x; y = _y; z = _z; w = _w; }
+	Vector4(float _x, float _y, float _z, float _w) { x = _x; y = _y; z = _z; w = _w; }
 	~Vector4(void) {;}
 
-	f32 Normalize();
-	f32 Normalize3();
-	f32 Length()
+	float Normalize();
+	float Normalize3();
+	float Length()
 	{
-		f32 d2 = x*x + y*y + z*z + w*w;
+		float d2 = x*x + y*y + z*z + w*w;
 		if ( d2 > 0.000001f )
 		{
 			return sqrtf(d2);
@@ -24,9 +24,9 @@ public:
 		return 0.0f;
 	}
 
-	f32 Dot(Vector4& A) { return this->x*A.x + this->y*A.y + this->z*A.z + this->w*A.w; }
+	float Dot(Vector4& A) { return this->x*A.x + this->y*A.y + this->z*A.z + this->w*A.w; }
 
-	void Set(f32 _x, f32 _y, f32 _z, f32 _w) { x = _x; y = _y; z = _z; w = _w; }
+	void Set(float _x, float _y, float _z, float _w) { x = _x; y = _y; z = _z; w = _w; }
 
 	Vector3& v3() { m_v3.Set(x, y, z); return m_v3; }
 
@@ -35,7 +35,7 @@ public:
 	inline bool operator!=(Vector4& other) const { return (x!=other.x || y!=other.y || z!=other.z || w!=other.w) ? true : false; }
 	inline bool operator!=(const Vector4& other) const { return (x!=other.x || y!=other.y || z!=other.z || w!=other.w) ? true : false; }
 
-	f32 x, y, z, w;
+	float x, y, z, w;
 	Vector3 m_v3;
 
 	static Vector4 One;

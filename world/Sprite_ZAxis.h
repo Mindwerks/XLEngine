@@ -16,9 +16,9 @@ public:
 	Sprite_ZAxis();
 	virtual ~Sprite_ZAxis(){};
 
-	void Render(Object *pObj, IDriver3D *pDriver, f32 fIntensity, const Vector3& vOffset);
+	void Render(Object *pObj, IDriver3D *pDriver, float fIntensity, const Vector3& vOffset);
 	void SetUV_Flip(bool bFlipX, bool bFlipY, bool bFlipAxis=false) { m_aFlip[0] = bFlipX?1:0; m_aFlip[1] = bFlipY?1:0; m_aFlip[2] = bFlipAxis?1:0; }
-	void SetAlpha(f32 fAlpha=1.0f) { m_fAlpha = fAlpha; }
+	void SetAlpha(float fAlpha=1.0f) { m_fAlpha = fAlpha; }
 	void AddFX_Frame(TextureHandle frameTex, uint32_t uWidth, uint32_t uHeight)
 	{
 		FX_Frame frame;
@@ -30,7 +30,7 @@ public:
 
 	//Oriented Sprite specific functions.
 	void SetTextureHandle(TextureHandle hTex) { m_hTex = hTex; }
-	void SetBaseIntensity(f32 fBaseItens) { m_fBaseItens = fBaseItens; }
+	void SetBaseIntensity(float fBaseItens) { m_fBaseItens = fBaseItens; }
 
 	void SetFlag(uint32_t uFlag) { m_uFlags |= uFlag; }
 	bool IsFlagSet(uint32_t uFlag) { return (m_uFlags&uFlag)!=0; }
@@ -55,8 +55,8 @@ private:
 	int32_t m_nFrameDelay;
 	uint8_t m_aFlip[3];
 	uint8_t m_uPad;
-	f32 m_fBaseItens;
-	f32 m_fAlpha;
+	float m_fBaseItens;
+	float m_fAlpha;
 };
 
 #endif //SPRITE_ZAXIS_H

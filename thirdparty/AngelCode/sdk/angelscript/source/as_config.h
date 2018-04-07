@@ -952,7 +952,7 @@
 #ifdef AS_64BIT_PTR
 	#define AS_PTR_SIZE  2
 	#define asPTRWORD    asQWORD
-	#define asBC_RDSPTR  asBC_RDint8_t
+	#define asBC_RDSPTR  asBC_RDS8
 #else
 	#define AS_PTR_SIZE  1
 	#define asPTRWORD    asDWORD

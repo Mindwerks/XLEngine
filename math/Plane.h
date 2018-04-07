@@ -14,16 +14,16 @@ typedef enum
 class Plane
 {
 public:
-	inline Plane(f32 fA=0.0f, f32 fB=0.0f, f32 fC=0.0f, f32 fD=0.0f) { a = fA; b = fB; c = fC; d = fD; }
+	inline Plane(float fA=0.0f, float fB=0.0f, float fC=0.0f, float fD=0.0f) { a = fA; b = fB; c = fC; d = fD; }
 
-	f32 Normalize();
+	float Normalize();
 
-	inline f32 Distance(Vector3& vPt) const
+	inline float Distance(Vector3& vPt) const
 	{
 		return a*vPt.x + b*vPt.y + c*vPt.z + d;
 	}
 
-	inline f32 Dot(Vector3& vPt) const
+	inline float Dot(Vector3& vPt) const
 	{
 		return a*vPt.x + b*vPt.y + c*vPt.z;
 	}
@@ -36,7 +36,7 @@ public:
 
 	void FillVec4(Vector4& rvVec) const { rvVec.Set(a, b, c, d); }
 
-	f32 a, b, c, d;
+	float a, b, c, d;
 };
 
 #endif //PLANE_H

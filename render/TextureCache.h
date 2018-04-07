@@ -20,8 +20,8 @@ class TextureCache
 		int32_t nOffsY;
 		uint32_t uWidth;
 		uint32_t uHeight;
-		f32 fRelSizeX;
-		f32 fRelSizeY;
+		float fRelSizeX;
+		float fRelSizeY;
 		void *pExtraData;
 	};
 	typedef map<string, Texture> TextureMap;
@@ -40,7 +40,7 @@ public:
 	static TextureHandle LoadTextureFromMem_Pal(const uint8_t *pImgBuffer, uint32_t uPalIndex, uint32_t width, uint32_t height, const string& sName, bool bGenMips=true);
 	static TextureHandle LoadTextureFromMem(const uint8_t *pImgBuffer, uint32_t width, uint32_t height, bool bGenMips=true);
 	static void FreeTexture(TextureHandle hTex);
-	static void GetTextureSize( int32_t& nOffsX, int32_t& nOffsY, uint32_t& uTexWidth, uint32_t& uTexHeight, f32& fRelSizeX, f32& fRelSizeY );
+	static void GetTextureSize( int32_t& nOffsX, int32_t& nOffsY, uint32_t& uTexWidth, uint32_t& uTexHeight, float& fRelSizeX, float& fRelSizeY );
 	static void *GetTexExtraData();
 
 private:
@@ -55,8 +55,8 @@ private:
 	static int32_t m_nPrevTexOffsY;
 	static uint32_t m_uPrevTexWidth;
 	static uint32_t m_uPrevTexHeight;
-	static f32 m_fRelSizeX;
-	static f32 m_fRelSizeY;
+	static float m_fRelSizeX;
+	static float m_fRelSizeY;
 	static void *m_pPrevExtraData;
 };
 

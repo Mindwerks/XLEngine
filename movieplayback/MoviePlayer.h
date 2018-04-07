@@ -15,7 +15,7 @@ public:
 	virtual void Stop() {};
 
 	virtual bool Update() {return false;}
-	virtual void Render(f32 fDeltaTime) {};
+	virtual void Render(float fDeltaTime) {};
 
 	bool IsPlaying() { return m_bPlaying; }
 

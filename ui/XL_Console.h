@@ -23,7 +23,7 @@ public:
 	static bool IsChatActive();
 
 	static void SetGameInfo(const string& gameName, int32_t versionMinor, int32_t versionMajor) { s_pConsole->SetGameInfo(gameName, versionMinor, versionMajor); }
-	static void SetConsoleColor(f32 fRed, f32 fGreen, f32 fBlue, f32 fAlpha);
+	static void SetConsoleColor(float fRed, float fGreen, float fBlue, float fAlpha);
 
 private:
 	static Console *s_pConsole;

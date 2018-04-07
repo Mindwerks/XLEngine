@@ -34,23 +34,23 @@ public:
 
 	bool Load(char *pData, int32_t len, bool bUseProperOffs=false);
 	bool LoadDELT(char *pData, int32_t len, bool bUseProperOffs=false);
-	void SetScale(f32 sx=1.0f, f32 sy=1.0f) { m_fScaleX = sx; m_fScaleY = sy; }
-	void Render(int32_t frame, f32 x=0.0f, f32 y=0.0f, f32 maxX=1.0f, f32 minY=0.0f, f32 dU=0.0f, f32 dV=0.0f, bool bDistort=false);
-	void GetFrameExtents(int32_t frame, f32 x, f32 y, int32_t& frameX0, int32_t& frameY0, int32_t& frameWidth, int32_t& frameHeight);
+	void SetScale(float sx=1.0f, float sy=1.0f) { m_fScaleX = sx; m_fScaleY = sy; }
+	void Render(int32_t frame, float x=0.0f, float y=0.0f, float maxX=1.0f, float minY=0.0f, float dU=0.0f, float dV=0.0f, bool bDistort=false);
+	void GetFrameExtents(int32_t frame, float x, float y, int32_t& frameX0, int32_t& frameY0, int32_t& frameWidth, int32_t& frameHeight);
 
 	void SetOffsScale(float sx, float sy);
 	int32_t GetFrameCount() { return m_nNumDelts; }
 private:
 	TextureHandle m_hTex[256];
-	f32 m_Width[256];
-	f32 m_Height[256];
-	f32 m_OffsX[256];
-	f32 m_OffsY[256];
+	float m_Width[256];
+	float m_Height[256];
+	float m_OffsX[256];
+	float m_OffsY[256];
 
-	f32 m_u1[256];
-	f32 m_v1[256];
+	float m_u1[256];
+	float m_v1[256];
 
-	f32 m_fScaleX, m_fScaleY;
+	float m_fScaleX, m_fScaleY;
 	int32_t m_nNumDelts;
 
 	IDriver3D *m_pDriver;

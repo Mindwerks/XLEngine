@@ -69,7 +69,7 @@ void Logic::Update(Object *parent)
 	}
 }
 
-void Logic::SendMessage(Object *parent, uint32_t uMsgID, f32 fValue)
+void Logic::SendMessage(Object *parent, uint32_t uMsgID, float fValue)
 {
 	if ( uMsgID & m_uMsgMask )
 	{
@@ -84,8 +84,8 @@ void Logic::SendMessage(Object *parent, uint32_t uMsgID, f32 fValue)
 			ScriptArgument paramList[2];
 			paramList[0].uType  = SC_ARG_uint32_t;
 			paramList[0].arguint32_t = uMsgID;
-			paramList[1].uType  = SC_ARG_F32;
-			paramList[1].argF32 = fValue;
+			paramList[1].uType  = SC_ARG_float;
+			paramList[1].argfloat = fValue;
 
 			ScriptSystem::ExecuteFunc(m_Callbacks[ LCB_MESSAGE ].scriptCB, 2, paramList);
 		}

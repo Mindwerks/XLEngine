@@ -19,8 +19,8 @@ int32_t TextureCache::m_nPrevTexOffsX = 0;
 int32_t TextureCache::m_nPrevTexOffsY = 0;
 uint32_t TextureCache::m_uPrevTexWidth = 0;
 uint32_t TextureCache::m_uPrevTexHeight= 0;
-f32 TextureCache::m_fRelSizeX     = 1.0f;
-f32 TextureCache::m_fRelSizeY	  = 1.0f;
+float TextureCache::m_fRelSizeX     = 1.0f;
+float TextureCache::m_fRelSizeY	  = 1.0f;
 void *TextureCache::m_pPrevExtraData = NULL;
 string TextureCache::m_SavedPath;
 
@@ -138,8 +138,8 @@ TextureHandle TextureCache::LoadTextureFromMem(const uint8_t *pImgBuffer, uint32
 		m_uPrevTexHeight = height;
 
 		//uint32_t wr = Math::RoundNextPow2(width), hr = Math::RoundNextPow2(height);
-		m_fRelSizeX = 1.0f;//(f32)width  / (f32)wr;
-		m_fRelSizeY = 1.0f;//(f32)height / (f32)hr;
+		m_fRelSizeX = 1.0f;//(float)width  / (float)wr;
+		m_fRelSizeY = 1.0f;//(float)height / (float)hr;
 
 		return uTexHandle;
 	}
@@ -474,7 +474,7 @@ void TextureCache::FreeTexture(TextureHandle hTex)
 	m_pDriver->FreeTexture( hTex );
 }
 
-void TextureCache::GetTextureSize( int32_t& nOffsX, int32_t& nOffsY, uint32_t& uTexWidth, uint32_t& uTexHeight, f32& fRelSizeX, f32& fRelSizeY )
+void TextureCache::GetTextureSize( int32_t& nOffsX, int32_t& nOffsY, uint32_t& uTexWidth, uint32_t& uTexHeight, float& fRelSizeX, float& fRelSizeY )
 {
 	nOffsX	   = m_nPrevTexOffsX;
 	nOffsY	   = m_nPrevTexOffsY;

@@ -51,7 +51,7 @@ public:
 	};
 
 	typedef void (*LFunc_ActivateCB)(LevelFunc *, int32_t, int32_t, bool);
-	typedef void (*LFunc_SetValueCB)(LevelFunc *, int32_t, f32, bool);
+	typedef void (*LFunc_SetValueCB)(LevelFunc *, int32_t, float, bool);
 
 	struct ClientObject
 	{
@@ -68,14 +68,14 @@ public:
 	void SetSetValueCB( LevelFunc::LFunc_SetValueCB pCB ) { m_SetValueCB = pCB; }
 
 	//Level Load
-	void AddState(f32 value, int32_t type=ST_TIME, int32_t delay=240);
+	void AddState(float value, int32_t type=ST_TIME, int32_t delay=240);
 	void AddClient(LevelFunc *pFunc)
 	{
 		m_Clients.push_back( pFunc );
 	}
 	void AddClientObj(Object *pObj, uint32_t uFlags);
-	void SetSpeed(f32 speed) { m_fSpeed = speed; }
-	void SetAccel(f32 accel=0.0f) { m_fAccel = accel; }
+	void SetSpeed(float speed) { m_fSpeed = speed; }
+	void SetAccel(float accel=0.0f) { m_fAccel = accel; }
 	
 	//API
 	//Override this function for triggers.
@@ -85,7 +85,7 @@ public:
 			 m_ActivateCB(this, mask, items, bForce);
 	}
 	//Override for sector effects.
-	void SetValue(int32_t nSector, f32 value, bool bInstant=false)
+	void SetValue(int32_t nSector, float value, bool bInstant=false)
 	{
 		if ( m_SetValueCB )
 		  	 m_SetValueCB(this, nSector, value, bInstant);
@@ -111,7 +111,7 @@ public:
 protected:
 	struct State
 	{
-		f32 value;
+		float value;
 		int32_t delay;
 		uint8_t  type;
 	};
@@ -134,12 +134,12 @@ protected:
 	int32_t m_nEvent;
 	int32_t m_nDelay;
 
-	f32 m_fInterp;
-	f32 m_fDelta;
-	f32 m_fSpeed;
-	f32 m_fAccel;
-	f32 m_fVel;
-	f32 m_fScale;
+	float m_fInterp;
+	float m_fDelta;
+	float m_fSpeed;
+	float m_fAccel;
+	float m_fVel;
+	float m_fScale;
 
 	Vector3 m_vDir;
 	Vector3 m_vPivot;

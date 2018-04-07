@@ -23,7 +23,7 @@ public:
 	static int32_t StartMovie(const char *pszFile, uint32_t uFlags, int32_t nSpeed);
 	static int32_t UpdateMovie();
 	static void StopMovie(void);
-	static void RenderMovie(f32 fDeltaTime);
+	static void RenderMovie(float fDeltaTime);
 
 private:
 	static map<string, MoviePlayer *> m_MoviePlayers;

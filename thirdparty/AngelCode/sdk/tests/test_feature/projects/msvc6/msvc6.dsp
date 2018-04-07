@@ -506,7 +506,7 @@ SOURCE=..\..\source\testexecutestring.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\source\testexecutethiint32_tmixedargs.cpp
+SOURCE=..\..\source\testexecutethis32mixedargs.cpp
 # End Source File
 # Begin Source File
 

@@ -20,8 +20,8 @@
 #include <stdio.h>
 #include <assert.h>
 
-const f32 m_fWorldToTexel_X = 8.0f;
-const f32 m_fWorldToTexel_Z = 8.0f;
+const float m_fWorldToTexel_X = 8.0f;
+const float m_fWorldToTexel_Z = 8.0f;
 
 #define MAX_WALLS 32768
 
@@ -215,8 +215,8 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, uint8
 		Parser::SearchKeyword_int32_t("TEXTURES", nTex);
 
 		TextureHandle ahLevelTex[1024];
-		f32 afTexScaleX[1024];
-		f32 afTexScaleY[1024];
+		float afTexScaleX[1024];
+		float afTexScaleY[1024];
 		uint32_t aTexWidth[1024];
 		uint32_t aTexHeight[1024];
 
@@ -241,15 +241,15 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, uint8
 
 			ahLevelTex[t] = TextureCache::GameFile_LoadTexture(TEXTURETYPE_PCX, 0, ARCHIVETYPE_LAB, "OLTEX.LAB", szTexName, true);
 			uint32_t uTexWidth, uTexHeight;
-			f32 fRelSizeX, fRelSizeY;
+			float fRelSizeX, fRelSizeY;
 			assert( ahLevelTex[t] != XL_INVALID_TEXTURE );
 			if ( ahLevelTex[t] != XL_INVALID_TEXTURE )
 			{
 				int32_t nOffsX, nOffsY;
 				TextureCache::GetTextureSize(nOffsX, nOffsY, uTexWidth, uTexHeight, fRelSizeX, fRelSizeY);
 
-				afTexScaleX[t] = m_fWorldToTexel_X/(f32)uTexWidth;
-				afTexScaleY[t] = m_fWorldToTexel_Z/(f32)uTexHeight;
+				afTexScaleX[t] = m_fWorldToTexel_X/(float)uTexWidth;
+				afTexScaleY[t] = m_fWorldToTexel_Z/(float)uTexHeight;
 
 				aTexWidth[t]  = uTexWidth;
 				aTexHeight[t] = uTexHeight;
@@ -263,10 +263,10 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, uint8
 		char szSecName[64];
 		char szSecID[64];
 		int32_t ambient, vtxCnt;
-		f32 f_fTex, f_cTex;
+		float f_fTex, f_cTex;
 		int32_t flags0, flags1, layer;
 		uint32_t uFlags0;
-		f32 secAlt=0.0f;
+		float secAlt=0.0f;
 		int32_t nMinLayer = 10000, nMaxLayer = -10000;
 		for (int32_t s=0; s<nSectorCnt; s++)
 		{
@@ -333,7 +333,7 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, uint8
 				pSector->m_uFlags |= Sector_2_5D::SEC_FLAGS_FLOOR_SLOPE;
 				pSector->m_auSlopeSector[0] = slope[0];
 				pSector->m_auSlopeAnchor[0] = slope[1];
-				pSector->m_fFloorSlope = 1.68f*(f32)slope[2] / 4096.0f;
+				pSector->m_fFloorSlope = 1.68f*(float)slope[2] / 4096.0f;
 			}
 			if ( uFlags0&OSF_CEIL_SLOPED )
 			{
@@ -344,7 +344,7 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, uint8
 				pSector->m_uFlags |= Sector_2_5D::SEC_FLAGS_CEIL_SLOPE;
 				pSector->m_auSlopeSector[1] = slope[0];
 				pSector->m_auSlopeAnchor[1] = slope[1];
-				pSector->m_fCeilSlope = 1.68f*(f32)slope[2] / 4096.0f;
+				pSector->m_fCeilSlope = 1.68f*(float)slope[2] / 4096.0f;
 			}
 			Parser::RestoreFilePtr();
 
@@ -485,7 +485,7 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, uint8
 				char szID[32];
 				char szSecID[32];
 				Vector3 vLoc;
-				f32 yaw, pch, roll;
+				float yaw, pch, roll;
 				int32_t flags0, flags1;
 
 				//allocate some temporary memory for all the items...
@@ -581,17 +581,17 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, uint8
 													
 													//
 													Vector3 vScale;
-													vScale.x = (f32)uWidth * 0.125f * 0.5f * 0.525f;
-													vScale.y = (f32)uWidth * 0.125f * 0.5f * 0.525f;
-													vScale.z = (f32)uHeight* 0.125f * 0.5f * 0.525f;
+													vScale.x = (float)uWidth * 0.125f * 0.5f * 0.525f;
+													vScale.y = (float)uWidth * 0.125f * 0.5f * 0.525f;
+													vScale.z = (float)uHeight* 0.125f * 0.5f * 0.525f;
 
 													vLoc.z += vScale.z;
 
 													pObj->SetScale(vScale);
 													pObj->SetLoc(vLoc);
 
-													f32 z0 = pSector->GetZ_Floor(vLoc.x, vLoc.y, pCell->GetSectors());
-													f32 z1 = pSector->GetZ_Ceil(vLoc.x, vLoc.y, pCell->GetSectors());
+													float z0 = pSector->GetZ_Floor(vLoc.x, vLoc.y, pCell->GetSectors());
+													float z1 = pSector->GetZ_Ceil(vLoc.x, vLoc.y, pCell->GetSectors());
 
 													if ( vLoc.z-vScale.z < z0 )
 													{
@@ -649,17 +649,17 @@ WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, uint8
 									
 									//
 									Vector3 vScale;
-									vScale.x = (f32)uWidth * 0.125f * 0.5f * 0.525f;
-									vScale.y = (f32)uWidth * 0.125f * 0.5f * 0.525f;
-									vScale.z = (f32)uHeight* 0.125f * 0.5f * 0.525f;
+									vScale.x = (float)uWidth * 0.125f * 0.5f * 0.525f;
+									vScale.y = (float)uWidth * 0.125f * 0.5f * 0.525f;
+									vScale.z = (float)uHeight* 0.125f * 0.5f * 0.525f;
 
 									vLoc.z += vScale.z;
 
 									pObj->SetScale(vScale);
 									pObj->SetLoc(vLoc);
 
-									f32 z0 = pSector->GetZ_Floor(vLoc.x, vLoc.y, pCell->GetSectors());
-									f32 z1 = pSector->GetZ_Ceil(vLoc.x, vLoc.y, pCell->GetSectors());
+									float z0 = pSector->GetZ_Floor(vLoc.x, vLoc.y, pCell->GetSectors());
+									float z1 = pSector->GetZ_Ceil(vLoc.x, vLoc.y, pCell->GetSectors());
 
 									if ( vLoc.z-vScale.z < z0 )
 									{

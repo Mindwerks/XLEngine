@@ -21,7 +21,7 @@ public:
 	void Stop();
 
 	bool Update();
-	void Render(f32 fDeltaTime);
+	void Render(float fDeltaTime);
 
 private:
 	struct FilmEntry
@@ -103,14 +103,14 @@ private:
 	Archive *m_pReader;
 	int32_t m_nTime;
 
-	f32 m_fFrameDelay;
-	f32 m_fCurDelay;
+	float m_fFrameDelay;
+	float m_fCurDelay;
 
 	bool m_bFirstFrame;
 	bool m_bTextCrawl;
 	int32_t m_nCut;
-	f32 m_fCutTime;
-	f32 m_fCurCutTime;
+	float m_fCutTime;
+	float m_fCurCutTime;
 
 	static Graphic m_GraphicsCache[1024];
 	static PLTT_File m_PalCache[32];

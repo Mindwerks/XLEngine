@@ -20,20 +20,20 @@ public:
 	static void SetKeyDown(int32_t key);
 	static void SetKeyUp(int32_t key);
 	static void SetCharacterDown(char c);
-	static void SetMousePos(f32 x, f32 y);
+	static void SetMousePos(float x, float y);
 	static void ClearAllKeys();
 	//can be called by any game system.
 	inline static bool IsKeyDown(int32_t key) { return m_aKeyState[key] ? true : false; }
-	inline static f32 GetMouseX() { return m_fMouseX; }
-	inline static f32 GetMouseY() { return m_fMouseY; }
-	inline static f32 GetMouseDx() { return m_fMouseDeltaX; }
-	inline static f32 GetMouseDy() { return m_fMouseDeltaY; }
+	inline static float GetMouseX() { return m_fMouseX; }
+	inline static float GetMouseY() { return m_fMouseY; }
+	inline static float GetMouseDx() { return m_fMouseDeltaX; }
+	inline static float GetMouseDy() { return m_fMouseDeltaY; }
 	//Mouse
 	inline static XL_BOOL LockMouse() { return m_bLockMouse; }
 	static void EnableMouseLocking(XL_BOOL bEnable);
-	inline static void SetMouseDelta(int32_t dx, int32_t dy) { m_fMouseDeltaX = (f32)dx; m_fMouseDeltaY = (f32)dy; }
-	inline static void AddMouseDelta(int32_t dx, int32_t dy) { m_fMouseDeltaX += (f32)dx; m_fMouseDeltaY += (f32)dy; }
-	inline static void GetMouseDelta(f32& dx, f32& dy) { dx = m_fMouseDeltaX; dy = m_fMouseDeltaY; }
+	inline static void SetMouseDelta(int32_t dx, int32_t dy) { m_fMouseDeltaX = (float)dx; m_fMouseDeltaY = (float)dy; }
+	inline static void AddMouseDelta(int32_t dx, int32_t dy) { m_fMouseDeltaX += (float)dx; m_fMouseDeltaY += (float)dy; }
+	inline static void GetMouseDelta(float& dx, float& dy) { dx = m_fMouseDeltaX; dy = m_fMouseDeltaY; }
 
 	//setup an event callback. Some systems can get key down events - useful for edit boxes and general text editing.
 	//this allows systems to be setup that don't use polling and that are somewhat frame rate independent (depending on the OS).
@@ -55,10 +55,10 @@ private:
 	static int8_t m_aKeyState[512];
 	static vector<KeyDownCB_t *> m_KeyDownCB;
 	static vector<KeyDownCB_t *> m_CharDownCB;
-	static f32 m_fMouseX;
-	static f32 m_fMouseY;
-	static f32 m_fMouseDeltaX;
-	static f32 m_fMouseDeltaY;
+	static float m_fMouseX;
+	static float m_fMouseY;
+	static float m_fMouseDeltaX;
+	static float m_fMouseDeltaY;
 	static XL_BOOL m_bLockMouse;
 };
 

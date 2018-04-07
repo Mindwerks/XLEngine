@@ -129,7 +129,7 @@ void WorldCell::Render(IDriver3D *pDriver, Camera *pCamera, uint32_t uSectorType
 	}
 }
 
-void WorldCell::Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, f32 fRadius, uint32_t uSectorTypeVis, bool bPassThruAdjoins, int32_t worldX, int32_t worldY)
+void WorldCell::Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, uint32_t uSectorTypeVis, bool bPassThruAdjoins, int32_t worldX, int32_t worldY)
 {
 	Sector *pStartSector = m_Sectors[ uSector ];
 	if ( pStartSector->m_uTypeFlags&SECTOR_TYPE_25D )
@@ -144,7 +144,7 @@ void WorldCell::Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, f32 fRadius
 	}
 }
 
-void WorldCell::Collide_Recursive(Vector3 *p0, Vector3 *p1, uint32_t& uSector, f32 fRadius, uint32_t uSectorTypeVis, bool bPassThruAdjoins, int32_t worldX, int32_t worldY)
+void WorldCell::Collide_Recursive(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, uint32_t uSectorTypeVis, bool bPassThruAdjoins, int32_t worldX, int32_t worldY)
 {
 	const float veryCloseDistance = 0.00001f;
 	if ( m_nCollisionIter >= MAX_COLLISION_ITER )

@@ -5,7 +5,7 @@
 DarkXL_Game *m_pGame=NULL;
 
 //Interface between Game classes and C library interface.
-void DarkXL_Update(int32_t stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData)
+void DarkXL_Update(int32_t stage, float dt, XLEngine_Plugin_API *API, void *pUserData)
 {
 	if ( stage == UPDATE_STAGE_FIXED )
 	{
@@ -17,7 +17,7 @@ void DarkXL_Update(int32_t stage, f32 dt, XLEngine_Plugin_API *API, void *pUserD
 	}
 }
 
-void DarkXL_Render(int32_t stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData)
+void DarkXL_Render(int32_t stage, float dt, XLEngine_Plugin_API *API, void *pUserData)
 {
 	if ( stage == RENDER_STAGE_PREWORLD )
 	{

@@ -270,8 +270,8 @@ uint32_t ScriptSystem::ExecuteFunc(SHANDLE hFunc, int32_t nArgCnt, const ScriptA
 					case SC_ARG_uint32_t:
 						m_pContext->SetArgDWord(i, pArgs[i].arguint32_t);
 						break;
-					case SC_ARG_F32:
-						m_pContext->SetArgFloat(i, pArgs[i].argF32);
+					case SC_ARG_float:
+						m_pContext->SetArgFloat(i, pArgs[i].argfloat);
 						break;
 				};
 			}

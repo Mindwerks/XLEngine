@@ -46,8 +46,8 @@ uint32_t _uAlphaCutoff = 0;
 uint32_t _uStencilValue = 0xff;
 
 bool _bFogEnable = false;
-f32 _fFogDensity = 1.0f;
-f32 _fFogEnd = 0.0f;
+float _fFogDensity = 1.0f;
+float _fFogEnd = 0.0f;
 
 Matrix *_prevWorldMtxPtr = NULL;
 
@@ -156,9 +156,9 @@ void Driver3D_OGL::EnableAlphaTest(bool bEnable, uint8_t uAlphaCutoff)
 		if ( _bAlphaTestEnable != bEnable ) glEnable(GL_ALPHA_TEST);
 		if ( _uAlphaCutoff != uAlphaCutoff ) 
 		{ 
-			const f32 fOO255 = (1.0f/255.0f);
+			const float fOO255 = (1.0f/255.0f);
 
-			glAlphaFunc(GL_GREATER, (f32)uAlphaCutoff*fOO255); 
+			glAlphaFunc(GL_GREATER, (float)uAlphaCutoff*fOO255);
 			_uAlphaCutoff = uAlphaCutoff; 
 		}
 	}
@@ -192,12 +192,12 @@ void Driver3D_OGL::SetBlendMode(uint32_t uMode)
 	}
 }
 
-void Driver3D_OGL::SetFogDensity(f32 fDensity)
+void Driver3D_OGL::SetFogDensity(float fDensity)
 {
 	if ( _fFogDensity != fDensity ) { glFogf(GL_FOG_DENSITY, fDensity); _fFogDensity = fDensity; }
 }
 
-void Driver3D_OGL::EnableFog(bool bEnable, f32 fEnd)
+void Driver3D_OGL::EnableFog(bool bEnable, float fEnd)
 {
 	if ( _fFogEnd != fEnd ) { glFogf(GL_FOG_END, fEnd); _fFogEnd = fEnd; }
     if ( bEnable != _bFogEnable )

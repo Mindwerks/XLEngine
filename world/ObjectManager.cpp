@@ -385,7 +385,7 @@ void ObjectManager::EnableObjectCollision(uint32_t uID, int32_t enable)
 	}
 }
 
-void ObjectManager::SendMessage(uint32_t uID, uint32_t uMsg, f32 fValue)
+void ObjectManager::SendMessage(uint32_t uID, uint32_t uMsg, float fValue)
 {
 	Object *pObj = GetObjectFromID(uID);
 	if ( pObj )

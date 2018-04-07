@@ -16,7 +16,7 @@ enum ScriptArgs_e
 	SC_ARG_uint8_t=0,
 	SC_ARG_uint16_t,
 	SC_ARG_uint32_t,
-	SC_ARG_F32,
+	SC_ARG_float,
 	SC_ARG_COUNT
 };
 
@@ -28,7 +28,7 @@ struct ScriptArgument
 		uint8_t arguint8_t;
 		uint16_t arguint16_t;
 		uint32_t arguint32_t;
-		f32 argF32;
+		float argfloat;
 	};
 };
 

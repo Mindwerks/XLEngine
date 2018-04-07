@@ -28,8 +28,8 @@ UI_Screen *UI_System::m_Context;	//the current UI execute context, basically whi
 UI_Screen *UI_System::m_PendingScreenChange;
 UI_Screen *UI_System::m_PushScreen;
 UI_Screen *UI_System::m_PopScreen;
-//f32 UI_System::m_fVirt_Scr_W;
-//f32 UI_System::m_fVirt_Scr_H;
+//float UI_System::m_fVirt_Scr_W;
+//float UI_System::m_fVirt_Scr_H;
 bool UI_System::m_bFlipX;
 bool UI_System::m_bFlipY;
 map<string, UI_Screen *> UI_System::m_ScreenMap;
@@ -196,7 +196,7 @@ void UI_System::StartScript(const char *pszFile)
 	//Then get the texture size and relative scale from the Texture Cache.
 	int32_t nOffsX, nOffsY;
 	uint32_t uTexWidth, uTexHeight;
-	f32 fRelSizeX, fRelSizeY;
+	float fRelSizeX, fRelSizeY;
 	TextureCache::GetTextureSize( nOffsX, nOffsY, uTexWidth, uTexHeight, fRelSizeX, fRelSizeY );
 
 	m_pUI_Atlas->width  = (int16_t)uTexWidth;
@@ -265,11 +265,11 @@ void UI_System::Update()
 		int32_t nScrWidth, nScrHeight;
 		m_pDriver->GetWindowSize( nScrWidth, nScrHeight );
 
-		f32 fScrToUI_X = m_Context->m_fVirt_Scr_W/(f32)nScrWidth;
-		f32 fScrToUI_Y = m_Context->m_fVirt_Scr_H/(f32)nScrHeight;
+		float fScrToUI_X = m_Context->m_fVirt_Scr_W/(float)nScrWidth;
+		float fScrToUI_Y = m_Context->m_fVirt_Scr_H/(float)nScrHeight;
 
-		nMouseX = (int32_t)( (f32)nMouseX * fScrToUI_X );
-		nMouseY = (int32_t)( (f32)nMouseY * fScrToUI_Y );
+		nMouseX = (int32_t)( (float)nMouseX * fScrToUI_X );
+		nMouseY = (int32_t)( (float)nMouseY * fScrToUI_Y );
 
 		//now update the child windows.
 		UI_Window *pWin = m_Context->m_childWindow;
@@ -526,7 +526,7 @@ void UI_System::UI_CreateWindow_FromLFDFrame(string& sName, int LFDAnim_ID, int 
 	if ( LFDAnim_ID >= 0 && LFDAnim_ID < MAX_LFD_ANIM && m_pLFD_Anim_List[LFDAnim_ID] )
 	{
 		int32_t frameX0, frameY0, frameWidth, frameHeight;
-		m_pLFD_Anim_List[LFDAnim_ID]->GetFrameExtents(frame, (f32)x0/320.0f, (f32)y0/200.0f, frameX0, frameY0, frameWidth, frameHeight);
+		m_pLFD_Anim_List[LFDAnim_ID]->GetFrameExtents(frame, (float)x0/320.0f, (float)y0/200.0f, frameX0, frameY0, frameWidth, frameHeight);
 
 		UI_CreateWindow(sName, sName, 0, frameX0, frameY0, frameWidth, frameHeight, 0);
 	}
@@ -737,7 +737,7 @@ void UI_System::UI_RenderLFD_Anim(int ID, int frame, int x, int y)
 		m_pDriver->SetBlendMode();
 		m_pDriver->EnableAlphaTest(true);
 
-		m_pLFD_Anim_List[ID]->Render(frame, (f32)x/320.0f, (f32)y/200.0f);
+		m_pLFD_Anim_List[ID]->Render(frame, (float)x/320.0f, (float)y/200.0f);
 	}
 }
 
@@ -753,7 +753,7 @@ int UI_System::UI_AddImage(string& sImage, int cutoutMinIdx, int cutoutMaxIdx)
 		//Then get the texture size and relative scale from the Texture Cache.
 		int32_t nOffsX, nOffsY;
 		uint32_t uTexWidth, uTexHeight;
-		f32 fRelSizeX, fRelSizeY;
+		float fRelSizeX, fRelSizeY;
 		TextureCache::GetTextureSize( nOffsX, nOffsY, uTexWidth, uTexHeight, fRelSizeX, fRelSizeY );
 
 		frame->width  = (int16_t)uTexWidth;
@@ -779,7 +779,7 @@ int UI_System::UI_AddGameImage(uint32_t uImageType, string &sArchive, string &sI
 		//Then get the texture size and relative scale from the Texture Cache.
 		int32_t nOffsX, nOffsY;
 		uint32_t uTexWidth, uTexHeight;
-		f32 fRelSizeX, fRelSizeY;
+		float fRelSizeX, fRelSizeY;
 		TextureCache::GetTextureSize( nOffsX, nOffsY, uTexWidth, uTexHeight, fRelSizeX, fRelSizeY );
 
 		frame->width  = (int16_t)uTexWidth;
@@ -803,8 +803,8 @@ void UI_System::UI_FreeImage(int hImageHandle)
 
 void UI_System::UI_SetVirtualScreenSize(int w, int h)
 {
-	m_Context->m_fVirt_Scr_W = (f32)w;
-	m_Context->m_fVirt_Scr_H = (f32)h;
+	m_Context->m_fVirt_Scr_W = (float)w;
+	m_Context->m_fVirt_Scr_H = (float)h;
 }
 
 void UI_System::UI_GetVirtualScreenSize(int& w, int& h)
@@ -837,8 +837,8 @@ void UI_System::UI_RenderRect(int x, int y, int w, int h, float r, float g, floa
 
 		float virt_scr_w = m_Context->m_fVirt_Scr_W;
 		float virt_scr_h = m_Context->m_fVirt_Scr_H;
-		float fUItoScrX = (f32)nScrWidth /virt_scr_w;
-		float fUItoScrY = (f32)nScrHeight/virt_scr_h;
+		float fUItoScrX = (float)nScrWidth /virt_scr_w;
+		float fUItoScrY = (float)nScrHeight/virt_scr_h;
 
 		//render rect...
 		float fdX = (float)w * fUItoScrX;
@@ -975,8 +975,8 @@ void UI_System::UI_RenderImage(int hImage, int x, int y, float intensity, int al
 
 		float virt_scr_w = m_Context->m_fVirt_Scr_W;
 		float virt_scr_h = m_Context->m_fVirt_Scr_H;
-		float fUItoScrX = (f32)nScrWidth /virt_scr_w;
-		float fUItoScrY = (f32)nScrHeight/virt_scr_h;
+		float fUItoScrX = (float)nScrWidth /virt_scr_w;
+		float fUItoScrY = (float)nScrHeight/virt_scr_h;
 
 		int32_t w = frame->width;
 		int32_t h = frame->height;
@@ -1027,11 +1027,11 @@ void UI_System::UI_RenderString(const string& sString, int x, int y, int size, f
 		int32_t nScrWidth, nScrHeight;
 		m_pDriver->GetWindowSize( nScrWidth, nScrHeight );
 
-		f32 fUItoScrX = (f32)nScrWidth /m_Context->m_fVirt_Scr_W;
-		f32 fUItoScrY = (f32)nScrHeight/m_Context->m_fVirt_Scr_H;
+		float fUItoScrX = (float)nScrWidth /m_Context->m_fVirt_Scr_W;
+		float fUItoScrY = (float)nScrHeight/m_Context->m_fVirt_Scr_H;
 
-		x = (int32_t)( (f32)x * fUItoScrX );
-		y = (int32_t)( (f32)y * fUItoScrX );
+		x = (int32_t)( (float)x * fUItoScrX );
+		y = (int32_t)( (float)y * fUItoScrX );
 
 		FontManager::BeginTextRendering();
 		{
@@ -1050,11 +1050,11 @@ void UI_System::UI_GetMousePos(int& x, int& y)
 	int32_t nMouseX = (uint32_t)Input::GetMouseX();
 	int32_t nMouseY = (uint32_t)Input::GetMouseY();
 
-	f32 fScrToUI_X = m_Context->m_fVirt_Scr_W/(f32)nScrWidth;
-	f32 fScrToUI_Y = m_Context->m_fVirt_Scr_H/(f32)nScrHeight;
+	float fScrToUI_X = m_Context->m_fVirt_Scr_W/(float)nScrWidth;
+	float fScrToUI_Y = m_Context->m_fVirt_Scr_H/(float)nScrHeight;
 
-	x = (int32_t)( (f32)nMouseX * fScrToUI_X );
-	y = (int32_t)( (f32)nMouseY * fScrToUI_Y );
+	x = (int32_t)( (float)nMouseX * fScrToUI_X );
+	y = (int32_t)( (float)nMouseY * fScrToUI_Y );
 }
 
 void UI_System::UI_PrintMousePos(int x, int y, int size)
@@ -1065,20 +1065,20 @@ void UI_System::UI_PrintMousePos(int x, int y, int size)
 		int32_t nScrWidth, nScrHeight;
 		m_pDriver->GetWindowSize( nScrWidth, nScrHeight );
 
-		f32 fUItoScrX = (f32)nScrWidth /m_Context->m_fVirt_Scr_W;
-		f32 fUItoScrY = (f32)nScrHeight/m_Context->m_fVirt_Scr_H;
+		float fUItoScrX = (float)nScrWidth /m_Context->m_fVirt_Scr_W;
+		float fUItoScrY = (float)nScrHeight/m_Context->m_fVirt_Scr_H;
 	
-		x = (int32_t)( (f32)x * fUItoScrX );
-		y = (int32_t)( (f32)y * fUItoScrX );
+		x = (int32_t)( (float)x * fUItoScrX );
+		y = (int32_t)( (float)y * fUItoScrX );
 
 		int32_t nMouseX = (uint32_t)Input::GetMouseX();
 		int32_t nMouseY = (uint32_t)Input::GetMouseY();
 
-		f32 fScrToUI_X = m_Context->m_fVirt_Scr_W/(f32)nScrWidth;
-		f32 fScrToUI_Y = m_Context->m_fVirt_Scr_H/(f32)nScrHeight;
+		float fScrToUI_X = m_Context->m_fVirt_Scr_W/(float)nScrWidth;
+		float fScrToUI_Y = m_Context->m_fVirt_Scr_H/(float)nScrHeight;
 
-		nMouseX = (int32_t)( (f32)nMouseX * fScrToUI_X );
-		nMouseY = (int32_t)( (f32)nMouseY * fScrToUI_Y );
+		nMouseX = (int32_t)( (float)nMouseX * fScrToUI_X );
+		nMouseY = (int32_t)( (float)nMouseY * fScrToUI_Y );
 
 		char szMousePos[64];
 		sprintf(szMousePos, "mousePos: %d, %d", nMouseX, nMouseY);
@@ -1091,7 +1091,7 @@ void UI_System::UI_PrintMousePos(int x, int y, int size)
 	}
 }
 
-f32 UI_System::UI_GetCurrentBrightness()
+float UI_System::UI_GetCurrentBrightness()
 {
 	if ( m_pEngine == NULL )
 		return 1.0f;
@@ -1099,7 +1099,7 @@ f32 UI_System::UI_GetCurrentBrightness()
 	return m_pEngine->GetCurrentBrightness();
 }
 
-f32 UI_System::UI_GetSpeed()
+float UI_System::UI_GetSpeed()
 {
 	if ( m_pEngine == NULL )
 		return 0.0f;
@@ -1108,7 +1108,7 @@ f32 UI_System::UI_GetSpeed()
 }
 
 //Image with alpha blending.
-void UI_System::UI_SetImageUV_Range(f32 u0, f32 v0, f32 u1, f32 v1)
+void UI_System::UI_SetImageUV_Range(float u0, float v0, float u1, float v1)
 {
 	m_uvTop.Set(u0, v0);
 	m_uvBot.Set(u1, v1);
@@ -1136,8 +1136,8 @@ void UI_System::UI_RenderImageRect(int hImage, int x, int y, int w, int h, float
 
 		float virt_scr_w = m_Context->m_fVirt_Scr_W;
 		float virt_scr_h = m_Context->m_fVirt_Scr_H;
-		float fUItoScrX = (f32)nScrWidth /virt_scr_w;
-		float fUItoScrY = (f32)nScrHeight/virt_scr_h;
+		float fUItoScrX = (float)nScrWidth /virt_scr_w;
+		float fUItoScrY = (float)nScrHeight/virt_scr_h;
 
 		//render rect...
 		float fdX = (float)w * fUItoScrX;

@@ -174,7 +174,7 @@ void Console_RegisterCommand(const char *pszItemName, void *ptr, uint32_t type, 
 	XL_Console::RegisterCmd(pszItemName, ptr, (Console::ConsoleItemType)type, pszItemHelp, pUserData);
 }
 
-void XL_Console::SetConsoleColor(f32 fRed, f32 fGreen, f32 fBlue, f32 fAlpha)
+void XL_Console::SetConsoleColor(float fRed, float fGreen, float fBlue, float fAlpha)
 {
 	s_pConsole->m_Color.Set( fRed, fGreen, fBlue, fAlpha );
 }

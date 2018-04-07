@@ -13,7 +13,7 @@ public:
 	Mesh();
 	~Mesh();
 
-	void Render(Object *pObj, IDriver3D *pDriver, f32 fIntensity, const Vector3& vOffset);
+	void Render(Object *pObj, IDriver3D *pDriver, float fIntensity, const Vector3& vOffset);
 	void GetBounds(Vector3& vMin, Vector3& vMax);
 
 	bool IsLoaded() { return m_bLoaded; }

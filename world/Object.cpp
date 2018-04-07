@@ -102,7 +102,7 @@ void Object::Init()
 	}
 }
 
-void Object::SendMessage(uint32_t uMsgID, f32 fValue)
+void Object::SendMessage(uint32_t uMsgID, float fValue)
 {
 	vector<Logic *>::iterator iLogic = m_Logics.begin();
 	vector<Logic *>::iterator eLogic = m_Logics.end();

@@ -5,8 +5,8 @@
 
 #define SEC_TO_uS 1000000.0
 
-f32 Clock::m_fDeltaTime;
-f32 Clock::m_fRealDeltaTime;
+float Clock::m_fDeltaTime;
+float Clock::m_fRealDeltaTime;
 int32_t Clock::m_nDeltaTicks;
 
 static LARGE_INTEGER _Timer_Freq;
@@ -30,7 +30,7 @@ void Clock::StartTimer(int32_t timerID/*=0*/)
 	_Start_Tick[timerID] = _GetCurTickCnt();
 }
 
-f32 Clock::GetDeltaTime(f32 fMax, int32_t timerID/*=0*/)
+float Clock::GetDeltaTime(float fMax, int32_t timerID/*=0*/)
 {
 	assert( timerID < 16 );
 	uint64_t End = _GetCurTickCnt();
@@ -47,8 +47,8 @@ f32 Clock::GetDeltaTime(f32 fMax, int32_t timerID/*=0*/)
 uint64_t Clock::GetDeltaTime_uS(int32_t timerID/*=0*/)
 {
 	uint64_t End = _GetCurTickCnt();
-	f64 quadPart_uS = (f64)(_Timer_Freq.QuadPart) / SEC_TO_uS;
-	return (uint64_t)( (f64)(End - _Start_Tick[timerID]) / quadPart_uS );
+	double quadPart_uS = (double)(_Timer_Freq.QuadPart) / SEC_TO_uS;
+	return (uint64_t)( (double)(End - _Start_Tick[timerID]) / quadPart_uS );
 }
 
 LONGLONG _GetCurTickCnt()

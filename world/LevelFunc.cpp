@@ -43,7 +43,7 @@ LevelFunc::~LevelFunc()
 	}
 }
 
-void LevelFunc::AddState(f32 value, int32_t type, int32_t delay)
+void LevelFunc::AddState(float value, int32_t type, int32_t delay)
 {
 	State *pState = xlNew State;
 	m_States.push_back( pState );
@@ -117,7 +117,7 @@ void LevelFunc::Update()
 
 	if ( m_States.size() > 0 )
 	{
-		f32 fPrevInterp = m_fInterp;
+		float fPrevInterp = m_fInterp;
 		if ( m_fSpeed == 0.0f )
 		{
 			m_fInterp = 1.0f;
@@ -129,7 +129,7 @@ void LevelFunc::Update()
 		}
 		if ( m_fInterp > 1.0f ) { m_fInterp = 1.0f; }
 
-		f32 value = (1.0f-m_fInterp)*m_States[m_nCurState]->value + m_fInterp*m_States[m_nNextState]->value;
+		float value = (1.0f-m_fInterp)*m_States[m_nCurState]->value + m_fInterp*m_States[m_nNextState]->value;
 		SetValue(m_nSector, value, (m_fSpeed==0.0f)?true:false);
 
 		if ( m_fInterp >= 1.0f || m_fSpeed == 0.0f )

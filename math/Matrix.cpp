@@ -2,10 +2,10 @@
 
 Matrix Matrix::s_Identity(1);
 
-void Matrix::ProjPersp(f32 fov, f32 aspect, f32 fZNear, f32 fZFar, f32 fSkew)
+void Matrix::ProjPersp(float fov, float aspect, float fZNear, float fZFar, float fSkew)
 {
-	f32 yScale = 1.0f / tanf(fov*0.5f);
-	f32 xScale = yScale / aspect;
+	float yScale = 1.0f / tanf(fov*0.5f);
+	float xScale = yScale / aspect;
 
 	m[0] = xScale;
 	m[1] = m[2] = m[3] = 0.0f;
@@ -25,7 +25,7 @@ void Matrix::ProjPersp(f32 fov, f32 aspect, f32 fZNear, f32 fZFar, f32 fSkew)
 	m[15] = 0.0f;
 }
 
-void Matrix::ProjOrtho(f32 w, f32 h, f32 zMin, f32 zMax)
+void Matrix::ProjOrtho(float w, float h, float zMin, float zMax)
 {
 	m[0] = 2.0f/w;
 	m[1] = 0.0f;
@@ -79,13 +79,13 @@ void Matrix::Identity()
 	m[0] = m[5] = m[10] = m[15] = 1.0f;
 }
 
-void Matrix::AxisAngle(Vector3& axis, f32 angle)
+void Matrix::AxisAngle(Vector3& axis, float angle)
 {
 	Matrix rot;
 	rot.Identity();
 
-	f32 ca = cosf(angle);
-	f32 sa = sinf(angle);
+	float ca = cosf(angle);
+	float sa = sinf(angle);
 
 	rot.m[0] = ca + axis.x*axis.x*(1.0f - ca);        rot.m[4] = axis.x*axis.y*(1.0f - ca) - axis.z*sa; rot.m[8]  = axis.x*axis.z*(1.0f - ca) + axis.y*sa;
 	rot.m[1] = axis.y*axis.x*(1.0f - ca) + axis.z*sa; rot.m[5] = ca + axis.y*axis.y*(1.0f - ca);        rot.m[9]  = axis.y*axis.z*(1.0f - ca) - axis.x*sa;
@@ -101,7 +101,7 @@ void Matrix::AxisAngle(Vector3& axis, f32 angle)
 //PRY 
 //PYR
 
-void Matrix::EulerToMatrix(f32 yaw, f32 pitch, f32 roll)
+void Matrix::EulerToMatrix(float yaw, float pitch, float roll)
 {
 	Vector3 vPitch = Vector3(1,0,0);
 	Vector3 vYaw = Vector3(0,1,0);
@@ -123,7 +123,7 @@ void Matrix::Scale(Vector3& scale)
 	*this = this->MatMul(sMtx);
 }
 
-void Matrix::Scale(f32 x, f32 y, f32 z)
+void Matrix::Scale(float x, float y, float z)
 {
 	Matrix sMtx;
 	sMtx.Identity();
@@ -186,33 +186,33 @@ void Matrix::ApplyScale(Vector3& rvScale)
 {
 }
 
-void Matrix::RotateX(f32 angle)
+void Matrix::RotateX(float angle)
 {
 	Matrix rot;
 	rot.Identity();
-	f32 ca = cosf(angle), sa = sinf(angle);
+	float ca = cosf(angle), sa = sinf(angle);
 	rot.m[5] =  ca; rot.m[ 6] = sa;
 	rot.m[9] = -sa; rot.m[10] = ca;
 
 	*this = this->MatMul(rot);
 }
 
-void Matrix::RotateY(f32 angle)
+void Matrix::RotateY(float angle)
 {
 	Matrix rot;
 	rot.Identity();
-	f32 ca = cosf(angle), sa = sinf(angle);
+	float ca = cosf(angle), sa = sinf(angle);
 	rot.m[0] = ca; rot.m[1] = 0.0f; rot.m[2]  = -sa;
 	rot.m[8] = sa; rot.m[9] = 0.0f; rot.m[10] =  ca;
 
 	*this = this->MatMul( rot );
 }
 
-void Matrix::RotateZ(f32 angle)
+void Matrix::RotateZ(float angle)
 {
 	Matrix rot;
 	rot.Identity();
-	f32 ca = cosf(angle), sa = sinf(angle);
+	float ca = cosf(angle), sa = sinf(angle);
 	rot.m[0] =  ca; rot.m[1] = sa;
 	rot.m[4] = -sa; rot.m[5] = ca;
 

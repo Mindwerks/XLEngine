@@ -22,7 +22,7 @@ public:
 
 	void Update(Object *parent);
 	void InitObject(Object *parent);
-	void SendMessage(Object *parent, uint32_t uMsgID, f32 fValue);
+	void SendMessage(Object *parent, uint32_t uMsgID, float fValue);
 
 	static void SetMessageMask_CurLogic(uint32_t uMask);
 

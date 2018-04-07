@@ -103,8 +103,8 @@ public:
 	bool m_bActive;
 	bool m_bChatMode;
 
-	f32 m_fAnimDropDown;
-	f32 m_fAnimDelta;
+	float m_fAnimDropDown;
+	float m_fAnimDelta;
 
 	TextureHandle m_hBackground;
 

@@ -37,7 +37,7 @@ public:
 	void Render(IDriver3D *pDriver);
 
 	//Collision
-	void Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, f32 fRadius, bool bPassThruAdjoins=false);
+	void Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, bool bPassThruAdjoins=false);
 	void RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector);
 	bool Raycast(Vector3 *p0, Vector3 *p1, Vector3 *pInter);
 

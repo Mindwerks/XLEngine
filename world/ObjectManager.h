@@ -37,7 +37,7 @@ public:
 	static void SetObjectAngles(uint32_t uID, float x, float y, float z);
 	static void SetObjectPos(uint32_t uID, float x, float y, float z);
 	static void EnableObjectCollision(uint32_t uID, int32_t enable);
-	static void SendMessage(uint32_t uID, uint32_t uMsg, f32 fValue);
+	static void SendMessage(uint32_t uID, uint32_t uMsg, float fValue);
 	static void SetRenderComponent(uint32_t uID, const char *pszComponent);
 	static void SetRenderTexture(uint32_t uID, TextureHandle hTex);
 	static void SetRenderFlip(uint32_t uID, XL_BOOL bFlipX, XL_BOOL bFlipY);

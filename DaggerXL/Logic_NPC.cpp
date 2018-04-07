@@ -25,7 +25,7 @@ void NPC::Reset(const XLEngine_Plugin_API *pAPI, int32_t NPC_file, float x, floa
 {
 	char szTexName[64];
 	sprintf(szTexName, "TEXTURE.%03d", NPC_file);
-	m_Data.ahTex[0] = pAPI->Texture_LoadTexList(2, 7, 0xff, "", szTexName, 0, XL_FALSE);
+	m_Data.ahTex[0] = pAPI->Texture_LoadTexList(2, 7, 0xff, "", szTexName, 0, false);
 	pAPI->Object_SetRenderTexture(m_Data.uObjID, m_Data.ahTex[0]);
 
 	int32_t ox, oy;
@@ -41,9 +41,9 @@ void NPC::Reset(const XLEngine_Plugin_API *pAPI, int32_t NPC_file, float x, floa
 	int32_t newHeight = h*(256+pSpriteScale[1])>>8;
 
 	Vector3 vScale;
-	vScale.x = (f32)newWidth  / 8.0f;
+	vScale.x = (float)newWidth  / 8.0f;
 	vScale.y = vScale.x;
-	vScale.z = (f32)newHeight / 8.0f;
+	vScale.z = (float)newHeight / 8.0f;
 	physics->m_Scale = vScale;
 	physics->m_Loc.Set(x, y, z + vScale.z);
 	physics->m_worldX = worldX;
@@ -61,7 +61,7 @@ void NPC::Reset(const XLEngine_Plugin_API *pAPI, int32_t NPC_file, float x, floa
 	//Load the rest of the textures.
 	for (int32_t t=1; t<6; t++)
 	{
-		m_Data.ahTex[t] = pAPI->Texture_LoadTexList(2, 7, 0xff, "", szTexName, t, XL_FALSE);
+		m_Data.ahTex[t] = pAPI->Texture_LoadTexList(2, 7, 0xff, "", szTexName, t, false);
 	}
 
 	Enable(pAPI, false);
@@ -72,12 +72,12 @@ void NPC::Enable(const XLEngine_Plugin_API *pAPI, bool bEnable)
 	if ( bEnable )
 	{
 		m_Data.uState = NPC_STATE_WALK;
-		pAPI->Object_SetActive( m_Data.uObjID, XL_TRUE );
+		pAPI->Object_SetActive( m_Data.uObjID, true );
 	}
 	else
 	{
 		m_Data.uState = NPC_STATE_DISABLED;
-		pAPI->Object_SetActive( m_Data.uObjID, XL_FALSE );
+		pAPI->Object_SetActive( m_Data.uObjID, false );
 	}
 }
 
@@ -141,7 +141,7 @@ void Logic_NPC::Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 	{
 		pData->uState = NPC_STATE_IDLE;
 
-		m_pAPI->Object_SetRenderFlip(uObjID, XL_FALSE, XL_FALSE);
+		m_pAPI->Object_SetRenderFlip(uObjID, false, false);
 		m_pAPI->Object_SetRenderTexture(uObjID, pData->ahTex[5]);
 	}
 	else
@@ -151,7 +151,7 @@ void Logic_NPC::Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 		Vector3 vDir(x,y,0);
 		vDir.Normalize();
 
-		XL_BOOL bFlipX = XL_FALSE;
+		XL_BOOL bFlipX = false;
 		float angle = -pPhysics->m_Dir.Dot(vDir);
 		int32_t image = (int32_t)( (angle*0.5f+0.5f) * 5.0f );
 		if ( image > 4 ) image = 4;
@@ -159,9 +159,9 @@ void Logic_NPC::Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param)
 		Vector3 vPerp;
 		vPerp.Cross(pPhysics->m_Dir, vDir);
 		if ( vPerp.z < 0.0f && image > 0 && image < 4 )
-			 bFlipX = XL_TRUE;
+			 bFlipX = true;
 		
-		m_pAPI->Object_SetRenderFlip(uObjID, bFlipX, XL_FALSE);
+		m_pAPI->Object_SetRenderFlip(uObjID, bFlipX, false);
 		m_pAPI->Object_SetRenderTexture(uObjID, pData->ahTex[image]);
 	}
 }

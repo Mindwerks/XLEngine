@@ -29,7 +29,7 @@ BloodXL_Game::BloodXL_Game(const XLEngine_Plugin_API *API)
 	m_pAPI->RegisterScriptFunc("void Game_LoadMap(string &in)", asFUNCTION(SC_Game_LoadMap));
 
 	//We only worry about the UI scripts, palettes, color maps and so on if we're running a client.
-	if ( m_pAPI->IsServer() == XL_FALSE )
+	if ( m_pAPI->IsServer() == false )
 	{
 		//Start the UI script for title screen.
 		m_pAPI->Start_UI_Script( "BloodXL/CoreUI.as" );
@@ -92,7 +92,7 @@ BloodXL_Game::BloodXL_Game(const XLEngine_Plugin_API *API)
 	m_Player = xlNew BloodXL_Player(API);
 
 	//If we are running a server, then just load the startup map.
-	if ( m_pAPI->IsServer() == XL_TRUE )
+	if ( m_pAPI->IsServer() == true )
 	{
 		SC_Game_LoadMap( m_pAPI->Startup_GetStartMap() );
 	}

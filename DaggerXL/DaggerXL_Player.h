@@ -20,8 +20,8 @@ private:
 	struct PlayerData
 	{
 		uint32_t m_HP;
-		f32 m_fYaw;
-		f32 m_fPitch;
+		float m_fYaw;
+		float m_fPitch;
 	};
 
 	const XLEngine_Plugin_API *m_pAPI;

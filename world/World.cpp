@@ -65,7 +65,7 @@ void World::RemoveWorldCell(WorldCell *pCell)
 	}
 }
 
-void World::Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, f32 fRadius, bool bPassThruAdjoins)
+void World::Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, bool bPassThruAdjoins)
 {
 	//only collide with cells that are close enough.
 	if ( m_WorldCells.size() > 0 )

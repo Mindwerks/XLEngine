@@ -3,8 +3,8 @@
 
 //Input, implemented in Input.cpp
 extern int32_t Input_IsKeyDown(int32_t key);
-extern f32 Input_GetMousePosX(void);
-extern f32 Input_GetMousePosY(void);
+extern float Input_GetMousePosX(void);
+extern float Input_GetMousePosY(void);
 extern int32_t Input_AddKeyDownCB(Input_KeyDownCB pCB, int32_t nFlags);
 extern int32_t Input_AddCharDownCB(Input_KeyDownCB pCB);
 

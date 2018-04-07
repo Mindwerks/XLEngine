@@ -45,8 +45,8 @@ int32_t  m_nTerrainMapX = 0;
 int32_t  m_nTerrainMapY = 0;
 int32_t  m_nTerrainMapScale = 1;
 
-const f32 m_fSkyTop =  136.0f;
-const f32 m_fSkyBot =   -4.0f;
+const float m_fSkyTop =  136.0f;
+const float m_fSkyBot =   -4.0f;
 
 //Texture Tile Mapping Data
 #define E(a,b,c,d) a+(b<<2)+(c<<4)+(d<<6)
@@ -862,11 +862,11 @@ void Terrain::RenderSky(int32_t skyIndex, int32_t timeIndex, Camera *pCamera)
 	//Render Sky Cylinder...
 	const int32_t cylinderCnt = 32;
 
-	f32 dA = MATH_TWO_PI / (float)cylinderCnt;
-	f32 A = 0.0f;
-	f32 x0 =  cosf(A);
-	f32 y0 = -sinf(A);
-	f32 x1, y1;
+	float dA = MATH_TWO_PI / (float)cylinderCnt;
+	float A = 0.0f;
+	float x0 =  cosf(A);
+	float y0 = -sinf(A);
+	float x1, y1;
 	A += dA;
 
 	Vector3 posList[4];
@@ -883,15 +883,15 @@ void Terrain::RenderSky(int32_t skyIndex, int32_t timeIndex, Camera *pCamera)
 	float cylTaper = 100.0f * topScale;
 
 	const Vector3& vLoc = m_vCamLoc;
-	f32 zTop = vLoc.z + m_fSkyTop*topScale;
-	f32 zBot = vLoc.z + m_fSkyBot;
+	float zTop = vLoc.z + m_fSkyTop*topScale;
+	float zBot = vLoc.z + m_fSkyBot;
 
 	uint32_t uDiv = cylinderCnt/uSkyTexCnt;
-	f32 fWidth = 1.0f/(f32)uDiv;
+	float fWidth = 1.0f/(float)uDiv;
 	for (uint32_t s=0; s<cylinderCnt; s++)
 	{
 		uint32_t idx = s%uDiv;
-		f32 fStart = (f32)idx * fWidth;
+		float fStart = (float)idx * fWidth;
 
 		uvList[0].x = fStart;
 		uvList[1].x = fStart + fWidth;
@@ -1165,7 +1165,7 @@ void Terrain::BuildTerrainMeshes()
 		for (int32_t i=0; i<32; i++)
 		{
 			TextureHandle hTex = TextureCache::GameFile_LoadTexture_TexList( TEXTURETYPE_IMG, 7, ARCHIVETYPE_NONE, "", szTexName, i );
-			f32 fw, fh;
+			float fw, fh;
 			int32_t ox, oy;
 			uint32_t w, h;
 			TextureCache::GetTextureSize(ox, oy, w, h, fw, fh);
@@ -1176,9 +1176,9 @@ void Terrain::BuildTerrainMeshes()
 			int32_t newHeight = h*(256+pSpriteScale[1])>>8;
 
 			Vector3 vScale;
-			vScale.x = (f32)newWidth  / 8.0f;
+			vScale.x = (float)newWidth  / 8.0f;
 			vScale.y = vScale.x;
-			vScale.z = (f32)newHeight / 8.0f;
+			vScale.z = (float)newHeight / 8.0f;
 
 			m_aFoliageData[i].hTex   = hTex;
 			m_aFoliageData[i].vScale = vScale;

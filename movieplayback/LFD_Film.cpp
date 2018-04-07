@@ -340,7 +340,7 @@ bool LFD_Film::Start(Archive *pRes0, Archive *pRes1, const char *pszFile, uint32
 	m_bTextCrawl = uFlags ? true : false;
 
 	//Framerate.
-	m_fFrameDelay = 1.0f / (f32)nSpeed;
+	m_fFrameDelay = 1.0f / (float)nSpeed;
 	m_fCurDelay   = m_fFrameDelay;
 	m_bFirstFrame = true;
 
@@ -546,7 +546,7 @@ bool LFD_Film::Start(Archive *pRes0, Archive *pRes1, const char *pszFile, uint32
 
 bool LFD_Film::Update()
 {
-	const f32 fDeltaTime = (1.0f/60.0f);
+	const float fDeltaTime = (1.0f/60.0f);
 	bool bFilmFinished = false;
 	int32_t len;
 
@@ -952,10 +952,10 @@ void LFD_Film::AddGraphicToQueue(Graphic *pGraphic, int nLayer)
 	}
 }
 
-void LFD_Film::Render(f32 fDeltaTime)
+void LFD_Film::Render(float fDeltaTime)
 {
-	const f32 fOO320 = 1.0f / 320.0f;
-	const f32 fOO200 = 1.0f / 200.0f;
+	const float fOO320 = 1.0f / 320.0f;
+	const float fOO200 = 1.0f / 200.0f;
 
 	m_pDriver->SetBlendMode();
 	m_pDriver->EnableAlphaTest( true );
@@ -1004,7 +1004,7 @@ void LFD_Film::Render(f32 fDeltaTime)
 
 	int32_t nScrWidth, nScrHeight;
 	m_pDriver->GetWindowSize(nScrWidth, nScrHeight);
-	Vector4 posScale(0.0f, 0.0f, (f32)nScrWidth, (f32)nScrHeight);
+	Vector4 posScale(0.0f, 0.0f, (float)nScrWidth, (float)nScrHeight);
 	Vector2 uv(0,0);
 	Vector4 color(0,0,0,1);
 
@@ -1014,7 +1014,7 @@ void LFD_Film::Render(f32 fDeltaTime)
 
 	if ( m_nCut > -1 )
 	{
-		f32 alpha = 0.0f;
+		float alpha = 0.0f;
 		if ( m_nCut == FADE_FROM_BLACK )
 		{
 			alpha = 1.0f - m_fCurCutTime / m_fCutTime;
@@ -1075,7 +1075,7 @@ void LFD_Film::Render(f32 fDeltaTime)
 			}
 			if ( alpha > 0.0f )
 			{
-				posScale.z = alpha*(f32)nScrWidth;
+				posScale.z = alpha*(float)nScrWidth;
 				m_pDriver->RenderScreenQuad(posScale, uv, uv, color, color);
 			}
 		}
@@ -1093,8 +1093,8 @@ void LFD_Film::Render(f32 fDeltaTime)
 			}
 			if ( alpha < 1.0f )
 			{
-				posScale.x = alpha*(f32)nScrWidth;
-				posScale.z = (1.0f-alpha)*(f32)nScrWidth;
+				posScale.x = alpha*(float)nScrWidth;
+				posScale.z = (1.0f-alpha)*(float)nScrWidth;
 				m_pDriver->RenderScreenQuad(posScale, uv, uv, color, color);
 			}
 		}
@@ -1109,8 +1109,8 @@ void LFD_Film::Render(f32 fDeltaTime)
 			}
 			if ( alpha > 0.0f )
 			{
-				posScale.x = (1.0f-alpha)*(f32)nScrWidth;
-				posScale.z = alpha*(f32)nScrWidth;
+				posScale.x = (1.0f-alpha)*(float)nScrWidth;
+				posScale.z = alpha*(float)nScrWidth;
 				m_pDriver->RenderScreenQuad(posScale, uv, uv, color, color);
 			}
 		}
@@ -1128,7 +1128,7 @@ void LFD_Film::Render(f32 fDeltaTime)
 			}
 			if ( alpha < 1.0f )
 			{
-				posScale.z = alpha*(f32)nScrWidth;
+				posScale.z = alpha*(float)nScrWidth;
 				m_pDriver->RenderScreenQuad(posScale, uv, uv, color, color);
 			}
 		}
@@ -1143,7 +1143,7 @@ void LFD_Film::Render(f32 fDeltaTime)
 			}
 			if ( alpha > 0.0f )
 			{
-				posScale.w = alpha*(f32)nScrHeight;
+				posScale.w = alpha*(float)nScrHeight;
 				m_pDriver->RenderScreenQuad(posScale, uv, uv, color, color);
 			}
 		}
@@ -1161,8 +1161,8 @@ void LFD_Film::Render(f32 fDeltaTime)
 			}
 			if ( alpha < 1.0f )
 			{
-				posScale.y = alpha*(f32)nScrHeight;
-				posScale.w = (1.0f-alpha)*(f32)nScrHeight;
+				posScale.y = alpha*(float)nScrHeight;
+				posScale.w = (1.0f-alpha)*(float)nScrHeight;
 				m_pDriver->RenderScreenQuad(posScale, uv, uv, color, color);
 			}
 		}
@@ -1177,8 +1177,8 @@ void LFD_Film::Render(f32 fDeltaTime)
 			}
 			if ( alpha > 0.0f )
 			{
-				posScale.y = (1.0f-alpha)*(f32)nScrHeight;
-				posScale.w = alpha*(f32)nScrHeight;
+				posScale.y = (1.0f-alpha)*(float)nScrHeight;
+				posScale.w = alpha*(float)nScrHeight;
 				m_pDriver->RenderScreenQuad(posScale, uv, uv, color, color);
 			}
 		}
@@ -1196,7 +1196,7 @@ void LFD_Film::Render(f32 fDeltaTime)
 			}
 			if ( alpha < 1.0f )
 			{
-				posScale.w = (1.0f-alpha)*(f32)nScrHeight;
+				posScale.w = (1.0f-alpha)*(float)nScrHeight;
 				m_pDriver->RenderScreenQuad(posScale, uv, uv, color, color);
 			}
 		}
@@ -1211,7 +1211,7 @@ void LFD_Film::Render(f32 fDeltaTime)
 
 				if ( alpha > 1.0f ) { alpha = 1.0f; }
 			}
-			posScale.w = (1.0f-alpha)*(f32)nScrHeight;
+			posScale.w = (1.0f-alpha)*(float)nScrHeight;
 			m_pDriver->RenderScreenQuad(posScale, uv, uv, color, color);
 		}
 	}

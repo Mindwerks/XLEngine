@@ -4053,13 +4053,13 @@ void asCCompiler::ImplicitConvPrimitiveToPrimitive(asSExprContext *ctx, const as
 				ConvertToTempVariableNotIn(ctx, reservedVars);
 				ReleaseTemporaryVariable(ctx->type, &ctx->bc);
 				int offset = AllocateVariableNotIn(to, true, reservedVars);
-				ctx->bc.InstrW_W(asBC_fTOuint64_t, offset, ctx->type.stackOffset);
+				ctx->bc.InstrW_W(asBC_fTOu64, offset, ctx->type.stackOffset);
 				ctx->type.SetVariable(to, offset, true);
 			}
 			else if( ctx->type.dataType.IsDoubleType() )
 			{
 				ConvertToTempVariableNotIn(ctx, reservedVars);
-				ctx->bc.InstrSHORT(asBC_dTOuint64_t, ctx->type.stackOffset);
+				ctx->bc.InstrSHORT(asBC_dTOu64, ctx->type.stackOffset);
 				ctx->type.dataType.SetTokenType(to.GetTokenType());
 				ctx->type.dataType.SetObjectType(to.GetObjectType());
 			}
@@ -4093,7 +4093,7 @@ void asCCompiler::ImplicitConvPrimitiveToPrimitive(asSExprContext *ctx, const as
 				ConvertToTempVariableNotIn(ctx, reservedVars);
 				ReleaseTemporaryVariable(ctx->type, &ctx->bc);
 				int offset = AllocateVariableNotIn(to, true, reservedVars);
-				ctx->bc.InstrW_W(asBC_uint64_tTOf, offset, ctx->type.stackOffset);
+				ctx->bc.InstrW_W(asBC_u64TOf, offset, ctx->type.stackOffset);
 				ctx->type.SetVariable(to, offset, true);
 			}
 			else if( ctx->type.dataType.IsDoubleType() )
@@ -4133,7 +4133,7 @@ void asCCompiler::ImplicitConvPrimitiveToPrimitive(asSExprContext *ctx, const as
 			else if( ctx->type.dataType.IsUnsignedType() && ctx->type.dataType.GetSizeInMemoryDWords() == 2 )
 			{
 				ConvertToTempVariableNotIn(ctx, reservedVars);
-				ctx->bc.InstrSHORT(asBC_uint64_tTOd, ctx->type.stackOffset);
+				ctx->bc.InstrSHORT(asBC_u64TOd, ctx->type.stackOffset);
 				ctx->type.dataType.SetTokenType(to.GetTokenType());
 				ctx->type.dataType.SetObjectType(to.GetObjectType());
 			}
@@ -9271,14 +9271,14 @@ void asCCompiler::CompileMathOperator(asCScriptNode *node, asSExprContext *lctx,
 					if( lctx->type.dataType.IsIntegerType() )
 						instruction = asBC_DIVi64;
 					else
-						instruction = asBC_DIVuint64_t;
+						instruction = asBC_DIVu64;
 				}
 				else if( op == ttPercent || op == ttModAssign )
 				{
 					if( lctx->type.dataType.IsIntegerType() )
 						instruction = asBC_MODi64;
 					else
-						instruction = asBC_MODuint64_t;
+						instruction = asBC_MODu64;
 				}
 			}
 		}
@@ -9900,7 +9900,7 @@ void asCCompiler::CompileComparisonOperator(asCScriptNode *node, asSExprContext 
 			else if( lctx->type.dataType.IsIntegerType() && lctx->type.dataType.GetSizeInMemoryDWords() == 2 )
 				iCmp = asBC_CMPi64;
 			else if( lctx->type.dataType.IsUnsignedType() && lctx->type.dataType.GetSizeInMemoryDWords() == 2 )
-				iCmp = asBC_CMPuint64_t;
+				iCmp = asBC_CMPu64;
 			else if( lctx->type.dataType.IsFloatType() )
 				iCmp = asBC_CMPf;
 			else if( lctx->type.dataType.IsDoubleType() )
@@ -10035,7 +10035,7 @@ void asCCompiler::PushVariableOnStack(asSExprContext *ctx, bool asReference)
 		if( ctx->type.dataType.GetSizeInMemoryDWords() == 1 )
 			ctx->bc.Instr(asBC_RDS4);
 		else
-			ctx->bc.Instr(asBC_RDint8_t);
+			ctx->bc.Instr(asBC_RDS8);
 	}
 }
 

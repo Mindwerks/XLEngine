@@ -43,8 +43,8 @@
 
 //Game Loop
 #define MAX_LOOP_ITER 8
-const f32 m_fFixedLoopsPerSec = 60.0f;
-const f32 m_fFixedLoopTime = (1.0f/m_fFixedLoopsPerSec);
+const float m_fFixedLoopsPerSec = 60.0f;
+const float m_fFixedLoopTime = (1.0f/m_fFixedLoopsPerSec);
 
 //Plugin API.
 Engine *m_pEngineForAPI=NULL;
@@ -61,7 +61,7 @@ int m_anVersion[2]={0,0};
 struct DisplayMessage
 {
 	char msg[128];
-	f32 displayTime;
+	float displayTime;
 	Vector4 color;
 };
 #define MAX_MESSAGE_COUNT 32
@@ -224,7 +224,7 @@ bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
 	m_pCamera->SetDir(dir);
 	//make FOV changeable by game. Default is 65.
 	//Change for Blood temporarily.
-	m_pCamera->SetFOV(60.0f/*75.0f*/, (f32)w / (f32)h);
+	m_pCamera->SetFOV(60.0f/*75.0f*/, (float)w / (float)h);
 
 	m_nWidth  = w;
 	m_nHeight = h;
@@ -257,7 +257,7 @@ bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
 
 				//setup orthographic view, used for things like UI.
 				Matrix projMtx;
-				projMtx.ProjOrtho((f32)m_nWidth, (f32)m_nHeight);
+				projMtx.ProjOrtho((float)m_nWidth, (float)m_nHeight);
 
                 Vector3 pLoc = Vector3(0,0,0);
                 Vector3 pDir = Vector3(0,0,1);
@@ -267,7 +267,7 @@ bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
 				m_pDriver3D->SetWorldMatrix( &Matrix::s_Identity, 0, 0 );
 
 				//now only wait so long...
-				f32 fDeltaTime = Clock::GetDeltaTime(_MAX_TIMEOUT, 1);
+				float fDeltaTime = Clock::GetDeltaTime(_MAX_TIMEOUT, 1);
 				if ( fDeltaTime >= _MAX_TIMEOUT && nExitFrameCnt < 0 )
 				{
 					XL_Console::PrintF("^1Error: The XL Engine timed out waiting for a server response. Aborting.");
@@ -395,7 +395,7 @@ XLFont *Engine::GetSystemFont(int32_t size)
 	return pFont;
 }
 
-void Engine::AddDisplayMessage(const char *pszMsg, Vector4 *color, f32 fShowTime)
+void Engine::AddDisplayMessage(const char *pszMsg, Vector4 *color, float fShowTime)
 {
 	if ( m_nMessageCnt >= MAX_MESSAGE_COUNT )
 	{
@@ -425,7 +425,7 @@ void Engine::AddDisplayMessage(const char *pszMsg, Vector4 *color, f32 fShowTime
 	XL_Console::PrintF("^5%s", pszMsg);
 }
 
-f32 Engine::GetCurrentBrightness()
+float Engine::GetCurrentBrightness()
 {
 	Object *player = m_pWorld->GetPlayer();
 	if ( player == NULL )
@@ -434,7 +434,7 @@ f32 Engine::GetCurrentBrightness()
 	return player->GetBrightness();
 }
 
-f32 Engine::GetCurrentSpeed()
+float Engine::GetCurrentSpeed()
 {
 	return m_pCamera->GetSpeed();
 }
@@ -490,7 +490,7 @@ void Game_LoadWorldMap(void)
 	WorldMap::Load();
 }
 
-void Engine::Engine_SetCameraData(f32 *pos, f32 *dir, f32 fSkew, f32 fSpeed, uint32_t uSector)
+void Engine::Engine_SetCameraData(float *pos, float *dir, float fSkew, float fSpeed, uint32_t uSector)
 {
 	Camera *pCamera = m_pEngineForAPI->m_pCamera;
 	Vector3 vLoc = Vector3(pos[0], pos[1], pos[2]);
@@ -504,7 +504,7 @@ void Engine::Engine_SetCameraData(f32 *pos, f32 *dir, f32 fSkew, f32 fSpeed, uin
 
 XL_BOOL Engine::Engine_AllowPlayerControls(void)
 {
-	return (XL_Console::IsActive() == true || XL_Console::IsChatActive() == true ) ? XL_FALSE : XL_TRUE;
+	return (XL_Console::IsActive() == true || XL_Console::IsChatActive() == true ) ? false : true;
 }
 
 void UnloadAllWorldCells(void)
@@ -546,7 +546,7 @@ XL_BOOL World_IsPointInWater(void *p0)
 	World *pWorld = m_pEngineForAPI->GetWorld();
 
 	if ( !pWorld->IsSectorTypeVis(SECTOR_TYPE_EXTERIOR) )
-		return XL_FALSE;
+		return false;
 
 	return pWorld->GetTerrain()->IsPointInWater(pos->x, pos->y);
 }
@@ -576,7 +576,7 @@ XL_BOOL Pathing_GetRandomNode(int32_t& nodeX, int32_t& nodeY, float& x, float& y
 
 	x = outPos.x; y = outPos.y; z = outPos.z;
 
-	return bFound ? XL_TRUE : XL_FALSE;
+	return bFound ? true : false;
 }
 
 XL_BOOL Pathing_CheckNode(int32_t nodeX, int32_t nodeY)
@@ -593,7 +593,7 @@ void Pathing_GetNodeVector(float& vx, float& vy, float cx, float cy, int32_t wx,
 	vy = vOffset.y;
 }
 
-void World_Collide(void *p0, void *p1, uint32_t& uSector, f32 fRadius, int32_t bPassThruAdjoins)
+void World_Collide(void *p0, void *p1, uint32_t& uSector, float fRadius, int32_t bPassThruAdjoins)
 {
 	m_pEngineForAPI->GetWorld()->Collide((Vector3 *)p0, (Vector3 *)p1, uSector, fRadius, bPassThruAdjoins ? true : false);
 }
@@ -606,7 +606,7 @@ void World_Activate(void *p0, void *p1, uint32_t& uSector)
 XL_BOOL World_Raycast(void *p0, void *p1, void *pInter)
 {
 	bool bFound = m_pEngineForAPI->GetWorld()->Raycast((Vector3 *)p0, (Vector3 *)p1, (Vector3 *)pInter);
-	return bFound ? XL_TRUE : XL_FALSE;
+	return bFound ? true : false;
 }
 
 void World_GetCellWorldPos(char *pszName, int *x, int *y)
@@ -739,7 +739,7 @@ void Engine::ChangeWindowSize(int32_t w, int32_t h)
     m_pDriver3D->ChangeWindowSize(w, h);
 }
 
-bool Engine::Loop(f32 fDeltaTime, bool bFullspeed)
+bool Engine::Loop(float fDeltaTime, bool bFullspeed)
 {
 	m_FPS = fDeltaTime > 0.0f ? 1.0f/fDeltaTime : 0.0f;
 
@@ -835,7 +835,7 @@ bool Engine::Loop(f32 fDeltaTime, bool bFullspeed)
 
 			//setup orthographic view, used for things like UI.
 			Matrix projMtx;
-			projMtx.ProjOrtho((f32)m_nWidth, (f32)m_nHeight);
+			projMtx.ProjOrtho((float)m_nWidth, (float)m_nHeight);
 
 			Vector3 pDir = Vector3(0,0,0);
 			Vector3 pLoc = Vector3(0,0,1);
@@ -869,7 +869,7 @@ bool Engine::Loop(f32 fDeltaTime, bool bFullspeed)
 	return m_bContinueLoop;
 }
 
-void Engine::DisplayMessages(f32 fDeltaTime)
+void Engine::DisplayMessages(float fDeltaTime)
 {
 	//1. remove old messages. Only one at a time though.
 	for (int32_t m=0; m<m_nMessageCnt; m++)
@@ -906,7 +906,7 @@ void Engine::DisplayMessages(f32 fDeltaTime)
 
 			for (int32_t m=0; m<m_nMessageCnt; m++, y+= 18)
 			{
-				f32 alpha = m_aMessages[m].color.w * Math::clamp(m_aMessages[m].displayTime, 0.0f, 1.0f);
+				float alpha = m_aMessages[m].color.w * Math::clamp(m_aMessages[m].displayTime, 0.0f, 1.0f);
 				Vector4 color(m_aMessages[m].color.x, m_aMessages[m].color.y, m_aMessages[m].color.z, alpha);
 				Vector4 shadow(0.0f, 0.0f, 0.0f, alpha);
 				FontManager::RenderString(12, y+2, m_aMessages[m].msg, pFont, &shadow);

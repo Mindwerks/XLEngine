@@ -40,8 +40,8 @@ struct UI_RenderFrame
 	TextureHandle hFrame;		//the image handle.
 	int16_t width;		//the image width.
 	int16_t height;		//the image height.
-	f32 fRelWidth;	//Relative width and height.
-	f32 fRelHeight;	//used to determine uv's when image is fit into a pow of 2 texture.
+	float fRelWidth;	//Relative width and height.
+	float fRelHeight;	//used to determine uv's when image is fit into a pow of 2 texture.
 };
 
 class UI_Screen
@@ -59,8 +59,8 @@ public:
 	SHANDLE m_hOnKey;
 	uint32_t m_uFlags;
 	uint32_t m_uState;
-	f32 m_fVirt_Scr_W;
-	f32 m_fVirt_Scr_H;
+	float m_fVirt_Scr_W;
+	float m_fVirt_Scr_H;
 
 	UI_Screen *m_parent;
 	UI_Screen *m_child;
@@ -144,8 +144,8 @@ private:
 
 	static bool m_bScriptsLoaded;
 	static bool m_bScriptExeSucceeded;
-	//static f32 m_fVirt_Scr_W;
-	//static f32 m_fVirt_Scr_H;
+	//static float m_fVirt_Scr_W;
+	//static float m_fVirt_Scr_H;
 	static Vector2 m_uvTop;
 	static Vector2 m_uvBot;
 	static bool m_bFlipX;
@@ -189,7 +189,7 @@ private:
 	static void UI_RenderImage(int hImage, int x, int y, float intensity, int alignHoriz, int alignVert);
 	static void UI_GetImageSize(int hImage, int& w, int& h);
 	static void UI_RenderImageRect(int hImage, int x, int y, int w, int h, float intensity, int alignHoriz, int alignVert);
-	static void UI_SetImageUV_Range(f32 u0, f32 v0, f32 u1, f32 v1);
+	static void UI_SetImageUV_Range(float u0, float v0, float u1, float v1);
 	static void UI_SetImageUV_RangeI(int hImage, int u0, int v0, int w, int h);
 	static void UI_RenderPolygon(int npt, asIScriptArray *x, asIScriptArray *y, float r, float g, float b, float a, int alignHoriz, int alignVert);
 	static void UI_RenderRect(int x, int y, int w, int h, float r, float g, float b, float a, int alignHoriz, int alignVert);
@@ -201,8 +201,8 @@ private:
 	static void UI_GetScreenSize(int& w, int& h);
 	static void UI_SetPalette(int pal, int colMap);
 	static int UI_GetVirtualKey(int key);
-	static f32 UI_GetCurrentBrightness();
-	static f32 UI_GetSpeed();
+	static float UI_GetCurrentBrightness();
+	static float UI_GetSpeed();
 	//LFD_Anim
 	static int UI_CreateLFD_Anim(string& sArchive, string& sAnim, string& sPal);
 	static void UI_DestroyLFD_Anim(int ID);

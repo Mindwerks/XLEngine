@@ -313,8 +313,8 @@ WorldCell *CellLoader_Daggerfall::LoadFromLocation( IDriver3D *pDriver, World *p
 				ArchiveManager::GameFile_Close();
 
 				Vector3 vLoc(0.0f, 0.0f, 0.0f);
-				vLoc.x = (f32)pLocation->m_pDungeonBlocks[b].x * 512.0f;
-				vLoc.y = (f32)pLocation->m_pDungeonBlocks[b].y * 512.0f;
+				vLoc.x = (float)pLocation->m_pDungeonBlocks[b].x * 512.0f;
+				vLoc.y = (float)pLocation->m_pDungeonBlocks[b].y * 512.0f;
 
 				int blockType = 1;
 				if ( pLocation->m_pDungeonBlocks[b].szName[0] == 'B' || pLocation->m_pDungeonBlocks[b].szName[0] == 'S' )
@@ -530,7 +530,7 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
 				char szTexName[128];
 				MeshLoader_Daggerfall::BuildTextureName(szTexName, FileIndex);
 				TextureHandle hTex = TextureCache::GameFile_LoadTexture_TexList( TEXTURETYPE_IMG, 7, ARCHIVETYPE_NONE, "", szTexName, ImageIndex );
-				f32 fw, fh;
+				float fw, fh;
 				int32_t ox, oy;
 				uint32_t w, h;
 				TextureCache::GetTextureSize(ox, oy, w, h, fw, fh);
@@ -551,15 +551,15 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
 				pObj->SetSector( pSector->m_uID );
 
 				Vector3 vScale;
-				vScale.x = (f32)newWidth  / 8.0f;
+				vScale.x = (float)newWidth  / 8.0f;
 				vScale.y = vScale.x;
-				vScale.z = (f32)newHeight / 8.0f;
+				vScale.z = (float)newHeight / 8.0f;
 				pObj->SetScale(vScale);
 				
 				Vector3 vLoc;
-				vLoc.x =  (f32)xPos * fFP_Scale;
-				vLoc.z = -(f32)yPos * fFP_Scale + fTileHeight;
-				vLoc.y =  (f32)zPos * fFP_Scale;
+				vLoc.x =  (float)xPos * fFP_Scale;
+				vLoc.z = -(float)yPos * fFP_Scale + fTileHeight;
+				vLoc.y =  (float)zPos * fFP_Scale;
 				pObj->SetLoc(vLoc);
 
 				Sprite_ZAxis *pSprite = xlNew Sprite_ZAxis();
@@ -756,7 +756,7 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
 				char szTexName[128];
 				MeshLoader_Daggerfall::BuildTextureName(szTexName, nFoilageIndex);
 				TextureHandle hTex = TextureCache::GameFile_LoadTexture_TexList( TEXTURETYPE_IMG, 7, ARCHIVETYPE_NONE, "", szTexName, nIndex );
-				f32 fw, fh;
+				float fw, fh;
 				int32_t ox, oy;
 				uint32_t w, h;
 				TextureCache::GetTextureSize(ox, oy, w, h, fw, fh);
@@ -774,9 +774,9 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
 				pObj->SetSector( pSector->m_uID );
 											
 				Vector3 vScale;
-				vScale.x = (f32)newWidth  / 8.0f;
+				vScale.x = (float)newWidth  / 8.0f;
 				vScale.y = vScale.x;
-				vScale.z = (f32)newHeight / 8.0f;
+				vScale.z = (float)newHeight / 8.0f;
 				pObj->SetScale(vScale);
 				
 				Vector3 vLoc;
@@ -879,7 +879,7 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
 			char szTexName[128];
 			MeshLoader_Daggerfall::BuildTextureName(szTexName, FileIndex);
 			TextureHandle hTex = TextureCache::GameFile_LoadTexture_TexList( TEXTURETYPE_IMG, 7, ARCHIVETYPE_NONE, "", szTexName, ImageIndex );
-			f32 fw, fh;
+			float fw, fh;
 			int32_t ox, oy;
 			uint32_t w, h;
 			TextureCache::GetTextureSize(ox, oy, w, h, fw, fh);
@@ -897,15 +897,15 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
 			pObj->SetSector( pSector->m_uID );
 										
 			Vector3 vScale;
-			vScale.x = (f32)newWidth  / 8.0f;
+			vScale.x = (float)newWidth  / 8.0f;
 			vScale.y = vScale.x;
-			vScale.z = (f32)newHeight / 8.0f;
+			vScale.z = (float)newHeight / 8.0f;
 			pObj->SetScale(vScale);
 			
 			Vector3 vLoc;
-			vLoc.x =  (f32)xPos * fFP_Scale - 512.0f;
-			vLoc.z = -(f32)yPos * fFP_Scale + fTileHeight + vScale.z;
-			vLoc.y =  (f32)zPos * fFP_Scale + 512.0f;
+			vLoc.x =  (float)xPos * fFP_Scale - 512.0f;
+			vLoc.z = -(float)yPos * fFP_Scale + fTileHeight + vScale.z;
+			vLoc.y =  (float)zPos * fFP_Scale + 512.0f;
 			assert( vLoc.x >= -512.0f && vLoc.x <= 512.0f);
 			assert( vLoc.y >= -512.0f && vLoc.y <= 512.0f);
 			pObj->SetLoc(vLoc);
@@ -1029,7 +1029,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 	memcpy(obj_root_offs, &pData[index], obj_roots_size*4);
 	index += obj_roots_size*4;
 
-	f32 fFP_Scale = 1.0f / 4.0f;
+	float fFP_Scale = 1.0f / 4.0f;
 	pSector->m_Bounds[0].Set( FLT_MAX, FLT_MAX, FLT_MAX );
 	pSector->m_Bounds[1] = -pSector->m_Bounds[0];
 
@@ -1084,15 +1084,15 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 					pMeshObj->SetScale( Vector3(1,1,1) );
 
 					Vector3 vPos;
-					vPos.x =  (f32)object.xLoc * fFP_Scale + vBlockLoc.x;
-					vPos.z = -(f32)object.yLoc * fFP_Scale + vBlockLoc.z;
-					vPos.y =  (f32)object.zLoc * fFP_Scale + vBlockLoc.y;
+					vPos.x =  (float)object.xLoc * fFP_Scale + vBlockLoc.x;
+					vPos.z = -(float)object.yLoc * fFP_Scale + vBlockLoc.z;
+					vPos.y =  (float)object.zLoc * fFP_Scale + vBlockLoc.y;
 					pMeshObj->SetLoc( vPos );
 
 					Vector3 vAngles;
-					vAngles.x = (f32)obj3D.zAngle;
-					vAngles.y = (f32)obj3D.xAngle;
-					vAngles.z = (f32)obj3D.yAngle;
+					vAngles.x = (float)obj3D.zAngle;
+					vAngles.y = (float)obj3D.xAngle;
+					vAngles.z = (float)obj3D.yAngle;
 
 					assert( obj3D.ModelIndex < m_nModelCnt && obj3D.ModelIndex >= 0 );
 					pMeshObj->SetRenderComponent( m_apModels[obj3D.ModelIndex] );
@@ -1113,11 +1113,11 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 
 					pMeshObj->SetGameID( m_anMeshID[obj3D.ModelIndex] );
 
-					const f32 piOver2 = 1.5707963267948966192313216916398f;
+					const float piOver2 = 1.5707963267948966192313216916398f;
 					if ( objRecord == 22663 )
 					{
 						bStartFound = true;
-						f32 angle = vAngles.z * piOver2/512.0f;
+						float angle = vAngles.z * piOver2/512.0f;
 
 						//this is the dungeon entrace?
 						pMeshObj->GetLoc(vStartTagLoc);
@@ -1169,7 +1169,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 
 							pGameData->fDelta = 0.0f;		//which direction to move in and how much per step.
 							pGameData->fAnim  = 0.0f;		//current animation state.
-							pGameData->bAnim  = XL_FALSE;	//is currently animating?
+							pGameData->bAnim  = false;	//is currently animating?
 
 							objTarget[objCount] = pActionRec->TargetOffset;
 						}
@@ -1203,8 +1203,8 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 						pMeshObj->action.pParent = NULL;
 						pMeshObj->action.Type = pActionRec->Type&0x0f;
 						pMeshObj->action.Axis = pActionRec->DataEntry[0];
-						pMeshObj->action.Duration = (f32)( *((unsigned short *)&pActionRec->DataEntry[1]) ) / 16.0f;
-						pMeshObj->action.Delta    = (f32)( *((unsigned short *)&pActionRec->DataEntry[3]) );
+						pMeshObj->action.Duration = (float)( *((unsigned short *)&pActionRec->DataEntry[1]) ) / 16.0f;
+						pMeshObj->action.Delta    = (float)( *((unsigned short *)&pActionRec->DataEntry[3]) );
 					}
 					else
 					{
@@ -1252,7 +1252,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 					}
 
 				#else
-					f32 fSpriteScale = 1.0f;
+					float fSpriteScale = 1.0f;
 
 					bool bVisible = true;
 					bool bHasGravity = false;
@@ -1270,9 +1270,9 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 							{
 								bStartFound = true;
 
-								vStartTagLoc.x =  (f32)object.xLoc * fFP_Scale + vBlockLoc.x;
-								vStartTagLoc.z = -(f32)object.yLoc * fFP_Scale + vBlockLoc.z;
-								vStartTagLoc.y =  (f32)object.zLoc * fFP_Scale + vBlockLoc.y;
+								vStartTagLoc.x =  (float)object.xLoc * fFP_Scale + vBlockLoc.x;
+								vStartTagLoc.z = -(float)object.yLoc * fFP_Scale + vBlockLoc.z;
+								vStartTagLoc.y =  (float)object.zLoc * fFP_Scale + vBlockLoc.y;
 							}
 							bVisible = false;
 						}
@@ -1337,7 +1337,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 							char szTexName[128];
 							MeshLoader_Daggerfall::BuildTextureName(szTexName, FileIndex);
 							TextureHandle hTex = TextureCache::GameFile_LoadTexture_TexList( TEXTURETYPE_IMG, 7, ARCHIVETYPE_NONE, "", szTexName, ImageIndex );
-							f32 fw, fh;
+							float fw, fh;
 							TextureCache::GetTextureSize(ox, oy, w, h, fw, fh);
 							int16_t *pSpriteScale = (int16_t *)TextureCache::GetTexExtraData();
 
@@ -1357,15 +1357,15 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 							pObj->SetSector( pSector->m_uID );
 														
 							Vector3 vScale;
-							vScale.x = (f32)newWidth  / 8.0f;
+							vScale.x = (float)newWidth  / 8.0f;
 							vScale.y = vScale.x;
-							vScale.z = (f32)newHeight / 8.0f;
+							vScale.z = (float)newHeight / 8.0f;
 							pObj->SetScale(vScale);
 							
 							Vector3 vLoc;
-							vLoc.x =  (f32)object.xLoc * fFP_Scale + vBlockLoc.x;
-							vLoc.z = -(f32)object.yLoc * fFP_Scale + vBlockLoc.z;
-							vLoc.y =  (f32)object.zLoc * fFP_Scale + vBlockLoc.y;
+							vLoc.x =  (float)object.xLoc * fFP_Scale + vBlockLoc.x;
+							vLoc.z = -(float)object.yLoc * fFP_Scale + vBlockLoc.z;
+							vLoc.y =  (float)object.zLoc * fFP_Scale + vBlockLoc.y;
 							pObj->SetLoc(vLoc);
 
 							Sprite_ZAxis *pSprite = xlNew Sprite_ZAxis();
@@ -1397,9 +1397,9 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 
 							/*DungeonSprite_t *pSprite = new DungeonSprite_t;
 							pSprite->pSprite = new Sprite();
-							pSprite->vPos.x =  (f32)object.xLoc * fFP_Scale + m_vPos.x;
-							pSprite->vPos.z = -(f32)object.yLoc * fFP_Scale + m_vPos.z;
-							pSprite->vPos.y =  (f32)object.zLoc * fFP_Scale + m_vPos.y;
+							pSprite->vPos.x =  (float)object.xLoc * fFP_Scale + m_vPos.x;
+							pSprite->vPos.z = -(float)object.yLoc * fFP_Scale + m_vPos.z;
+							pSprite->vPos.y =  (float)object.zLoc * fFP_Scale + m_vPos.y;
 							pSprite->bInterior = true;
 							pSprite->bVisible = true;
 
@@ -1447,9 +1447,9 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 							DynamicNPC *pMonster = new DynamicNPC( pWorld );
 														
 							Vector3 vPos;
-							vPos.x =  (f32)object.xLoc * fFP_Scale + m_vPos.x;
-							vPos.z = -(f32)object.yLoc * fFP_Scale + m_vPos.z;
-							vPos.y =  (f32)object.zLoc * fFP_Scale + m_vPos.y;
+							vPos.x =  (float)object.xLoc * fFP_Scale + m_vPos.x;
+							vPos.z = -(float)object.yLoc * fFP_Scale + m_vPos.z;
+							vPos.y =  (float)object.zLoc * fFP_Scale + m_vPos.y;
 							pMonster->SetPos(vPos);
 
 							pMonster->SetType( (unsigned int)nMonsterID, -1, bEnemiesActive );
@@ -1527,8 +1527,8 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 		pObj->Init();
 	}
 
-	const f32 fLightRadius = 64.0f;
-	const f32 fTestRadius = (fLightRadius*0.95f)*(fLightRadius*0.95f);
+	const float fLightRadius = 64.0f;
+	const float fTestRadius = (fLightRadius*0.95f)*(fLightRadius*0.95f);
 	//combine lights.
 	int lightCnt = (int)pLights.size();
 	int8_t *lightAdded = xlNew int8_t[lightCnt];
@@ -1562,7 +1562,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 		}
 		if ( aveCnt > 1 )
 		{
-			cenAve = cenAve * (1.0f/(f32)aveCnt);
+			cenAve = cenAve * (1.0f/(float)aveCnt);
 			pLights[l]->m_vLoc = cenAve;
 		}
 	}
@@ -1591,7 +1591,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 		assert(pObj);
 
 		Vector3 vCen;
-		f32 fRadius = pObj->GetBoundingSphere(vCen);
+		float fRadius = pObj->GetBoundingSphere(vCen);
 
 		for (int l=0; l<(int)lightList.size(); l++)
 		{

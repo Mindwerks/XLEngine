@@ -220,21 +220,21 @@ bool LFD_Anim::Load(char *pData, int32_t len, bool bUseProperOffs)
 		Size[0]++;
 		Size[1]++;
 
-		m_Width[i]  = (f32)Size[0]/320.0f;
-		m_Height[i] = (f32)Size[1]/200.0f;
+		m_Width[i]  = (float)Size[0]/320.0f;
+		m_Height[i] = (float)Size[1]/200.0f;
 		if ( bUseProperOffs )
 		{
-			m_OffsX[i] = (f32)Offs[0]/320.0f;
-			m_OffsY[i] = /*1.0f - m_Height[i] - */(f32)Offs[1]/200.0f;
+			m_OffsX[i] = (float)Offs[0]/320.0f;
+			m_OffsY[i] = /*1.0f - m_Height[i] - */(float)Offs[1]/200.0f;
 		}
 		else
 		{
 			m_OffsX[i]  = 0.0f;
-			m_OffsY[i]  = ((f32)Offs[1]*0.125f*0.45f/200.0f);
+			m_OffsY[i]  = ((float)Offs[1]*0.125f*0.45f/200.0f);
 		}
 
 		memset(_ImgBuffer, 0, 2048*2048);
-		f32 afAveClr[3]={0.0f, 0.0f, 0.0f};
+		float afAveClr[3]={0.0f, 0.0f, 0.0f};
 		int32_t nTotalVisPixels=0;
 
 		while (size > 6)
@@ -281,9 +281,9 @@ bool LFD_Anim::Load(char *pData, int32_t len, bool bUseProperOffs)
 						{
 							pixel = pImgData[nIdx]; nIdx++;
 							_ImgBuffer[pIdx++] = (0xff<<24) | (m_PalFile.colors[pixel].b<<16) | (m_PalFile.colors[pixel].g<<8) | m_PalFile.colors[pixel].r;
-							afAveClr[0] += (f32)m_PalFile.colors[pixel].r;
-							afAveClr[1] += (f32)m_PalFile.colors[pixel].g;
-							afAveClr[2] += (f32)m_PalFile.colors[pixel].b;
+							afAveClr[0] += (float)m_PalFile.colors[pixel].r;
+							afAveClr[1] += (float)m_PalFile.colors[pixel].g;
+							afAveClr[2] += (float)m_PalFile.colors[pixel].b;
 							nTotalVisPixels++;
 							size--;
 						}
@@ -298,9 +298,9 @@ bool LFD_Anim::Load(char *pData, int32_t len, bool bUseProperOffs)
 						for (int32_t p=0; p<count; p++)
 						{
 							_ImgBuffer[pIdx++] = (0xff<<24) | (m_PalFile.colors[pixel].b<<16) | (m_PalFile.colors[pixel].g<<8) | m_PalFile.colors[pixel].r;
-							afAveClr[0] += (f32)m_PalFile.colors[pixel].r;
-							afAveClr[1] += (f32)m_PalFile.colors[pixel].g;
-							afAveClr[2] += (f32)m_PalFile.colors[pixel].b;
+							afAveClr[0] += (float)m_PalFile.colors[pixel].r;
+							afAveClr[1] += (float)m_PalFile.colors[pixel].g;
+							afAveClr[2] += (float)m_PalFile.colors[pixel].b;
 							nTotalVisPixels++;
 						}
 						num_pixels -= count;
@@ -312,9 +312,9 @@ bool LFD_Anim::Load(char *pData, int32_t len, bool bUseProperOffs)
 					{
 						pixel = pImgData[nIdx]; nIdx++;
 						_ImgBuffer[pIdx++] = (0xff<<24) | (m_PalFile.colors[pixel].b<<16) | (m_PalFile.colors[pixel].g<<8) | m_PalFile.colors[pixel].r;
-						afAveClr[0] += (f32)m_PalFile.colors[pixel].r;
-						afAveClr[1] += (f32)m_PalFile.colors[pixel].g;
-						afAveClr[2] += (f32)m_PalFile.colors[pixel].b;
+						afAveClr[0] += (float)m_PalFile.colors[pixel].r;
+						afAveClr[1] += (float)m_PalFile.colors[pixel].g;
+						afAveClr[2] += (float)m_PalFile.colors[pixel].b;
 						nTotalVisPixels++;
 						size--;
 					}
@@ -325,8 +325,8 @@ bool LFD_Anim::Load(char *pData, int32_t len, bool bUseProperOffs)
 
 		if ( bUseProperOffs && 0 )
 		{
-			f32 fOOTPix;
-			fOOTPix = (nTotalVisPixels>0) ? 1.0f / (f32)nTotalVisPixels : 0.0f;
+			float fOOTPix;
+			fOOTPix = (nTotalVisPixels>0) ? 1.0f / (float)nTotalVisPixels : 0.0f;
 			afAveClr[0] *= fOOTPix;
 			afAveClr[1] *= fOOTPix;
 			afAveClr[2] *= fOOTPix;
@@ -408,7 +408,7 @@ bool LFD_Anim::Load(char *pData, int32_t len, bool bUseProperOffs)
 	return true;
 }
 
-void LFD_Anim::SetOffsScale(f32 sx, f32 sy)
+void LFD_Anim::SetOffsScale(float sx, float sy)
 {
 	for (int32_t i=0; i<m_nNumDelts; i++)
 	{
@@ -420,7 +420,7 @@ void LFD_Anim::SetOffsScale(f32 sx, f32 sy)
 	}
 }
 
-void LFD_Anim::GetFrameExtents(int32_t frame, f32 x, f32 y, int32_t& frameX0, int32_t& frameY0, int32_t& frameWidth, int32_t& frameHeight)
+void LFD_Anim::GetFrameExtents(int32_t frame, float x, float y, int32_t& frameX0, int32_t& frameY0, int32_t& frameWidth, int32_t& frameHeight)
 {
 	if ( frame > m_nNumDelts-1 ) { frame = m_nNumDelts-1; }
 
@@ -429,10 +429,10 @@ void LFD_Anim::GetFrameExtents(int32_t frame, f32 x, f32 y, int32_t& frameX0, in
 	m_pDriver->GetWindowSize(nWidth, nHeight);
 	//now we want to impose the 320x200 UI into the 4:3 size.
 	int32_t n43_Width = 4*nHeight/3;
-	f32 fOffsetX  = (f32)( (nWidth - n43_Width)>>1 );
-	f32 fOffsetY  = 0.0f;
-	f32 fScaleX   = (f32)n43_Width;
-	f32 fScaleY   = (f32)nHeight;
+	float fOffsetX  = (float)( (nWidth - n43_Width)>>1 );
+	float fOffsetY  = 0.0f;
+	float fScaleX   = (float)n43_Width;
+	float fScaleY   = (float)nHeight;
 
 	frameX0 = (int32_t)( (m_OffsX[frame]+x)*fScaleX+fOffsetX );
 	frameY0 = (int32_t)( (m_OffsY[frame]+y)*fScaleY+fOffsetY );
@@ -441,7 +441,7 @@ void LFD_Anim::GetFrameExtents(int32_t frame, f32 x, f32 y, int32_t& frameX0, in
 	frameHeight = (int32_t)( m_Height[frame]*fScaleY*m_fScaleY );
 }
 
-void LFD_Anim::Render(int32_t frame, f32 x, f32 y, f32 maxX, f32 minY, f32 dU, f32 dV, bool bDistort)
+void LFD_Anim::Render(int32_t frame, float x, float y, float maxX, float minY, float dU, float dV, bool bDistort)
 {
 	if ( frame > m_nNumDelts-1 ) { frame = m_nNumDelts-1; }
 
@@ -461,10 +461,10 @@ void LFD_Anim::Render(int32_t frame, f32 x, f32 y, f32 maxX, f32 minY, f32 dU, f
 	m_pDriver->GetWindowSize(nWidth, nHeight);
 	//now we want to impose the 320x200 UI into the 4:3 size.
 	int32_t n43_Width = 4*nHeight/3;
-	f32 fOffsetX = (f32)( (nWidth - n43_Width)>>1 );
-	f32 fOffsetY = 0.0f;
-	f32 fScaleX  = (f32)n43_Width;
-	f32 fScaleY  = (f32)nHeight;
+	float fOffsetX = (float)( (nWidth - n43_Width)>>1 );
+	float fOffsetY = 0.0f;
+	float fScaleX  = (float)n43_Width;
+	float fScaleY  = (float)nHeight;
 
 	float x0, y0, x1, y1, u0, u1, v0, v1;
 	x0 = (m_OffsX[frame]+x)*fScaleX+fOffsetX; x1 = m_Width[frame] *m_fScaleX*fScaleX+x0;

@@ -33,7 +33,7 @@ DaggerXL_Game::DaggerXL_Game(const XLEngine_Plugin_API *API)
 	m_pAPI->RegisterScriptFunc("void Game_NewGame()", asFUNCTION(SC_Game_NewGame)); 
 
 	//We only worry about the UI scripts, palettes, color maps and so on if we're running a client.
-	if ( m_pAPI->IsServer() == XL_FALSE )
+	if ( m_pAPI->IsServer() == false )
 	{
 		//Load the WorldMap.
 		m_pAPI->LoadWorldMap();

@@ -140,8 +140,8 @@ class IDriver3D
 		virtual void EnableCulling(bool bEnable) {};
 		virtual void EnableAlphaTest(bool bEnable, uint8_t uAlphaCutoff=128) {};
 		virtual void SetBlendMode(uint32_t uMode=BLEND_NONE) {};
-		virtual void EnableFog(bool bEnable, f32 fEnd=10000.0f) {};
-		virtual void SetFogDensity(f32 fDensity=1.0f) {};
+		virtual void EnableFog(bool bEnable, float fEnd=10000.0f) {};
+		virtual void SetFogDensity(float fDensity=1.0f) {};
 
 		//Palette
 		void SetCurrentPalette(uint32_t uPalID, bool UpdatePal=false) { m_uPaletteID = uPalID; m_bUpdatePal = UpdatePal; }

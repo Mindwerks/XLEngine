@@ -4,7 +4,7 @@
 #include "../math/Math.h"
 #include "../world/Sector.h"
 
-const f32 dtor = 0.0174532925f;
+const float dtor = 0.0174532925f;
 bool Camera::s_bUpdateFrustum=true;
 
 Camera::Camera()
@@ -248,20 +248,20 @@ void Camera::GetProjMatrix(Matrix *pProjMtx)
 	*pProjMtx = m_ProjMtx;
 }
 
-void Camera::Update(f32 fDeltaTime)
+void Camera::Update(float fDeltaTime)
 {
 }
 
 //for forward projecting cameras... i.e. the up = (0,0,1) exactly.
-void Camera::InverseTransformPointsSS_2D(f32 x, f32 oow, Vector2& worldPos)
+void Camera::InverseTransformPointsSS_2D(float x, float oow, Vector2& worldPos)
 {
 	const Vector3 xT( m_ViewProj.m[0], m_ViewProj.m[4], m_ViewProj.m[12] );
 	const Vector3 wT( m_ViewProj.m[3], m_ViewProj.m[7], m_ViewProj.m[15] );
 
 	if ( oow > 0.0f )
 	{
-		f32 w = 1.0f/oow;
-		f32 fDenom = ( (xT.x*oow)*wT.y - (xT.y*oow)*wT.x );
+		float w = 1.0f/oow;
+		float fDenom = ( (xT.x*oow)*wT.y - (xT.y*oow)*wT.x );
 		assert( Math::abs(fDenom) > 0.0000001f );
 		worldPos.x = ( (x - xT.z*oow)*wT.y - (w - wT.z)*(xT.y*oow) ) / fDenom;
 		if ( Math::abs(xT.y) > 0.00001f )
@@ -280,14 +280,14 @@ void Camera::TransformPointsSS_2D(uint32_t uCount, const Vector2 *wsPos, Vector2
 	const Vector3 xT( m_ViewProj.m[0], m_ViewProj.m[4], m_ViewProj.m[12] );
 	const Vector3 wT( m_ViewProj.m[3], m_ViewProj.m[7], m_ViewProj.m[15] );
 
-	f32 fOODepthRange = 1.0f / (m_fFarZ - m_fNearZ);
+	float fOODepthRange = 1.0f / (m_fFarZ - m_fNearZ);
 	for (uint32_t i=0; i<uCount; i++)
 	{
 		ssPos[i].x = xT.x * (wsPos[i].x+offset.x) + xT.y * (wsPos[i].y+offset.y) + xT.z;
-		f32 w = wT.x * (wsPos[i].x+offset.x) + wT.y * (wsPos[i].y+offset.y) + wT.z;
+		float w = wT.x * (wsPos[i].x+offset.x) + wT.y * (wsPos[i].y+offset.y) + wT.z;
 		if ( fabsf(w) > 0.0000001f )
 		{
-			f32 fOOW = 1.0f / fabsf(w);
+			float fOOW = 1.0f / fabsf(w);
 			//projected 1D x position.
 			ssPos[i].x *= fOOW;
 			//linear depth value, ranges from 0.0 at nearZ to 1.0 at FarZ
@@ -308,7 +308,7 @@ void Camera::TransformPointsSS(uint32_t uCount, Vector3 *wsPos, Vector3 *ssPos)
 		Vector4 out = m_ViewProj.TransformVector(in);
 		if ( fabsf(out.w) > 0.0f )
 		{
-			f32 fOOW = 1.0f/out.w;
+			float fOOW = 1.0f/out.w;
 			ssPos[i].x = out.x / out.w;
 			ssPos[i].y = out.y / out.w;
 			ssPos[i].z = out.z / out.w;

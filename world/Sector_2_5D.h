@@ -61,7 +61,7 @@ public:
 	Vector2 m_texOffset[WALL_TEX_COUNT];
 	Vector2 m_texScale[WALL_TEX_COUNT];
 
-	f32 m_wallLen;					//used for computing texture coordinates.
+	float m_wallLen;					//used for computing texture coordinates.
 
 	LevelFunc *m_pFunc;
 };
@@ -73,12 +73,12 @@ public:
 	~Sector_2_5D();
 
 	void Render(IDriver3D *pDriver, Camera *pCamera);
-	bool PointInsideSector(f32 x, f32 y);
-	f32 GetZ_Floor(f32 x, f32 y, const vector<Sector *>& Sectors);
-	f32 GetZ_Ceil(f32 x, f32 y, const vector<Sector *>& Sectors);
+	bool PointInsideSector(float x, float y);
+	float GetZ_Floor(float x, float y, const vector<Sector *>& Sectors);
+	float GetZ_Ceil(float x, float y, const vector<Sector *>& Sectors);
 
 	static void RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pCamera, Sector_2_5D *pStart, const vector<Sector *>& Sectors);
-	static void Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, f32 fRadius, const vector<Sector *>& Sectors, bool bPassThruAdjoins);
+	static void Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, const vector<Sector *>& Sectors, bool bPassThruAdjoins);
 	static void RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector, const vector<Sector *>& Sectors);
 public:
 	enum
@@ -110,8 +110,8 @@ public:
 	Vector2 m_ZRangeBase, m_ZRangeCur;
 	Vector2 m_FloorTexScale;
 	Vector2 m_CeilTexScale;
-	f32 m_fFloorSlope;
-	f32 m_fCeilSlope;
+	float m_fFloorSlope;
+	float m_fCeilSlope;
 	int32_t m_aLightFX[3];	//floor, ceiling, walls.
 	uint16_t m_auSlopeSector[2];
 	uint16_t m_auSlopeAnchor[2];
@@ -134,7 +134,7 @@ protected:
 		uint32_t uStartX, uEndX;
 		bool bUsePortalClip;
 		Sector_2_5D *pNext;
-		f32 *depth;	//ignored by primary sectors.
+		float *depth;	//ignored by primary sectors.
 	};
 
 	static Vector2 m_nearPlane[2];
@@ -146,7 +146,7 @@ protected:
 	static int32_t m_visStackCnt;
 	static int32_t m_visStackIdx;
 	static int32_t m_visStackCnt_VAdjoin;
-	static f32 s_fFogRange;
+	static float s_fFogRange;
 
 	static Camera m_Camera2D;
 	
@@ -161,7 +161,7 @@ protected:
 	static void _SetupCameraParameters(const Vector3& cPos, const Vector3& cDir, Vector2 fL, Vector2 fR);
 
 	static void _AddSectorToList(int32_t s, Vector3 *p0, Vector2& vPathMin, Vector2& vPathMax, const vector<Sector *>& Sectors);
-	static void AddObjectToRender(Object *pObj, f32 fIntensity, const Vector3& vOffs);
+	static void AddObjectToRender(Object *pObj, float fIntensity, const Vector3& vOffs);
 	static void RenderObjects(IDriver3D *pDriver);
 
 	static void RenderSky(IDriver3D *pDriver, WorldCell *pCell);

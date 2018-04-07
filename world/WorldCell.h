@@ -33,7 +33,7 @@ public:
 	void Update(Camera *pCamera, float dt, uint32_t uSectorTypeVis);
 
 	void LockCamera(Camera *pCamera, bool bLock);
-	void Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, f32 fRadius, uint32_t uSectorTypeVis, bool bPassThruAdjoins, int32_t worldX, int32_t worldY);
+	void Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, uint32_t uSectorTypeVis, bool bPassThruAdjoins, int32_t worldX, int32_t worldY);
 	void RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector, uint32_t uSectorTypeVis, int32_t worldX, int32_t worldY);
 	bool Raycast(Vector3 *p0, Vector3 *p1, Vector3 *pInter, uint32_t uSectorTypeVis, int32_t worldX, int32_t worldY);
 
@@ -63,7 +63,7 @@ protected:
 	Vector3 m_vStartLoc;
 
 	void Render_Sectors_25D(IDriver3D *pDriver, Camera *pCamera, Sector *pStart);
-	void Collide_Recursive(Vector3 *p0, Vector3 *p1, uint32_t& uSector, f32 fRadius, uint32_t uSectorTypeVis, bool bPassThruAdjoins, int32_t worldX, int32_t worldY);
+	void Collide_Recursive(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, uint32_t uSectorTypeVis, bool bPassThruAdjoins, int32_t worldX, int32_t worldY);
 };
 
 #endif //WORLDCELL_H

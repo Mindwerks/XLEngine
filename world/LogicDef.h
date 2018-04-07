@@ -26,7 +26,7 @@ union LogicParam
 {
 	uint32_t uParam;
 	int32_t nParam;
-	f32 fParam;
+	float fParam;
 	void *pParam;
 };
 

@@ -441,7 +441,7 @@
 				RelativePath="..\..\source\testexecutestring.cpp">
 			</File>
 			<File
-				RelativePath="..\..\source\testexecutethiint32_tmixedargs.cpp">
+				RelativePath="..\..\source\testexecutethis32mixedargs.cpp">
 			</File>
 			<File
 				RelativePath="..\..\source\testglobalvar.cpp">

@@ -1816,7 +1816,7 @@ void asCContext::ExecuteNext()
 		l_bc += 3;
 		break;
 
-	case asBC_RDint8_t:
+	case asBC_RDS8:
 #ifndef AS_64BIT_PTR
 		*(asQWORD*)(l_sp-1) = *(asQWORD*)*(size_t*)l_sp;
 		--l_sp;
@@ -2910,12 +2910,12 @@ void asCContext::ExecuteNext()
 		l_bc++;
 		break;
 
-	case asBC_fTOuint64_t:
+	case asBC_fTOu64:
 		*(asQWORD*)(l_fp - asBC_SWORDARG0(l_bc)) = asQWORD(asINT64(*(float*)(l_fp - asBC_SWORDARG1(l_bc))));
 		l_bc += 2;
 		break;
 
-	case asBC_dTOuint64_t:
+	case asBC_dTOu64:
 		*(asQWORD*)(l_fp - asBC_SWORDARG0(l_bc)) = asQWORD(asINT64(*(double*)(l_fp - asBC_SWORDARG0(l_bc))));
 		l_bc++;
 		break;
@@ -2925,7 +2925,7 @@ void asCContext::ExecuteNext()
 		l_bc += 2;
 		break;
 
-	case asBC_uint64_tTOf:
+	case asBC_u64TOf:
 #if _MSC_VER <= 1200 // MSVC6 
 		{
 			// MSVC6 doesn't permit UINT64 to double
@@ -2946,7 +2946,7 @@ void asCContext::ExecuteNext()
 		l_bc++;
 		break;
 
-	case asBC_uint64_tTOd:
+	case asBC_u64TOd:
 #if _MSC_VER <= 1200 // MSVC6 
 		{
 			// MSVC6 doesn't permit UINT64 to double
@@ -3075,7 +3075,7 @@ void asCContext::ExecuteNext()
 		}
 		break;
 
-	case asBC_CMPuint64_t:
+	case asBC_CMPu64:
 		{
 			asQWORD d = *(asQWORD*)(l_fp - asBC_SWORDARG0(l_bc));
 			asQWORD d2 = *(asQWORD*)(l_fp - asBC_SWORDARG1(l_bc));
@@ -3248,7 +3248,7 @@ void asCContext::ExecuteNext()
 		l_bc += 2;
 		break;
 
-	case asBC_DIVuint64_t:
+	case asBC_DIVu64:
 		{
 			asQWORD divider = *(asQWORD*)(l_fp - asBC_SWORDARG2(l_bc));
 			if( divider == 0 )
@@ -3267,7 +3267,7 @@ void asCContext::ExecuteNext()
 		l_bc += 2;
 		break;
 
-	case asBC_MODuint64_t:
+	case asBC_MODu64:
 		{
 			asQWORD divider = *(asQWORD*)(l_fp - asBC_SWORDARG2(l_bc));
 			if( divider == 0 )

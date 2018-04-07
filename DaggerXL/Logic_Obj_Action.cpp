@@ -119,7 +119,7 @@ void Logic_Obj_Action::Update(uint32_t uObjID, uint32_t uParamCount, LogicParam 
 
 			vAngles = vStart*(1.0f - t) + vEnd*t;
 
-			const f32 piOver2 = 1.5707963267948966192313216916398f;
+			const float piOver2 = 1.5707963267948966192313216916398f;
 			Vector3 vAnglesFinal = vAngles * piOver2/512.0f;
 			m_pAPI->Object_SetAngles(uObjID, vAnglesFinal.x, vAnglesFinal.y, vAnglesFinal.z);
 		}

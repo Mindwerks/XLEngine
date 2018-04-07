@@ -250,7 +250,7 @@ void CutscenePlayer::KeyDown(int32_t key)
 	}
 }
 
-void CutscenePlayer::Render(f32 fDeltaTime)
+void CutscenePlayer::Render(float fDeltaTime)
 {
 	if ( m_bCutscenePlaying )
 	{

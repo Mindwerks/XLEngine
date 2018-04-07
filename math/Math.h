@@ -47,7 +47,7 @@ public:
 		return (x < 0) ? -x : x;
 	}
 
-	static inline f32 abs(f32 x)
+	static inline float abs(float x)
 	{
 		return (x < 0) ? -x : x;
 	}
@@ -128,7 +128,7 @@ public:
 		return false;
 	}
 
-	static bool IntervalOverlap(f32 i0a, f32 i0b, f32 i1a, f32 i1b)
+	static bool IntervalOverlap(float i0a, float i0b, float i1a, float i1b)
 	{
 		if ( i1b < i0a || i1a > i0b )
 		{
@@ -137,7 +137,7 @@ public:
 		return true;
 	}
 
-	static bool IntervalOverlapEq(f32 i0a, f32 i0b, f32 i1a, f32 i1b)
+	static bool IntervalOverlapEq(float i0a, float i0b, float i1a, float i1b)
 	{
 		if ( i1b <= i0a || i1a >= i0b )
 		{
@@ -146,7 +146,7 @@ public:
 		return true;
 	}
 
-	static bool IntervalOccluded(f32 occA, f32 occB, f32 i1a, f32 i1b)
+	static bool IntervalOccluded(float occA, float occB, float i1a, float i1b)
 	{
 		//is i1(a,b) occluded by occ(A,B)?
 		if ( i1a >= occA && i1b <= occB )
@@ -181,7 +181,7 @@ public:
 		return AABB_Overlap2D(vAABB_Min, vAABB_Max, vEdgeMin, vEdgeMax);
 	}
 
-	static f32 IsLeft(const Vector2& p0, const Vector2& p1, const Vector2& p2)
+	static float IsLeft(const Vector2& p0, const Vector2& p1, const Vector2& p2)
 	{
 		return (p1.x - p0.x) * (p2.y - p0.y) - (p2.x - p0.x) * (p1.y - p0.y);
 	}

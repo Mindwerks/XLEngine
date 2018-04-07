@@ -34,7 +34,7 @@ public:
 	void Update();
 	void Init();
 	void Reset();
-	void SendMessage(uint32_t uMsgID, f32 fValue);
+	void SendMessage(uint32_t uMsgID, float fValue);
 
 	void SetLoc(const Vector3& vLoc) { m_ObjPhysicsData.m_Loc = vLoc; }
 	void GetLoc(Vector3& vLoc)		 { vLoc = m_ObjPhysicsData.m_Loc; }
@@ -61,7 +61,7 @@ public:
 
 	void SetRenderComponent(RenderComponent *pRender) { m_pRenderComp = pRender; }
 	RenderComponent *GetRenderComponent() { return m_pRenderComp; }
-	void Render(IDriver3D *pDriver, f32 fIntensity, const Vector3& vOffset) { if (m_pRenderComp && (m_uFlags&OBJFLAGS_ACTIVE)) m_pRenderComp->Render(this, pDriver, fIntensity, vOffset); }
+	void Render(IDriver3D *pDriver, float fIntensity, const Vector3& vOffset) { if (m_pRenderComp && (m_uFlags&OBJFLAGS_ACTIVE)) m_pRenderComp->Render(this, pDriver, fIntensity, vOffset); }
 
 	void SetCollisionComponent(CollisionComponent *pCollision) { m_pCollisionComp = pCollision; }
 	bool Collide(CollisionPacket *packet, const Vector3& vOffset) { if (m_pCollisionComp&&m_bCollisionEnable && (m_uFlags&OBJFLAGS_ACTIVE)) return m_pCollisionComp->Collide(packet, &m_worldMtx, vOffset); else return false; }
@@ -73,8 +73,8 @@ public:
 	uint32_t GetGameID() { return m_uGameID; }
 	void SetGameID(uint32_t uID) { m_uGameID = uID; }
 
-	f32 GetBrightness() { return m_fBrightness; }
-	void SetBrightness(f32 fBrightness) { m_fBrightness = fBrightness; }
+	float GetBrightness() { return m_fBrightness; }
+	void SetBrightness(float fBrightness) { m_fBrightness = fBrightness; }
 
 	void SetMatrix(const Matrix& worldMtx) { m_worldMtx = worldMtx; }
 	Matrix *GetMatrixPtr() { return &m_worldMtx; }
@@ -124,7 +124,7 @@ protected:
 	uint32_t m_uFlags;
 	uint32_t m_uID;
 	uint32_t m_uGameID;	//used for game specific purposes.
-	f32 m_fBrightness;
+	float m_fBrightness;
 	vector<Logic *> m_Logics;
 	void *m_pDataComp;
 	RenderComponent *m_pRenderComp;

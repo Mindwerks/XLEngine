@@ -15,7 +15,7 @@ public:
 	static int IsCutscenePlaying();
 
 	static void Update();
-	static void Render(f32 fDeltaTime);
+	static void Render(float fDeltaTime);
 
 	static void KeyDown(int32_t key);
 

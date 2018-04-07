@@ -35,13 +35,9 @@
 	#define xlDelete delete
 #endif
 
-typedef float  f32;
-typedef double f64;
 
 #elif PLATFORM_LINUX
 
-typedef float  f32;
-typedef double f64;
 
 #define stricmp strcasecmp
 #define strnicmp strncasecmp
@@ -60,8 +56,6 @@ typedef double f64;
 #endif
 
 typedef int32_t XL_BOOL;
-#define XL_TRUE  1
-#define XL_FALSE 0
 
 #define XL_INVALID_TEXTURE 0xffffffff
 typedef uint32_t TextureHandle;

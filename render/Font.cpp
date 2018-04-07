@@ -161,8 +161,8 @@ int32_t XLFont::FillVB(int32_t x, int32_t y, const string& szString, FontVertex 
 	int32_t nCurX = x;
 	int32_t nCurY = y;
 
-	f32 texelX  = 1.0f / (f32)m_CharSet.Width;
-	f32 texelY  = 1.0f / (f32)m_CharSet.Height;
+	float texelX  = 1.0f / (float)m_CharSet.Width;
+	float texelY  = 1.0f / (float)m_CharSet.Height;
 
 	size_t l = szString.size();
 

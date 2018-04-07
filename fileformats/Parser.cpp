@@ -162,7 +162,7 @@ bool Parser::SearchKeyword_Str(const char *pszKeyword, char *pszOut, bool bEndOn
 	return bRet;
 }
 
-bool Parser::SearchKeyword_F1(const char *pszKeyword, f32& rfValue)
+bool Parser::SearchKeyword_F1(const char *pszKeyword, float& rfValue)
 {
 	bool bRet = false;
 	char szValue[32]="";
@@ -220,7 +220,7 @@ bool Parser::SearchKeyword_Next(int32_t& rnValue)
 	return bRet;
 }
 
-bool Parser::SearchKeyword_F_Next(f32& rfValue)
+bool Parser::SearchKeyword_F_Next(float& rfValue)
 {
 	bool bRet = false;
 	char szValue[32]="";

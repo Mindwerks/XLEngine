@@ -5,8 +5,8 @@
 
 #define SEC_TO_uS 1000000.0
 
-f32 Clock::m_fDeltaTime;
-f32 Clock::m_fRealDeltaTime;
+float Clock::m_fDeltaTime;
+float Clock::m_fRealDeltaTime;
 int32_t Clock::m_nDeltaTicks;
 
 static __time_t _StartTime_Sec;
@@ -32,13 +32,13 @@ void Clock::StartTimer(int32_t timerID/*=0*/)
 	_Start_Tick[timerID] = _GetCurTickCnt();
 }
 
-f32 Clock::GetDeltaTime(f32 fMax, int32_t timerID/*=0*/)
+float Clock::GetDeltaTime(float fMax, int32_t timerID/*=0*/)
 {
 	assert( timerID < 16 );
 	uint64_t End = _GetCurTickCnt();
 	uint64_t uDelta_uS = End - _Start_Tick[timerID];
 
-	f32 fTimeDelta = (f32)( (f64)uDelta_uS / SEC_TO_uS );
+	float fTimeDelta = (float)( (double)uDelta_uS / SEC_TO_uS );
 	if ( fTimeDelta > fMax ) { fTimeDelta = fMax; }
 
 	return fTimeDelta;

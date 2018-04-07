@@ -101,7 +101,7 @@ void MovieManager::StopMovie(void)
 	}
 }
 
-void MovieManager::RenderMovie(f32 fDeltaTime)
+void MovieManager::RenderMovie(float fDeltaTime)
 {
 	if ( m_pCurPlayer )
 	{

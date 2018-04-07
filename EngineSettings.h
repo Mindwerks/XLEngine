@@ -44,8 +44,8 @@ class EngineSettings
 		static const char *GetStartMap() { return m_szMapName; }
 		static void GetStartMap_StrOut(string& sMapName) { sMapName = m_szMapName; }
 		//MP data.
-		static XL_BOOL IsServer() { return m_nServerPlayerCnt > 0 ? XL_TRUE : XL_FALSE; }
-		static XL_BOOL IsClient_MP() { return m_szServerIP[0]!=0 ? XL_TRUE : XL_FALSE; }
+		static XL_BOOL IsServer() { return m_nServerPlayerCnt > 0 ? true : false; }
+		static XL_BOOL IsClient_MP() { return m_szServerIP[0]!=0 ? true : false; }
 		static int32_t GetMaxPlayerCount() { return m_nServerPlayerCnt; }
 		static int32_t GetPort() { return m_nPort; }
 		static const char *GetServerIP() { return m_szServerIP; }

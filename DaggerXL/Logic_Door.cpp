@@ -44,7 +44,7 @@ void Logic_Door::Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *param
 			else
 			{
 				yaw = pData[0];
-				m_pAPI->Object_EnableCollision(uObjID, XL_TRUE);
+				m_pAPI->Object_EnableCollision(uObjID, true);
 			}
 
 			pData[2] = 0.0f;
@@ -77,7 +77,7 @@ void Logic_Door::Message(uint32_t uObjID, uint32_t uParamCount, LogicParam *para
 		if ( pData[2] == 0.0f )
 		{
 			pData[2] = s_fAnimDelta;
-			m_pAPI->Object_EnableCollision(uObjID, XL_FALSE);
+			m_pAPI->Object_EnableCollision(uObjID, false);
 		}
 	}
 }

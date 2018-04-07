@@ -6,7 +6,7 @@
 #include <math.h>
 
 //SlidingDoor
-void LFunc_SlidingDoor_SetValue(LevelFunc *pFunc, int32_t nSector, f32 value, bool bInstant)
+void LFunc_SlidingDoor_SetValue(LevelFunc *pFunc, int32_t nSector, float value, bool bInstant)
 {
 	WorldCell *pCell = pFunc->GetWorldCell();
 	const Vector3& vDir = pFunc->GetDirection();
@@ -105,7 +105,7 @@ void LFunc_SlidingDoor_SetValue(LevelFunc *pFunc, int32_t nSector, f32 value, bo
 }
 
 //Slide - like the above, but everything goes.
-void LFunc_Slide_SetValue(LevelFunc *pFunc, int32_t nSector, f32 value, bool bInstant)
+void LFunc_Slide_SetValue(LevelFunc *pFunc, int32_t nSector, float value, bool bInstant)
 {
 	WorldCell *pCell = pFunc->GetWorldCell();
 	const Vector3& vDir = pFunc->GetDirection();
@@ -163,7 +163,7 @@ void LFunc_Slide_SetValue(LevelFunc *pFunc, int32_t nSector, f32 value, bool bIn
 }
 
 //Elevator_MoveFloor
-void LFunc_Elevator_MoveFloor_SetValue(LevelFunc *pFunc, int32_t nSector, f32 value, bool bInstant)
+void LFunc_Elevator_MoveFloor_SetValue(LevelFunc *pFunc, int32_t nSector, float value, bool bInstant)
 {
 	WorldCell *pCell = pFunc->GetWorldCell();
 	Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( nSector );
@@ -171,7 +171,7 @@ void LFunc_Elevator_MoveFloor_SetValue(LevelFunc *pFunc, int32_t nSector, f32 va
 }
 
 //Elevator_MoveCeil
-void LFunc_Elevator_MoveCeil_SetValue(LevelFunc *pFunc, int32_t nSector, f32 value, bool bInstant)
+void LFunc_Elevator_MoveCeil_SetValue(LevelFunc *pFunc, int32_t nSector, float value, bool bInstant)
 {
 	WorldCell *pCell = pFunc->GetWorldCell();
 	Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( nSector );
@@ -179,7 +179,7 @@ void LFunc_Elevator_MoveCeil_SetValue(LevelFunc *pFunc, int32_t nSector, f32 val
 }
 
 //Rotate
-void LFunc_Rotate_SetValue(LevelFunc *pFunc, int32_t nSector, f32 value, bool bInstant)
+void LFunc_Rotate_SetValue(LevelFunc *pFunc, int32_t nSector, float value, bool bInstant)
 {
 	WorldCell *pCell = pFunc->GetWorldCell();
 	Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( nSector );
@@ -187,8 +187,8 @@ void LFunc_Rotate_SetValue(LevelFunc *pFunc, int32_t nSector, f32 value, bool bI
 	const Vector3 pivot3 = pFunc->GetPivot();
 	Vector2 pivot( pivot3.x, pivot3.y );
 
-	f32 cA = cosf(value);
-	f32 sA = sinf(value);
+	float cA = cosf(value);
+	float sA = sinf(value);
 	//go ahead and rotate the verts...
 	for (uint32_t w=0; w<pSector->m_uWallCount; w++)
 	{
@@ -243,7 +243,7 @@ void LFunc_Rotate_SetValue(LevelFunc *pFunc, int32_t nSector, f32 value, bool bI
 }
 
 //LightFX
-void LFunc_LightFX_SetValue(LevelFunc *pFunc, int32_t nSector, f32 value, bool bInstant)
+void LFunc_LightFX_SetValue(LevelFunc *pFunc, int32_t nSector, float value, bool bInstant)
 {
 	WorldCell *pCell = pFunc->GetWorldCell();
 	Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( nSector );
@@ -270,7 +270,7 @@ void LFunc_LightFX_SetValue(LevelFunc *pFunc, int32_t nSector, f32 value, bool b
 }
 
 //MotionFX
-void LFunc_MotionFX_SetValue(LevelFunc *pFunc, int32_t nSector, f32 value, bool bInstant)
+void LFunc_MotionFX_SetValue(LevelFunc *pFunc, int32_t nSector, float value, bool bInstant)
 {
 	WorldCell *pCell = pFunc->GetWorldCell();
 	Sector_2_5D *pSector = (Sector_2_5D *)pCell->GetSector( nSector );

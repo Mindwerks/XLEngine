@@ -4,7 +4,7 @@
 //this is static for now.
 DaggerXL_Game *m_pGame=NULL;
 
-void DaggerXL_Update(int32_t stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData)
+void DaggerXL_Update(int32_t stage, float dt, XLEngine_Plugin_API *API, void *pUserData)
 {
 	if ( stage == UPDATE_STAGE_FIXED )
 	{
@@ -16,7 +16,7 @@ void DaggerXL_Update(int32_t stage, f32 dt, XLEngine_Plugin_API *API, void *pUse
 	}
 }
 
-void DaggerXL_Render(int32_t stage, f32 dt, XLEngine_Plugin_API *API, void *pUserData)
+void DaggerXL_Render(int32_t stage, float dt, XLEngine_Plugin_API *API, void *pUserData)
 {
 	if ( stage == RENDER_STAGE_PREWORLD )
 	{

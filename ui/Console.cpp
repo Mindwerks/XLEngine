@@ -365,9 +365,9 @@ void Console::Render()
 		m_pDriver->SetBlendMode( IDriver3D::BLEND_ALPHA );
 
 		{
-			f32 y2 = m_fAnimDropDown*512.0f;
+			float y2 = m_fAnimDropDown*512.0f;
 
-			Vector4 posScale(0, 0, (f32)nScrWidth, (f32)y2);
+			Vector4 posScale(0, 0, (float)nScrWidth, (float)y2);
 			Vector2 uvTop(0, 1-m_fAnimDropDown+0.004f), uvBot(1, 1);
 
 			m_pDriver->SetTexture(0, m_hBackground, IDriver3D::FILTER_NORMAL_NO_MIP);
@@ -422,7 +422,7 @@ void Console::Render()
 
 		uint32_t uStrLen = FontManager::GetLength( m_CommandLine, m_CommandLine.size()-1, m_pFont);
 
-		Vector4 posScale(0, (f32)(yBase-5), (f32)MIN(MAX((int32_t)uStrLen+32,512),nScrWidth), 24);
+		Vector4 posScale(0, (float)(yBase-5), (float)MIN(MAX((int32_t)uStrLen+32,512),nScrWidth), 24);
 		Vector4 color(0,0,0,0.75f);
 		Vector2 uvTop(0, 0), uvBot(1, 1);
 
@@ -600,12 +600,12 @@ bool Console::ParseCommandLine()
 					else if ( arguments.size() == 1)
 					{
 						out.str("");	//clear stringstream
-						out << (*iter).name << " = " << *((f32 *)(*iter).varPtr);
+						out << (*iter).name << " = " << *((float *)(*iter).varPtr);
 						Print(out.str());
 					}
 					else
 					{
-						*((f32 *)(*iter).varPtr) = (f32)atof(arguments[1].c_str());
+						*((float *)(*iter).varPtr) = (float)atof(arguments[1].c_str());
 					}
 					return true;
 					break;
@@ -662,9 +662,9 @@ bool Console::ParseCommandLine()
 					}
 					else
 					{
-						((Vector3 *)(*iter).varPtr)->x = (f32)atof(arguments[1].c_str());
-						((Vector3 *)(*iter).varPtr)->y = (f32)atof(arguments[2].c_str());
-						((Vector3 *)(*iter).varPtr)->z = (f32)atof(arguments[3].c_str());
+						((Vector3 *)(*iter).varPtr)->x = (float)atof(arguments[1].c_str());
+						((Vector3 *)(*iter).varPtr)->y = (float)atof(arguments[2].c_str());
+						((Vector3 *)(*iter).varPtr)->z = (float)atof(arguments[3].c_str());
 					}
 					return true;
 					break;
@@ -679,10 +679,10 @@ bool Console::ParseCommandLine()
 					}
 					else
 					{
-						((Vector4 *)(*iter).varPtr)->x = (f32)atof(arguments[1].c_str());
-						((Vector4 *)(*iter).varPtr)->y = (f32)atof(arguments[2].c_str());
-						((Vector4 *)(*iter).varPtr)->z = (f32)atof(arguments[3].c_str());
-						((Vector4 *)(*iter).varPtr)->w = (f32)atof(arguments[4].c_str());
+						((Vector4 *)(*iter).varPtr)->x = (float)atof(arguments[1].c_str());
+						((Vector4 *)(*iter).varPtr)->y = (float)atof(arguments[2].c_str());
+						((Vector4 *)(*iter).varPtr)->z = (float)atof(arguments[3].c_str());
+						((Vector4 *)(*iter).varPtr)->w = (float)atof(arguments[4].c_str());
 					}
 					return true;
 					break;

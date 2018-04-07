@@ -60,8 +60,8 @@ class Driver3D_OGL : public IDriver3D
 		void EnableCulling(bool bEnable);
 		void EnableAlphaTest(bool bEnable, uint8_t uAlphaCutoff=128);
 		void SetBlendMode(uint32_t uMode=BLEND_NONE);
-		void EnableFog(bool bEnable, f32 fEnd=10000.0f);
-		void SetFogDensity(f32 fDensity=1.0f);
+		void EnableFog(bool bEnable, float fEnd=10000.0f);
+		void SetFogDensity(float fDensity=1.0f);
 
 		//Sorting
 		bool ApplyOpaqueSort() { return true; }

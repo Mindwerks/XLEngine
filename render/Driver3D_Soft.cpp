@@ -301,11 +301,11 @@ void Driver3D_Soft::SetBlendMode(uint32_t uMode)
 	m_uBlendMode = uMode;
 }
 
-void Driver3D_Soft::SetFogDensity(f32 fDensity)
+void Driver3D_Soft::SetFogDensity(float fDensity)
 {
 }
 
-void Driver3D_Soft::EnableFog(bool bEnable, f32 fEnd)
+void Driver3D_Soft::EnableFog(bool bEnable, float fEnd)
 {
 	DrawScanline::_useFog = bEnable;
 }

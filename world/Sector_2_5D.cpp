@@ -27,7 +27,7 @@ int32_t Sector_2_5D::m_visStackCnt_VAdjoin;
 bool s_bPassThruAdjoins=false;
 
 #define _VADJOIN_BUFFER_SIZE 32768
-static f32 _VAdjoinBuffer[_VADJOIN_BUFFER_SIZE];
+static float _VAdjoinBuffer[_VADJOIN_BUFFER_SIZE];
 static uint32_t _uAdjoinBufferLoc;
 static uint32_t _uRenderKey=0;
 static Vector3 _vCamDir;
@@ -44,25 +44,25 @@ Vector2 ssPos[65536];
 Sector_2_5D *_pStartSec;
 
 const int32_t bwidth = 1024;
-const f32 fbwidth = 1024.0f;
+const float fbwidth = 1024.0f;
 
-f32 fDepth[bwidth];
-f32 fDepthPrev[bwidth];
+float fDepth[bwidth];
+float fDepthPrev[bwidth];
 uint16_t idBuffer[bwidth];
 uint16_t sBuffer[bwidth];
 
 //150 for Blood, 1000 for Outlaws
-f32 Sector_2_5D::s_fFogRange = 100.0f;	//150 for Blood, make this game settable.
+float Sector_2_5D::s_fFogRange = 100.0f;	//150 for Blood, make this game settable.
 //136 for Blood, 136*2 for Outlaws
-f32 s_fSkyTop =  136.0f;	// 136 for Blood - make adjustable.
+float s_fSkyTop =  136.0f;	// 136 for Blood - make adjustable.
 //-120 for Blood, -16 Outlaws
-f32 s_fSkyBot =  -120.0f;	//-120 for Blood - make adjustable.
+float s_fSkyBot =  -120.0f;	//-120 for Blood - make adjustable.
 
 struct ObjToRender
 {
 	Object *pObj;
 	Vector3 offset;
-	f32 fIntensity;
+	float fIntensity;
 };
 
 #define MAX_RENDER_OBJECTS 1024
@@ -118,11 +118,11 @@ void Sector_2_5D::Render(IDriver3D *pDriver, Camera *pCamera)
 {
 	pDriver->EnableCulling(true);
 	
-	const f32 fOO255 = (1.0f/255.0f);
-	f32 fI;
+	const float fOO255 = (1.0f/255.0f);
+	float fI;
 	Vector4 color;
 	
-	fI = fOO255 * (f32)m_uAmbientFloor;
+	fI = fOO255 * (float)m_uAmbientFloor;
 	color.Set(fI, fI, fI, 1.0f);
 
 	//for now just render the walls - brute force.
@@ -132,7 +132,7 @@ void Sector_2_5D::Render(IDriver3D *pDriver, Camera *pCamera)
 		//	continue;
 
 		int32_t shade = Math::clamp( (int32_t)m_uAmbientFloor + m_Walls[w].m_lightDelta + m_aLightFX[2], 0, 255 );
-		fI = fOO255 * (f32)shade;
+		fI = fOO255 * (float)shade;
 		color.Set(fI, fI, fI, 1.0f);
 
 		TextureHandle hTex = m_Walls[w].m_textures[ Wall::WALL_TEX_MID ];
@@ -140,7 +140,7 @@ void Sector_2_5D::Render(IDriver3D *pDriver, Camera *pCamera)
 
 		Vector3 p0, p1;
 		Vector2 uv0, uv1;
-		f32 dz = m_ZRangeCur.y - m_ZRangeCur.x;
+		float dz = m_ZRangeCur.y - m_ZRangeCur.x;
 		p0.Set( m_pVertexCur[m_Walls[w].m_idx[0]].x, m_pVertexCur[m_Walls[w].m_idx[0]].y, m_ZRangeCur.x );
 		p1.Set( m_pVertexCur[m_Walls[w].m_idx[1]].x, m_pVertexCur[m_Walls[w].m_idx[1]].y, m_ZRangeCur.y );
 		uv0.Set( m_Walls[w].m_texOffset[0].x, m_Walls[w].m_texOffset[0].y );
@@ -151,7 +151,7 @@ void Sector_2_5D::Render(IDriver3D *pDriver, Camera *pCamera)
 	pDriver->EnableCulling(false);
 }
 
-bool Sector_2_5D::PointInsideSector(f32 x, f32 y)
+bool Sector_2_5D::PointInsideSector(float x, float y)
 {
 	Vector2 p(x,y);
 	int32_t c=0;
@@ -209,11 +209,11 @@ bool _bAllowVAdjoin;
 
 void Sector_2_5D::RenderSky(IDriver3D *pDriver, WorldCell *pCell)
 {
-	f32 dA = MATH_TWO_PI / 16.0f;
-	f32 A = 0.0f;
-	f32 x0 =  cosf(A);
-	f32 y0 = -sinf(A);
-	f32 x1, y1;
+	float dA = MATH_TWO_PI / 16.0f;
+	float A = 0.0f;
+	float x0 =  cosf(A);
+	float y0 = -sinf(A);
+	float x1, y1;
 	A += dA;
 
 	Vector3 posList[4];
@@ -227,20 +227,20 @@ void Sector_2_5D::RenderSky(IDriver3D *pDriver, WorldCell *pCell)
 	uvList[3].Set( 0.01f, 0.99f );
 
 	const Vector3& vLoc = m_Camera2D.GetLoc();
-	f32 zTop = vLoc.z + s_fSkyTop;
-	f32 zBot = vLoc.z + s_fSkyBot;
+	float zTop = vLoc.z + s_fSkyTop;
+	float zBot = vLoc.z + s_fSkyBot;
 
 	pDriver->EnableDepthRead(false);
 	pDriver->EnableDepthWrite(false);
 	pDriver->EnableStencilTesting(true);
 	uint32_t uDiv = 16/uSkyTexCnt;
-	f32 fWidth = 1.0f/(f32)uDiv;
+	float fWidth = 1.0f/(float)uDiv;
 	for (uint32_t s=0; s<16; s++)
 	{
 		if ( uSkyTexCnt < 16 )
 		{
 			uint32_t idx = s%uDiv;
-			f32 fStart = (f32)idx * fWidth;
+			float fStart = (float)idx * fWidth;
 
 			uvList[0].x = fStart;
 			uvList[1].x = fStart + fWidth;
@@ -280,7 +280,7 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
 	//1. Compute world space 2D edges.
 	const Vector3& vDir3D = pCamera->GetDir();
 	Vector3 vLoc   = pCamera->GetLoc();
-	f32 fNearZ = 1.0f;//pCamera->GetNearZ();
+	float fNearZ = 1.0f;//pCamera->GetNearZ();
 	Vector3 vDir(vDir3D.x, vDir3D.y, 0.0f);
 	vDir.Normalize();
 
@@ -290,7 +290,7 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
 	R.CrossAndNormalize(vDir, U);
 
 	Vector2 A, B;
-	f32 x = pCamera->GetFrustumWidth()*10.0f;
+	float x = pCamera->GetFrustumWidth()*10.0f;
 	A.Set( vLoc.x+vDir.x*fNearZ+R.x*x, vLoc.y+vDir.y*fNearZ+R.y*x );
 	B.Set( vLoc.x+vDir.x*fNearZ-R.x*x, vLoc.y+vDir.y*fNearZ-R.y*x );
 	
@@ -436,9 +436,9 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
 	Object *player = ObjectManager::FindObject("PLAYER");
 	if ( player )
 	{
-		const f32 fOO255 = (1.0f/255.0f);
+		const float fOO255 = (1.0f/255.0f);
 		int32_t shade = Math::clamp( (int32_t)pStart->m_uAmbientFloor + pStart->m_aLightFX[0], 0, 255 );
-		f32 fI = fOO255 * (f32)shade;
+		float fI = fOO255 * (float)shade;
 
 		player->SetBrightness( fI );
 	}
@@ -446,7 +446,7 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
 	//setup orthographic view, used for things like UI.
 #if _SHOW_1D_DEPTH
 	Matrix projMtx;
-	projMtx.ProjOrtho((f32)1024, (f32)768);
+	projMtx.ProjOrtho((float)1024, (float)768);
 
 	pDriver->SetProjMtx( &projMtx );
 	pDriver->SetViewMatrix( &Matrix::s_Identity, &Vector3(0,0,0), &Vector3(0,0,1) );
@@ -472,17 +472,17 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
 	{
 		//ok extract the texture ID...
 		uint32_t uTexID = 0;
-		f32 fTex = 1.0f;
+		float fTex = 1.0f;
 		if ( fDepth[x] != 0.0f )
 		{
 			uTexID = ((Sector_2_5D *)Sectors[ sBuffer[x] ])->m_Walls[ idBuffer[x] ].m_textures[ Wall::WALL_TEX_MID ]&15;
-			fTex = 0.75f*(f32)uTexID/15.0f + 0.25f;
+			fTex = 0.75f*(float)uTexID/15.0f + 0.25f;
 		}
 
-		Vector4 posScale((f32)(x/uDiv), 0, (f32)uDiv, 768.0f);//384.0f);
+		Vector4 posScale((float)(x/uDiv), 0, (float)uDiv, 768.0f);//384.0f);
 		Vector2 uv(0,0);
-		f32 fID = 0.25f + 0.75f*(f32)(idBuffer[x]&31) / 31.0f;
-		f32 fd = sqrtf(fDepth[x]);
+		float fID = 0.25f + 0.75f*(float)(idBuffer[x]&31) / 31.0f;
+		float fd = sqrtf(fDepth[x]);
 		Vector4 color(fd, fd, fd*fTex, 1.0f);
 		pDriver->RenderScreenQuad(posScale, uv, uv, color, color);
 	}
@@ -494,10 +494,10 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
 int32_t _nCollideSecCnt;
 int32_t _anCollideSectors[256];
 
-f32 m_fCollideHeight = 6.8f;
-f32 m_fCollideHeight_DH = 4.5f;
-f32 m_fStepSize = 4.5f;	//should be 3.5
-f32 m_fJumpStepSize = 3.5f;
+float m_fCollideHeight = 6.8f;
+float m_fCollideHeight_DH = 4.5f;
+float m_fStepSize = 4.5f;	//should be 3.5
+float m_fJumpStepSize = 3.5f;
 
 bool _AddToCollideList(int32_t s)
 {
@@ -531,7 +531,7 @@ void Sector_2_5D::_AddSectorToList(int32_t s, Vector3 *p0, Vector2& vPathMin, Ve
 		return;
 
 	Sector_2_5D *pSec = (Sector_2_5D *)Sectors[s];
-	f32 col_z0 = pSec->GetZ_Floor(p0->x, p0->y, Sectors), col_z1;
+	float col_z0 = pSec->GetZ_Floor(p0->x, p0->y, Sectors), col_z1;
 	int32_t w;
 
 	for (w=0; w<pSec->m_uWallCount; w++)
@@ -592,7 +592,7 @@ void Sector_2_5D::_AddSectorToList(int32_t s, Vector3 *p0, Vector2& vPathMin, Ve
 				Sector_2_5D *pNext = (Sector_2_5D *)Sectors[ uNextSec ];
 				col_z1 = pNext->m_ZRangeCur.x;
 
-				f32 z1 = pNext->GetZ_Ceil(p0->x, p0->y, Sectors);
+				float z1 = pNext->GetZ_Ceil(p0->x, p0->y, Sectors);
 				if ( (p0->z+m_fCollideHeight < z1) && (z1-col_z1 > m_fCollideHeight_DH) )
 				{
 					if ( col_z0 >= col_z1 - m_fStepSize || p0->z >= col_z1 - m_fJumpStepSize )
@@ -609,7 +609,7 @@ void Sector_2_5D::_AddSectorToList(int32_t s, Vector3 *p0, Vector2& vPathMin, Ve
 	}
 }
 
-bool _PushOutPositionList(Vector3 *p0, f32 fRadius, const vector<Sector *>& Sectors)
+bool _PushOutPositionList(Vector3 *p0, float fRadius, const vector<Sector *>& Sectors)
 {
 	bool bNeedPush = false;
 
@@ -626,9 +626,9 @@ bool _PushOutPositionList(Vector3 *p0, f32 fRadius, const vector<Sector *>& Sect
 		{
 			int32_t s = _anCollideSectors[sec], w;
 			Sector_2_5D *pSec = (Sector_2_5D *)Sectors[s];
-			f32 col_z0 = pSec->m_ZRangeCur.x, col_z1;
+			float col_z0 = pSec->m_ZRangeCur.x, col_z1;
 
-			f32 r2 = fRadius*fRadius;
+			float r2 = fRadius*fRadius;
 			for (w=0; w< pSec->m_uWallCount; w++)
 			{
 				//The Edge
@@ -651,7 +651,7 @@ bool _PushOutPositionList(Vector3 *p0, f32 fRadius, const vector<Sector *>& Sect
 						Sector_2_5D *pNext = (Sector_2_5D *)Sectors[pSec->m_Walls[w].m_adjoin[0]];
 						col_z1 = pNext->GetZ_Floor(p0->x, p0->y, Sectors);
 
-						f32 z1 = pNext->GetZ_Ceil(p0->x, p0->y, Sectors);
+						float z1 = pNext->GetZ_Ceil(p0->x, p0->y, Sectors);
 						if ( (p0->z+m_fCollideHeight <= z1) && (z1-col_z1 > m_fCollideHeight_DH) )
 						{
 							if ( col_z0 >= col_z1 - m_fStepSize || p0->z >= col_z1 - m_fJumpStepSize )
@@ -665,26 +665,26 @@ bool _PushOutPositionList(Vector3 *p0, f32 fRadius, const vector<Sector *>& Sect
 					continue;
 
 				//now find the closest point on the line.
-				f32 d2 = (v1.x-v0.x)*(v1.x-v0.x) + (v1.y-v0.y)*(v1.y-v0.y);
-				f32 ix, iy, lu;
+				float d2 = (v1.x-v0.x)*(v1.x-v0.x) + (v1.y-v0.y)*(v1.y-v0.y);
+				float ix, iy, lu;
 				if ( d2 <= 0.00000001f ) { continue; }
 				
-				f32 ood = 1.0f/sqrtf(d2);
+				float ood = 1.0f/sqrtf(d2);
 				lu = ( (p0->x - v0.x)*(v1.x-v0.x) + (p0->y-v0.y)*(v1.y-v0.y) ) / d2;
 				lu = min( max(lu, 0.0f), 1.0f );
 				ix = v0.x + lu*(v1.x-v0.x);
 				iy = v0.y + lu*(v1.y-v0.y);
 
-				f32 dx, dy;
+				float dx, dy;
 				dx = ix - p0->x; dy = iy - p0->y;
 				d2 = dx*dx + dy*dy;
 				if ( d2 < r2 )
 				{
 					//now we need to push out of the wall...
-					f32 d = sqrtf(d2);
+					float d = sqrtf(d2);
 					if (d > 0.000001f )
 					{
-						f32 offs = (fRadius - d)+0.00001f;
+						float offs = (fRadius - d)+0.00001f;
 
 						//compute wall normal...
 						Vector2 wD(v1.x-v0.x, v1.y-v0.y), wN;
@@ -720,7 +720,7 @@ void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector
 
 	Vector3 N;
 	N.Set(p1->x-p0->x, p1->y-p0->y, p1->z-p0->z);
-	f32 ld = N.Length(), u, min_u_obj=10.0f, min_u_sec=10.0f;
+	float ld = N.Length(), u, min_u_obj=10.0f, min_u_sec=10.0f;
 	if ( ld > 0.000001f ) { ld = 1.0f / ld; }
 
 	//collide with walls/floor in this sector
@@ -745,13 +745,13 @@ void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector
 		}
 	}
 
-	f32 x0, y0, x1, y1;
-	f32 x2, y2, x3, y3;
+	float x0, y0, x1, y1;
+	float x2, y2, x3, y3;
 
 	//check walls
 	x2 = p0->x; x3 = p1->x;
 	y2 = p0->y; y3 = p1->y;
-	f32 z=0.0f;
+	float z=0.0f;
 
 	for (uint32_t w=0; w<pSec->m_uWallCount; w++)
 	{
@@ -761,8 +761,8 @@ void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector
 		y0 = pSec->m_pVertexCur[i0].y; y1 = pSec->m_pVertexCur[i1].y;
 
 		//find ray, line intersect.
-		f32 denom = (y3-y2)*(x1-x0) - (x3-x2)*(y1-y0);
-		f32 u, v;
+		float denom = (y3-y2)*(x1-x0) - (x3-x2)*(y1-y0);
+		float u, v;
 		if ( denom > 0.00001f )
 		{
 			denom = 1.0f / denom;
@@ -798,8 +798,8 @@ void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector
 			{
 				Sector_2_5D *pNext = (Sector_2_5D *)Sectors[ pSec->m_Walls[nClosestWall].m_adjoin[0] ];
 				//ok is the intersection in range of the opening...
-				f32 cz0 = pNext->m_ZRangeCur.x;
-				f32 cz1 = pNext->m_ZRangeCur.y;
+				float cz0 = pNext->m_ZRangeCur.x;
+				float cz1 = pNext->m_ZRangeCur.y;
 
 				if ( (pSec->m_uFlags&SEC_FLAGS_ALLOW_NONSOLID_ACTIVATE) || (pNext->m_uFlags&SEC_FLAGS_ALLOW_NONSOLID_ACTIVATE) )
 				{
@@ -836,14 +836,14 @@ void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector
 	}
 }
 
-void Sector_2_5D::Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, f32 fRadius, const vector<Sector *>& Sectors, bool bPassThruAdjoins)
+void Sector_2_5D::Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, const vector<Sector *>& Sectors, bool bPassThruAdjoins)
 {
 	s_bPassThruAdjoins = bPassThruAdjoins;
 	//start from p0, move to p1.
 	//since we simulate at 60fps there's no point in doing continuous collision.
 	uint32_t startSec = uSector;
 	uint32_t s = uSector;
-	f32 r2 = fRadius*fRadius;
+	float r2 = fRadius*fRadius;
 
 	//Which adjoins do we intersect?
 	Vector2 vMinPath, vMaxPath;
@@ -899,9 +899,9 @@ void Sector_2_5D::Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, f32 fRadi
 	}
 }
 
-f32 Sector_2_5D::GetZ_Floor(f32 x, f32 y, const vector<Sector *>& Sectors)
+float Sector_2_5D::GetZ_Floor(float x, float y, const vector<Sector *>& Sectors)
 {
-	f32 z = m_ZRangeCur.x + s_vCurrentOffs.z;
+	float z = m_ZRangeCur.x + s_vCurrentOffs.z;
 	if ( (m_uFlags&SEC_FLAGS_FLOOR_SLOPE) && m_auSlopeSector[0] < 0xffff )
 	{
 		const Sector_2_5D *pAnchor = (const Sector_2_5D *)Sectors[m_auSlopeSector[0]];
@@ -912,16 +912,16 @@ f32 Sector_2_5D::GetZ_Floor(f32 x, f32 y, const vector<Sector *>& Sectors)
 		N.Normalize();
 
 		Vector2 L = p - pAnchor->m_pVertexCur[ pAnchor->m_Walls[m_auSlopeAnchor[0]].m_idx[0] ];
-		f32 m = -L.Dot(N);
+		float m = -L.Dot(N);
 
 		z = z + m*m_fFloorSlope;
 	}
 	return z;
 }
 
-f32 Sector_2_5D::GetZ_Ceil(f32 x, f32 y, const vector<Sector *>& Sectors)
+float Sector_2_5D::GetZ_Ceil(float x, float y, const vector<Sector *>& Sectors)
 {
-	f32 z = m_ZRangeCur.y + s_vCurrentOffs.z;
+	float z = m_ZRangeCur.y + s_vCurrentOffs.z;
 	if ( (m_uFlags&SEC_FLAGS_CEIL_SLOPE) && m_auSlopeSector[1] < 0xffff )
 	{
 		const Sector_2_5D *pAnchor = (const Sector_2_5D *)Sectors[m_auSlopeSector[1]];
@@ -932,14 +932,14 @@ f32 Sector_2_5D::GetZ_Ceil(f32 x, f32 y, const vector<Sector *>& Sectors)
 		N.Normalize();
 
 		Vector2 L = p - pAnchor->m_pVertexCur[ pAnchor->m_Walls[m_auSlopeAnchor[1]].m_idx[0] ];
-		f32 m = -L.Dot(N);
+		float m = -L.Dot(N);
 
 		z = z + m*m_fCeilSlope;
 	}
 	return z;
 }
 
-void Sector_2_5D::AddObjectToRender(Object *pObj, f32 fIntensity, const Vector3& vOffs)
+void Sector_2_5D::AddObjectToRender(Object *pObj, float fIntensity, const Vector3& vOffs)
 {
 	if ( s_uObjectCnt < MAX_RENDER_OBJECTS )
 	{
@@ -972,15 +972,15 @@ void Sector_2_5D::RenderObjects(IDriver3D *pDriver)
 
 void Sector_2_5D::_DrawFloor(IDriver3D *pDriver, Sector_2_5D *pCurSec, const Vector2 *worldPos, const Vector2& a, const Vector2& n0, const Vector2& n1, const vector<Sector *>& Sectors)
 {
-	const f32 fOO255 = (1.0f/255.0f);
-	f32 fI;
+	const float fOO255 = (1.0f/255.0f);
+	float fI;
 	Vector4 color;
 
 	int32_t shade = Math::clamp( (int32_t)pCurSec->m_uAmbientFloor + pCurSec->m_aLightFX[0], 0, 255 );
-	fI = fOO255 * (f32)shade;
+	fI = fOO255 * (float)shade;
 	color.Set(fI, fI, fI, 1.0f);
 
-	f32 s, t;
+	float s, t;
 	Math::LineIntersect2D(n0, n1, a, worldPos[0], s, t);
 	Vector2 va = n0 + (n1-n0)*s;
 	Math::LineIntersect2D(n0, n1, a, worldPos[1], s, t);
@@ -1036,7 +1036,7 @@ void Sector_2_5D::_DrawFloor(IDriver3D *pDriver, Sector_2_5D *pCurSec, const Vec
 		posList[3].z = pCurSec->GetZ_Ceil(vb.x, vb.y, Sectors);
 
 		shade = Math::clamp( (int32_t)pCurSec->m_uAmbientCeil + pCurSec->m_aLightFX[1], 0, 255 );
-		fI = fOO255 * (f32)shade;
+		fI = fOO255 * (float)shade;
 		color.Set(fI, fI, fI, 1.0f);
 
 		if ( pCurSec->m_uFlags&Sector_2_5D::SEC_FLAGS_CEIL_FLIP )
@@ -1067,20 +1067,20 @@ void Sector_2_5D::_DrawFloor(IDriver3D *pDriver, Sector_2_5D *pCurSec, const Vec
 
 void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5D *pNextSec, Sector_2_5D *pBotSec, Sector_2_5D *pTopSec, uint16_t w, Vector2 *worldPos, const vector<Sector *>& Sectors)
 {
-	const f32 fOO255 = (1.0f/255.0f);
-	f32 fI;
+	const float fOO255 = (1.0f/255.0f);
+	float fI;
 	Vector4 color;
 
 	//later get the delta to work.
 	int32_t shade = Math::clamp( pCurSec->m_Walls[w].m_lightDelta + pCurSec->m_aLightFX[2], 0, 255 );
-	fI = fOO255 * (f32)shade;
+	fI = fOO255 * (float)shade;
 	color.Set(fI, fI, fI, 1.0f);
 
 	TextureHandle hTex = pCurSec->m_Walls[w].m_textures[ Wall::WALL_TEX_MID ];
 
 	Vector3 p0, p1;
 	Vector2 uv0, uv1;
-	f32 dz = pCurSec->m_ZRangeCur.y - pCurSec->m_ZRangeCur.x;
+	float dz = pCurSec->m_ZRangeCur.y - pCurSec->m_ZRangeCur.x;
 
 	uint16_t i0 = pCurSec->m_Walls[w].m_idx[0], i1 = pCurSec->m_Walls[w].m_idx[1];
 	
@@ -1107,14 +1107,14 @@ void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5
 	}
 	
 	//now clip the u direction...
-	f32 x0 = pCurSec->m_pVertexCur[ pCurSec->m_Walls[w].m_idx[0] ].x;
-	f32 x1 = pCurSec->m_pVertexCur[ pCurSec->m_Walls[w].m_idx[1] ].x;
-	f32 y0 = pCurSec->m_pVertexCur[ pCurSec->m_Walls[w].m_idx[0] ].y;
-	f32 y1 = pCurSec->m_pVertexCur[ pCurSec->m_Walls[w].m_idx[1] ].y;
+	float x0 = pCurSec->m_pVertexCur[ pCurSec->m_Walls[w].m_idx[0] ].x;
+	float x1 = pCurSec->m_pVertexCur[ pCurSec->m_Walls[w].m_idx[1] ].x;
+	float y0 = pCurSec->m_pVertexCur[ pCurSec->m_Walls[w].m_idx[0] ].y;
+	float y1 = pCurSec->m_pVertexCur[ pCurSec->m_Walls[w].m_idx[1] ].y;
 
-	f32 dx = Math::abs( x1 - x0 );
-	f32 dy = Math::abs( y1 - y0 );
-	f32 t0, t1;
+	float dx = Math::abs( x1 - x0 );
+	float dy = Math::abs( y1 - y0 );
+	float t0, t1;
 	if ( dx >= dy )
 	{
 		t0 = (worldPos[0].x - x0) / (x1 - x0);
@@ -1125,8 +1125,8 @@ void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5
 		t0 = (worldPos[0].y - y0) / (y1 - y0);
 		t1 = (worldPos[1].y - y0) / (y1 - y0);
 	}
-	f32 u0 = uv0.x * (1.0f - t0) + uv1.x * t0;
-	f32 u1 = uv0.x * (1.0f - t1) + uv1.x * t1;
+	float u0 = uv0.x * (1.0f - t0) + uv1.x * t0;
+	float u1 = uv0.x * (1.0f - t1) + uv1.x * t1;
 	uv0.x = u0; uv1.x = u1;
 
 	if ( pNextSec == NULL || (pCurSec->m_Walls[w].m_flags&Wall::WALL_FLAGS_MASKWALL) )
@@ -1157,11 +1157,11 @@ void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5
 		}
 		else
 		{
-			f32 fOODZ = 1.0f/dz;
-			f32 v0 = (posList[0].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
-			f32 v1 = (posList[1].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
-			f32 v2 = (posList[2].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
-			f32 v3 = (posList[3].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float fOODZ = 1.0f/dz;
+			float v0 = (posList[0].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float v1 = (posList[1].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float v2 = (posList[2].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float v3 = (posList[3].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
 
 			uvList[0].Set( uv0.x, uv0.y + v0*(uv1.y - uv0.y) );
 			uvList[1].Set( uv1.x, uv0.y + v1*(uv1.y - uv0.y) );
@@ -1230,10 +1230,10 @@ void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5
 		}
 
 		//ok we have to get the floor heights in both sectors to do this comparison correctly...
-		f32 z0 = pCurSec->GetZ_Floor(worldPos[0].x, worldPos[0].y, Sectors);
-		f32 z1 = pCurSec->GetZ_Floor(worldPos[1].x, worldPos[1].y, Sectors);
-		f32 z2 = pNextSec->GetZ_Floor(worldPos[0].x, worldPos[0].y, Sectors);
-		f32 z3 = pNextSec->GetZ_Floor(worldPos[1].x, worldPos[1].y, Sectors);
+		float z0 = pCurSec->GetZ_Floor(worldPos[0].x, worldPos[0].y, Sectors);
+		float z1 = pCurSec->GetZ_Floor(worldPos[1].x, worldPos[1].y, Sectors);
+		float z2 = pNextSec->GetZ_Floor(worldPos[0].x, worldPos[0].y, Sectors);
+		float z3 = pNextSec->GetZ_Floor(worldPos[1].x, worldPos[1].y, Sectors);
 
 		//draw bottom - only if floor is higher in the next sector.
 		if ( z2 > z0 || z3 > z1 )
@@ -1247,11 +1247,11 @@ void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5
 			posList[2].Set(worldPos[1].x, worldPos[1].y, z3);
 			posList[3].Set(worldPos[0].x, worldPos[0].y, z2);
 
-			f32 fOODZ = 1.0f/dz;
-			f32 v0 = (posList[0].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
-			f32 v1 = (posList[1].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
-			f32 v2 = (posList[2].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
-			f32 v3 = (posList[3].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float fOODZ = 1.0f/dz;
+			float v0 = (posList[0].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float v1 = (posList[1].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float v2 = (posList[2].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float v3 = (posList[3].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
 
 			uvList[0].Set( uv0.x, uv0.y + v0*(uv1.y - uv0.y) );
 			uvList[1].Set( uv1.x, uv0.y + v1*(uv1.y - uv0.y) );
@@ -1289,7 +1289,7 @@ void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5
 		if ( z2 < z0 || z3 < z1 )
 		{
 			hTex = pCurSec->m_Walls[w].m_textures[ Wall::WALL_TEX_TOP ];
-			f32 dz = pCurSec->m_ZRangeCur.y - pCurSec->m_ZRangeCur.x;
+			float dz = pCurSec->m_ZRangeCur.y - pCurSec->m_ZRangeCur.x;
 
 			Vector3 posList[4];
 			Vector2 uvList[4];
@@ -1298,11 +1298,11 @@ void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5
 			posList[2].Set(worldPos[1].x, worldPos[1].y, z3);
 			posList[3].Set(worldPos[0].x, worldPos[0].y, z2);
 
-			f32 fOODZ = 1.0f/dz;
-			f32 v0 = (posList[0].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
-			f32 v1 = (posList[1].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
-			f32 v2 = (posList[2].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
-			f32 v3 = (posList[3].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float fOODZ = 1.0f/dz;
+			float v0 = (posList[0].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float v1 = (posList[1].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float v2 = (posList[2].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float v3 = (posList[3].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
 
 			uvList[0].Set( uv0.x, uv0.y + v0*(uv1.y - uv0.y) );
 			uvList[1].Set( uv1.x, uv0.y + v1*(uv1.y - uv0.y) );
@@ -1329,7 +1329,7 @@ void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5
 			z3 = pTopSec->GetZ_Floor(worldPos[1].x, worldPos[1].y, Sectors);
 
 			hTex = pCurSec->m_Walls[w].m_textures[ Wall::WALL_TEX_MID ];
-			f32 dz = pCurSec->m_ZRangeCur.y - pCurSec->m_ZRangeCur.x;
+			float dz = pCurSec->m_ZRangeCur.y - pCurSec->m_ZRangeCur.x;
 
 			Vector3 posList[4];
 			Vector2 uvList[4];
@@ -1338,11 +1338,11 @@ void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5
 			posList[2].Set(worldPos[1].x, worldPos[1].y, z3);
 			posList[3].Set(worldPos[0].x, worldPos[0].y, z2);
 
-			f32 fOODZ = 1.0f/dz;
-			f32 v0 = (posList[0].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
-			f32 v1 = (posList[1].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
-			f32 v2 = (posList[2].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
-			f32 v3 = (posList[3].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float fOODZ = 1.0f/dz;
+			float v0 = (posList[0].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float v1 = (posList[1].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float v2 = (posList[2].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
+			float v3 = (posList[3].z - pCurSec->m_ZRangeCur.x-s_vCurrentOffs.z) * fOODZ;
 
 			uvList[0].Set( uv0.x, uv0.y + v0*(uv1.y - uv0.y) );
 			uvList[1].Set( uv1.x, uv0.y + v1*(uv1.y - uv0.y) );
@@ -1422,14 +1422,14 @@ bool ClipAgainstFrustum(const Vector2& in_v0, const Vector2& in_v1, Vector2& out
 #if 0
 	//clip against the near plane.
 	A.Set(out_v0.x-_nearZ.x, out_v0.y-_nearZ.y); B.Set(out_v1.x-_nearZ.x, out_v1.y-_nearZ.y);
-	f32 dotA = _nearZ_Nrml.Dot(A);
-	f32 dotB = _nearZ_Nrml.Dot(B);
+	float dotA = _nearZ_Nrml.Dot(A);
+	float dotB = _nearZ_Nrml.Dot(B);
 	if ( dotA < 0.0f && dotB < 0.0f )
 	{ bVisible = false; return false; }
 
 	if ( dotA < 0.0f && dotB > 0.0f )
 	{
-		f32 s = -dotA / (dotB - dotA);
+		float s = -dotA / (dotB - dotA);
 		if ( s > 0.0f && s < 1.0f )
 		{
 			out_v0 = out_v0 + (out_v1-out_v0)*s;
@@ -1438,7 +1438,7 @@ bool ClipAgainstFrustum(const Vector2& in_v0, const Vector2& in_v1, Vector2& out
 	}
 	else if ( dotA > 0.0f && dotB < 0.0f )
 	{
-		f32 s = -dotA / (dotB - dotA);
+		float s = -dotA / (dotB - dotA);
 		if ( s > 0.0f && s < 1.0f )
 		{
 			out_v1 = out_v0 + (out_v1-out_v0)*s;
@@ -1503,7 +1503,7 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t
 
 		//is this wall degenerate?
 		Vector2 offs = v1 - v0;
-		f32 l = offs.Dot(offs);
+		float l = offs.Dot(offs);
 		if ( l < 0.00001f )
 			continue;
 
@@ -1513,7 +1513,7 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t
 
 		//Is this wall facing toward the camera?
 		Vector2 D( cPos.x-v0.x, cPos.y-v0.y );
-		f32 dp = D.Dot(wN);
+		float dp = D.Dot(wN);
 
 		if ( dp < 0.0f )
 			continue;
@@ -1540,10 +1540,10 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t
 		{
 			b = 0; a = 1;
 		}
-		f32 fx0 = (ss[a].x*0.5f+0.5f)*(fbwidth-1.0f);
-		f32 fx1 = (ss[b].x*0.5f+0.5f)*(fbwidth-1.0f);
-		f32 z0 = ss[a].y;
-		f32 z1 = ss[b].y;
+		float fx0 = (ss[a].x*0.5f+0.5f)*(fbwidth-1.0f);
+		float fx1 = (ss[b].x*0.5f+0.5f)*(fbwidth-1.0f);
+		float z0 = ss[a].y;
+		float z1 = ss[b].y;
 
 		int32_t x0 = (int32_t)fx0;
 		int32_t x1 = (int32_t)(fx1+0.5f);
@@ -1555,38 +1555,38 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t
 		int32_t x1s = x1;
 
 		//now figure out the z values at the pixel centers.
-		f32 dz = z1 - z0;
-		f32 z0s = z0, z1s = z1;
-		f32 s0 = ((f32)x0 - fx0) / (fx1 - fx0);
-		f32 s1 = ((f32)x1 - fx0) / (fx1 - fx0);
+		float dz = z1 - z0;
+		float z0s = z0, z1s = z1;
+		float s0 = ((float)x0 - fx0) / (fx1 - fx0);
+		float s1 = ((float)x1 - fx0) / (fx1 - fx0);
 		z0 = z0s + s0*(z1s - z0s);
 		z1 = z0s + s1*(z1s - z0s);
 
 		if ( x0 > (int32_t)uEndX || x1 < (int32_t)uStartX )
 			continue;
 
-		//f32 z0s = z0, z1s = z1;
+		//float z0s = z0, z1s = z1;
 		z0s = z0; z1s = z1;
-		//f32 s0 = 0.0f, s1 = 1.0f;
+		//float s0 = 0.0f, s1 = 1.0f;
 		s0 = 0.0f; s1 = 1.0f;
 		if ( x0 < (int32_t)uStartX )
 		{
-			f32 s = ( (f32)uStartX-(f32)x0s ) / ( (f32)x1s - (f32)x0s );
+			float s = ( (float)uStartX-(float)x0s ) / ( (float)x1s - (float)x0s );
 			z0 = s * (z1s - z0s) + z0s;
 			x0 = uStartX;
 		}
 		if ( x1 > (int32_t)uEndX )
 		{
-			f32 s = ( (f32)uEndX-(f32)x0s ) / ( (f32)x1s - (f32)x0s );
+			float s = ( (float)uEndX-(float)x0s ) / ( (float)x1s - (float)x0s );
 			z1 = s * (z1s - z0s) + z0s;
 			x1 = uEndX;
 		}
-		f32 fOORange = (x1-x0>0) ? 1.0f/(f32)(x1-x0) : 0.0f;
-		//f32 dz = (z1-z0) * fOORange;
+		float fOORange = (x1-x0>0) ? 1.0f/(float)(x1-x0) : 0.0f;
+		//float dz = (z1-z0) * fOORange;
 		dz = (z1-z0) * fOORange;
-		f32 z = z0;
+		float z = z0;
 
-		const f32 eps = 0.00001f;
+		const float eps = 0.00001f;
 		for (int32_t x=x0; x<=x1; x++, z+=dz)
 		{
 			if ( z > fDepth[x] )//&& z < fDepthPrev[x]+eps )
@@ -1616,11 +1616,11 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t
 			{
 				int32_t x1 = x-1;
 
-				f32 z0 = fDepth[x0];
-				f32 z1 = fDepth[x1];
+				float z0 = fDepth[x0];
+				float z1 = fDepth[x1];
 
-				m_Camera2D.InverseTransformPointsSS_2D((f32)(x0-0.5f)/fbwidth * 2.0f - 1.0f, z0, worldPos[0]);
-				m_Camera2D.InverseTransformPointsSS_2D((f32)(x1+0.5f)/fbwidth * 2.0f - 1.0f, z1, worldPos[1]);
+				m_Camera2D.InverseTransformPointsSS_2D((float)(x0-0.5f)/fbwidth * 2.0f - 1.0f, z0, worldPos[0]);
+				m_Camera2D.InverseTransformPointsSS_2D((float)(x1+0.5f)/fbwidth * 2.0f - 1.0f, z1, worldPos[1]);
 
 				//draw the wall
 				pNextSec = pCurSec->m_Walls[id].m_adjoin[0] == 0xffff ? NULL : (Sector_2_5D *)Sectors[pCurSec->m_Walls[id].m_adjoin[0]];
@@ -1646,8 +1646,8 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t
 		//the last wall
 		int32_t x1 = uEndX;
 
-		m_Camera2D.InverseTransformPointsSS_2D((f32)(x0-0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x0], worldPos[0]);
-		m_Camera2D.InverseTransformPointsSS_2D((f32)(x1+0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x1], worldPos[1]);
+		m_Camera2D.InverseTransformPointsSS_2D((float)(x0-0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x0], worldPos[0]);
+		m_Camera2D.InverseTransformPointsSS_2D((float)(x1+0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x1], worldPos[1]);
 
 		//draw the wall
 		pNextSec = pCurSec->m_Walls[id].m_adjoin[0] == 0xffff ? NULL : (Sector_2_5D *)Sectors[pCurSec->m_Walls[id].m_adjoin[0]];
@@ -1688,7 +1688,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
 						m_visStack_VAdjoin[m_visStackCnt_VAdjoin].depth = &_VAdjoinBuffer[_uAdjoinBufferLoc];
 						if ( _uAdjoinBufferLoc < _VADJOIN_BUFFER_SIZE-(uEndX-uStartX+2) )
 						{
-							memcpy( m_visStack_VAdjoin[m_visStackCnt_VAdjoin].depth, &fDepth[uStartX], sizeof(f32)*(uEndX-uStartX+1));
+							memcpy( m_visStack_VAdjoin[m_visStackCnt_VAdjoin].depth, &fDepth[uStartX], sizeof(float)*(uEndX-uStartX+1));
 							_uAdjoinBufferLoc += (uEndX-uStartX+1);
 							m_visStackCnt_VAdjoin++;
 						}
@@ -1716,7 +1716,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
 						m_visStack_VAdjoin[m_visStackCnt_VAdjoin].depth = &_VAdjoinBuffer[_uAdjoinBufferLoc];
 						if ( _uAdjoinBufferLoc < _VADJOIN_BUFFER_SIZE-(uEndX-uStartX+2) )
 						{
-							memcpy( m_visStack_VAdjoin[m_visStackCnt_VAdjoin].depth, &fDepth[uStartX], sizeof(f32)*(uEndX-uStartX+1));
+							memcpy( m_visStack_VAdjoin[m_visStackCnt_VAdjoin].depth, &fDepth[uStartX], sizeof(float)*(uEndX-uStartX+1));
 							_uAdjoinBufferLoc += (uEndX-uStartX+1);
 							m_visStackCnt_VAdjoin++;
 						}
@@ -1730,7 +1730,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
 	m_Camera2D.TransformPointsSS_2D(pCurSec->m_uVertexCount, pCurSec->m_pVertexCur, ssPos, Vector2(s_vCurrentOffs.x, s_vCurrentOffs.y));
 
 	//we have to restore the depth after vertical adjoins.
-	//static f32 fDepth_vAdjoin[4096];
+	//static float fDepth_vAdjoin[4096];
 	if ( pCurSec != _pStartSec || uStartX != 0 || uEndX != bwidth-1 )
 	{
 		for (uint32_t x=uStartX; x<=uEndX; x++)
@@ -1792,7 +1792,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
 	//1. Figure out which walls may be visible.
 	for (uint32_t ww=0; ww<pCurSec->m_uWallCount; ww++)
 	{
-		f32 fDepthBias = 0.0f;//(ww<uAdjoinStart) ? 0.0f : 0.001f;
+		float fDepthBias = 0.0f;//(ww<uAdjoinStart) ? 0.0f : 0.001f;
 
 		uint32_t w = auRenderOrder[ww];
 		uint16_t i0 = pCurSec->m_Walls[w].m_idx[0];
@@ -1807,7 +1807,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
 
 		//is this wall degenerate?
 		Vector2 offs = v1 - v0;
-		f32 l = offs.Dot(offs);
+		float l = offs.Dot(offs);
 		if ( l < 0.00001f )
 			continue;
 
@@ -1817,7 +1817,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
 
 		//Is this wall facing toward the camera?
 		Vector2 D( cPos.x-v0.x, cPos.y-v0.y );
-		f32 dp = D.Dot(wN);
+		float dp = D.Dot(wN);
 
 		if ( dp < 0.0f )
 			continue;
@@ -1846,10 +1846,10 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
 		{
 			b = 0; a = 1;
 		}
-		f32 fx0 = (ss[a].x*0.5f+0.5f)*(fbwidth-1.0f);
-		f32 fx1 = (ss[b].x*0.5f+0.5f)*(fbwidth-1.0f);
-		f32 z0 = ss[a].y;
-		f32 z1 = ss[b].y;
+		float fx0 = (ss[a].x*0.5f+0.5f)*(fbwidth-1.0f);
+		float fx1 = (ss[b].x*0.5f+0.5f)*(fbwidth-1.0f);
+		float z0 = ss[a].y;
+		float z1 = ss[b].y;
 
 		int32_t x0 = (int32_t)fx0;
 		int32_t x1 = (int32_t)(fx1+0.5f);
@@ -1863,25 +1863,25 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
 		if ( x0 > (int32_t)uEndX || x1 < (int32_t)uStartX )
 			continue;
 
-		f32 z0s = z0, z1s = z1;
-		f32 s0 = 0.0f, s1 = 1.0f;
+		float z0s = z0, z1s = z1;
+		float s0 = 0.0f, s1 = 1.0f;
 		if ( x0 < (int32_t)uStartX )
 		{
-			f32 s = ( (f32)uStartX-(f32)x0s ) / ( (f32)x1s - (f32)x0s );
+			float s = ( (float)uStartX-(float)x0s ) / ( (float)x1s - (float)x0s );
 			z0 = s * (z1s - z0s) + z0s;
 			x0 = uStartX;
 		}
 		if ( x1 > (int32_t)uEndX )
 		{
-			f32 s = ( (f32)uEndX-(f32)x0s ) / ( (f32)x1s - (f32)x0s );
+			float s = ( (float)uEndX-(float)x0s ) / ( (float)x1s - (float)x0s );
 			z1 = s * (z1s - z0s) + z0s;
 			x1 = uEndX;
 		}
-		f32 fOORange = (x1-x0>0) ? 1.0f/(f32)(x1-x0) : 0.0f;
-		f32 dz = (z1-z0) * fOORange;
-		f32 z = z0;
+		float fOORange = (x1-x0>0) ? 1.0f/(float)(x1-x0) : 0.0f;
+		float dz = (z1-z0) * fOORange;
+		float z = z0;
 
-		//const f32 eps = 0.0005f;
+		//const float eps = 0.0005f;
 		for (int32_t x=x0; x<=x1; x++, z+=dz)
 		{
 			if ( z > fDepth[x]+fDepthBias && ( z <= fDepthPrev[x] || bDegenerate ) )
@@ -1914,8 +1914,8 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
 			{
 				int32_t x1 = x-1;
 
-				m_Camera2D.InverseTransformPointsSS_2D((f32)(x0-0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x0], worldPos[0]);
-				m_Camera2D.InverseTransformPointsSS_2D((f32)(x1+0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x1], worldPos[1]);
+				m_Camera2D.InverseTransformPointsSS_2D((float)(x0-0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x0], worldPos[0]);
+				m_Camera2D.InverseTransformPointsSS_2D((float)(x1+0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x1], worldPos[1]);
 
 				//draw the wall
 				pNextSec = pCurSec->m_Walls[id].m_adjoin[0] == 0xffff ? NULL : (Sector_2_5D *)Sectors[pCurSec->m_Walls[id].m_adjoin[0]];
@@ -1951,7 +1951,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
 							m_visStack_VAdjoin[m_visStackCnt_VAdjoin].depth = &_VAdjoinBuffer[_uAdjoinBufferLoc];
 							if ( _uAdjoinBufferLoc < _VADJOIN_BUFFER_SIZE-(uEndX-uStartX+2) )
 							{
-								memcpy( m_visStack_VAdjoin[m_visStackCnt_VAdjoin].depth, &fDepth[x0], sizeof(f32)*(x1-x0+1));
+								memcpy( m_visStack_VAdjoin[m_visStackCnt_VAdjoin].depth, &fDepth[x0], sizeof(float)*(x1-x0+1));
 								_uAdjoinBufferLoc += (x1-x0+1);
 								m_visStackCnt_VAdjoin++;
 							}
@@ -1971,8 +1971,8 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
 		//the last wall
 		int32_t x1 = uEndX;
 
-		m_Camera2D.InverseTransformPointsSS_2D((f32)(x0-0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x0], worldPos[0]);
-		m_Camera2D.InverseTransformPointsSS_2D((f32)(x1+0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x1], worldPos[1]);
+		m_Camera2D.InverseTransformPointsSS_2D((float)(x0-0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x0], worldPos[0]);
+		m_Camera2D.InverseTransformPointsSS_2D((float)(x1+0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x1], worldPos[1]);
 
 		//draw the wall
 		pNextSec = pCurSec->m_Walls[id].m_adjoin[0] == 0xffff ? NULL : (Sector_2_5D *)Sectors[pCurSec->m_Walls[id].m_adjoin[0]];
@@ -2007,7 +2007,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
 					m_visStack_VAdjoin[m_visStackCnt_VAdjoin].depth = &_VAdjoinBuffer[_uAdjoinBufferLoc];
 					if ( _uAdjoinBufferLoc < _VADJOIN_BUFFER_SIZE-(uEndX-uStartX+2) )
 					{
-						memcpy( m_visStack_VAdjoin[m_visStackCnt_VAdjoin].depth, &fDepth[x0], sizeof(f32)*(x1-x0+1));
+						memcpy( m_visStack_VAdjoin[m_visStackCnt_VAdjoin].depth, &fDepth[x0], sizeof(float)*(x1-x0+1));
 						_uAdjoinBufferLoc += (x1-x0+1);
 						m_visStackCnt_VAdjoin++;
 					}
@@ -2016,11 +2016,11 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
 		}
 	}
 
-	const f32 fOO255 = (1.0f/255.0f);
-	f32 fI;
+	const float fOO255 = (1.0f/255.0f);
+	float fI;
 
 	int32_t shade = Math::clamp( (int32_t)pCurSec->m_uAmbientFloor + pCurSec->m_aLightFX[0], 0, 255 );
-	fI = fOO255 * (f32)shade;
+	fI = fOO255 * (float)shade;
 
 	//now add objects to the list...
 	vector<uint32_t>::iterator iObj = pCurSec->m_Objects.begin();
