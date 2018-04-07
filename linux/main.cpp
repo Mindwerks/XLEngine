@@ -216,7 +216,8 @@ int main(int argc, char **argv)
 
         Clock::StartTimer();
         {
-            m_pEngine->Loop(fDeltaTime, g_bHasFocus||g_bFullScreen);
+            if(!m_pEngine->Loop(fDeltaTime, g_bHasFocus||g_bFullScreen))
+                bDone = true;
         }
         fDeltaTime = Clock::GetDeltaTime(fMaxDelta);
 
