@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(XLEngine)
 
-
 set(CMAKE_MODULE_PATH "${XLEngine_SOURCE_DIR}/cmake")
+
+set(CMAKE_CXX_STANDARD 14)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING
