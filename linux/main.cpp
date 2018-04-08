@@ -46,22 +46,22 @@ void checkSDLError(int ret)
 
 int main(int argc, char **argv)
 {
-  const char *game_name = NULL;
+    const char *game_name = NULL;
 
-  for(int i = 1;i < argc;i++)
-  {
-    if(strcmp(argv[i], "-g") == 0)
+    for(int i = 1;i < argc;i++)
     {
-      if(argc-1 > i)
-        game_name = argv[++i];
-      else
-        fatalError("Missing game name");
+        if(strcmp(argv[i], "-g") == 0)
+        {
+            if(argc-1 > i)
+                game_name = argv[++i];
+            else
+                fatalError("Missing game name");
+        }
+        else
+            fprintf(stderr, "Unhandled command line option: %s\n", argv[i]);
     }
-    else
-      fprintf(stderr, "Unhandled command line option: %s\n", argv[i]);
-  }
-  if(!game_name)
-    fatalError("No game specified.\n"
+    if(!game_name)
+        fatalError("No game specified.\n"
 "Usage: XLEngine -g <game>\n"
 "\tValid games: DarkXL, DaggerXL, BloodXL, OutlawsXL");
 
@@ -98,6 +98,8 @@ int main(int argc, char **argv)
     SDL_Init(SDL_INIT_EVERYTHING & ~SDL_INIT_AUDIO);
 
     Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+    if(EngineSettings::IsFeatureEnabled(EngineSettings::FULLSCREEN))
+        flags |= SDL_WINDOW_FULLSCREEN;
     int screen = 0;
     int pos_x = SDL_WINDOWPOS_CENTERED_DISPLAY(screen);
     int pos_y = SDL_WINDOWPOS_CENTERED_DISPLAY(screen);
@@ -110,6 +112,7 @@ int main(int argc, char **argv)
     checkSDLError(SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8));
     checkSDLError(SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24));
     checkSDLError(SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, SDL_TRUE));
+    SDL_GL_SetSwapInterval(EngineSettings::IsFeatureEnabled(EngineSettings::VSYNC) ? 1 : 0);
 
     win = SDL_CreateWindow("XL Engine", pos_x, pos_y, width, height, flags);
     if(!win)
