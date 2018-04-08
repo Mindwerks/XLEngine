@@ -18,28 +18,28 @@ class IndexBuffer;
 
 class FontManager
 {
-	typedef map<string, XLFont *> FontMap;
+    typedef map<string, XLFont *> FontMap;
 
 public:
-	static bool Init(const string& szFontPath, IDriver3D *pDriver);
-	static void Destroy();
+    static bool Init(const string& szFontPath, IDriver3D *pDriver);
+    static void Destroy();
 
-	static XLFont *LoadFont(const string& szFile);
+    static XLFont *LoadFont(const string& szFile);
 
-	//Set render states for text rendering.
-	static void BeginTextRendering();
-	static void EndTextRendering();
-	//Render a string at location(x,y) using font pFont
-	static void RenderString(int32_t x, int32_t y, const string& szString, XLFont *pFont, Vector4 *pColor=&Vector4::One);
-	static uint32_t GetLength(const string& szString, uint32_t uPosInString, XLFont *pFont);
+    //Set render states for text rendering.
+    static void BeginTextRendering();
+    static void EndTextRendering();
+    //Render a string at location(x,y) using font pFont
+    static void RenderString(int32_t x, int32_t y, const string& szString, XLFont *pFont, Vector4 *pColor=&Vector4::One);
+    static uint32_t GetLength(const string& szString, uint32_t uPosInString, XLFont *pFont);
 
 private:
-	static IDriver3D *m_pDriver;
-	static VertexBuffer *m_pVB;
-	static IndexBuffer *m_pIB;
+    static IDriver3D *m_pDriver;
+    static VertexBuffer *m_pVB;
+    static IndexBuffer *m_pIB;
 
-	static FontMap m_Fonts;
-	static string m_FontPath;
+    static FontMap m_Fonts;
+    static string m_FontPath;
 };
 
 #endif //FONTMANAGER_H

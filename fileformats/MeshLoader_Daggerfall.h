@@ -14,15 +14,15 @@ class IDriver3D;
 class MeshLoader_Daggerfall
 {
 public:
-	MeshLoader_Daggerfall();
-	~MeshLoader_Daggerfall();
+    MeshLoader_Daggerfall();
+    ~MeshLoader_Daggerfall();
 
-	bool Load(IDriver3D *pDriver, Mesh *pMesh, MeshCollision *pMeshCol, char *ID, int region, int type);
+    bool Load(IDriver3D *pDriver, Mesh *pMesh, MeshCollision *pMeshCol, char *ID, int region, int type);
 
-	static void BuildTextureName(char *pszTexName, int FileIndex);
+    static void BuildTextureName(char *pszTexName, int FileIndex);
 
 private:
-	bool LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollision *pMeshCol, char *pData, uint32_t uLength, int region, int type);
+    bool LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollision *pMeshCol, char *pData, uint32_t uLength, int region, int type);
 };
 
 #endif //MESHLOADER_DAGGERFALL_H

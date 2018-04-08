@@ -165,23 +165,23 @@ float EngineSettings::m_fGamma;
 //set default settings.
 void EngineSettings::Init()
 {
-	memset(m_szGameDataDir, 0, 260);
-	//
-	m_nScreenWidth  = 1024;
-	m_nScreenHeight =  768;
-	//Multiplayer defaults.
-	m_nServerPlayerCnt = 0;
-	m_nPort = 0;
-	memset(m_szServerIP, 0, 32);
-	memset(m_szMapName, 0, 260);
+    memset(m_szGameDataDir, 0, 260);
+    //
+    m_nScreenWidth  = 1024;
+    m_nScreenHeight =  768;
+    //Multiplayer defaults.
+    m_nServerPlayerCnt = 0;
+    m_nPort = 0;
+    memset(m_szServerIP, 0, 32);
+    memset(m_szMapName, 0, 260);
 
-	m_bOverridePos = false;
-	m_nStartSec = -1;
-	m_vStartPos.Set(0,0,0);
+    m_bOverridePos = false;
+    m_nStartSec = -1;
+    m_vStartPos.Set(0,0,0);
 
-	m_uFlags = 0;
+    m_uFlags = 0;
 
-	SetDisplaySettings(1.0f, 1.0f, 1.0f);
+    SetDisplaySettings(1.0f, 1.0f, 1.0f);
 }
 
 bool EngineSettings::Load( const char *pszSettingsFile )
@@ -220,45 +220,45 @@ bool EngineSettings::Load( const char *pszSettingsFile )
 
 bool EngineSettings::IsFeatureEnabled(uint32_t uFeature)
 {
-	return (m_uFlags&uFeature) ? true : false;
+    return (m_uFlags&uFeature) ? true : false;
 }
 
 void EngineSettings::SetDisplaySettings(float brightness/*=1.0f*/, float contrast/*=1.0f*/, float gamma/*=1.0f*/)
 {
-	m_fBrightness = brightness;
-	m_fContrast   = contrast;
-	m_fGamma      = 1.0f/gamma;
+    m_fBrightness = brightness;
+    m_fContrast   = contrast;
+    m_fGamma      = 1.0f/gamma;
 }
 
 void EngineSettings::GetDisplaySettings(float& brightness, float& contrast, float& gamma)
 {
-	brightness = m_fBrightness;
-	contrast   = m_fContrast;
-	gamma	   = m_fGamma;
+    brightness = m_fBrightness;
+    contrast   = m_fContrast;
+    gamma      = m_fGamma;
 }
 
 void EngineSettings::SetGameDir(const char *pszGame)
 {
-	char szCurDir[260];
-	GetCurrentDir(szCurDir, 260);
-	sprintf(m_szGameDir, "%s/%s", szCurDir, pszGame);
+    char szCurDir[260];
+    GetCurrentDir(szCurDir, 260);
+    sprintf(m_szGameDir, "%s/%s", szCurDir, pszGame);
 }
 
 void EngineSettings::SetStartMap( const char *pszMapName ) 
 { 
-	strcpy(m_szMapName, pszMapName); 
+    strcpy(m_szMapName, pszMapName); 
 }
 
 void EngineSettings::SetStartPos( const Vector3 *pos, int32_t nSector )
 {
-	m_bOverridePos = true;
-	m_vStartPos = *pos;
-	m_nStartSec = nSector;
+    m_bOverridePos = true;
+    m_vStartPos = *pos;
+    m_nStartSec = nSector;
 }
 
 void EngineSettings::SetMultiplayerData( int32_t nServer_PlayerCnt, int32_t nPort, const char *pszJoinIP )
 {
-	m_nServerPlayerCnt = nServer_PlayerCnt;
-	m_nPort = nPort;
-	strcpy(m_szServerIP, pszJoinIP);
+    m_nServerPlayerCnt = nServer_PlayerCnt;
+    m_nPort = nPort;
+    strcpy(m_szServerIP, pszJoinIP);
 }

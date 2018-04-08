@@ -6,8 +6,8 @@
 
 namespace Noise
 {
-	void Init();
-	float Noise3D(float x, float y, float z);
+    void Init();
+    float Noise3D(float x, float y, float z);
 };
 
 #endif //NOISE_H
