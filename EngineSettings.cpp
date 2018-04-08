@@ -18,15 +18,14 @@ namespace
 
 struct Common_Settings
 {
-    char szDataPath[260];
+    std::string szDataPath;
 
     uint16_t flags;
     short resX;
     short resY;
     int renderer;
 
-    Common_Settings()
-      : szDataPath(""), flags(0), resX(0), resY(0), renderer(EngineSettings::RENDERER_SOFT8)
+    Common_Settings() : flags(0), resX(0), resY(0), renderer(EngineSettings::RENDERER_SOFT8)
     { }
 };
 
@@ -76,10 +75,7 @@ void LoadSettingsFromFile(Common_Settings &settings, std::istream &file)
             key[i] = std::tolower(key[i]);
 
         if(key == "data-path")
-        {
-            value = value.substr(0, 256);
-            strcpy(settings.szDataPath, value.c_str());
-        }
+            settings.szDataPath = value;
         else if(key == "width")
         {
             size_t end = 0;
@@ -141,9 +137,9 @@ void LoadSettingsFromFile(Common_Settings &settings, std::istream &file)
 
 } // namespace
 
-char EngineSettings::m_szGameDataDir[260];
-char EngineSettings::m_szMapName[260];
-char EngineSettings::m_szGameDir[260];
+std::string EngineSettings::m_szGameDataDir;
+std::string EngineSettings::m_szMapName;
+std::string EngineSettings::m_szGameDir;
 int32_t EngineSettings::m_nScreenWidth;
 int32_t EngineSettings::m_nScreenHeight;
 int32_t EngineSettings::m_nRenderer = EngineSettings::RENDERER_SOFT8;//OPENGL;
@@ -165,7 +161,6 @@ float EngineSettings::m_fGamma;
 //set default settings.
 void EngineSettings::Init()
 {
-    memset(m_szGameDataDir, 0, 260);
     //
     m_nScreenWidth  = 1024;
     m_nScreenHeight =  768;
@@ -173,7 +168,6 @@ void EngineSettings::Init()
     m_nServerPlayerCnt = 0;
     m_nPort = 0;
     memset(m_szServerIP, 0, 32);
-    memset(m_szMapName, 0, 260);
 
     m_bOverridePos = false;
     m_nStartSec = -1;
@@ -195,13 +189,10 @@ bool EngineSettings::Load( const char *pszSettingsFile )
         LoadSettingsFromFile(commonSettings, infile);
         infile.close();
 
-        strcpy(m_szGameDataDir, commonSettings.szDataPath);
-        size_t len = strlen(m_szGameDataDir);
-        if ( len > 0 && m_szGameDataDir[len-1] != '\\' && m_szGameDataDir[len-1] != '/' )
-        {
-            m_szGameDataDir[len] = '/';
-            m_szGameDataDir[len+1] = 0;
-        }
+        m_szGameDataDir = commonSettings.szDataPath;
+        if(!m_szGameDataDir.empty() && m_szGameDataDir.back() != '\\' &&
+           m_szGameDataDir.back() != '/')
+            m_szGameDataDir += '/';
 
         if(commonSettings.resX > 0 && commonSettings.resY > 0)
         {
@@ -241,12 +232,14 @@ void EngineSettings::SetGameDir(const char *pszGame)
 {
     char szCurDir[260];
     GetCurrentDir(szCurDir, 260);
-    sprintf(m_szGameDir, "%s/%s", szCurDir, pszGame);
+    m_szGameDir = szCurDir;
+    m_szGameDir += '/';
+    m_szGameDir += pszGame;
 }
 
 void EngineSettings::SetStartMap( const char *pszMapName ) 
 { 
-    strcpy(m_szMapName, pszMapName); 
+    m_szMapName = pszMapName;
 }
 
 void EngineSettings::SetStartPos( const Vector3 *pos, int32_t nSector )

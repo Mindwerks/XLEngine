@@ -35,13 +35,13 @@ class EngineSettings
         static void SetStartPos( const Vector3 *pos, int32_t nSector );
         static void SetMultiplayerData( int32_t nServer_PlayerCnt, int32_t nPort, const char *pszJoinIP );
 
-        static const char *GetGameDataDir() { return m_szGameDataDir; }
+        static const char *GetGameDataDir() { return m_szGameDataDir.c_str(); }
         //desired screen width and height (may be different then final screen width and height, so use the Driver3D values
         //while in-game.
         static int32_t GetScreenWidth()      { return m_nScreenWidth; }
         static int32_t GetScreenHeight()     { return m_nScreenHeight; }
         //the start map.
-        static const char *GetStartMap() { return m_szMapName; }
+        static const char *GetStartMap() { return m_szMapName.c_str(); }
         static void GetStartMap_StrOut(string& sMapName) { sMapName = m_szMapName; }
         //MP data.
         static XL_BOOL IsServer() { return m_nServerPlayerCnt > 0 ? true : false; }
@@ -66,15 +66,15 @@ class EngineSettings
         static bool IsFeatureEnabled(uint32_t uFeature);
 
         static void SetGameDir(const char *pszGame);
-        static const char *GetGameDir() { return m_szGameDir; }
+        static const char *GetGameDir() { return m_szGameDir.c_str(); }
 
         static int32_t GetRenderer() { return m_nRenderer; }
         static void SetRenderer(int32_t renderer) { m_nRenderer = renderer; }
     private:
         //Game Data Root.
-        static char m_szGameDataDir[260];
-        static char m_szGameDir[260];
-        static char m_szMapName[260];
+        static std::string m_szGameDataDir;
+        static std::string m_szGameDir;
+        static std::string m_szMapName;
         static int32_t m_nScreenWidth;
         static int32_t m_nScreenHeight;
         static int32_t m_nRenderer;
