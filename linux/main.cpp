@@ -1,8 +1,7 @@
 
-#include <stdio.h>
+#include <cstdio>
 #include <stdlib.h>
 
-#include <time.h>
 #include <unistd.h>
 #include <string.h>
 
@@ -14,56 +13,52 @@
 #include "../os/Clock.h"
 
 
-namespace
-{
+namespace {
 
-SDL_Window *win;
-SDL_GLContext glctx;
+    SDL_Window *win;
+    SDL_GLContext glctx;
 
-Engine *m_pEngine;
+    Engine *m_pEngine;
 
-bool g_bFullScreen=false;
-bool g_bHasFocus=true;
+    bool g_bFullScreen = false;
+    bool g_bHasFocus = true;
 
-void fatalError(const char *message)
-{
-    fprintf(stderr, "main: %s\n", message);
-    exit(1);
-}
-
-void checkSDLError(int ret)
-{
-    if(ret != 0)
-    {
-        char msg[256];
-        snprintf(msg, sizeof(msg), "SDL error: %s", SDL_GetError());
-        fatalError(msg);
+    void fatalError(const char *message) {
+        fprintf(stderr, "main: %s\n", message);
+        exit(1);
     }
-}
+
+    void checkSDLError(int ret) {
+        if (ret != 0)
+        {
+            char msg[256];
+            snprintf(msg, sizeof(msg), "SDL error: %s", SDL_GetError());
+            fatalError(msg);
+        }
+    }
 
 } // namespace
 
 
-int main(int argc, char **argv)
-{
-  const char *game_name = NULL;
+int main(int argc, char **argv) {
+    const char *game_name = NULL;
 
-  for(int i = 1;i < argc;i++)
-  {
-    if(strcmp(argv[i], "-g") == 0)
+    for (int i = 1; i < argc; i++)
     {
-      if(argc-1 > i)
-        game_name = argv[++i];
-      else
-        fatalError("Missing game name");
+        if (strcmp(argv[i], "-g") == 0)
+        {
+            if (argc - 1 > i)
+                game_name = argv[++i];
+            else
+                fatalError("Missing game name");
+        }
+        else
+            fprintf(stderr, "Unhandled command line option: %s\n", argv[i]);
     }
-    else
-      fprintf(stderr, "Unhandled command line option: %s\n", argv[i]);
-  }
-  if(!game_name)
-    fatalError("No game specified.\n"
-"Usage: XLEngine -g <game>\n"
-"\tValid games: DarkXL, DaggerXL, BloodXL, OutlawsXL");
+    if (!game_name)
+        fatalError("No game specified.\n"
+                   "Usage: XLEngine -g <game>\n"
+                   "\tValid games: DarkXL, DaggerXL, BloodXL, OutlawsXL");
 
     //Engine settings.
     EngineSettings::Init();
@@ -73,18 +68,18 @@ int main(int argc, char **argv)
     {
         std::string settingsFile;
         const char *conf_dir = getenv("XDG_CONFIG_HOME");
-        if(conf_dir && conf_dir[0])
+        if (conf_dir && conf_dir[0])
             settingsFile = conf_dir;
         else
         {
             const char *home_dir = getenv("HOME");
-            if(home_dir && home_dir[0])
+            if (home_dir && home_dir[0])
             {
                 settingsFile = home_dir;
                 settingsFile += "/.config/";
             }
         }
-        if(!settingsFile.empty() && settingsFile.back() != '/')
+        if (!settingsFile.empty() && settingsFile.back() != '/')
             settingsFile += '/';
         settingsFile += "XLEngine/";
         settingsFile += game_name;
@@ -112,11 +107,11 @@ int main(int argc, char **argv)
     checkSDLError(SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, SDL_TRUE));
 
     win = SDL_CreateWindow("XL Engine", pos_x, pos_y, width, height, flags);
-    if(!win)
+    if (!win)
         fatalError("Failed to create window");
 
     glctx = SDL_GL_CreateContext(win);
-    if(!glctx)
+    if (!glctx)
     {
         SDL_DestroyWindow(win);
         win = nullptr;
@@ -126,7 +121,7 @@ int main(int argc, char **argv)
     //Setup Engine with Linux specific data.
     {
         m_pEngine = new Engine();
-        void *linux_param[] = { (void*)win };
+        void *linux_param[] = {(void *) win};
         m_pEngine->Init(linux_param, 1, EngineSettings::GetScreenWidth(),
                         EngineSettings::GetScreenHeight());
         m_pEngine->InitGame(game_name);
@@ -137,13 +132,13 @@ int main(int argc, char **argv)
     bool MouseWasLocked = false;
 
     float fDeltaTime = 0.0f;
-    float fMaxDelta  = 0.1f;
+    float fMaxDelta = 0.1f;
     bool bDone = false;
-    while(!bDone)
+    while (!bDone)
     {
-        if(Input::LockMouse() && (g_bHasFocus || g_bFullScreen))
+        if (Input::LockMouse() && (g_bHasFocus || g_bFullScreen))
         {
-            if(!MouseWasLocked)
+            if (!MouseWasLocked)
             {
                 // FIXME: At least DaggerXL doesn't release the mouse once it
                 // gets in-game, and there's no way to close the game without
@@ -153,7 +148,7 @@ int main(int argc, char **argv)
                 MouseWasLocked = true;
             }
         }
-        else if(MouseWasLocked)
+        else if (MouseWasLocked)
         {
             SDL_SetRelativeMouseMode(SDL_FALSE);
             SDL_ShowCursor(SDL_TRUE);
@@ -161,48 +156,48 @@ int main(int argc, char **argv)
         }
 
         SDL_Event event;
-        while(SDL_PollEvent(&event) == 1)
+        while (SDL_PollEvent(&event) == 1)
         {
-            switch(event.type)
+            switch (event.type)
             {
                 case SDL_KEYDOWN:
-                    if(event.key.repeat)
+                    if (event.key.repeat)
                         break;
-                    Input::SetKeyDown(event.key.keysym.sym&0xff);
+                    Input::SetKeyDown(event.key.keysym.sym & 0xff);
                     break;
                 case SDL_KEYUP:
-                    if(event.key.repeat)
+                    if (event.key.repeat)
                         break;
-                    Input::SetKeyUp(event.key.keysym.sym&0xff);
+                    Input::SetKeyUp(event.key.keysym.sym & 0xff);
                     break;
                 case SDL_TEXTINPUT:
                     // This ignores non-ASCII-7 characters (Unicode/UTF-8)
-                    for(size_t i = 0;i < sizeof(event.text.text) && event.text.text[i];i++)
+                    for (size_t i = 0; i < sizeof(event.text.text) && event.text.text[i]; i++)
                     {
-                        if(event.text.text[i] >= 32)
+                        if (event.text.text[i] >= 32)
                             Input::SetCharacterDown(event.text.text[i]);
                     }
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
-                    if(event.button.button == 0)
+                    if (event.button.button == 0)
                         Input::SetKeyDown(XL_LBUTTON);
-                    else if(event.button.button == 1)
+                    else if (event.button.button == 1)
                         Input::SetKeyDown(XL_RBUTTON);
                     else
-                        Input::SetKeyDown(XL_MBUTTON+event.button.button-2);
+                        Input::SetKeyDown(XL_MBUTTON + event.button.button - 2);
                     break;
                 case SDL_MOUSEBUTTONUP:
-                    if(event.button.button == 0)
+                    if (event.button.button == 0)
                         Input::SetKeyUp(XL_LBUTTON);
-                    else if(event.button.button == 1)
+                    else if (event.button.button == 1)
                         Input::SetKeyUp(XL_RBUTTON);
                     else
-                        Input::SetKeyUp(XL_MBUTTON+event.button.button-2);
+                        Input::SetKeyUp(XL_MBUTTON + event.button.button - 2);
                     break;
 
                 case SDL_MOUSEMOTION:
-                    if(MouseWasLocked)
+                    if (MouseWasLocked)
                         Input::AddMouseDelta(event.motion.xrel, event.motion.yrel);
                     else
                         Input::SetMousePos(event.motion.x, event.motion.y);
@@ -216,7 +211,7 @@ int main(int argc, char **argv)
 
         Clock::StartTimer();
         {
-            if(!m_pEngine->Loop(fDeltaTime, g_bHasFocus||g_bFullScreen))
+            if (!m_pEngine->Loop(fDeltaTime, g_bHasFocus || g_bFullScreen))
                 bDone = true;
         }
         fDeltaTime = Clock::GetDeltaTime(fMaxDelta);

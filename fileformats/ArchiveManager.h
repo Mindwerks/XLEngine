@@ -8,38 +8,52 @@
 #include <map>
 
 using namespace std;
+
 class Archive;
 
-class ArchiveManager
-{
+class ArchiveManager {
 public:
-	static void Init();
-	static void Destroy();
+    static void Init();
 
-	static Archive *OpenArchive(uint32_t uArchiveType, const char *pszArchiveName);
-	static void CloseArchive(Archive *pArchive);
+    static void Destroy();
 
-	static int32_t GameFile_Open(Archive *pArchive, const char *pszFileName);
-	static int32_t GameFile_Open(uint32_t uArchiveType, const char *pszArchiveName, const char *pszFileName);
-	static int32_t GameFile_Open(uint32_t uArchiveType, const char *pszArchiveName, uint32_t fileID);
-	static int32_t GameFile_SearchForFile(uint32_t uArchiveType, const char *pszArchiveName, const char *pszFileName, char *pszFileOut);
-	static uint32_t GameFile_GetLength();
-	static void GameFile_Read(void *pData, uint32_t uLength);
-	static void *GameFile_GetFileInfo();
-	static void GameFile_Close();
+    static Archive *OpenArchive(uint32_t uArchiveType, const char *pszArchiveName);
 
-	static int32_t File_Open(const char *pszFileName);
-	static uint32_t File_GetLength();
-	static void File_Read(void *pData, uint32_t uStart, uint32_t uLength);
-	static void *File_GetFileInfo();
-	static void File_Close();
+    static void CloseArchive(Archive *pArchive);
+
+    static int32_t GameFile_Open(Archive *pArchive, const char *pszFileName);
+
+    static int32_t GameFile_Open(uint32_t uArchiveType, const char *pszArchiveName, const char *pszFileName);
+
+    static int32_t GameFile_Open(uint32_t uArchiveType, const char *pszArchiveName, uint32_t fileID);
+
+    static int32_t GameFile_SearchForFile(uint32_t uArchiveType, const char *pszArchiveName, const char *pszFileName,
+                                          char *pszFileOut);
+
+    static uint32_t GameFile_GetLength();
+
+    static void GameFile_Read(void *pData, uint32_t uLength);
+
+    static void *GameFile_GetFileInfo();
+
+    static void GameFile_Close();
+
+    static int32_t File_Open(const char *pszFileName);
+
+    static uint32_t File_GetLength();
+
+    static void File_Read(void *pData, uint32_t uStart, uint32_t uLength);
+
+    static void *File_GetFileInfo();
+
+    static void File_Close();
 
 private:
-	static const char *m_apszArchiveExt[];
-	static map<string, Archive *> m_OpenArchives;
-	static vector<Archive *> m_ArchiveList;
-	static Archive *m_pCurArchive;
-	static FILE *s_pCurrentSysFile;
+    static const char *m_apszArchiveExt[];
+    static map<string, Archive *> m_OpenArchives;
+    static vector<Archive *> m_ArchiveList;
+    static Archive *m_pCurArchive;
+    static FILE *s_pCurrentSysFile;
 };
 
 //helper defines.

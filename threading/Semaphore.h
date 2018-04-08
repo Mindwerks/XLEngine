@@ -5,9 +5,11 @@
 #include "../CommonTypes.h"
 
 #if PLATFORM_WIN
-  #include "Win32/Semaphore.h"
+#include "Win32/Semaphore.h"
 #else
-  #include "Posix/Semaphore.h"
+
+#include "Posix/Semaphore.h"
+
 #endif
 
 #endif // SEMAPHORE_H

@@ -3,17 +3,18 @@
 
 #include "../Driver3D_IPlatform.h"
 
-class Driver3D_OGL_Linux : public Driver3D_IPlatform
-{
-    public:
-        Driver3D_OGL_Linux();
-        virtual ~Driver3D_OGL_Linux();
+class Driver3D_OGL_Linux : public Driver3D_IPlatform {
+public:
+    Driver3D_OGL_Linux();
 
-        void SetWindowData(int32_t nParam, void **param);
+    virtual ~Driver3D_OGL_Linux();
 
-        void Present();
-    protected:
-    private:
+    void SetWindowData(int32_t nParam, void **param);
+
+    void Present();
+
+protected:
+private:
 };
 
 #endif // DRIVER3D_OGL_LINUX_H

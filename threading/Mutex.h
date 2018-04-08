@@ -5,9 +5,11 @@
 #include "../CommonTypes.h"
 
 #if PLATFORM_WIN
-  #include "Win32/Mutex.h"
+#include "Win32/Mutex.h"
 #else
-  #include "Posix/Mutex.h"
+
+#include "Posix/Mutex.h"
+
 #endif
 
 #endif // MUTEX_H

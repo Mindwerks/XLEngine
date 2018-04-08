@@ -1,11 +1,12 @@
 #include "Input.h"
-#include "../Engine.h"
 #include "../scriptsystem/ScriptSystem.h"
-#if PLATFORM_WIN	   //the Windows mapping to Virtual keys.
-	#include "Win/KeyOSMapping_Win.h"
+
+#if PLATFORM_WIN       //the Windows mapping to Virtual keys.
+#include "Win/KeyOSMapping_Win.h"
 #elif PLATFORM_LINUX   //the Linux mapping to Virtual keys.
-	#include "linux/KeyOSMapping_Linux.h"
-	#include <memory.h>
+
+#include "linux/KeyOSMapping_Linux.h"
+
 #endif
 
 int8_t Input::m_aKeyState[512];
@@ -17,160 +18,145 @@ float Input::m_fMouseDeltaX;
 float Input::m_fMouseDeltaY;
 XL_BOOL Input::m_bLockMouse;
 
-void Input::Init()
-{
-	memset(m_aKeyState, 0, 512);
-	m_fMouseX      = 0.0f;
-	m_fMouseY      = 0.0f;
-	m_fMouseDeltaX = 0.0f;
-	m_fMouseDeltaY = 0.0f;
-	m_bLockMouse   = false;
+void Input::Init() {
+    memset(m_aKeyState, 0, 512);
+    m_fMouseX = 0.0f;
+    m_fMouseY = 0.0f;
+    m_fMouseDeltaX = 0.0f;
+    m_fMouseDeltaY = 0.0f;
+    m_bLockMouse = false;
 
-	//setup script functions.
-	ScriptSystem::RegisterFunc("void Input_EnableMouseLocking(int)", asFUNCTION(EnableMouseLocking));
-	ScriptSystem::RegisterFunc("int Input_GetMouseLockState(void)",  asFUNCTION(LockMouse));
+    //setup script functions.
+    ScriptSystem::RegisterFunc("void Input_EnableMouseLocking(int)", asFUNCTION(EnableMouseLocking));
+    ScriptSystem::RegisterFunc("int Input_GetMouseLockState(void)", asFUNCTION(LockMouse));
 }
 
-void Input::Destroy()
-{
-	vector<KeyDownCB_t *>::iterator iKeyCB = m_KeyDownCB.begin();
-	vector<KeyDownCB_t *>::iterator eKeyCB = m_KeyDownCB.end();
-	for (; iKeyCB != eKeyCB; ++iKeyCB)
-	{
-		xlDelete (*iKeyCB);
-	}
-	m_KeyDownCB.clear();
+void Input::Destroy() {
+    vector<KeyDownCB_t *>::iterator iKeyCB = m_KeyDownCB.begin();
+    vector<KeyDownCB_t *>::iterator eKeyCB = m_KeyDownCB.end();
+    for (; iKeyCB != eKeyCB; ++iKeyCB)
+    {
+        xlDelete (*iKeyCB);
+    }
+    m_KeyDownCB.clear();
 
-	vector<KeyDownCB_t *>::iterator iCharCB = m_CharDownCB.begin();
-	vector<KeyDownCB_t *>::iterator eCharCB = m_CharDownCB.end();
-	for (; iCharCB != eCharCB; ++iCharCB)
-	{
-		xlDelete (*iCharCB);
-	}
-	m_CharDownCB.clear();
+    vector<KeyDownCB_t *>::iterator iCharCB = m_CharDownCB.begin();
+    vector<KeyDownCB_t *>::iterator eCharCB = m_CharDownCB.end();
+    for (; iCharCB != eCharCB; ++iCharCB)
+    {
+        xlDelete (*iCharCB);
+    }
+    m_CharDownCB.clear();
 }
 
-void Input::EnableMouseLocking(XL_BOOL bEnable) 
-{ 
-	m_bLockMouse   = bEnable; 
-	m_fMouseDeltaX = 0.0f; 
-	m_fMouseDeltaY = 0.0f; 
+void Input::EnableMouseLocking(XL_BOOL bEnable) {
+    m_bLockMouse = bEnable;
+    m_fMouseDeltaX = 0.0f;
+    m_fMouseDeltaY = 0.0f;
 }
 
-void Input::SetKeyDown(int32_t key)
-{
-	//now remap from local OS keys to global virtual keys (XL_* from VirtualKeys.h)
-	key = s_OS_KeyMapping[key];
+void Input::SetKeyDown(int32_t key) {
+    //now remap from local OS keys to global virtual keys (XL_* from VirtualKeys.h)
+    key = s_OS_KeyMapping[key];
 
-	//now fire off any callbacks...
-	vector<KeyDownCB_t *>::iterator iter = m_KeyDownCB.begin();
-	vector<KeyDownCB_t *>::iterator end  = m_KeyDownCB.end();
-	for (; iter != end; ++iter)
-	{
-		KeyDownCB_t *pKeyDownCB = *iter;
+    //now fire off any callbacks...
+    vector<KeyDownCB_t *>::iterator iter = m_KeyDownCB.begin();
+    vector<KeyDownCB_t *>::iterator end = m_KeyDownCB.end();
+    for (; iter != end; ++iter)
+    {
+        KeyDownCB_t *pKeyDownCB = *iter;
 
-		bool bFireCB = true;
-		if ( (pKeyDownCB->nFlags&KDCb_FLAGS_NOREPEAT) && (m_aKeyState[key] != 0) )
-			 bFireCB = false;
+        bool bFireCB = true;
+        if ((pKeyDownCB->nFlags & KDCb_FLAGS_NOREPEAT) && (m_aKeyState[key] != 0))
+            bFireCB = false;
 
-		if ( bFireCB )
-		{
-			pKeyDownCB->pCB(key);
-		}
-	}
-	m_aKeyState[key] = 1;
-	if ( key == XL_LSHIFT || key == XL_RSHIFT )
-	{
-		m_aKeyState[XL_SHIFT] = 1;
-	}
+        if (bFireCB)
+        {
+            pKeyDownCB->pCB(key);
+        }
+    }
+    m_aKeyState[key] = 1;
+    if (key == XL_LSHIFT || key == XL_RSHIFT)
+    {
+        m_aKeyState[XL_SHIFT] = 1;
+    }
 }
 
-void Input::SetKeyUp(int32_t key)
-{
-	key = s_OS_KeyMapping[key];
-	m_aKeyState[key] = 0;
+void Input::SetKeyUp(int32_t key) {
+    key = s_OS_KeyMapping[key];
+    m_aKeyState[key] = 0;
 }
 
-void Input::SetCharacterDown(char c)
-{
-	//ASCII character range...
-	if ( c >= 32 && c < 127 )
-	{
-		//fire off any "character" callbacks.
-		vector<KeyDownCB_t *>::iterator iter = m_CharDownCB.begin();
-		vector<KeyDownCB_t *>::iterator end  = m_CharDownCB.end();
-		for (; iter != end; ++iter)
-		{
-			KeyDownCB_t *pCharDownCB = *iter;
-			if ( pCharDownCB )
-			{
-				pCharDownCB->pCB(c);
-			}
-		}
-	}
+void Input::SetCharacterDown(char c) {
+    //ASCII character range...
+    if (c >= 32 && c < 127)
+    {
+        //fire off any "character" callbacks.
+        vector<KeyDownCB_t *>::iterator iter = m_CharDownCB.begin();
+        vector<KeyDownCB_t *>::iterator end = m_CharDownCB.end();
+        for (; iter != end; ++iter)
+        {
+            KeyDownCB_t *pCharDownCB = *iter;
+            if (pCharDownCB)
+            {
+                pCharDownCB->pCB(c);
+            }
+        }
+    }
 }
 
-void Input::ClearAllKeys()
-{
-	memset(m_aKeyState, 0, 512);
+void Input::ClearAllKeys() {
+    memset(m_aKeyState, 0, 512);
 }
 
-void Input::SetMousePos(float x, float y)
-{
-	m_fMouseX = x;
-	m_fMouseY = y;
+void Input::SetMousePos(float x, float y) {
+    m_fMouseX = x;
+    m_fMouseY = y;
 }
 
-bool Input::AddKeyDownCallback(Input_KeyDownCB pCB, int32_t nFlags)
-{
-	KeyDownCB_t *pKeyDownCB = xlNew KeyDownCB_t;
-	if (pKeyDownCB == NULL)
-		return false;
+bool Input::AddKeyDownCallback(Input_KeyDownCB pCB, int32_t nFlags) {
+    KeyDownCB_t *pKeyDownCB = xlNew KeyDownCB_t;
+    if (pKeyDownCB == NULL)
+        return false;
 
-	pKeyDownCB->pCB    = pCB;
-	pKeyDownCB->nFlags = nFlags;
-	m_KeyDownCB.push_back( pKeyDownCB );
+    pKeyDownCB->pCB = pCB;
+    pKeyDownCB->nFlags = nFlags;
+    m_KeyDownCB.push_back(pKeyDownCB);
 
-	return true;
+    return true;
 }
 
-bool Input::AddCharDownCallback( Input_KeyDownCB pCB )
-{
-	KeyDownCB_t *pCharDownCB = xlNew KeyDownCB_t;
-	if (pCharDownCB == NULL)
-		return false;
+bool Input::AddCharDownCallback(Input_KeyDownCB pCB) {
+    KeyDownCB_t *pCharDownCB = xlNew KeyDownCB_t;
+    if (pCharDownCB == NULL)
+        return false;
 
-	pCharDownCB->pCB    = pCB;
-	pCharDownCB->nFlags = KDCb_FLAGS_NONE;
-	m_CharDownCB.push_back( pCharDownCB );
+    pCharDownCB->pCB = pCB;
+    pCharDownCB->nFlags = KDCb_FLAGS_NONE;
+    m_CharDownCB.push_back(pCharDownCB);
 
-	return true;
+    return true;
 }
 
 /*******************************
   Plugin API
  *******************************/
-int32_t Input_IsKeyDown(int32_t key)
-{
-	return Input::IsKeyDown(key) ? 1 : 0;
+int32_t Input_IsKeyDown(int32_t key) {
+    return Input::IsKeyDown(key) ? 1 : 0;
 }
 
-float Input_GetMousePosX(void)
-{
-	return Input::GetMouseX();
+float Input_GetMousePosX(void) {
+    return Input::GetMouseX();
 }
 
-float Input_GetMousePosY(void)
-{
-	return Input::GetMouseY();
+float Input_GetMousePosY(void) {
+    return Input::GetMouseY();
 }
 
-int32_t Input_AddKeyDownCB(Input_KeyDownCB pCB, int32_t nFlags)
-{
-	return Input::AddKeyDownCallback(pCB, nFlags) ? 1 : 0;
+int32_t Input_AddKeyDownCB(Input_KeyDownCB pCB, int32_t nFlags) {
+    return Input::AddKeyDownCallback(pCB, nFlags) ? 1 : 0;
 }
 
-int32_t Input_AddCharDownCB(Input_KeyDownCB pCB)
-{
-	return Input::AddCharDownCallback(pCB) ? 1 : 0;
+int32_t Input_AddCharDownCB(Input_KeyDownCB pCB) {
+    return Input::AddCharDownCallback(pCB) ? 1 : 0;
 }

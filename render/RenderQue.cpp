@@ -4,12 +4,10 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 
-#include <memory.h>
-#include <stdio.h>
 #include <algorithm>
 
 IDriver3D *RenderQue::m_pDriver;
-RenderQuad *RenderQue::m_pQuads=NULL;
+RenderQuad *RenderQue::m_pQuads = NULL;
 uint32_t RenderQue::m_uQuadCnt;
 
 vector<MaterialEntry *> RenderQue::m_apRenderBuckets[RBUCKET_COUNT];
@@ -21,187 +19,182 @@ const LightObject **RenderQue::m_pCurLightList;
 
 #define MAX_QUADS 16384
 
-bool RenderQue::Init(IDriver3D *pDriver)
-{
-	m_pDriver = pDriver;
-	m_pQuads = xlNew RenderQuad[MAX_QUADS];
-	Reset();
+bool RenderQue::Init(IDriver3D *pDriver) {
+    m_pDriver = pDriver;
+    m_pQuads = xlNew RenderQuad[MAX_QUADS];
+    Reset();
 
-	m_RenderEntryPool.reserve(32768);//2048);
+    m_RenderEntryPool.reserve(32768);//2048);
 
-	return (m_pQuads) ? true : false;
+    return (m_pQuads) ? true : false;
 }
 
-void RenderQue::Destroy()
-{
-	if ( m_pQuads )
-	{
-		xlDelete [] m_pQuads;
-	}
-	m_pQuads = NULL;
+void RenderQue::Destroy() {
+    if (m_pQuads)
+    {
+        xlDelete[] m_pQuads;
+    }
+    m_pQuads = NULL;
 
-	m_RenderEntryPool.clear();
+    m_RenderEntryPool.clear();
 }
 
-void RenderQue::Reset()
-{
-	m_uQuadCnt = 0;
-	m_uRenderEntryLoc = 0;
-	for (int r=0; r<RBUCKET_COUNT; r++)
-	{
-		m_apRenderBuckets[r].clear();
-	}
+void RenderQue::Reset() {
+    m_uQuadCnt = 0;
+    m_uRenderEntryLoc = 0;
+    for (int r = 0; r < RBUCKET_COUNT; r++)
+    {
+        m_apRenderBuckets[r].clear();
+    }
 }
 
-RenderQuad *RenderQue::GetRenderQuad()
-{
-	RenderQuad *pQuad = NULL;
-	if ( m_uQuadCnt < MAX_QUADS )
-	{
-		pQuad = &m_pQuads[m_uQuadCnt];
+RenderQuad *RenderQue::GetRenderQuad() {
+    RenderQuad *pQuad = NULL;
+    if (m_uQuadCnt < MAX_QUADS)
+    {
+        pQuad = &m_pQuads[m_uQuadCnt];
 
-		pQuad->nLightCnt  = m_nCurLightCnt;
-		pQuad->pLightList = m_pCurLightList;
+        pQuad->nLightCnt = m_nCurLightCnt;
+        pQuad->pLightList = m_pCurLightList;
 
-		m_uQuadCnt++;
-	}
+        m_uQuadCnt++;
+    }
 
-	return pQuad;
+    return pQuad;
 }
 
-void RenderQue::AddQuad(TextureHandle hTex, Vector3 *posList, Vector2 *uvList, const Vector4& color, bool bForceZWrite)
-{
-	if ( m_uQuadCnt < MAX_QUADS )
-	{
-		m_pQuads[ m_uQuadCnt ].hTex = hTex;
-		memcpy(m_pQuads[ m_uQuadCnt ].posList, posList, sizeof(Vector3)*4);
-		memcpy(m_pQuads[ m_uQuadCnt ].uvList, uvList, sizeof(Vector2)*4);
-		m_pQuads[ m_uQuadCnt ].color = color;
-		m_pQuads[ m_uQuadCnt ].bForceZWrite = bForceZWrite;
+void
+RenderQue::AddQuad(TextureHandle hTex, Vector3 *posList, Vector2 *uvList, const Vector4 &color, bool bForceZWrite) {
+    if (m_uQuadCnt < MAX_QUADS)
+    {
+        m_pQuads[m_uQuadCnt].hTex = hTex;
+        memcpy(m_pQuads[m_uQuadCnt].posList, posList, sizeof(Vector3) * 4);
+        memcpy(m_pQuads[m_uQuadCnt].uvList, uvList, sizeof(Vector2) * 4);
+        m_pQuads[m_uQuadCnt].color = color;
+        m_pQuads[m_uQuadCnt].bForceZWrite = bForceZWrite;
 
-		m_uQuadCnt++;
-	}
+        m_uQuadCnt++;
+    }
 }
 
-MaterialEntry *RenderQue::GetEntry(RenderBuckets bucket)
-{
-	MaterialEntry *pEntry=NULL;
-	if ( m_uRenderEntryLoc < m_RenderEntryPool.size() )
-	{
-		pEntry = &m_RenderEntryPool[ m_uRenderEntryLoc ];
-	}
-	else
-	{
-		MaterialEntry new_entry;
-		m_RenderEntryPool.push_back( new_entry );
-		pEntry = &m_RenderEntryPool[ m_uRenderEntryLoc ];
-	}
+MaterialEntry *RenderQue::GetEntry(RenderBuckets bucket) {
+    MaterialEntry *pEntry = NULL;
+    if (m_uRenderEntryLoc < m_RenderEntryPool.size())
+    {
+        pEntry = &m_RenderEntryPool[m_uRenderEntryLoc];
+    }
+    else
+    {
+        MaterialEntry new_entry;
+        m_RenderEntryPool.push_back(new_entry);
+        pEntry = &m_RenderEntryPool[m_uRenderEntryLoc];
+    }
 
-	pEntry->worldX = 0;
-	pEntry->worldY = 0;
+    pEntry->worldX = 0;
+    pEntry->worldY = 0;
 
-	pEntry->nLightCnt  = m_nCurLightCnt;
-	pEntry->pLightList = m_pCurLightList;
+    pEntry->nLightCnt = m_nCurLightCnt;
+    pEntry->pLightList = m_pCurLightList;
 
-	m_uRenderEntryLoc++;
-	m_apRenderBuckets[bucket].push_back(pEntry);
+    m_uRenderEntryLoc++;
+    m_apRenderBuckets[bucket].push_back(pEntry);
 
-	return pEntry;
+    return pEntry;
 }
 
-void RenderQue::Render()
-{
-	if ( m_uQuadCnt < 1 && m_apRenderBuckets[RBUCKET_OPAQUE].empty() )
-		return;
+void RenderQue::Render() {
+    if (m_uQuadCnt < 1 && m_apRenderBuckets[RBUCKET_OPAQUE].empty())
+        return;
 
-	//Render Material Entries.
-	//****RBUCKET_OPAQUE****
-	if ( !m_apRenderBuckets[RBUCKET_OPAQUE].empty() )
-	{
-		//sort based on texture, then vertex buffer 
-		if ( m_pDriver->ApplyOpaqueSort() )
-		{
-			std::sort( m_apRenderBuckets[RBUCKET_OPAQUE].begin(), m_apRenderBuckets[RBUCKET_OPAQUE].end(), SortCB_Opaque );
-		}
-		//set opaque bucket states.
-		m_pDriver->SetBlendMode(IDriver3D::BLEND_NONE);
-		m_pDriver->EnableAlphaTest(false);
-		m_pDriver->SetColor();
-		m_pDriver->EnableCulling(true);
-		m_pDriver->SetWorldMatrix(NULL, 0, 0);
-		//go through the list.
-		vector<MaterialEntry *>::iterator iEntry = m_apRenderBuckets[RBUCKET_OPAQUE].begin();
-		vector<MaterialEntry *>::iterator eEntry = m_apRenderBuckets[RBUCKET_OPAQUE].end();
-		for (; iEntry != eEntry; ++iEntry)
-		{
-			const MaterialEntry *pEntry = *iEntry;
+    //Render Material Entries.
+    //****RBUCKET_OPAQUE****
+    if (!m_apRenderBuckets[RBUCKET_OPAQUE].empty())
+    {
+        //sort based on texture, then vertex buffer
+        if (m_pDriver->ApplyOpaqueSort())
+        {
+            std::sort(m_apRenderBuckets[RBUCKET_OPAQUE].begin(), m_apRenderBuckets[RBUCKET_OPAQUE].end(),
+                      SortCB_Opaque);
+        }
+        //set opaque bucket states.
+        m_pDriver->SetBlendMode(IDriver3D::BLEND_NONE);
+        m_pDriver->EnableAlphaTest(false);
+        m_pDriver->SetColor();
+        m_pDriver->EnableCulling(true);
+        m_pDriver->SetWorldMatrix(NULL, 0, 0);
+        //go through the list.
+        vector<MaterialEntry *>::iterator iEntry = m_apRenderBuckets[RBUCKET_OPAQUE].begin();
+        vector<MaterialEntry *>::iterator eEntry = m_apRenderBuckets[RBUCKET_OPAQUE].end();
+        for (; iEntry != eEntry; ++iEntry)
+        {
+            const MaterialEntry *pEntry = *iEntry;
 
-			//Set the world matrix.
-			m_pDriver->SetWorldMatrix(pEntry->mWorld, pEntry->worldX, pEntry->worldY);
-			//Set the texture.
-			m_pDriver->SetTexture(0, pEntry->hTex);
-			//Set the lights.
-			m_pDriver->SetLights(pEntry->nLightCnt, pEntry->pLightList);
-			//Set the Vertex Buffer.
-			pEntry->pVB->Set();
-			//Render the entry.
-			m_pDriver->RenderIndexedTriangles( pEntry->pIB, pEntry->primCount, pEntry->startIndex );
-		};
-	}
-	
-	//Render QUADS
-	m_pDriver->EnableCulling(false);
-	m_pDriver->SetWorldMatrix(&Matrix::s_Identity, 0, 0);
+            //Set the world matrix.
+            m_pDriver->SetWorldMatrix(pEntry->mWorld, pEntry->worldX, pEntry->worldY);
+            //Set the texture.
+            m_pDriver->SetTexture(0, pEntry->hTex);
+            //Set the lights.
+            m_pDriver->SetLights(pEntry->nLightCnt, pEntry->pLightList);
+            //Set the Vertex Buffer.
+            pEntry->pVB->Set();
+            //Render the entry.
+            m_pDriver->RenderIndexedTriangles(pEntry->pIB, pEntry->primCount, pEntry->startIndex);
+        };
+    }
 
-	//m_pDriver->SetBlendMode( IDriver3D::BLEND_ALPHA );
-	m_pDriver->EnableAlphaTest(true, 32);// m_pQuads[q].bForceZWrite ? false : true, 32 );
-	for (int32_t q=(int32_t)m_uQuadCnt-1; q>=0; q--)
-	{
-		/*
-		if ( m_pQuads[q].color.w < 1.0f )
-		{
-			m_pDriver->SetBlendMode( IDriver3D::BLEND_ALPHA );
-			m_pDriver->EnableAlphaTest( m_pQuads[q].bForceZWrite ? false : true, 32 );
-		}
-		else
-		{
-			m_pDriver->SetBlendMode();
-			m_pDriver->EnableAlphaTest(false);
-		}
-		
-		//write to the stencil buffer if m_pQuads[q].bForceZWrite == true
-		if ( m_pQuads[q].bForceZWrite == true )
-			m_pDriver->EnableStencilWriting(true, 1);
-		else
-			m_pDriver->EnableStencilWriting(m_pQuads[q].color.w < 0 ? false : true, 0);
-		*/
+    //Render QUADS
+    m_pDriver->EnableCulling(false);
+    m_pDriver->SetWorldMatrix(&Matrix::s_Identity, 0, 0);
 
-		//Set the texture.
-		m_pDriver->SetTexture( 0, m_pQuads[q].hTex, IDriver3D::FILTER_POINT, false );
-		//Set the lights.
-		m_pDriver->SetLights(m_pQuads[q].nLightCnt, m_pQuads[q].pLightList);
-		//Render
-		m_pDriver->RenderWorldQuad(m_pQuads[q].posList, m_pQuads[q].uvList, m_pQuads[q].color, m_pQuads[q].bApplyLighting);
-	}
-	m_pDriver->SetLights(0, NULL);
+    //m_pDriver->SetBlendMode( IDriver3D::BLEND_ALPHA );
+    m_pDriver->EnableAlphaTest(true, 32);// m_pQuads[q].bForceZWrite ? false : true, 32 );
+    for (int32_t q = (int32_t) m_uQuadCnt - 1; q >= 0; q--)
+    {
+        /*
+        if ( m_pQuads[q].color.w < 1.0f )
+        {
+            m_pDriver->SetBlendMode( IDriver3D::BLEND_ALPHA );
+            m_pDriver->EnableAlphaTest( m_pQuads[q].bForceZWrite ? false : true, 32 );
+        }
+        else
+        {
+            m_pDriver->SetBlendMode();
+            m_pDriver->EnableAlphaTest(false);
+        }
 
-	//Cleanup.
-	m_pDriver->SetBlendMode();
-	m_pDriver->EnableCulling(true);
-	m_pDriver->EnableStencilWriting(false, 0);
-	m_pDriver->SetWorldMatrix(&Matrix::s_Identity, 0, 0);
+        //write to the stencil buffer if m_pQuads[q].bForceZWrite == true
+        if ( m_pQuads[q].bForceZWrite == true )
+            m_pDriver->EnableStencilWriting(true, 1);
+        else
+            m_pDriver->EnableStencilWriting(m_pQuads[q].color.w < 0 ? false : true, 0);
+        */
+
+        //Set the texture.
+        m_pDriver->SetTexture(0, m_pQuads[q].hTex, IDriver3D::FILTER_POINT, false);
+        //Set the lights.
+        m_pDriver->SetLights(m_pQuads[q].nLightCnt, m_pQuads[q].pLightList);
+        //Render
+        m_pDriver->RenderWorldQuad(m_pQuads[q].posList, m_pQuads[q].uvList, m_pQuads[q].color,
+                                   m_pQuads[q].bApplyLighting);
+    }
+    m_pDriver->SetLights(0, NULL);
+
+    //Cleanup.
+    m_pDriver->SetBlendMode();
+    m_pDriver->EnableCulling(true);
+    m_pDriver->EnableStencilWriting(false, 0);
+    m_pDriver->SetWorldMatrix(&Matrix::s_Identity, 0, 0);
 }
 
-bool RenderQue::SortCB_Opaque(MaterialEntry*& d1, MaterialEntry*& d2)
-{
-	bool bLess=false;
+bool RenderQue::SortCB_Opaque(MaterialEntry *&d1, MaterialEntry *&d2) {
+    bool bLess = false;
 
-	if ( d1->hTex < d2->hTex )															//<First sort by texture.
-		bLess = true;
-	else if ( d1->hTex == d2->hTex && d1->pVB < d2->pVB )								//<Then sort by vertex buffer.
-		bLess = true;
-	else if ( d1->hTex == d2->hTex && d1->pVB == d2->pVB && d1->mWorld < d2->mWorld )	//<Finally sort by transform.
-		bLess = true;
+    if (d1->hTex < d2->hTex)                                                            //<First sort by texture.
+        bLess = true;
+    else if (d1->hTex == d2->hTex && d1->pVB < d2->pVB)                                //<Then sort by vertex buffer.
+        bLess = true;
+    else if (d1->hTex == d2->hTex && d1->pVB == d2->pVB && d1->mWorld < d2->mWorld)    //<Finally sort by transform.
+        bLess = true;
 
-	return bLess;
+    return bLess;
 }

@@ -5,9 +5,11 @@
 #include "../CommonTypes.h"
 
 #if PLATFORM_WIN
-  #include "Win32/Thread.h"
+#include "Win32/Thread.h"
 #else
-  #include "Posix/Thread.h"
+
+#include "Posix/Thread.h"
+
 #endif
 
 #endif // THREAD_H

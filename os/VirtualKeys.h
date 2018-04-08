@@ -53,43 +53,43 @@
 #define XL_DELETE         0x2E
 #define XL_HELP           0x2F
 
-#define XL_0			  0x30
-#define XL_1			  0x31
-#define XL_2			  0x32
-#define XL_3			  0x33
-#define XL_4			  0x34
-#define XL_5			  0x35
-#define XL_6			  0x36
-#define XL_7			  0x37
-#define XL_8			  0x38
-#define XL_9			  0x39
+#define XL_0              0x30
+#define XL_1              0x31
+#define XL_2              0x32
+#define XL_3              0x33
+#define XL_4              0x34
+#define XL_5              0x35
+#define XL_6              0x36
+#define XL_7              0x37
+#define XL_8              0x38
+#define XL_9              0x39
 
-#define XL_A			  0x41
-#define XL_B			  0x42
-#define XL_C			  0x43
-#define XL_D			  0x44
-#define XL_E			  0x45
-#define XL_F			  0x46
-#define XL_G			  0x47
-#define XL_H			  0x48
-#define XL_I			  0x49
-#define XL_J			  0x4A
-#define XL_K			  0x4B
-#define XL_L			  0x4C
-#define XL_M			  0x4D
-#define XL_N			  0x4E
-#define XL_O			  0x4F
-#define XL_P			  0x50
-#define XL_Q			  0x51
-#define XL_R			  0x52
-#define XL_S			  0x53
-#define XL_T			  0x54
-#define XL_U			  0x55
-#define XL_V			  0x56
-#define XL_W			  0x57
-#define XL_X			  0x58
-#define XL_Y			  0x59
-#define XL_Z			  0x5A
+#define XL_A              0x41
+#define XL_B              0x42
+#define XL_C              0x43
+#define XL_D              0x44
+#define XL_E              0x45
+#define XL_F              0x46
+#define XL_G              0x47
+#define XL_H              0x48
+#define XL_I              0x49
+#define XL_J              0x4A
+#define XL_K              0x4B
+#define XL_L              0x4C
+#define XL_M              0x4D
+#define XL_N              0x4E
+#define XL_O              0x4F
+#define XL_P              0x50
+#define XL_Q              0x51
+#define XL_R              0x52
+#define XL_S              0x53
+#define XL_T              0x54
+#define XL_U              0x55
+#define XL_V              0x56
+#define XL_W              0x57
+#define XL_X              0x58
+#define XL_Y              0x59
+#define XL_Z              0x5A
 #define XL_SLEEP          0x5F
 #define XL_NUMPAD0        0x60
 #define XL_NUMPAD1        0x61
@@ -160,4 +160,4 @@
 #define XL_OEM_7          0xDE  //  ''"' for US
 #define XL_OEM_8          0xDF
 
-#endif	//VIRTUALKEYS_H
+#endif    //VIRTUALKEYS_H

@@ -4,8 +4,7 @@
 #include "CoreUI_GameView.as"
 
 //UI Scripts ENTRY POINT.
-void UI_Main()
-{
-	//From here we start up the first screen.
-	UI_StartScreen("UI_StartMenu");
+void UI_Main() {
+    //From here we start up the first screen.
+    UI_StartScreen("UI_StartMenu");
 }

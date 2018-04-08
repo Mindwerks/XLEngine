@@ -7,10 +7,9 @@
 extern "C" {
 #endif
 
-typedef struct XL_PluginAPI_Version
-{
-  int32_t major;
-  int32_t minor;
+typedef struct XL_PluginAPI_Version {
+    int32_t major;
+    int32_t minor;
 } XL_PluginAPI_Version;
 
 typedef int32_t (*XL_ExitFunc)();
@@ -42,16 +41,16 @@ typedef XL_ExitFunc (*XL_InitFunc)(const XLEngine_Plugin_API *);
  */
 
 #ifndef PLUGIN_API
-	#if PLATFORM_WIN
-		#define PLUGIN_API __declspec(dllimport)
-	#else
-		#define PLUGIN_API
-	#endif
+#if PLATFORM_WIN
+#define PLUGIN_API __declspec(dllimport)
+#else
+#define PLUGIN_API
+#endif
 #endif
 
 extern
 #ifdef  __cplusplus
-"C" 
+"C"
 #endif
 PLUGIN_API XL_ExitFunc XL_initPlugin(const XLEngine_Plugin_API *API);
 

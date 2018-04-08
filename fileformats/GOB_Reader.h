@@ -3,58 +3,59 @@
 
 #include "../CommonTypes.h"
 #include "Archive.h"
-#include <stdio.h>
+#include <cstdio>
 #include <cstdint>
 
-class GOB_Reader : public Archive
-{
+class GOB_Reader : public Archive {
 public:
-	GOB_Reader();
+    GOB_Reader();
 
-	bool Open(const char *pszName);
-	void Close();
+    bool Open(const char *pszName);
 
-	bool OpenFile(const char *pszFile);
-	void CloseFile();
-	uint32_t GetFileLen();
-	bool ReadFile(void *pData, uint32_t uLength);
+    void Close();
 
-	int32_t GetFileCount();
-	const char *GetFileName(int32_t nFileIdx);
+    bool OpenFile(const char *pszFile);
+
+    void CloseFile();
+
+    uint32_t GetFileLen();
+
+    bool ReadFile(void *pData, uint32_t uLength);
+
+    int32_t GetFileCount();
+
+    const char *GetFileName(int32_t nFileIdx);
 
 private:
 
 #pragma pack(push)
 #pragma pack(1)
 
-	typedef struct
-	{
+    typedef struct {
         char GOB_MAGIC[4];
-		int32_t MASTERX;	//offset to GOX_Index_t
-	} GOB_Header_t;
+        int32_t MASTERX;    //offset to GOX_Index_t
+    } GOB_Header_t;
 
-	typedef struct
-	{
-		int32_t IX;		//offset to the start of the file.
-		int32_t LEN;		//length of the file.
-        char NAME[13];	//file name.
-	} GOB_Entry_t;
+    typedef struct {
+        int32_t IX;        //offset to the start of the file.
+        int32_t LEN;        //length of the file.
+        char NAME[13];    //file name.
+    } GOB_Entry_t;
 
-	typedef struct
-	{
-		int32_t MASTERN;	//num files
-		GOB_Entry_t *pEntries;
-	} GOB_Index_t;
+    typedef struct {
+        int32_t MASTERN;    //num files
+        GOB_Entry_t *pEntries;
+    } GOB_Index_t;
 
 #pragma pack(pop)
 
-	GOB_Header_t m_Header;
-	GOB_Index_t m_FileList;
-	int32_t m_CurFile;
-	bool m_bGOB;
+    GOB_Header_t m_Header;
+    GOB_Index_t m_FileList;
+    int32_t m_CurFile;
+    bool m_bGOB;
 
-	FILE *m_pFile;
-	char m_szFileName[64];
+    FILE *m_pFile;
+    char m_szFileName[64];
 };
 
 #endif //GOB_READER_H

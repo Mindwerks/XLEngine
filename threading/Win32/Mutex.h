@@ -12,30 +12,33 @@
 
 #include "Win32.h"
 
-class Mutex
-{
-  mutable CRITICAL_SECTION C;
-  void operator=(Mutex &M) {}
-  Mutex( const Mutex &M ) {}
+class Mutex {
+    mutable CRITICAL_SECTION C;
 
-  public:
+    void operator=(Mutex &M) {}
 
-  Mutex()
-  { InitializeCriticalSection(&C); }
+    Mutex(const Mutex &M) {}
 
-  virtual ~Mutex()
-  { DeleteCriticalSection(&C); }
+public:
 
-  int Lock() const
-  { EnterCriticalSection(&C); return 0; }
+    Mutex() { InitializeCriticalSection(&C); }
+
+    virtual ~Mutex() { DeleteCriticalSection(&C); }
+
+    int Lock() const {
+        EnterCriticalSection(&C);
+        return 0;
+    }
 
 #if(_WIN32_WINNT >= 0x0400)
-  int Lock_Try() const
-  { return (TryEnterCriticalSection(&C)?0:EBUSY); }
+    int Lock_Try() const
+    { return (TryEnterCriticalSection(&C)?0:EBUSY); }
 #endif
 
-  int Unlock() const
-  { LeaveCriticalSection(&C); return 0; }
+    int Unlock() const {
+        LeaveCriticalSection(&C);
+        return 0;
+    }
 };
 
 #endif // !_Mutex_Win32_

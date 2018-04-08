@@ -13,19 +13,25 @@ A set of 3D models and surfaces.
  *********************************************/
 
 class IDriver3D;
+
 class Object;
+
 class WorldCell;
 
-class Sector_GeoBlock : public Sector
-{
+class Sector_GeoBlock : public Sector {
 public:
-	Sector_GeoBlock();
-	~Sector_GeoBlock();
+    Sector_GeoBlock();
 
-	void Render(IDriver3D *pDriver, Camera *pCamera);
-	void Collide(CollisionPacket *packet, Vector3 *bounds, const Vector3& vOffset);
-	void Raycast(RaycastPacket *packet, const Vector3& vOffset);
-	void Update(float dt);
+    ~Sector_GeoBlock();
+
+    void Render(IDriver3D *pDriver, Camera *pCamera);
+
+    void Collide(CollisionPacket *packet, Vector3 *bounds, const Vector3 &vOffset);
+
+    void Raycast(RaycastPacket *packet, const Vector3 &vOffset);
+
+    void Update(float dt);
+
 public:
 };
 

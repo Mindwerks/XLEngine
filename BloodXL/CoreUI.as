@@ -4,9 +4,8 @@
 #include "CoreUI_TexList.as"
 
 //UI Scripts ENTRY POINT.
-void UI_Main()
-{
-	//From here we start up the first screen.
-	UI_StartScreen("UI_Title");
-	//UI_StartScreen("UI_TexList");
+void UI_Main() {
+    //From here we start up the first screen.
+    UI_StartScreen("UI_Title");
+    //UI_StartScreen("UI_TexList");
 }

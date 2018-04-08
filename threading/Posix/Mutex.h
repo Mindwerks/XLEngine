@@ -12,34 +12,33 @@
 
 #include <pthread.h>
 
-class Mutex
-{
-  mutable pthread_mutex_t M;
-  void operator=(Mutex &M) {}
-  Mutex( const Mutex &M ) {}
+class Mutex {
+    mutable pthread_mutex_t M;
 
-  public:
+    void operator=(Mutex &M) {}
 
-  Mutex()
-  {
-    pthread_mutexattr_t attr;
-    pthread_mutexattr_init(&attr);
-    pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE);
-    pthread_mutex_init(&M,&attr);
-    pthread_mutexattr_destroy(&attr);
-  }
+    Mutex(const Mutex &M) {}
 
-  virtual ~Mutex()
-  { pthread_mutex_unlock(&M); pthread_mutex_destroy(&M); }
+public:
 
-  int Lock() const
-  { return pthread_mutex_lock(&M); }
+    Mutex() {
+        pthread_mutexattr_t attr;
+        pthread_mutexattr_init(&attr);
+        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+        pthread_mutex_init(&M, &attr);
+        pthread_mutexattr_destroy(&attr);
+    }
 
-  int Lock_Try() const
-  { return pthread_mutex_trylock(&M); }
+    virtual ~Mutex() {
+        pthread_mutex_unlock(&M);
+        pthread_mutex_destroy(&M);
+    }
 
-  int Unlock() const
-  { return pthread_mutex_unlock(&M); }
+    int Lock() const { return pthread_mutex_lock(&M); }
+
+    int Lock_Try() const { return pthread_mutex_trylock(&M); }
+
+    int Unlock() const { return pthread_mutex_unlock(&M); }
 };
 
 #endif // !_Mutex_Posix_

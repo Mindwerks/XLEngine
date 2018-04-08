@@ -13,36 +13,34 @@
 
 #define SEM_VALUE_MAX ((int) ((~0u) >> 1))
 
-class Semaphore
-{
-  HANDLE S;
-  void operator=(const Semaphore &S){}
-  Semaphore(const Semaphore &S){}
+class Semaphore {
+    HANDLE S;
 
-  public:
-  Semaphore( int init = 0 )
-  { S = CreateSemaphore(0,init,SEM_VALUE_MAX,0); }
+    void operator=(const Semaphore &S) {}
 
-  virtual ~Semaphore()
-  { CloseHandle(S); }
+    Semaphore(const Semaphore &S) {}
 
-  void Wait() const
-  { WaitForSingleObject((HANDLE)S,INFINITE); }
+public:
+    Semaphore(int init = 0) { S = CreateSemaphore(0, init, SEM_VALUE_MAX, 0); }
 
-  int Wait_Try() const
-  { return ((WaitForSingleObject((HANDLE)S,INFINITE)==WAIT_OBJECT_0)?0:EAGAIN); }
+    virtual ~Semaphore() { CloseHandle(S); }
 
-  int Post() const
-  { return (ReleaseSemaphore((HANDLE)S,1,0)?0:ERANGE); }
+    void Wait() const { WaitForSingleObject((HANDLE) S, INFINITE); }
 
-  int Value() const
-  { LONG V = -1; ReleaseSemaphore((HANDLE)S,0,&V); return V; }
+    int Wait_Try() const { return ((WaitForSingleObject((HANDLE) S, INFINITE) == WAIT_OBJECT_0) ? 0 : EAGAIN); }
 
-  void Reset( int init = 0 )
-  {
-    CloseHandle(S);
-    S = CreateSemaphore(0,init,SEM_VALUE_MAX,0);
-  }
+    int Post() const { return (ReleaseSemaphore((HANDLE) S, 1, 0) ? 0 : ERANGE); }
+
+    int Value() const {
+        LONG V = -1;
+        ReleaseSemaphore((HANDLE) S, 0, &V);
+        return V;
+    }
+
+    void Reset(int init = 0) {
+        CloseHandle(S);
+        S = CreateSemaphore(0, init, SEM_VALUE_MAX, 0);
+    }
 };
 
 #endif // !_Semaphore_Win32_

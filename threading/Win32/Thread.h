@@ -67,7 +67,7 @@
 # define THREAD_RET_T               DWORD
 # define CREATE_THREAD_FAILED       (0L)
 # define CREATE_THREAD_ERROR        GetLastError()
-# define CREATE_THREAD(_S,_F,_P)    ((Handle)CreateThread(0,_S,(DWORD (WINAPI *)(void *))_F,(void *)_P,0,0))
+# define CREATE_THREAD(_S, _F, _P)    ((Handle)CreateThread(0,_S,(DWORD (WINAPI *)(void *))_F,(void *)_P,0,0))
 # define EXIT_THREAD                ExitThread(0)
 # define CLOSE_HANDLE(x)            CloseHandle(x)
 # define THREAD_RETURN(x)           return(x)
@@ -76,263 +76,259 @@
 #define InvalidHandle 0
 
 template
-<
-  typename Thread_T
->
-class Thread
-{
-  private:
+        <
+                typename Thread_T
+        >
+class Thread {
+private:
     typedef struct Instance;
 
-  public:
-    typedef Thread_T              & Thread_R;
-    typedef const Thread_T        & Thread_C_R;
+public:
+    typedef Thread_T &Thread_R;
+    typedef const Thread_T &Thread_C_R;
 
     typedef THREAD_HANDLE Handle;
-    typedef void (* Handler)( Thread_R );
 
-  protected:
+    typedef void (*Handler)(Thread_R);
+
+protected:
     Thread() {}
 
-    virtual void ThreadMain( Thread_R ) = 0;
+    virtual void ThreadMain(Thread_R) = 0;
 
-    static void Exit()
-      { EXIT_THREAD; }
+    static void Exit() { EXIT_THREAD; }
 
-    static void TestCancel()
-      { Sleep(0); }
+    static void TestCancel() { Sleep(0); }
 
-    static Handle Self()
-    {
-      //Handle Hnd = InvalidHandle;
-      //DuplicateHandle(GetCurrentProcess(),GetCurrentThread(),GetCurrentProcess(),(LPHANDLE)&Hnd,NULL,0,NULL);
-      //return Hnd;
+    static Handle Self() {
+        //Handle Hnd = InvalidHandle;
+        //DuplicateHandle(GetCurrentProcess(),GetCurrentThread(),GetCurrentProcess(),(LPHANDLE)&Hnd,NULL,0,NULL);
+        //return Hnd;
 
-      // only a pseudo-handle!
-      return (Handle)GetCurrentThread();
+        // only a pseudo-handle!
+        return (Handle) GetCurrentThread();
     }
 
-  public:
+public:
 
     static int Create(
-      const Handler       & Function,
-      Thread_C_R            Param,
-      Handle  * const     & H               = 0,
-      const bool          & CreateDetached  = false,
-      const unsigned int  & StackSize       = 0,
-      const bool          & CancelEnable    = false,   // UNUSED
-      const bool          & CancelAsync     = false    // UNUSED
-    )
-    {
-      M_Create().Lock();
+            const Handler &Function,
+            Thread_C_R Param,
+            Handle *const &H = 0,
+            const bool &CreateDetached = false,
+            const unsigned int &StackSize = 0,
+            const bool &CancelEnable = false,   // UNUSED
+            const bool &CancelAsync = false    // UNUSED
+    ) {
+        M_Create().Lock();
 
-      Instance I(Param,0,Function);
+        Instance I(Param, 0, Function);
 
-      Handle Hnd(CREATE_THREAD(StackSize,ThreadMainHandler,&I));
+        Handle Hnd(CREATE_THREAD(StackSize, ThreadMainHandler, &I));
 
-      if ( Hnd == CREATE_THREAD_FAILED )
-      {
-        if ( H ) *H = InvalidHandle;
+        if (Hnd == CREATE_THREAD_FAILED)
+        {
+            if (H) *H = InvalidHandle;
+            M_Create().Unlock();
+            return CREATE_THREAD_ERROR;
+        }
+
+        if (H) *H = Hnd;
+
+        S_Create().Wait();
         M_Create().Unlock();
-        return CREATE_THREAD_ERROR;
-      }
 
-      if ( H ) *H = Hnd;
-
-      S_Create().Wait();
-      M_Create().Unlock();
-
-      if ( CreateDetached ) CLOSE_HANDLE(Hnd);
-      return 0;
+        if (CreateDetached) CLOSE_HANDLE(Hnd);
+        return 0;
     }
 
     int Create(
-      Thread_C_R            Param,
-      Handle  * const     & H               = 0,
-      const bool          & CreateDetached  = false,
-      const unsigned int  & StackSize       = 0,
-      const bool          & CancelEnable    = false,   // UNUSED
-      const bool          & CancelAsync     = false    // UNUSED
-    ) const
-    {
-      M_Create().Lock();
+            Thread_C_R Param,
+            Handle *const &H = 0,
+            const bool &CreateDetached = false,
+            const unsigned int &StackSize = 0,
+            const bool &CancelEnable = false,   // UNUSED
+            const bool &CancelAsync = false    // UNUSED
+    ) const {
+        M_Create().Lock();
 
-      Instance I(Param,const_cast<Thread *>(this));
+        Instance I(Param, const_cast<Thread *>(this));
 
-      Handle Hnd(CREATE_THREAD(StackSize,ThreadMainHandler,&I));
+        Handle Hnd(CREATE_THREAD(StackSize, ThreadMainHandler, &I));
 
-      if ( Hnd == CREATE_THREAD_FAILED )
-      {
-        if ( H ) *H = InvalidHandle;
+        if (Hnd == CREATE_THREAD_FAILED)
+        {
+            if (H) *H = InvalidHandle;
+            M_Create().Unlock();
+            return CREATE_THREAD_ERROR;
+        }
+
+        if (H) *H = Hnd;
+
+        S_Create().Wait();
         M_Create().Unlock();
-        return CREATE_THREAD_ERROR;
-      }
 
-      if ( H ) *H = Hnd;
-
-      S_Create().Wait();
-      M_Create().Unlock();
-
-      if ( CreateDetached ) CLOSE_HANDLE(Hnd);
-      return 0;
-    }
-
-    static int Join( const Handle &H )
-    {
-      DWORD R = WaitForSingleObject((HANDLE)H,INFINITE);
-
-      if ( (R == WAIT_OBJECT_0) || (R == WAIT_ABANDONED) )
-      {
-        CLOSE_HANDLE(H);
+        if (CreateDetached) CLOSE_HANDLE(Hnd);
         return 0;
-      }
-
-      if ( R == WAIT_TIMEOUT ) return EAGAIN;
-      return EINVAL;
     }
 
-    static int Kill( const Handle &H )
-      { return TerminateThread((HANDLE)H,0) ? 0 : EINVAL; }
+    static int Join(const Handle &H) {
+        DWORD R = WaitForSingleObject((HANDLE) H, INFINITE);
 
-    static int Detach( const Handle &H )
-      { return (CLOSE_HANDLE(H)?0:EINVAL); }
+        if ((R == WAIT_OBJECT_0) || (R == WAIT_ABANDONED))
+        {
+            CLOSE_HANDLE(H);
+            return 0;
+        }
 
-  private:
-
-    static const Mutex &M_Create()      { static Mutex M; return M; }
-    static const Semaphore &S_Create()  { static Semaphore S; return S; }
-
-    static THREAD_RET_T THREAD_CALL ThreadMainHandler( Instance *Param )
-    {
-      Instance  I(*Param);
-      Thread_T  Data(I.Data);
-      S_Create().Post();
-
-      if ( I.Owner )
-        I.Owner->ThreadMain(Data);
-      else
-        I.pFN(Data);
-
-      Exit();
-      THREAD_RETURN(0);
+        if (R == WAIT_TIMEOUT) return EAGAIN;
+        return EINVAL;
     }
 
-    struct Instance
-    {
-      Instance( Thread_C_R P, Thread<Thread_T> *const &O, const Thread<Thread_T>::Handler &pH = 0 )
-        : pFN(pH), Data(P), Owner(O) {}
+    static int Kill(const Handle &H) { return TerminateThread((HANDLE) H, 0) ? 0 : EINVAL; }
 
-      Thread<Thread_T>::Thread_C_R          Data;
-      Thread<Thread_T>                    * Owner;
-      Thread<Thread_T>::Handler             pFN;
+    static int Detach(const Handle &H) { return (CLOSE_HANDLE(H) ? 0 : EINVAL); }
+
+private:
+
+    static const Mutex &M_Create() {
+        static Mutex M;
+        return M;
+    }
+
+    static const Semaphore &S_Create() {
+        static Semaphore S;
+        return S;
+    }
+
+    static THREAD_RET_T THREAD_CALL
+    ThreadMainHandler( Instance
+    *Param )
+    {
+        Instance I(*Param);
+        Thread_T Data(I.Data);
+        S_Create().Post();
+
+        if (I.Owner)
+            I.Owner->ThreadMain(Data);
+        else
+            I.pFN(Data);
+
+        Exit();
+        THREAD_RETURN(0);
+    }
+
+    struct Instance {
+        Instance(Thread_C_R P, Thread<Thread_T> *const &O, const Thread<Thread_T>::Handler &pH = 0)
+                : pFN(pH), Data(P), Owner(O) {}
+
+        Thread<Thread_T>::Thread_C_R Data;
+        Thread<Thread_T> *Owner;
+        Thread<Thread_T>::Handler pFN;
     };
 };
 
 /////////////////////////////////////////////////////////////////////
 //  Explicit Specialization of void
 //
-class Thread<void>
-{
-  private:
+class Thread<void> {
+private:
     typedef struct Instance;
 
-  public:
+public:
     typedef THREAD_HANDLE Handle;
+
     typedef void ( *Handler)();
 
-  protected:
+protected:
     Thread<void>() {}
 
     virtual void ThreadMain() = 0;
 
-    static void Exit()
-      { EXIT_THREAD; }
+    static void Exit() { EXIT_THREAD; }
 
-    static void TestCancel()
-      { Sleep(0); }
+    static void TestCancel() { Sleep(0); }
 
-    static Handle Self()
-      { return (Handle)GetCurrentThread(); }
+    static Handle Self() { return (Handle) GetCurrentThread(); }
 
-  public:
+public:
 
     static int Create(
-      const Handler       & Function,
-      Handle  * const     & H               = 0,
-      const bool          & CreateDetached  = false,
-      const unsigned int  & StackSize       = 0,
-      const bool          & CancelEnable    = false,   // UNUSED
-      const bool          & CancelAsync     = false    // UNUSED
-    )
-    {
-      Handle Hnd(CREATE_THREAD(StackSize,ThreadMainHandler_S,Function));
+            const Handler &Function,
+            Handle *const &H = 0,
+            const bool &CreateDetached = false,
+            const unsigned int &StackSize = 0,
+            const bool &CancelEnable = false,   // UNUSED
+            const bool &CancelAsync = false    // UNUSED
+    ) {
+        Handle Hnd(CREATE_THREAD(StackSize, ThreadMainHandler_S, Function));
 
-      if ( Hnd == CREATE_THREAD_FAILED )
-      {
-        if ( H ) *H = InvalidHandle;
-        return CREATE_THREAD_ERROR;
-      }
+        if (Hnd == CREATE_THREAD_FAILED)
+        {
+            if (H) *H = InvalidHandle;
+            return CREATE_THREAD_ERROR;
+        }
 
-      if ( H ) *H = Hnd;
-      if ( CreateDetached ) CLOSE_HANDLE(Hnd);
-      return 0;
+        if (H) *H = Hnd;
+        if (CreateDetached) CLOSE_HANDLE(Hnd);
+        return 0;
     }
 
     int Create(
-      Handle  * const     & H               = 0,
-      const bool          & CreateDetached  = false,
-      const unsigned int  & StackSize       = 0,
-      const bool          & CancelEnable    = false,   // UNUSED
-      const bool          & CancelAsync     = false    // UNUSED
-    ) const
-    {
-      Handle Hnd(CREATE_THREAD(StackSize,ThreadMainHandler,this));
+            Handle *const &H = 0,
+            const bool &CreateDetached = false,
+            const unsigned int &StackSize = 0,
+            const bool &CancelEnable = false,   // UNUSED
+            const bool &CancelAsync = false    // UNUSED
+    ) const {
+        Handle Hnd(CREATE_THREAD(StackSize, ThreadMainHandler, this));
 
-      if ( Hnd == CREATE_THREAD_FAILED )
-      {
-        if ( H ) *H = InvalidHandle;
-        return CREATE_THREAD_ERROR;
-      }
+        if (Hnd == CREATE_THREAD_FAILED)
+        {
+            if (H) *H = InvalidHandle;
+            return CREATE_THREAD_ERROR;
+        }
 
-      if ( H ) *H = Hnd;
-      if ( CreateDetached ) CLOSE_HANDLE(Hnd);
-      return 0;
-    }
-
-    static int Join( const Handle &H )
-    {
-      DWORD R = WaitForSingleObject((HANDLE)H,INFINITE);
-
-      if ( (R == WAIT_OBJECT_0) || (R == WAIT_ABANDONED) )
-      {
-        CLOSE_HANDLE(H);
+        if (H) *H = Hnd;
+        if (CreateDetached) CLOSE_HANDLE(Hnd);
         return 0;
-      }
-
-      if ( R == WAIT_TIMEOUT ) return EAGAIN;
-      return EINVAL;
     }
 
-    static int Kill( const Handle &H )
-      { return TerminateThread((HANDLE)H,0) ? 0 : EINVAL; }
+    static int Join(const Handle &H) {
+        DWORD R = WaitForSingleObject((HANDLE) H, INFINITE);
 
-    static int Detach( const Handle &H )
-      { return (CLOSE_HANDLE(H)?0:EINVAL); }
+        if ((R == WAIT_OBJECT_0) || (R == WAIT_ABANDONED))
+        {
+            CLOSE_HANDLE(H);
+            return 0;
+        }
 
-  private:
-
-    static THREAD_RET_T THREAD_CALL ThreadMainHandler( Thread<void> *Param )
-    {
-      Param->ThreadMain();
-      Exit();
-      THREAD_RETURN(0);
+        if (R == WAIT_TIMEOUT) return EAGAIN;
+        return EINVAL;
     }
 
-    static THREAD_RET_T THREAD_CALL ThreadMainHandler_S( Handler Param )
+    static int Kill(const Handle &H) { return TerminateThread((HANDLE) H, 0) ? 0 : EINVAL; }
+
+    static int Detach(const Handle &H) { return (CLOSE_HANDLE(H) ? 0 : EINVAL); }
+
+private:
+
+    static THREAD_RET_T THREAD_CALL
+    ThreadMainHandler( Thread<void>
+    *Param )
     {
-      Param();
-      Exit();
-      THREAD_RETURN(0);
+        Param->ThreadMain();
+        Exit();
+        THREAD_RETURN(0);
+    }
+
+    static THREAD_RET_T THREAD_CALL
+    ThreadMainHandler_S( Handler
+    Param )
+    {
+        Param();
+        Exit();
+        THREAD_RETURN(0);
     }
 };
 

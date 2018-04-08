@@ -3,14 +3,15 @@
 
 #include "../CommonTypes.h"
 
-class SkyLoader
-{
+class SkyLoader {
 public:
-	SkyLoader() {};
-	virtual ~SkyLoader() {};
+    SkyLoader() {};
 
-	virtual bool LoadSky(int32_t regionID) {return false;}
-	virtual void *GetSkyData(int32_t regionID) {return 0;}
+    virtual ~SkyLoader() {};
+
+    virtual bool LoadSky(int32_t regionID) { return false; }
+
+    virtual void *GetSkyData(int32_t regionID) { return 0; }
 };
 
 #endif //SKYLOADER_H_
