@@ -220,5 +220,5 @@ void EngineSettings::SetMultiplayerData( int32_t nServer_PlayerCnt, int32_t nPor
 {
     m_nServerPlayerCnt = nServer_PlayerCnt;
     m_nPort = nPort;
-    strcpy(m_szServerIP, pszJoinIP);
+    m_szServerIP = pszJoinIP;
 }

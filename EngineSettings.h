@@ -49,7 +49,7 @@ class EngineSettings
         XL_BOOL IsClient_MP() { return m_szServerIP[0]!=0 ? true : false; }
         int32_t GetMaxPlayerCount() { return m_nServerPlayerCnt; }
         int32_t GetPort() { return m_nPort; }
-        const char *GetServerIP() { return m_szServerIP; }
+        const char *GetServerIP() { return m_szServerIP.c_str(); }
         bool GetStartPos(Vector3& pos, int32_t& sector)
         { 
             if ( m_bOverridePos )
@@ -98,7 +98,7 @@ class EngineSettings
         //MP Data
         int32_t m_nServerPlayerCnt = 0;
         int32_t m_nPort = 0;
-        char m_szServerIP[32] = {0};
+        std::string m_szServerIP;
         bool m_bOverridePos = false;
         int32_t m_nStartSec = -1;
         Vector3 m_vStartPos{0.0f, 0.0f, 0.0f};
