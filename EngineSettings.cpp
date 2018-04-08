@@ -141,18 +141,6 @@ EngineSettings EngineSettings::s_Settings;
 
 // Initialize default settings.
 EngineSettings::EngineSettings()
-  : m_nScreenWidth(1024)
-  , m_nScreenHeight(768)
-  , m_nRenderer(RENDERER_SOFT8)
-  , m_nServerPlayerCnt(0)
-  , m_nPort(0)
-  , m_bOverridePos(false)
-  , m_nStartSec(-1)
-  , m_vStartPos{0, 0, 0}
-  , m_fBrightness(1.0f)
-  , m_fContrast(1.0f)
-  , m_fGamma(1.0f)
-  , m_uFlags(0)
 {
     SetDisplaySettings(1.0f, 1.0f, 1.0f);
 }

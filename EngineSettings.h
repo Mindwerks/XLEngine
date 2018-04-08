@@ -91,24 +91,24 @@ class EngineSettings
         std::string m_szGameDataDir;
         std::string m_szGameDir;
         std::string m_szMapName;
-        int32_t m_nScreenWidth;
-        int32_t m_nScreenHeight;
-        int32_t m_nRenderer;
+        int32_t m_nScreenWidth = 1024;
+        int32_t m_nScreenHeight = 768;
+        int32_t m_nRenderer = RENDERER_SOFT8;
 
         //MP Data
-        int32_t m_nServerPlayerCnt;
-        int32_t m_nPort;
-        char m_szServerIP[32];
-        bool m_bOverridePos;
-        int32_t m_nStartSec;
-        Vector3 m_vStartPos;
+        int32_t m_nServerPlayerCnt = 0;
+        int32_t m_nPort = 0;
+        char m_szServerIP[32] = {0};
+        bool m_bOverridePos = false;
+        int32_t m_nStartSec = -1;
+        Vector3 m_vStartPos{0.0f, 0.0f, 0.0f};
 
         //Display settings.
-        float m_fBrightness;
-        float m_fContrast;
-        float m_fGamma;
+        float m_fBrightness = 1.0f;
+        float m_fContrast = 1.0f;
+        float m_fGamma = 1.0f;
 
-        uint32_t m_uFlags;
+        uint32_t m_uFlags = 0;
 };
 
 #endif // ENGINESETTINGS_H
