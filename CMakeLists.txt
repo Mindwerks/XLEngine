@@ -5,6 +5,7 @@ project(XLEngine)
 set(CMAKE_MODULE_PATH "${XLEngine_SOURCE_DIR}/cmake")
 
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING
@@ -142,6 +143,11 @@ endif(NOT WIN32)
 add_executable(XLEngine ${sources})
 target_include_directories(XLEngine PRIVATE ${xlengine_include_dirs})
 target_link_libraries(XLEngine PRIVATE ${xlengine_libraries})
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set_target_properties(XLEngine PROPERTIES INSTALL_RPATH "@executable_path")
+elseif(NOT WIN32)
+    set_target_properties(XLEngine PROPERTIES INSTALL_RPATH "$ORIGIN")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 
 set(darkxl_sources
