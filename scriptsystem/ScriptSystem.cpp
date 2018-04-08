@@ -43,7 +43,7 @@ void _MessageCallback(const asSMessageInfo *msg, void *param)
 #if PLATFORM_WIN
 	OutputDebugString(szDebugOut);
 #else
-	printf(szDebugOut);
+	printf("%s", szDebugOut);
 #endif
 
 	sprintf(szDebugOut, "^1ScriptError: %s (%d, %d) : %s : %s\n", msg->section, msg->row, msg->col, type, msg->message);

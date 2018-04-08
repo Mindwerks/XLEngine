@@ -156,7 +156,7 @@ FILE *OpenFile_Local(const char *pszFile)
 //This is different then other archives, we're reading indices here...
 bool RFF_Reader::OpenFile(const char *pszFile)
 {
-	if ( m_pFileLocal = OpenFile_Local(pszFile) )
+	if((m_pFileLocal=OpenFile_Local(pszFile)) != NULL)
 	{
 		m_pFile = NULL;
 		return true;

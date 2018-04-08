@@ -162,7 +162,7 @@ static void AssignBool2StringGeneric(asIScriptGeneric *gen)
 	bool *a = static_cast<bool*>(gen->GetAddressOfArg(0));
 	string *self = static_cast<string*>(gen->GetObject());
 	std::stringstream sstr;
-	sstr << *a ? "true" : "false";
+	sstr << (*a ? "true" : "false");
 	*self = sstr.str();
 	gen->SetReturnAddress(self);
 }
@@ -198,7 +198,7 @@ static void AddAssignBool2StringGeneric(asIScriptGeneric * gen) {
   bool * a = static_cast<bool *>(gen->GetAddressOfArg(0));
   string * self = static_cast<string *>(gen->GetObject());
   std::stringstream sstr;
-  sstr << *a ? "true" : "false";
+  sstr << (*a ? "true" : "false");
   *self += sstr.str();
   gen->SetReturnAddress(self);
 }
@@ -234,7 +234,7 @@ static void AddString2BoolGeneric(asIScriptGeneric * gen) {
   string * a = static_cast<string *>(gen->GetObject());
   bool * b = static_cast<bool *>(gen->GetAddressOfArg(0));
   std::stringstream sstr;
-  sstr << *a << *b ? "true" : "false";
+  sstr << *a << (*b ? "true" : "false");
   std::string ret_val = sstr.str();
   gen->SetReturnObject(&ret_val);
 }
@@ -447,18 +447,14 @@ static string &AddAssignDoubleToString(double f, string &dest)
 
 static string &AssignBoolToString(bool b, string &dest)
 {
-	ostringstream stream;
-	stream << b ? "true" : "false";
-	dest = stream.str();
-	return dest;
+    dest = (b ? "true" : "false");
+    return dest;
 }
 
 static string &AddAssignBoolToString(bool b, string &dest)
 {
-	ostringstream stream;
-	stream << b ? "true" : "false";
-	dest += stream.str();
-	return dest;
+    dest += (b ? "true" : "false");
+    return dest;
 }
 
 static string AddStringDouble(const string &str, double f)
@@ -477,16 +473,12 @@ static string AddDoubleString(double f, const string &str)
 
 static string AddStringBool(const string &str, bool b)
 {
-	ostringstream stream;
-	stream << b ? "true" : "false";
-	return str + stream.str();
+    return str + (b ? "true" : "false");
 }
 
 static string AddBoolString(bool b, const string &str)
 {
-	ostringstream stream;
-	stream << b ? "true" : "false";
-	return stream.str() + str;
+    return (b ? "true" : "false") + str;
 }
 
 static char *StringCharAt(unsigned int i, string &str)

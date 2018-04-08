@@ -443,7 +443,6 @@ bool TextureConv_IMG::ConvertTexture_Pal8_TexList(uint8_t *pConvertedData, int32
 		//now we'll create an RGBA texture and create a hardware texture out of it.
 		for (int h=0; h<pRec->width*pRec->height; h++)
 		{
-			assert( buffer[h] < 256 );
 			int pal_index = buffer[h]*4;
 			int alpha = 0xff;
 			if ( pal_index == 0 ) alpha = 0;
@@ -478,7 +477,6 @@ bool TextureConv_IMG::ConvertTexture_Pal8_TexList(uint8_t *pConvertedData, int32
 		//now we'll create an RGBA texture and create a hardware texture out of it.
 		for (int h=0; h<fw*fh; h++)
 		{
-			assert( buffer[h] < 256 );
 			int pal_index = buffer[h]*4;
 			int alpha = 0xff;
 			if ( pal_index == 0 ) alpha = 0;
@@ -549,7 +547,6 @@ bool TextureConv_IMG::ConvertTexture_Pal8_TexList(uint8_t *pConvertedData, int32
 		//now we'll create an RGBA texture and create a hardware texture out of it.
 		for (int h=0; h<pRec->width*pRec->height; h++)
 		{
-			assert( buffer[h] < 256 );
 			int pal_index = buffer[h]*4;
 			int alpha = 0xff;
 			if ( pal_index == 0 ) alpha = 0;

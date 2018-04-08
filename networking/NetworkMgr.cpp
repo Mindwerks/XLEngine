@@ -123,6 +123,10 @@ void NetworkMgr::Destroy()
 					case ENET_EVENT_TYPE_DISCONNECT:
 						bDisconnectSuccess = true;
 						break;
+
+                    case ENET_EVENT_TYPE_NONE:
+                    case ENET_EVENT_TYPE_CONNECT:
+                        break;
 				}
 			}
 		}
@@ -415,6 +419,9 @@ void NetworkMgr::_ServerLoop()
 				/* Reset the peer's client information. */
 				event.peer->data = NULL;
 			break;
+
+            case ENET_EVENT_TYPE_NONE:
+                break;
         }
     }
 	ScratchPad::FreeFrame();
@@ -456,14 +463,19 @@ void NetworkMgr::_ClientLoop()
 				enet_packet_destroy(event.packet);
 			break;
            
-			case ENET_EVENT_TYPE_DISCONNECT:
-				XL_Console::PrintF("You have been disconnected.");
-				Vector4 red(1.0f, 0.0f, 0.0f, 1.0f);
-				m_pEngine->AddDisplayMessage( "You have been disconnected.", &red, 1000.0f );
-				/* Reset the peer's client information. */
-				event.peer->data = NULL;
-				_pServerPeer = NULL;
-			break;
+            case ENET_EVENT_TYPE_DISCONNECT:
+            {
+                XL_Console::PrintF("You have been disconnected.");
+                Vector4 red(1.0f, 0.0f, 0.0f, 1.0f);
+                m_pEngine->AddDisplayMessage( "You have been disconnected.", &red, 1000.0f );
+                /* Reset the peer's client information. */
+                event.peer->data = NULL;
+                _pServerPeer = NULL;
+            }
+            break;
+
+            case ENET_EVENT_TYPE_NONE:
+                break;
         }
     }
 }
