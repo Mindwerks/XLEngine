@@ -160,7 +160,7 @@ void UI_System::StartScript(const char *pszFile)
         //Debug
         ScriptSystem::RegisterFunc("void UI_PrintMousePos(int, int, int)", asFUNCTION(UI_PrintMousePos));
         //
-        ScriptSystem::RegisterFunc("void UI_GetStartMap(string &out)", asFUNCTION(EngineSettings::GetStartMap_StrOut));
+        ScriptSystem::RegisterFunc("void UI_GetStartMap(string &out)", asFUNCTION(EngineSettings::GetStartMap_StrOutCB));
         //Misc.
         ScriptSystem::RegisterFunc("float UI_GetBrightness()", asFUNCTION(UI_GetCurrentBrightness));
         ScriptSystem::RegisterFunc("float UI_GetSpeed()", asFUNCTION(UI_GetSpeed));

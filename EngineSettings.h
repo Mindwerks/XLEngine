@@ -29,27 +29,28 @@ class EngineSettings
             RENDERER_COUNT
         };
 
-        static void Init();
-        static bool Load( const char *pszSettingsFile );
-        static void SetStartMap( const char *pszMapName );
-        static void SetStartPos( const Vector3 *pos, int32_t nSector );
-        static void SetMultiplayerData( int32_t nServer_PlayerCnt, int32_t nPort, const char *pszJoinIP );
+        static EngineSettings &get() noexcept { return s_Settings; }
 
-        static const char *GetGameDataDir() { return m_szGameDataDir.c_str(); }
+        bool Load( const char *pszSettingsFile );
+        void SetStartMap( const char *pszMapName );
+        void SetStartPos( const Vector3 *pos, int32_t nSector );
+        void SetMultiplayerData( int32_t nServer_PlayerCnt, int32_t nPort, const char *pszJoinIP );
+
+        const char *GetGameDataDir() { return m_szGameDataDir.c_str(); }
         //desired screen width and height (may be different then final screen width and height, so use the Driver3D values
         //while in-game.
-        static int32_t GetScreenWidth()      { return m_nScreenWidth; }
-        static int32_t GetScreenHeight()     { return m_nScreenHeight; }
+        int32_t GetScreenWidth()      { return m_nScreenWidth; }
+        int32_t GetScreenHeight()     { return m_nScreenHeight; }
         //the start map.
-        static const char *GetStartMap() { return m_szMapName.c_str(); }
-        static void GetStartMap_StrOut(string& sMapName) { sMapName = m_szMapName; }
+        const char *GetStartMap() { return m_szMapName.c_str(); }
+        void GetStartMap_StrOut(string& sMapName) { sMapName = m_szMapName; }
         //MP data.
-        static XL_BOOL IsServer() { return m_nServerPlayerCnt > 0 ? true : false; }
-        static XL_BOOL IsClient_MP() { return m_szServerIP[0]!=0 ? true : false; }
-        static int32_t GetMaxPlayerCount() { return m_nServerPlayerCnt; }
-        static int32_t GetPort() { return m_nPort; }
-        static const char *GetServerIP() { return m_szServerIP; }
-        static bool GetStartPos(Vector3& pos, int32_t& sector)
+        XL_BOOL IsServer() { return m_nServerPlayerCnt > 0 ? true : false; }
+        XL_BOOL IsClient_MP() { return m_szServerIP[0]!=0 ? true : false; }
+        int32_t GetMaxPlayerCount() { return m_nServerPlayerCnt; }
+        int32_t GetPort() { return m_nPort; }
+        const char *GetServerIP() { return m_szServerIP; }
+        bool GetStartPos(Vector3& pos, int32_t& sector)
         { 
             if ( m_bOverridePos )
             {
@@ -60,39 +61,54 @@ class EngineSettings
         }
 
         //display settings
-        static void SetDisplaySettings(float brightness=1.0f, float contrast=1.0f, float gamma=1.0f);
-        static void GetDisplaySettings(float& brightness, float& contrast, float& gamma);
+        void SetDisplaySettings(float brightness=1.0f, float contrast=1.0f, float gamma=1.0f);
+        void GetDisplaySettings(float& brightness, float& contrast, float& gamma);
 
-        static bool IsFeatureEnabled(uint32_t uFeature);
+        bool IsFeatureEnabled(uint32_t uFeature);
 
-        static void SetGameDir(const char *pszGame);
-        static const char *GetGameDir() { return m_szGameDir.c_str(); }
+        void SetGameDir(const char *pszGame);
+        const char *GetGameDir() { return m_szGameDir.c_str(); }
 
-        static int32_t GetRenderer() { return m_nRenderer; }
-        static void SetRenderer(int32_t renderer) { m_nRenderer = renderer; }
+        int32_t GetRenderer() { return m_nRenderer; }
+        void SetRenderer(int32_t renderer) { m_nRenderer = renderer; }
+
+        //callback methods
+        static const char *GetStartMapCB() { return s_Settings.GetStartMap(); }
+        static XL_BOOL IsServerCB() { return s_Settings.IsServer(); }
+        static void GetStartMap_StrOutCB(string& sMapName)
+        { s_Settings.GetStartMap_StrOut(sMapName); }
+
     private:
+        static EngineSettings s_Settings;
+
+        EngineSettings();
+        EngineSettings(EngineSettings&&) = delete;
+        EngineSettings(const EngineSettings&) = delete;
+        EngineSettings& operator=(EngineSettings&&) = delete;
+        EngineSettings& operator=(const EngineSettings&) = delete;
+
         //Game Data Root.
-        static std::string m_szGameDataDir;
-        static std::string m_szGameDir;
-        static std::string m_szMapName;
-        static int32_t m_nScreenWidth;
-        static int32_t m_nScreenHeight;
-        static int32_t m_nRenderer;
+        std::string m_szGameDataDir;
+        std::string m_szGameDir;
+        std::string m_szMapName;
+        int32_t m_nScreenWidth;
+        int32_t m_nScreenHeight;
+        int32_t m_nRenderer;
 
         //MP Data
-        static int32_t m_nServerPlayerCnt;
-        static int32_t m_nPort;
-        static char m_szServerIP[32];
-        static bool m_bOverridePos;
-        static int32_t m_nStartSec;
-        static Vector3 m_vStartPos;
+        int32_t m_nServerPlayerCnt;
+        int32_t m_nPort;
+        char m_szServerIP[32];
+        bool m_bOverridePos;
+        int32_t m_nStartSec;
+        Vector3 m_vStartPos;
 
         //Display settings.
-        static float m_fBrightness;
-        static float m_fContrast;
-        static float m_fGamma;
+        float m_fBrightness;
+        float m_fContrast;
+        float m_fGamma;
 
-        static uint32_t m_uFlags;
+        uint32_t m_uFlags;
 };
 
 #endif // ENGINESETTINGS_H

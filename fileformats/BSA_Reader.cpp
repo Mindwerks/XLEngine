@@ -15,7 +15,7 @@ BSA_Reader::BSA_Reader() : Archive()
 
 bool BSA_Reader::Open(const char *pszName)
 {
-    sprintf(m_szFileName, "%s%s", EngineSettings::GetGameDataDir(), pszName);
+    sprintf(m_szFileName, "%s%s", EngineSettings::get().GetGameDataDir(), pszName);
 
     FILE *f = fopen(m_szFileName, "rb");
     if ( f )

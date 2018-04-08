@@ -98,11 +98,13 @@ Engine::~Engine()
 
 bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
 {
+    EngineSettings &settings = EngineSettings::get();
+
     //Initialize 3D.
-    if ( EngineSettings::IsServer() == false )
+    if ( settings.IsServer() == false )
     {
         //Create the low-level renderer
-        int32_t nRenderer = EngineSettings::GetRenderer();
+        int32_t nRenderer = settings.GetRenderer();
         if ( nRenderer == EngineSettings::RENDERER_OPENGL )
         {
             m_pDriver3D = xlNew Driver3D_OGL();
@@ -130,7 +132,7 @@ bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
         return false;
 
     //pick the correct platform based on OS.
-    if ( EngineSettings::IsServer() == false )
+    if ( settings.IsServer() == false )
     {
 #if PLATFORM_WIN
         m_pDriver3D->SetPlatform( xlNew Driver3D_OGL_Win() );
@@ -161,7 +163,7 @@ bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
     WorldMap::Init();
 
     //Initialie the Render Que.
-    if ( EngineSettings::IsServer() == false )
+    if ( settings.IsServer() == false )
     {
         RenderQue::Init( m_pDriver3D );
 
@@ -194,7 +196,7 @@ bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
     m_pWorld = xlNew World();
     m_pWorld->SetCamera( m_pCamera );
 
-    if ( EngineSettings::IsServer() == false )
+    if ( settings.IsServer() == false )
     {
         //Initialize the UI System
         UI_System::Init( m_pDriver3D, this );
@@ -203,7 +205,7 @@ bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
     //Initialize the Archive manager
     ArchiveManager::Init();
 
-    if ( EngineSettings::IsServer() == false )
+    if ( settings.IsServer() == false )
     {
         //Initialize the movie playback system.
         MovieManager::Init( m_pDriver3D );
@@ -229,14 +231,14 @@ bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
     m_nWidth  = w;
     m_nHeight = h;
 
-    if ( EngineSettings::IsServer() || EngineSettings::IsClient_MP() )
+    if ( settings.IsServer() || settings.IsClient_MP() )
     {
         uint32_t uWaitFrame = 0;
         int32_t nExitFrameCnt = -2;
 
         if ( NetworkMgr::Init(this) == false )
         {
-            if ( EngineSettings::IsClient_MP() )
+            if ( settings.IsClient_MP() )
             {
                 //delay before exiting so an error message can be presented.
                 nExitFrameCnt = _FRAME_COUNT_BEFORE_EXIT;
@@ -247,7 +249,7 @@ bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
                 return false;
             }
         }
-        if ( EngineSettings::IsServer() == false && EngineSettings::IsClient_MP() )
+        if ( settings.IsServer() == false && settings.IsClient_MP() )
         {
             Clock::StartTimer(1);
             //now wait for the client/server connection and startup.
@@ -328,7 +330,9 @@ bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
 
 void Engine::Destroy()
 {
-    if ( EngineSettings::IsServer() || EngineSettings::IsClient_MP() )
+    EngineSettings &settings = EngineSettings::get();
+
+    if ( settings.IsServer() || settings.IsClient_MP() )
     {
         NetworkMgr::Destroy();
     }
@@ -647,8 +651,8 @@ void Engine::SetupPluginAPI()
     m_pPluginAPI->Engine_SetCameraData  = Engine::Engine_SetCameraData;
     m_pPluginAPI->Engine_AllowPlayerControls = Engine::Engine_AllowPlayerControls;
     //Startup Options
-    m_pPluginAPI->Startup_GetStartMap   = EngineSettings::GetStartMap;
-    m_pPluginAPI->IsServer              = EngineSettings::IsServer;
+    m_pPluginAPI->Startup_GetStartMap   = EngineSettings::GetStartMapCB;
+    m_pPluginAPI->IsServer              = EngineSettings::IsServerCB;
     //Input
     m_pPluginAPI->IsKeyDown = Input_IsKeyDown;
     m_pPluginAPI->GetMouseX = Input_GetMousePosX;
@@ -807,7 +811,7 @@ bool Engine::Loop(float fDeltaTime, bool bFullspeed)
         m_pCamera->Update(fDeltaTime);
     }
 
-    if ( EngineSettings::IsServer() == false )
+    if ( EngineSettings::get().IsServer() == false )
     {
         //-FIX ME! Later have a better way of determining this.
         //basically only clear when no 3D is rendered.

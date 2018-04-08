@@ -14,7 +14,7 @@ GOB_Reader::GOB_Reader() : Archive()
 
 bool GOB_Reader::Open(const char *pszName)
 {
-    sprintf(m_szFileName, "%s%s", EngineSettings::GetGameDataDir(), pszName);
+    sprintf(m_szFileName, "%s%s", EngineSettings::get().GetGameDataDir(), pszName);
     m_bGOB = true;
     size_t l = strlen(pszName);
     if ( (pszName[l-3] == 'l' && pszName[l-2] == 'a' && pszName[l-1] == 'b') || 

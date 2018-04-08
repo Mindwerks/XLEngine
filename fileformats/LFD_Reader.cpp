@@ -12,7 +12,7 @@ LFD_Reader::LFD_Reader() : Archive()
 
 bool LFD_Reader::Open(const char *pszName)
 {
-    sprintf(m_szFileName, "%sLFD/%s", EngineSettings::GetGameDataDir(), pszName);
+    sprintf(m_szFileName, "%sLFD/%s", EngineSettings::get().GetGameDataDir(), pszName);
 
     FILE *f = fopen(m_szFileName, "rb");
     if ( f )
@@ -44,7 +44,8 @@ bool LFD_Reader::Open(const char *pszName)
         return true;
     }
 
-    XL_Console::PrintF("^1Error: Failed to load %s, make sure that %sLFD is the correct directory for Dark Forces.", m_szFileName, EngineSettings::GetGameDataDir());
+    XL_Console::PrintF("^1Error: Failed to load %s, make sure that %sLFD is the correct directory for Dark Forces.",
+                       m_szFileName, EngineSettings::get().GetGameDataDir());
 
     return false;
 }

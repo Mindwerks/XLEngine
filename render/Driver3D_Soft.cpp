@@ -204,7 +204,7 @@ bool Driver3D_Soft::Init(int32_t w, int32_t h)
     m_nWindowHeight = h;
     
     //frame size.
-    if ( EngineSettings::IsFeatureEnabled(EngineSettings::EMULATE_320x200) )
+    if ( EngineSettings::get().IsFeatureEnabled(EngineSettings::EMULATE_320x200) )
     {
         m_FrameWidth  = 240*w/h;
         m_FrameHeight = 200;

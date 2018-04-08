@@ -79,7 +79,7 @@ bool NetworkMgr::Init(Engine *pEngine)
     }
     XL_Console::PrintF("Initializing the Network subsystem.");
 
-    if ( EngineSettings::IsServer() )
+    if ( EngineSettings::get().IsServer() )
     {
         bSucceeded = CreateServer();
     }
@@ -170,14 +170,14 @@ bool NetworkMgr::CreateServer()
     /* A specific host address can be specified by   */
     /* enet_address_set_host (& address, "x.x.x.x"); */
     address.host = ENET_HOST_ANY;
-    address.port = EngineSettings::GetPort();
+    address.port = EngineSettings::get().GetPort();
 
     uint32_t uChannelCount = 2;
     uint32_t uIncomingBandwidth = 0;
     uint32_t uOutgoingBandwidth = 0;
-    _pServer = enet_host_create(&address, EngineSettings::GetMaxPlayerCount(), uChannelCount, uIncomingBandwidth, uOutgoingBandwidth);
+    _pServer = enet_host_create(&address, EngineSettings::get().GetMaxPlayerCount(), uChannelCount, uIncomingBandwidth, uOutgoingBandwidth);
 
-    const char *pszServerIP = EngineSettings::GetServerIP();
+    const char *pszServerIP = EngineSettings::get().GetServerIP();
     if ( pszServerIP[0] )
     {
         enet_address_set_host(&address, pszServerIP);
@@ -212,7 +212,7 @@ bool NetworkMgr::CreateClient()
     ENetEvent event;
 
     /* Connect to some.server.net:1234. */
-    enet_address_set_host(&address, EngineSettings::GetServerIP());
+    enet_address_set_host(&address, EngineSettings::get().GetServerIP());
     address.port = 5030;
 
     /* Initiate the connection, allocating the two channels 0 and 1. */
@@ -226,7 +226,7 @@ bool NetworkMgr::CreateClient()
     /* Wait up to 5 seconds for the connection attempt to succeed. */
     if (enet_host_service(_pClient, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT)
     {
-        XL_Console::PrintF("Connection to %s:%u succeeded", EngineSettings::GetServerIP(), 5030);
+        XL_Console::PrintF("Connection to %s:%u succeeded", EngineSettings::get().GetServerIP(), 5030);
     }
     else
     {
@@ -234,7 +234,7 @@ bool NetworkMgr::CreateClient()
         /* received. Reset the peer in the event the 5 seconds   */
         /* had run out without any significant event.            */
         enet_peer_reset(_pServerPeer);
-        XL_Console::PrintF("^1Error: Connection to %s:%u failed", EngineSettings::GetServerIP(), 5030);
+        XL_Console::PrintF("^1Error: Connection to %s:%u failed", EngineSettings::get().GetServerIP(), 5030);
         return false;
     }
 
@@ -338,7 +338,7 @@ void NetworkMgr::_ServerLoop()
                 event.peer->data = (void *)(intptr_t)m_nPlayerCount;
 
                 //now that the client has connected, send the startup data.
-                const char *pszMap = EngineSettings::GetStartMap();
+                const char *pszMap = EngineSettings::get().GetStartMap();
                 uint32_t uPacketSize = 2 + strlen(pszMap) + sizeof(m_SeqNum) + sizeof(Vector3) + sizeof(int32_t);
                 uint32_t uPacketIdx = 0;
                 uint8_t *packet = (uint8_t *)ScratchPad::AllocMem( uPacketSize );
@@ -492,8 +492,8 @@ void NetworkMgr::Client_ProcessPacket( uint8_t type, const uint8_t *data, uint32
             const Vector3 *startPos = (const Vector3 *)&data[offset]; offset += sizeof(Vector3);
             const int32_t *sector = (const int32_t *)&data[offset];
             XL_Console::PrintF("Setup MP parameters. Map = %s, start = (%2.2f,%2.2f,%2.2f), %d.", pszMapName, startPos->x, startPos->y, startPos->z, *sector);
-            EngineSettings::SetStartMap( pszMapName );
-            EngineSettings::SetStartPos(startPos, *sector);
+            EngineSettings::get().SetStartMap( pszMapName );
+            EngineSettings::get().SetStartPos(startPos, *sector);
             m_bRecievedStartupMsg = true;
         }
         break;

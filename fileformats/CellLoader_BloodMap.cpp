@@ -430,7 +430,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
         {
             Sector_2_5D *pSector = xlNew Sector_2_5D();
             uint32_t uWidth, uHeight;
-            if ( EngineSettings::IsServer() == false )
+            if ( EngineSettings::get().IsServer() == false )
             {
                 pSector->m_hFloorTex = AddBloodTile( m_pBloodSectors[i].floorpicnum, m_pBloodSectors[i].floorpal, uWidth, uHeight );
                 pSector->m_FloorTexScale.Set( fFloorTexScale / (float)uWidth, fFloorTexScale / (float)uHeight );
@@ -466,7 +466,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
             if ( m_pBloodSectors[i].floorstat&2 )   pSector->m_uFlags |= Sector_2_5D::SEC_FLAGS_FLOOR_SLOPE;
             if ( m_pBloodSectors[i].ceilingstat&2 ) pSector->m_uFlags |= Sector_2_5D::SEC_FLAGS_CEIL_SLOPE;
 
-            if ( EngineSettings::IsServer() == false )
+            if ( EngineSettings::get().IsServer() == false )
             {
                 if ( pSector->m_uFlags&Sector_2_5D::SEC_FLAGS_EXTERIOR )
                 {
@@ -845,7 +845,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
                 pSector->m_Walls[w].m_flags = 0;
                 TextureHandle hTex = XL_INVALID_TEXTURE;
                 float dx = 0.0f, dy = 0.0f, sx = 1.0f, sy = 1.0f;
-                if ( EngineSettings::IsServer() == false )
+                if ( EngineSettings::get().IsServer() == false )
                 {
                     hTex = AddBloodTile( m_pBloodWalls[ww].picnum, m_pBloodWalls[ww].pal, uWidth, uHeight );
 
@@ -880,7 +880,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
                             pSector->m_Walls[w].m_flags |= Wall::WALL_FLAGS_TRANS;
                         }
 
-                        if ( EngineSettings::IsServer() == false )
+                        if ( EngineSettings::get().IsServer() == false )
                         {
                             pSector->m_Walls[w].m_textures[Wall::WALL_TEX_MID] = AddBloodTile( m_pBloodWalls[ww].overpicnum, m_pBloodWalls[ww].pal, uWidth, uHeight );;
 
@@ -962,7 +962,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
                 //floor oriented sprite.
                 if ( m_pBloodSprites[i].cstat&0x20 )
                 {
-                    if ( m_pBloodSprites[i].picnum == 0 || m_pBloodSprites[i].lotag == 408 || EngineSettings::IsServer() )
+                    if ( m_pBloodSprites[i].picnum == 0 || m_pBloodSprites[i].lotag == 408 || EngineSettings::get().IsServer() )
                         continue;
 
                     uint32_t uWidth, uHeight;
@@ -1037,7 +1037,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
                 }
                 else if ( m_pBloodSprites[i].cstat&0x10 )   //wall oriented sprite.
                 {
-                    if ( m_pBloodSprites[i].picnum == 0 || m_pBloodSprites[i].lotag == 408 || EngineSettings::IsServer() )
+                    if ( m_pBloodSprites[i].picnum == 0 || m_pBloodSprites[i].lotag == 408 || EngineSettings::get().IsServer() )
                         continue;
 
                     uint32_t uWidth, uHeight;
@@ -1162,7 +1162,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
                         uint32_t auAnimWidth[32];
                         uint32_t auAnimHeight[32];
                         uint32_t uFrameCnt = 0;
-                        if ( EngineSettings::IsServer() == false )
+                        if ( EngineSettings::get().IsServer() == false )
                         {
                             hTex = AddBloodTile( m_pBloodSprites[i].picnum, m_pBloodSprites[i].pal, uWidth, uHeight, false);
                             if ( m_pBloodSprites[i].picnum == 570 )
@@ -1189,7 +1189,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
                             vLoc.z = -(float)m_pBloodSprites[i].z / fVertScale;
 
                             Vector3 vScale;
-                            if ( EngineSettings::IsServer() == false )
+                            if ( EngineSettings::get().IsServer() == false )
                             {
                                 vScale.x = (float)uWidth *m_pBloodSprites[i].xrepeat * 0.125f*0.33f/64.0f;
                                 vScale.y = (float)uWidth *m_pBloodSprites[i].xrepeat * 0.125f*0.33f/64.0f;
@@ -1212,7 +1212,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
                             }
                             pObj->SetLoc(vLoc);
 
-                            if ( EngineSettings::IsServer() == false )  //There's no render component when running a server.
+                            if ( EngineSettings::get().IsServer() == false )  //There's no render component when running a server.
                             {
                                 Sprite_ZAxis *pSprite = xlNew Sprite_ZAxis();
                                 pSprite->SetTextureHandle( hTex );
@@ -1342,7 +1342,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
         {
             Vector3 vStartLoc;
             int32_t sectnum = -1;
-            if ( !EngineSettings::GetStartPos(vStartLoc, sectnum) )
+            if ( !EngineSettings::get().GetStartPos(vStartLoc, sectnum) )
             {
                 int32_t startID = _nPlayerStart;
 

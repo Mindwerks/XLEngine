@@ -137,44 +137,23 @@ void LoadSettingsFromFile(Common_Settings &settings, std::istream &file)
 
 } // namespace
 
-std::string EngineSettings::m_szGameDataDir;
-std::string EngineSettings::m_szMapName;
-std::string EngineSettings::m_szGameDir;
-int32_t EngineSettings::m_nScreenWidth;
-int32_t EngineSettings::m_nScreenHeight;
-int32_t EngineSettings::m_nRenderer = EngineSettings::RENDERER_SOFT8;//OPENGL;
+EngineSettings EngineSettings::s_Settings;
 
-int32_t EngineSettings::m_nServerPlayerCnt;
-int32_t EngineSettings::m_nPort;
-char EngineSettings::m_szServerIP[32];
-
-bool EngineSettings::m_bOverridePos;
-int32_t EngineSettings::m_nStartSec;
-Vector3 EngineSettings::m_vStartPos;
-
-uint32_t EngineSettings::m_uFlags;
-
-float EngineSettings::m_fBrightness;
-float EngineSettings::m_fContrast;
-float EngineSettings::m_fGamma;
-
-//set default settings.
-void EngineSettings::Init()
+// Initialize default settings.
+EngineSettings::EngineSettings()
+  : m_nScreenWidth(1024)
+  , m_nScreenHeight(768)
+  , m_nRenderer(RENDERER_SOFT8)
+  , m_nServerPlayerCnt(0)
+  , m_nPort(0)
+  , m_bOverridePos(false)
+  , m_nStartSec(-1)
+  , m_vStartPos{0, 0, 0}
+  , m_fBrightness(1.0f)
+  , m_fContrast(1.0f)
+  , m_fGamma(1.0f)
+  , m_uFlags(0)
 {
-    //
-    m_nScreenWidth  = 1024;
-    m_nScreenHeight =  768;
-    //Multiplayer defaults.
-    m_nServerPlayerCnt = 0;
-    m_nPort = 0;
-    memset(m_szServerIP, 0, 32);
-
-    m_bOverridePos = false;
-    m_nStartSec = -1;
-    m_vStartPos.Set(0,0,0);
-
-    m_uFlags = 0;
-
     SetDisplaySettings(1.0f, 1.0f, 1.0f);
 }
 

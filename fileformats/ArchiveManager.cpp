@@ -191,7 +191,7 @@ int32_t ArchiveManager::File_Open(const char *pszFileName)
         return 0;
 
     char szFileName[260];
-    sprintf(szFileName, "%s%s", EngineSettings::GetGameDataDir(), pszFileName);
+    sprintf(szFileName, "%s%s", EngineSettings::get().GetGameDataDir(), pszFileName);
     s_pCurrentSysFile = fopen(szFileName, "rb");
     if ( s_pCurrentSysFile )
         return 1;

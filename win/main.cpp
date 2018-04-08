@@ -122,19 +122,19 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     NetworkMgr::SetLocalPlayerName(szPlayerName);
     
     //Engine settings.
-    EngineSettings::Init();
+    EngineSettings &settings = EngineSettings::get();
 
     //We have to load the engine settings before created the window and setting up
     //so that we can pick the correct resolution, fullscreen, etc.
     char szSettingsFile[260];
     sprintf(szSettingsFile, "%s/%s.conf", szGame, szGame);
-    EngineSettings::SetGameDir(szGame);
-    EngineSettings::Load( szSettingsFile );
-    EngineSettings::SetStartMap( szMap );
-    EngineSettings::SetMultiplayerData( nServer_PlayerCnt, nPort, nServer_PlayerCnt > 0 ? szServerIP : szJoinIP );
+    settings.SetGameDir(szGame);
+    settings.Load( szSettingsFile );
+    settings.SetStartMap( szMap );
+    settings.SetMultiplayerData( nServer_PlayerCnt, nPort, nServer_PlayerCnt > 0 ? szServerIP : szJoinIP );
 
     // Perform application initialization:
-    if ( !InitInstance(hInstance, nCmdShow, EngineSettings::GetScreenWidth(), EngineSettings::GetScreenHeight()) )
+    if ( !InitInstance(hInstance, nCmdShow, settings.GetScreenWidth(), settings.GetScreenHeight()) )
     {
         return FALSE;
     }
@@ -142,7 +142,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     //Setup Engine systems.
     m_pEngine = xlNew Engine();
     void *win_param[] = { (void *)_hwnd };
-    bool bInit = m_pEngine->Init(win_param, 1, EngineSettings::GetScreenWidth(), EngineSettings::GetScreenHeight());
+    bool bInit = m_pEngine->Init(win_param, 1, settings.GetScreenWidth(), settings.GetScreenHeight());
     if ( bInit == false )
     {
         return FALSE;
@@ -181,8 +181,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
                     //Get the current mouse cursor position.
                     GetCursorPos(&point);
                     //compute the center point of the window.
-                    center.x = EngineSettings::GetScreenWidth()>>1;
-                    center.y = EngineSettings::GetScreenHeight()>>1;
+                    center.x = settings.GetScreenWidth()>>1;
+                    center.y = settings.GetScreenHeight()>>1;
                     ClientToScreen(_hwnd, &center);
                     //compute the delta from the window center to the current mouse cursor position.
                     int dx = point.x - center.x;
@@ -207,7 +207,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
                     GetCursorPos(&point);
                     ClientToScreen(_hwnd, &point);
                     ShowCursor(FALSE);
-                    /*if ( point.x < 0 || point.x > EngineSettings::GetScreenWidth() || point.y < 0 || point.y > EngineSettings::GetScreenHeight() )
+                    /*if ( point.x < 0 || point.x > settings.GetScreenWidth() || point.y < 0 || point.y > settings.GetScreenHeight() )
                     {
                         ShowCursor(TRUE);
                     }
@@ -245,7 +245,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
         m_pEngine = NULL;
     }
 
-    if ( EngineSettings::IsServer() )
+    if ( settings.IsServer() )
     {
        FreeConsole();
     }
@@ -302,8 +302,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, int w, int h)
     HWND hWnd;
 
     hInst = hInstance; // Store instance handle in our global variable
+    EngineSettings &settings = EngineSettings::get();
     g_bFullScreen = false;
-    if ( EngineSettings::IsFeatureEnabled(EngineSettings::FULLSCREEN) && !EngineSettings::IsServer() )
+    if ( settings.IsFeatureEnabled(EngineSettings::FULLSCREEN) && !settings.IsServer() )
     {
         g_bFullScreen = true;
 
@@ -333,7 +334,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, int w, int h)
     }
 
     //make the base window tiny...
-    if ( EngineSettings::IsServer() )
+    if ( settings.IsServer() )
     {
         w = 256; h = 64;
     }
@@ -372,7 +373,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, int w, int h)
     //Open up a console window so that standard printf works.
     //This allows for seamless output without worrying about Windows
     //controls.
-    if ( EngineSettings::IsServer() )
+    if ( settings.IsServer() )
     {
         AllocConsole();
 

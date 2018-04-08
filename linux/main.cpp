@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 "\tValid games: DarkXL, DaggerXL, BloodXL, OutlawsXL");
 
     //Engine settings.
-    EngineSettings::Init();
+    EngineSettings &settings = EngineSettings::get();
 
     //We have to load the engine settings before created the window and setting up
     //so that we can pick the correct resolution, fullscreen, etc.
@@ -90,21 +90,21 @@ int main(int argc, char **argv)
         settingsFile += game_name;
         settingsFile += ".conf";
 
-        EngineSettings::SetGameDir(game_name);
-        EngineSettings::Load(settingsFile.c_str());
+        settings.SetGameDir(game_name);
+        settings.Load(settingsFile.c_str());
     }
 
     // Init everything but audio
     SDL_Init(SDL_INIT_EVERYTHING & ~SDL_INIT_AUDIO);
 
     Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
-    if(EngineSettings::IsFeatureEnabled(EngineSettings::FULLSCREEN))
+    if(settings.IsFeatureEnabled(EngineSettings::FULLSCREEN))
         flags |= SDL_WINDOW_FULLSCREEN;
     int screen = 0;
     int pos_x = SDL_WINDOWPOS_CENTERED_DISPLAY(screen);
     int pos_y = SDL_WINDOWPOS_CENTERED_DISPLAY(screen);
-    int width = EngineSettings::GetScreenWidth();
-    int height = EngineSettings::GetScreenHeight();
+    int width = settings.GetScreenWidth();
+    int height = settings.GetScreenHeight();
 
     checkSDLError(SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8));
     checkSDLError(SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8));
@@ -125,14 +125,14 @@ int main(int argc, char **argv)
         fatalError("Failed to create OpenGL context");
     }
 
-    SDL_GL_SetSwapInterval(EngineSettings::IsFeatureEnabled(EngineSettings::VSYNC) ? 1 : 0);
+    SDL_GL_SetSwapInterval(settings.IsFeatureEnabled(EngineSettings::VSYNC) ? 1 : 0);
 
     //Setup Engine with Linux specific data.
     {
         m_pEngine = new Engine();
         void *linux_param[] = { (void*)win };
-        m_pEngine->Init(linux_param, 1, EngineSettings::GetScreenWidth(),
-                        EngineSettings::GetScreenHeight());
+        m_pEngine->Init(linux_param, 1, settings.GetScreenWidth(),
+                        settings.GetScreenHeight());
         m_pEngine->InitGame(game_name);
     }
 

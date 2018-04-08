@@ -20,7 +20,7 @@ ART_Reader::ART_Reader() : Archive()
 
 bool ART_Reader::Open(const char *pszName)
 {
-    sprintf(m_szFileName, "%s%s", EngineSettings::GetGameDataDir(), pszName);
+    sprintf(m_szFileName, "%s%s", EngineSettings::get().GetGameDataDir(), pszName);
 
     FILE *f = fopen(m_szFileName, "rb");
     if ( f )
