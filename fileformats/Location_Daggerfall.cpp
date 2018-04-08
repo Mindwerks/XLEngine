@@ -173,11 +173,9 @@ bool WorldMap::Load()
 		return true;
 	}
 
-	bool bSuccess = false;
-	char szCachedFile[260];
-	sprintf(szCachedFile, "%s/WorldCache.dat", EngineSettings::GetGameDir());
-
-	FILE *f = fopen(szCachedFile, "rb");
+	// TODO: Disabled until a proper cache location can be handled.
+    bool bSuccess;
+    FILE *f = NULL;//fopen(szCachedFile, "rb");
 	if ( f )
 	{
 		int version;
@@ -211,10 +209,8 @@ bool WorldMap::Load()
 //save cache data to disk.
 void WorldMap::Save()
 {
-	char szCachedFile[260];
-	sprintf(szCachedFile, "%s/WorldCache.dat", EngineSettings::GetGameDir());
-
-	FILE *f = fopen(szCachedFile, "wb");
+	// TODO: Disabled until a proper cache location can be handled.
+    FILE *f = NULL;//fopen(szCachedFile, "wb");
 	if ( f )
 	{
 		int version = CACHED_FILE_VERSION;
@@ -227,10 +223,6 @@ void WorldMap::Save()
 		}
 
 		fclose(f);
-	}
-	else
-	{
-		perror("Error: ");
 	}
 }
 
