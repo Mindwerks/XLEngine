@@ -112,7 +112,6 @@ int main(int argc, char **argv)
     checkSDLError(SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8));
     checkSDLError(SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24));
     checkSDLError(SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, SDL_TRUE));
-    SDL_GL_SetSwapInterval(EngineSettings::IsFeatureEnabled(EngineSettings::VSYNC) ? 1 : 0);
 
     win = SDL_CreateWindow("XL Engine", pos_x, pos_y, width, height, flags);
     if(!win)
@@ -125,6 +124,8 @@ int main(int argc, char **argv)
         win = nullptr;
         fatalError("Failed to create OpenGL context");
     }
+
+    SDL_GL_SetSwapInterval(EngineSettings::IsFeatureEnabled(EngineSettings::VSYNC) ? 1 : 0);
 
     //Setup Engine with Linux specific data.
     {
