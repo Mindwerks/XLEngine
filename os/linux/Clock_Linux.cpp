@@ -16,9 +16,9 @@ uint64_t _GetCurTickCnt();
 bool Clock::Init()
 {
     timeval t;
-	gettimeofday(&t, 0);
+    gettimeofday(&t, 0);
     _StartTime_Sec = t.tv_sec;
-	return true;
+    return true;
 }
 
 void Clock::Destroy()
@@ -28,32 +28,32 @@ void Clock::Destroy()
 
 void Clock::StartTimer(int32_t timerID/*=0*/)
 {
-	assert( timerID < 16 );
-	_Start_Tick[timerID] = _GetCurTickCnt();
+    assert( timerID < 16 );
+    _Start_Tick[timerID] = _GetCurTickCnt();
 }
 
 float Clock::GetDeltaTime(float fMax, int32_t timerID/*=0*/)
 {
-	assert( timerID < 16 );
-	uint64_t End = _GetCurTickCnt();
-	uint64_t uDelta_uS = End - _Start_Tick[timerID];
+    assert( timerID < 16 );
+    uint64_t End = _GetCurTickCnt();
+    uint64_t uDelta_uS = End - _Start_Tick[timerID];
 
-	float fTimeDelta = (float)( (double)uDelta_uS / SEC_TO_uS );
-	if ( fTimeDelta > fMax ) { fTimeDelta = fMax; }
+    float fTimeDelta = (float)( (double)uDelta_uS / SEC_TO_uS );
+    if ( fTimeDelta > fMax ) { fTimeDelta = fMax; }
 
-	return fTimeDelta;
+    return fTimeDelta;
 }
 
 uint64_t Clock::GetDeltaTime_uS(int32_t timerID/*=0*/)
 {
-	uint64_t End = _GetCurTickCnt();
-	return End - _Start_Tick[timerID];
+    uint64_t End = _GetCurTickCnt();
+    return End - _Start_Tick[timerID];
 }
 
 uint64_t _GetCurTickCnt()
 {
-	timeval t;
-	gettimeofday(&t, 0);
-	uint64_t uDeltaSec = (uint64_t)(t.tv_sec-_StartTime_Sec);
-	return uDeltaSec*(uint64_t)1000000 + (uint64_t)t.tv_usec;
+    timeval t;
+    gettimeofday(&t, 0);
+    uint64_t uDeltaSec = (uint64_t)(t.tv_sec-_StartTime_Sec);
+    return uDeltaSec*(uint64_t)1000000 + (uint64_t)t.tv_usec;
 }

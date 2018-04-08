@@ -9,27 +9,27 @@ XL_ExitFunc m_ExitFunc;
 
 bool PluginManager::Init(XLEngine_Plugin_API *pluginAPI)
 {
-	m_pGameLib = NULL;
-	m_ExitFunc = NULL;
-	m_pAPI = pluginAPI;
+    m_pGameLib = NULL;
+    m_ExitFunc = NULL;
+    m_pAPI = pluginAPI;
 
-	return true;
+    return true;
 }
 
 void PluginManager::Destroy()
 {
-	//Unload the current game.
-	UnloadGame();
+    //Unload the current game.
+    UnloadGame();
 }
 
 bool PluginManager::InitGame(const string& path)
 {
-	//first unload the game, since we can only have one at a time right now.
-	UnloadGame();
+    //first unload the game, since we can only have one at a time right now.
+    UnloadGame();
 
-	//load the game lib.
-	string errorString;
-	m_pGameLib = DynamicLibrary::Load(path, errorString);
+    //load the game lib.
+    string errorString;
+    m_pGameLib = DynamicLibrary::Load(path, errorString);
     if (!m_pGameLib) // not a dynamic library? 
       return false;
                     
@@ -38,23 +38,23 @@ bool PluginManager::InitGame(const string& path)
     if (!initFunc) // dynamic library missing entry point?
       return false;
 
-	m_ExitFunc = initFunc( m_pAPI );
-	if ( !m_ExitFunc )
-		return false;
+    m_ExitFunc = initFunc( m_pAPI );
+    if ( !m_ExitFunc )
+        return false;
 
-	return true;
+    return true;
 }
 
 void PluginManager::UnloadGame()
 {
-	if ( m_ExitFunc )
-	{
-		m_ExitFunc();
-		m_ExitFunc = NULL;
-	}
-	if ( m_pGameLib )
-	{
-		xlDelete m_pGameLib;
-		m_pGameLib = NULL;
-	}
+    if ( m_ExitFunc )
+    {
+        m_ExitFunc();
+        m_ExitFunc = NULL;
+    }
+    if ( m_pGameLib )
+    {
+        xlDelete m_pGameLib;
+        m_pGameLib = NULL;
+    }
 }

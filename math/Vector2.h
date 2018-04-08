@@ -22,83 +22,83 @@
 class Vector2
 {
 public:
-	Vector2(void) { x = 0.0f; y = 0.0f; }
-	Vector2(float _x, float _y) { x = _x; y = _y; }
-	~Vector2(void) {;}
+    Vector2(void) { x = 0.0f; y = 0.0f; }
+    Vector2(float _x, float _y) { x = _x; y = _y; }
+    ~Vector2(void) {;}
 
-	float Normalize();
-	float Length()
-	{
-		float d2 = x*x + y*y;
-		if ( d2 > 0.000001f )
-		{
-			return sqrtf(d2);
-		}
-		return 0.0f;
-	}
-	float Dot(Vector2& A) { return this->x*A.x + this->y*A.y; }
-	void Set(float _x, float _y) { x = _x; y = _y; }
+    float Normalize();
+    float Length()
+    {
+        float d2 = x*x + y*y;
+        if ( d2 > 0.000001f )
+        {
+            return sqrtf(d2);
+        }
+        return 0.0f;
+    }
+    float Dot(Vector2& A) { return this->x*A.x + this->y*A.y; }
+    void Set(float _x, float _y) { x = _x; y = _y; }
 
-	inline Vector2 operator+(Vector2& other) { return Vector2(x+other.x, y+other.y); }
-	inline Vector2 operator+(Vector2* other) { return Vector2(x+other->x, y+other->y); }
-	inline Vector2 operator+(const Vector2& other) { return Vector2(x+other.x, y+other.y); }
-	inline Vector2 operator+(const Vector2* other) { return Vector2(x+other->x, y+other->y); }
-	inline Vector2 operator+(const Vector2& other) const { return Vector2(x+other.x, y+other.y); }
-	inline Vector2 operator+(const Vector2* other) const { return Vector2(x+other->x, y+other->y); }
-	inline Vector2 operator+=(Vector2& other) { return Vector2(x+other.x, y+other.y); }
-	inline Vector2 operator+=(Vector2* other) { return Vector2(x+other->x, y+other->y); }
-	inline Vector2 operator-(Vector2& other) { return Vector2(x-other.x, y-other.y); }
-	inline Vector2 operator-(Vector2* other) { return Vector2(x-other->x, y-other->y); }
-	inline Vector2 operator-(const Vector2& other) { return Vector2(x-other.x, y-other.y); }
-	inline Vector2 operator-(const Vector2* other) { return Vector2(x-other->x, y-other->y); }
-	inline Vector2 operator-(const Vector2& other) const { return Vector2(x-other.x, y-other.y); }
-	inline Vector2 operator-(const Vector2* other) const { return Vector2(x-other->x, y-other->y); }
-	inline Vector2 operator-=(Vector2& other) { return Vector2(x-other.x, y-other.y); }
-	inline Vector2 operator-=(Vector2* other) { return Vector2(x-other->x, y-other->y); }
-	inline Vector2 operator*(float scale) { return Vector2(x*scale, y*scale); }
-	inline Vector2 operator*(Vector2& other) { return Vector2(x*other.x, y*other.y); }
-	inline Vector2 operator*(Vector2* other) { return Vector2(x*other->x, y*other->y); }
-	inline Vector2 operator*(const Vector2& other) { return Vector2(x*other.x, y*other.y); }
-	inline Vector2 operator*(const Vector2* other) { return Vector2(x*other->x, y*other->y); }
-	inline Vector2 operator*=(Vector2& other) { return Vector2(x*other.x, y*other.y); }
-	inline Vector2 operator*=(Vector2* other) { return Vector2(x*other->x, y*other->y); }
-	inline Vector2 operator/(float scale) { return Vector2(x/scale, y/scale); }
-	inline Vector2 operator-() { return Vector2(-x, -y); }
+    inline Vector2 operator+(Vector2& other) { return Vector2(x+other.x, y+other.y); }
+    inline Vector2 operator+(Vector2* other) { return Vector2(x+other->x, y+other->y); }
+    inline Vector2 operator+(const Vector2& other) { return Vector2(x+other.x, y+other.y); }
+    inline Vector2 operator+(const Vector2* other) { return Vector2(x+other->x, y+other->y); }
+    inline Vector2 operator+(const Vector2& other) const { return Vector2(x+other.x, y+other.y); }
+    inline Vector2 operator+(const Vector2* other) const { return Vector2(x+other->x, y+other->y); }
+    inline Vector2 operator+=(Vector2& other) { return Vector2(x+other.x, y+other.y); }
+    inline Vector2 operator+=(Vector2* other) { return Vector2(x+other->x, y+other->y); }
+    inline Vector2 operator-(Vector2& other) { return Vector2(x-other.x, y-other.y); }
+    inline Vector2 operator-(Vector2* other) { return Vector2(x-other->x, y-other->y); }
+    inline Vector2 operator-(const Vector2& other) { return Vector2(x-other.x, y-other.y); }
+    inline Vector2 operator-(const Vector2* other) { return Vector2(x-other->x, y-other->y); }
+    inline Vector2 operator-(const Vector2& other) const { return Vector2(x-other.x, y-other.y); }
+    inline Vector2 operator-(const Vector2* other) const { return Vector2(x-other->x, y-other->y); }
+    inline Vector2 operator-=(Vector2& other) { return Vector2(x-other.x, y-other.y); }
+    inline Vector2 operator-=(Vector2* other) { return Vector2(x-other->x, y-other->y); }
+    inline Vector2 operator*(float scale) { return Vector2(x*scale, y*scale); }
+    inline Vector2 operator*(Vector2& other) { return Vector2(x*other.x, y*other.y); }
+    inline Vector2 operator*(Vector2* other) { return Vector2(x*other->x, y*other->y); }
+    inline Vector2 operator*(const Vector2& other) { return Vector2(x*other.x, y*other.y); }
+    inline Vector2 operator*(const Vector2* other) { return Vector2(x*other->x, y*other->y); }
+    inline Vector2 operator*=(Vector2& other) { return Vector2(x*other.x, y*other.y); }
+    inline Vector2 operator*=(Vector2* other) { return Vector2(x*other->x, y*other->y); }
+    inline Vector2 operator/(float scale) { return Vector2(x/scale, y/scale); }
+    inline Vector2 operator-() { return Vector2(-x, -y); }
 
-	inline bool operator==(Vector2& other) { return ( fabsf(x-other.x)<VEC_EPS && fabsf(y-other.y)<VEC_EPS )?(true):(false); }
-	inline bool operator!=(Vector2& other) { return ( fabsf(x-other.x)>VEC_EPS || fabsf(y-other.y)>VEC_EPS )?(true):(false); }
+    inline bool operator==(Vector2& other) { return ( fabsf(x-other.x)<VEC_EPS && fabsf(y-other.y)<VEC_EPS )?(true):(false); }
+    inline bool operator!=(Vector2& other) { return ( fabsf(x-other.x)>VEC_EPS || fabsf(y-other.y)>VEC_EPS )?(true):(false); }
 
-	inline float Mag2() { return (x*x+y*y); }
-	inline float Max() { return ( (x>y)?(x):(y) ); }
-	inline float Min() { return ( (x<y)?(x):(y) ); }
-	inline void Reciprocal() { SAFE_RCP(x); SAFE_RCP(y); }
-	inline void Lerp(Vector2& v0, Vector2& v1, float fU)
-	{
-		x = v0.x + fU*(v1.x - v0.x);
-		y = v0.y + fU*(v1.y - v0.y);
-	}
-	inline Vector2 MinVec(Vector2& a, Vector2& b) { return Vector2(MINS(a.x, b.x), MINS(a.y, b.y)); }
-	inline Vector2 MaxVec(Vector2& a, Vector2& b) { return Vector2(MAXS(a.x, b.x), MAXS(a.y, b.y)); }
+    inline float Mag2() { return (x*x+y*y); }
+    inline float Max() { return ( (x>y)?(x):(y) ); }
+    inline float Min() { return ( (x<y)?(x):(y) ); }
+    inline void Reciprocal() { SAFE_RCP(x); SAFE_RCP(y); }
+    inline void Lerp(Vector2& v0, Vector2& v1, float fU)
+    {
+        x = v0.x + fU*(v1.x - v0.x);
+        y = v0.y + fU*(v1.y - v0.y);
+    }
+    inline Vector2 MinVec(Vector2& a, Vector2& b) { return Vector2(MINS(a.x, b.x), MINS(a.y, b.y)); }
+    inline Vector2 MaxVec(Vector2& a, Vector2& b) { return Vector2(MAXS(a.x, b.x), MAXS(a.y, b.y)); }
 
-	inline float Distance(Vector2& vec)
-	{ 
-		Vector2 diff = Vector2(x-vec.x, y-vec.y); 
-		return (sqrtf(diff.x*diff.x+diff.y*diff.y));
-	}
+    inline float Distance(Vector2& vec)
+    { 
+        Vector2 diff = Vector2(x-vec.x, y-vec.y); 
+        return (sqrtf(diff.x*diff.x+diff.y*diff.y));
+    }
 
-	inline bool IsEqual(Vector2& vec)
-	{
-		float dx = fabsf(x-vec.x), dy = fabsf(y-vec.y);
-		if ( dx < VEC_EQ_EPS && dy < VEC_EQ_EPS )
-			return true;
-		return false;
-	}
+    inline bool IsEqual(Vector2& vec)
+    {
+        float dx = fabsf(x-vec.x), dy = fabsf(y-vec.y);
+        if ( dx < VEC_EQ_EPS && dy < VEC_EQ_EPS )
+            return true;
+        return false;
+    }
 
-	float x, y;
+    float x, y;
 
-	static Vector2 One;
-	static Vector2 Half;
-	static Vector2 Zero;
+    static Vector2 One;
+    static Vector2 Half;
+    static Vector2 Zero;
 };
 
 #endif //VECTOR2_H

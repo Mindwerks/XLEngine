@@ -13,19 +13,19 @@ class MeshCollision;
 
 class MeshCache
 {
-	typedef map<string, Mesh *> MeshMap;
-	typedef map<string, MeshCollision *> MeshCollisionMap;
+    typedef map<string, Mesh *> MeshMap;
+    typedef map<string, MeshCollision *> MeshCollisionMap;
 
 public:
-	static bool Init();
-	static void Destroy();
+    static bool Init();
+    static void Destroy();
 
-	static Mesh *GetMesh(const string& sName);
-	static MeshCollision *GetMeshCollision(const string& sName);
+    static Mesh *GetMesh(const string& sName);
+    static MeshCollision *GetMeshCollision(const string& sName);
 
 private:
-	static MeshMap m_MeshMap;
-	static MeshCollisionMap m_MeshCollisionMap;
+    static MeshMap m_MeshMap;
+    static MeshCollisionMap m_MeshCollisionMap;
 };
 
 #endif //MESHCACHE_H

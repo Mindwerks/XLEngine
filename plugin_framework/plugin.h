@@ -42,11 +42,11 @@ typedef XL_ExitFunc (*XL_InitFunc)(const XLEngine_Plugin_API *);
  */
 
 #ifndef PLUGIN_API
-	#if PLATFORM_WIN
-		#define PLUGIN_API __declspec(dllimport)
-	#else
-		#define PLUGIN_API
-	#endif
+    #if PLATFORM_WIN
+        #define PLUGIN_API __declspec(dllimport)
+    #else
+        #define PLUGIN_API
+    #endif
 #endif
 
 extern

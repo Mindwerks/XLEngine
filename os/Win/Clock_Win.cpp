@@ -15,46 +15,46 @@ LONGLONG _GetCurTickCnt();
 
 bool Clock::Init()
 {
-	BOOL bRet = QueryPerformanceFrequency(&_Timer_Freq);
-	return (bRet) ? true : false;
+    BOOL bRet = QueryPerformanceFrequency(&_Timer_Freq);
+    return (bRet) ? true : false;
 }
 
 void Clock::Destroy()
 {
-	//nothing to do currently.
+    //nothing to do currently.
 }
 
 void Clock::StartTimer(int32_t timerID/*=0*/)
 {
-	assert( timerID < 16 );
-	_Start_Tick[timerID] = _GetCurTickCnt();
+    assert( timerID < 16 );
+    _Start_Tick[timerID] = _GetCurTickCnt();
 }
 
 float Clock::GetDeltaTime(float fMax, int32_t timerID/*=0*/)
 {
-	assert( timerID < 16 );
-	uint64_t End = _GetCurTickCnt();
+    assert( timerID < 16 );
+    uint64_t End = _GetCurTickCnt();
 
-	float fTimeDelta = (float)( (double)(End - _Start_Tick[timerID]) / (double)(_Timer_Freq.QuadPart) );
-	if ( fTimeDelta > fMax ) 
-	{ 
-		fTimeDelta = fMax; 
-	}
+    float fTimeDelta = (float)( (double)(End - _Start_Tick[timerID]) / (double)(_Timer_Freq.QuadPart) );
+    if ( fTimeDelta > fMax ) 
+    { 
+        fTimeDelta = fMax; 
+    }
 
-	return fTimeDelta;
+    return fTimeDelta;
 }
 
 uint64_t Clock::GetDeltaTime_uS(int32_t timerID/*=0*/)
 {
-	uint64_t End = _GetCurTickCnt();
-	double quadPart_uS = (double)(_Timer_Freq.QuadPart) / SEC_TO_uS;
-	return (uint64_t)( (double)(End - _Start_Tick[timerID]) / quadPart_uS );
+    uint64_t End = _GetCurTickCnt();
+    double quadPart_uS = (double)(_Timer_Freq.QuadPart) / SEC_TO_uS;
+    return (uint64_t)( (double)(End - _Start_Tick[timerID]) / quadPart_uS );
 }
 
 LONGLONG _GetCurTickCnt()
 {
-	LARGE_INTEGER lcurtick;
-	QueryPerformanceCounter(&lcurtick);
+    LARGE_INTEGER lcurtick;
+    QueryPerformanceCounter(&lcurtick);
 
-	return lcurtick.QuadPart;
+    return lcurtick.QuadPart;
 }
