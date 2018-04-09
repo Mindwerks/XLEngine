@@ -131,6 +131,7 @@ set(xlengine_sources
     ${procedural_sources}
     ${render_sources}
     ${scriptsystem_sources}
+    ${threading_sources}
     ${ui_sources}
     ${world_sources})
 
@@ -142,6 +143,9 @@ if(WIN32)
     file(GLOB_RECURSE render_windows_sources
         ${src_root}/render/win/*.h*
         ${src_root}/render/win/*.cpp)
+    file(GLOB_RECURSE threading_windows_sources
+        ${src_root}/threading/Win32/*.h*
+        ${src_root}/threading/Win32/*.cpp)
     set(xlengine_main_sources
         ${src_root}/win/main.h
         ${src_root}/win/main.cpp)
@@ -152,9 +156,11 @@ if(WIN32)
 
     set(os_sources ${os_sources} ${os_windows_sources})
     set(render_sources ${render_sources} ${render_windows_sources})
+    set(threading_sources ${threading_sources} ${threading_windows_sources})
     set(xlengine_sources ${xlengine_sources}
         ${os_windows_sources}
         ${render_windows_sources}
+        ${threading_windows_sources}
         ${xlengine_main_sources}
         ${xlengine_resources_sources})
 else(WIN32)
@@ -164,14 +170,19 @@ else(WIN32)
     file(GLOB_RECURSE render_linux_sources
         ${src_root}/render/linux/*.h*
         ${src_root}/render/linux/*.cpp)
+    file(GLOB_RECURSE threading_posix_sources
+        ${src_root}/threading/Posix/*.h*
+        ${src_root}/threading/Posix/*.cpp)
     set(xlengine_main_sources
         ${src_root}/linux/main.cpp)
 
     set(os_sources ${os_sources} ${os_linux_sources})
     set(render_sources ${render_sources} ${render_linux_sources})
+    set(threading_sources ${threading_sources} ${threading_posix_sources})
     set(xlengine_sources ${xlengine_sources}
         ${os_linux_sources}
         ${render_linux_sources}
+        ${threading_posix_sources}
         ${xlengine_main_sources})
 endif(WIN32)
 
@@ -189,6 +200,7 @@ source_group("resources" FILES ${xlengine_resources_sources})
 source_group("render" FILES ${render_sources})
 source_group("root" FILES ${root_sources})
 source_group("scriptsystem" FILES ${scriptsystem_sources})
+source_group("threading" FILES ${threading_sources})
 source_group("ui" FILES ${ui_sources})
 source_group("world" FILES ${world_sources})
 
