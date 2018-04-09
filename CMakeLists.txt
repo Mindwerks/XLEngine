@@ -283,9 +283,9 @@ else(WIN32)
         ${src_root}/render/linux/Driver3D_OGL_Linux.h
         ${src_root}/render/linux/Driver3D_OGL_Linux.cpp)
     set(threading_posix_sources
-        ${src_root}/threading/posix/Mutex.h
-        ${src_root}/threading/posix/Semaphore.h
-        ${src_root}/threading/posix/Thread.h)
+        ${src_root}/threading/Posix/Mutex.h
+        ${src_root}/threading/Posix/Semaphore.h
+        ${src_root}/threading/Posix/Thread.h)
     set(xlengine_main_sources
         ${src_root}/linux/main.cpp)
 
