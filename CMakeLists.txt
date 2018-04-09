@@ -323,12 +323,12 @@ include_directories(${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/angelscript/
 
 # Include/library directories.
 set(xlengine_include_dirs
-    ${ENET_INCLUDE_DIR}
+    ${ENET_INCLUDE_DIRS}
     ${GLEW_INCLUDE_DIR}
     ${IL_INCLUDE_DIR})
 set(xlengine_libraries
     angelscript
-    ${ENET_LIBRARY}
+    ${ENET_LIBRARIES}
     GLEW::GLEW
     ${IL_LIBRARIES}
     ${OPENGL_LIBRARIES}
