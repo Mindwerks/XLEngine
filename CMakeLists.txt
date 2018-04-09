@@ -114,6 +114,8 @@ if(WIN32)
     set(sources ${sources}
         render/win/Driver3D_OGL_Win.cpp
         win/main.cpp
+        win/Resource.h
+        "win/XL Engine.rc"
         os/Win/Clock_Win.cpp
     )
 else(WIN32)
