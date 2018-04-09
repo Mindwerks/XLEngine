@@ -408,7 +408,7 @@ set_target_properties(OutlawsXL PROPERTIES PREFIX "")
 
 # Set project-specific XL_EXPORTS defines (case-sensitive). These must be
 # set explicitly because the defaults are not the proper case.
-set_target_properties(BloodXL PROPERTIES DEFINE_SYMBOL "BLOODXL_EXPORTS")
-set_target_properties(DaggerXL PROPERTIES DEFINE_SYMBOL "DAGGERXL_EXPORTS")
-set_target_properties(DarkXL PROPERTIES DEFINE_SYMBOL "DARKXL_EXPORTS")
-set_target_properties(OutlawsXL PROPERTIES DEFINE_SYMBOL "OUTLAWSXL_EXPORTS")
+target_compile_definitions(BloodXL PRIVATE "BLOODXL_EXPORTS")
+target_compile_definitions(DaggerXL PRIVATE "DAGGERXL_EXPORTS")
+target_compile_definitions(DarkXL PRIVATE "DARKXL_EXPORTS")
+target_compile_definitions(OutlawsXL PRIVATE "OUTLAWSXL_EXPORTS")
