@@ -7,7 +7,7 @@
 #include "../render/Camera.h"
 #include "../render/RenderQue.h"
 #include "WorldCell.h"
-
+#include <algorithm>
 #include <cstring>
 
 Vector2 Sector_2_5D::m_nearPlane[2];
