@@ -44,7 +44,7 @@ Driver3D_OGL_Win::Driver3D_OGL_Win()
 Driver3D_OGL_Win::~Driver3D_OGL_Win()
 {
     //Restore the gamma ramp.
-    if ( EngineSettings::IsFeatureEnabled(EngineSettings::FULLSCREEN) )
+    if ( EngineSettings::get().IsFeatureEnabled(EngineSettings::FULLSCREEN) )
     {
         HDC hdc = GetDC(NULL);
         SetDeviceGammaRamp(hdc, m_GammaRamp_Default);
@@ -120,17 +120,17 @@ void Driver3D_OGL_Win::SetWindowData(int32_t nParam, void **param)
 
     if (wglSwapIntervalEXT)
     {
-        wglSwapIntervalEXT( EngineSettings::IsFeatureEnabled(EngineSettings::VSYNC) ? 1 : 0 );
+        wglSwapIntervalEXT( EngineSettings::get().IsFeatureEnabled(EngineSettings::VSYNC) ? 1 : 0 );
     }
 
     //Only setup the gamma ramp in fullscreen.
-    if ( EngineSettings::IsFeatureEnabled( EngineSettings::FULLSCREEN) )
+    if ( EngineSettings::get().IsFeatureEnabled( EngineSettings::FULLSCREEN) )
     {
         //get the current gamma ramp so it can be restored on exit.
         GetDeviceGammaRamp(m_hDC, m_GammaRamp_Default);
 
         float fBrightness, fContrast, fGamma;
-        EngineSettings::GetDisplaySettings(fBrightness, fContrast, fGamma);
+        EngineSettings::get().GetDisplaySettings(fBrightness, fContrast, fGamma);
 
         //apply brightness, contrast and gamma.
         float fIntensity = 0.0f;
