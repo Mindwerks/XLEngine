@@ -11,11 +11,11 @@
 #include <iostream>
 
 #if PLATFORM_OSX
-    static string dynamicLibraryExtension("dylib");
+    static std::string dynamicLibraryExtension("dylib");
 #elif PLATFORM_LINUX
     static std::string dynamicLibraryExtension("so");
 #elif PLATFORM_WIN
-    static string dynamicLibraryExtension("dll");
+    static std::string dynamicLibraryExtension("dll");
 #endif
 
 DynamicLibrary::DynamicLibrary(void *handle)

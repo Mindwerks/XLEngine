@@ -1,7 +1,7 @@
 #include "LevelFunc.h"
 #include "LevelFuncMgr.h"
 #include "Object.h"
-
+#include <algorithm>
 #include <cmath>
 
 LevelFunc::LevelFunc(WorldCell *pWorldCell, int32_t nSector, int32_t nWall)

@@ -59,9 +59,66 @@ int32_t  GetOptionint32_t(const char *pszOption);
     }
 #endif
 
-int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
+namespace
 {
-    UNREFERENCED_PARAMETER(hPrevInstance);
+	// Convenience functions so we can use main() while still getting the WinMain window and console.
+	HINSTANCE GetHInstance()
+	{
+		return static_cast<HINSTANCE>(GetModuleHandleW(nullptr));
+	}
+
+	LPTSTR GetLPCmdLine()
+	{
+		// The first argument is the program name. To allow it to have spaces, it can be surrounded by 
+		// quotes. We must track if the first argument is quoted since a space is also used to separate 
+		// each parameter. 
+		bool isQuoted = false;
+		const wchar_t space = L' ';
+		const wchar_t quote = L'\"';
+		const wchar_t nullTerminator = L'\0';
+
+		LPTSTR lpCmdLine = GetCommandLine();
+
+		// The lpCmdLine in a WinMain is the command line as a string excluding the program name. 
+		// Program names can be quoted to allow for space characters so we need to deal with that. 
+		while (*lpCmdLine != nullTerminator && (*lpCmdLine != space || isQuoted)) {
+			if (*lpCmdLine == quote) {
+				isQuoted = !isQuoted;
+			}
+			lpCmdLine++;
+		}
+
+		// Get past any additional whitespace between the end of the program name and the beginning 
+		// of the first parameter (if any). If we reach a null terminator we are done (i.e. there are 
+		// no arguments and the pointer itself is still properly valid). 
+		while (*lpCmdLine <= space && *lpCmdLine != nullTerminator) {
+			lpCmdLine++;
+		}
+
+		// This will now be a valid pointer to either a null terminator or to the first character of 
+		// the first command line parameter after the program name. 
+		return lpCmdLine;
+	}
+
+	WORD GetNCmdShow()
+	{
+		// It's possible that the process was started with STARTUPINFOW that could have a value for 
+		// show window other than SW_SHOWDEFAULT. If so we retrieve and return that value. Otherwise 
+		// we return SW_SHOWDEFAULT. 
+		STARTUPINFOW startupInfo;
+		GetStartupInfoW(&startupInfo);
+		if ((startupInfo.dwFlags & STARTF_USESHOWWINDOW) != 0) {
+			return startupInfo.wShowWindow;
+		}
+		return SW_SHOWDEFAULT;
+	}
+}
+
+int main(int argc, char *argv[])
+{
+	const HINSTANCE hInstance = GetHInstance();
+	const LPTSTR lpCmdLine = GetLPCmdLine();
+	const WORD nCmdShow = GetNCmdShow();
 
     // TODO: Place code here.
     MSG msg;
