@@ -81,7 +81,7 @@ namespace
 
 		// The lpCmdLine in a WinMain is the command line as a string excluding the program name. 
 		// Program names can be quoted to allow for space characters so we need to deal with that. 
-		while (*lpCmdLine <= space || isQuoted) {
+		while (*lpCmdLine != nullTerminator && (*lpCmdLine != space || isQuoted)) {
 			if (*lpCmdLine == quote) {
 				isQuoted = !isQuoted;
 			}
