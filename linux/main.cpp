@@ -71,6 +71,8 @@ int main(int argc, char **argv)
     //We have to load the engine settings before created the window and setting up
     //so that we can pick the correct resolution, fullscreen, etc.
     {
+        settings.SetGameName(game_name);
+
         std::string settingsFile;
         const char *conf_dir = getenv("XDG_CONFIG_HOME");
         if(conf_dir && conf_dir[0])
@@ -81,17 +83,20 @@ int main(int argc, char **argv)
             if(home_dir && home_dir[0])
             {
                 settingsFile = home_dir;
-                settingsFile += "/.config/";
+                if(settingsFile.back() != '/')
+                    settingsFile += '/';
+                settingsFile += ".config/";
             }
         }
-        if(!settingsFile.empty() && settingsFile.back() != '/')
-            settingsFile += '/';
-        settingsFile += "XLEngine/";
-        settingsFile += game_name;
-        settingsFile += ".conf";
+        if(!settingsFile.empty())
+        {
+            if(settingsFile.back() != '/')
+                settingsFile += '/';
+            settingsFile += "XLEngine/XLEngine.conf";
+            settings.Load(settingsFile.c_str());
+        }
 
-        settings.SetGameDir(game_name);
-        settings.Load(settingsFile.c_str());
+        settings.Load("XLEngine.conf");
     }
 
     // Init everything but audio

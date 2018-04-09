@@ -4,6 +4,7 @@
 #include "CommonTypes.h"
 #include "math/Vector3.h"
 #include <string>
+#include <unordered_map>
 
 using namespace std;
 
@@ -36,7 +37,6 @@ class EngineSettings
         void SetStartPos(const Vector3 *pos, int32_t sector);
         void SetMultiplayerData(int32_t server_PlayerCnt, int32_t port, const char *joinIP);
 
-        const char *GetGameDataDir() { return mGameDataDir.c_str(); }
         //desired screen width and height (may be different then final screen width and height, so use the Driver3D values
         //while in-game.
         int32_t GetScreenWidth()  { return mScreenWidth; }
@@ -66,8 +66,9 @@ class EngineSettings
 
         bool IsFeatureEnabled(uint32_t feature);
 
-        void SetGameDir(const char *game);
+        void SetGameName(const char *game);
         const char *GetGameDir() { return mGameDir.c_str(); }
+        const char *GetGameDataDir();
 
         int32_t GetRenderer() { return mRenderer; }
         void SetRenderer(int32_t renderer) { mRenderer = renderer; }
@@ -88,7 +89,8 @@ class EngineSettings
         EngineSettings& operator=(const EngineSettings&) = delete;
 
         //Game Data Root.
-        std::string mGameDataDir;
+        std::unordered_map<std::string,std::string> mGameDataDirs;
+        std::string mGameName;
         std::string mGameDir;
         std::string mMapName;
         int32_t mScreenWidth = 1024;

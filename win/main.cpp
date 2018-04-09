@@ -126,10 +126,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     //We have to load the engine settings before created the window and setting up
     //so that we can pick the correct resolution, fullscreen, etc.
-    char szSettingsFile[260];
-    sprintf(szSettingsFile, "%s/%s.conf", szGame, szGame);
-    settings.SetGameDir(szGame);
-    settings.Load( szSettingsFile );
+    settings.SetGameName(szGame);
+    settings.Load("XLEngine.conf");
+    // TODO: Load user global XLEngine.conf (somewhere in %AppData%?).
     settings.SetStartMap( szMap );
     settings.SetMultiplayerData( nServer_PlayerCnt, nPort, nServer_PlayerCnt > 0 ? szServerIP : szJoinIP );
 
