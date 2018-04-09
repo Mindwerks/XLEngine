@@ -18,7 +18,7 @@ namespace
 
 struct Common_Settings
 {
-    std::string szDataPath;
+    std::string dataPath;
 
     uint16_t flags;
     short resX;
@@ -75,7 +75,7 @@ void LoadSettingsFromFile(Common_Settings &settings, std::istream &file)
             key[i] = std::tolower(key[i]);
 
         if(key == "data-path")
-            settings.szDataPath = value;
+            settings.dataPath = std::move(value);
         else if(key == "width")
         {
             size_t end = 0;
@@ -137,7 +137,7 @@ void LoadSettingsFromFile(Common_Settings &settings, std::istream &file)
 
 } // namespace
 
-EngineSettings EngineSettings::s_Settings;
+EngineSettings EngineSettings::sSettings;
 
 // Initialize default settings.
 EngineSettings::EngineSettings()
@@ -156,19 +156,18 @@ bool EngineSettings::Load( const char *pszSettingsFile )
         LoadSettingsFromFile(commonSettings, infile);
         infile.close();
 
-        m_szGameDataDir = commonSettings.szDataPath;
-        if(!m_szGameDataDir.empty() && m_szGameDataDir.back() != '\\' &&
-           m_szGameDataDir.back() != '/')
-            m_szGameDataDir += '/';
+        mGameDataDir = std::move(commonSettings.dataPath);
+        if(!mGameDataDir.empty() && mGameDataDir.back() != '\\' && mGameDataDir.back() != '/')
+            mGameDataDir += '/';
 
         if(commonSettings.resX > 0 && commonSettings.resY > 0)
         {
-            m_nScreenWidth  = commonSettings.resX;
-            m_nScreenHeight = commonSettings.resY;
+            mScreenWidth  = commonSettings.resX;
+            mScreenHeight = commonSettings.resY;
         }
 
-        m_uFlags = commonSettings.flags;
-        m_nRenderer = commonSettings.renderer;
+        mFlags = commonSettings.flags;
+        mRenderer = commonSettings.renderer;
 
         return true;
     }
@@ -176,49 +175,49 @@ bool EngineSettings::Load( const char *pszSettingsFile )
     return false;
 }
 
-bool EngineSettings::IsFeatureEnabled(uint32_t uFeature)
+bool EngineSettings::IsFeatureEnabled(uint32_t feature)
 {
-    return (m_uFlags&uFeature) ? true : false;
+    return (mFlags&feature) ? true : false;
 }
 
 void EngineSettings::SetDisplaySettings(float brightness/*=1.0f*/, float contrast/*=1.0f*/, float gamma/*=1.0f*/)
 {
-    m_fBrightness = brightness;
-    m_fContrast   = contrast;
-    m_fGamma      = 1.0f/gamma;
+    mBrightness = brightness;
+    mContrast   = contrast;
+    mGamma      = 1.0f/gamma;
 }
 
 void EngineSettings::GetDisplaySettings(float& brightness, float& contrast, float& gamma)
 {
-    brightness = m_fBrightness;
-    contrast   = m_fContrast;
-    gamma      = m_fGamma;
+    brightness = mBrightness;
+    contrast   = mContrast;
+    gamma      = mGamma;
 }
 
-void EngineSettings::SetGameDir(const char *pszGame)
+void EngineSettings::SetGameDir(const char *game)
 {
-    char szCurDir[260];
-    GetCurrentDir(szCurDir, 260);
-    m_szGameDir = szCurDir;
-    m_szGameDir += '/';
-    m_szGameDir += pszGame;
+    char curDir[260];
+    GetCurrentDir(curDir, 260);
+    mGameDir = curDir;
+    mGameDir += '/';
+    mGameDir += game;
 }
 
-void EngineSettings::SetStartMap( const char *pszMapName ) 
+void EngineSettings::SetStartMap(const char *map_name)
 { 
-    m_szMapName = pszMapName;
+    mMapName = map_name;
 }
 
-void EngineSettings::SetStartPos( const Vector3 *pos, int32_t nSector )
+void EngineSettings::SetStartPos(const Vector3 *pos, int32_t sector)
 {
-    m_bOverridePos = true;
-    m_vStartPos = *pos;
-    m_nStartSec = nSector;
+    mOverridePos = true;
+    mStartPos = *pos;
+    mStartSec = sector;
 }
 
-void EngineSettings::SetMultiplayerData( int32_t nServer_PlayerCnt, int32_t nPort, const char *pszJoinIP )
+void EngineSettings::SetMultiplayerData(int32_t server_PlayerCnt, int32_t port, const char *joinIP)
 {
-    m_nServerPlayerCnt = nServer_PlayerCnt;
-    m_nPort = nPort;
-    m_szServerIP = pszJoinIP;
+    mServerPlayerCnt = server_PlayerCnt;
+    mPort = port;
+    mServerIP = joinIP;
 }
