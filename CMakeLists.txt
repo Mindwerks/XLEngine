@@ -337,8 +337,8 @@ set(xlengine_libraries
 # Platform-specific includes/libraries.
 if(WIN32)
     set(xlengine_libraries ${xlengine_libraries}
-        winmm.lib
-        ws2_32.lib)
+        winmm
+        ws2_32)
 else(WIN32)
     set(xlengine_include_dirs ${xlengine_include_dirs} ${SDL2_INCLUDE_DIR})
     set(xlengine_libraries ${xlengine_libraries} ${SDL2_LIBRARY})
