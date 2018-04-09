@@ -145,9 +145,9 @@ void BloodXL_Game::SC_Game_NewGameSettings(int episode, int difficulty)
     s_pGame_Console->NewGame(episode, difficulty);
 }
 
-void BloodXL_Game::SC_Game_LoadMap(const string& mapName)
+void BloodXL_Game::SC_Game_LoadMap(const std::string& mapName)
 {
-    string mapNameFinal = mapName + ".MAP";
+    std::string mapNameFinal = mapName + ".MAP";
     s_pGame_Console->m_pAPI->World_UnloadAllCells();
     s_pGame_Console->m_pAPI->World_LoadCell( CELLTYPE_BLOOD_MAP, ARCHIVETYPE_RFF, "BLOOD.RFF", mapNameFinal.c_str(), 0, 0 );
 }
@@ -155,12 +155,12 @@ void BloodXL_Game::SC_Game_LoadMap(const string& mapName)
 /************************
  *** Console commands ***
  ************************/
-void BloodXL_Game::CC_GameVersion(const vector<string>& args, void *pUserData)
+void BloodXL_Game::CC_GameVersion(const std::vector<std::string>& args, void *pUserData)
 {
     s_pGame_Console->m_pAPI->PrintToConsole("BloodXL version %d.%03d", s_pGame_Console->m_nVersionMajor, s_pGame_Console->m_nVersionMinor);
 }
 
-void BloodXL_Game::CC_LoadMap(const vector<string>& args, void *pUserData)
+void BloodXL_Game::CC_LoadMap(const std::vector<std::string>& args, void *pUserData)
 {
     BloodXL_Game *pGame = (BloodXL_Game *)pUserData;
     if ( args.size() < 2 )
@@ -169,13 +169,13 @@ void BloodXL_Game::CC_LoadMap(const vector<string>& args, void *pUserData)
     }
     else
     {
-        string mapName = args[1] + ".MAP";
+        std::string mapName = args[1] + ".MAP";
         pGame->m_pAPI->World_UnloadAllCells();
         pGame->m_pAPI->World_LoadCell( CELLTYPE_BLOOD_MAP, ARCHIVETYPE_RFF, "BLOOD.RFF", mapName.c_str(), 0, 0 );
     }
 }
 
-void BloodXL_Game::CC_PassThruAdjoins(const vector<string>& args, void *pUserData)
+void BloodXL_Game::CC_PassThruAdjoins(const std::vector<std::string>& args, void *pUserData)
 {
     BloodXL_Game *pGame = (BloodXL_Game *)pUserData;
 

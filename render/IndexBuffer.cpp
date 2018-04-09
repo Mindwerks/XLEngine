@@ -1,7 +1,7 @@
 #include "IndexBuffer.h"
 #include "IDriver3D.h"
-#include <assert.h>
-#include <stdlib.h>
+#include <cassert>
+#include <cstdlib>
 #include <memory.h>
 
 IndexBuffer::IndexBuffer(IDriver3D *pDriver)

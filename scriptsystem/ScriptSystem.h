@@ -7,7 +7,6 @@
 #include "scriptarray.h"
 
 #include <string>
-using namespace std;
 
 typedef int32_t SHANDLE;
 
@@ -78,11 +77,11 @@ public:
     //Timers
     static void SetTimer(int timer, int delay);
     static int GetTimer(int timer);
-    static void System_Print(string &szItem);
+    static void System_Print(std::string &szItem);
     static void System_PrintIndex(int idx);
     static void System_StartString();
     static void System_EndString();
-    static void System_AppendString(string& szStr);
+    static void System_AppendString(std::string& szStr);
     static void System_AppendFloat(float fVal);
     static void System_AppendInt(int iVal);
 };

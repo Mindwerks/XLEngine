@@ -1,6 +1,6 @@
 #pragma once
 
-#include <assert.h>
+#include <cassert>
 #include "../CommonTypes.h"
 
 typedef int32_t fixed28_4;

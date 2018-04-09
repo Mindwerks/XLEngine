@@ -2,9 +2,9 @@
 #define OUTLAWSXL_GAME_H
 
 #include "../plugin_framework/plugin.h"
+
 #include <string>
 
-using namespace std;
 class OutlawsXL_Player;
 
 class OutlawsXL_Game
@@ -34,9 +34,9 @@ private:
 
     //Console commands
     static OutlawsXL_Game *s_pGame_Console;
-    static void CC_GameVersion(const vector<string>& args, void *pUserData);
-    static void CC_LoadMap(const vector<string>& args, void *pUserData);
-    static void CC_PassThruAdjoins(const vector<string>& args, void *pUserData);
+    static void CC_GameVersion(const std::vector<std::string>& args, void *pUserData);
+    static void CC_LoadMap(const std::vector<std::string>& args, void *pUserData);
+    static void CC_PassThruAdjoins(const std::vector<std::string>& args, void *pUserData);
 };
 
 #endif //BLOODXL_GAME_H

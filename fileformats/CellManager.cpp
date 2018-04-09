@@ -47,7 +47,7 @@ WorldCell *CellManager::LoadFromLocation(IDriver3D *pDriver, World *pWorld, uint
     return pCell;
 }
 
-WorldCell *CellManager::LoadCell(IDriver3D *pDriver, World *pWorld, uint32_t uCellType, Archive *pCellArchive, const string& sFile, int32_t worldX, int32_t worldY)
+WorldCell *CellManager::LoadCell(IDriver3D *pDriver, World *pWorld, uint32_t uCellType, Archive *pCellArchive, const std::string& sFile, int32_t worldX, int32_t worldY)
 {
     WorldCell *pCell = NULL;
 

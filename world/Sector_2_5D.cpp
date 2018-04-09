@@ -7,6 +7,7 @@
 #include "../render/Camera.h"
 #include "../render/RenderQue.h"
 #include "WorldCell.h"
+
 #include <cstring>
 
 Vector2 Sector_2_5D::m_nearPlane[2];
@@ -275,7 +276,7 @@ void Sector_2_5D::RenderSky(IDriver3D *pDriver, WorldCell *pCell)
     pDriver->EnableStencilTesting(false);
 }
 
-void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pCamera, Sector_2_5D *pStart, const vector<Sector *>& Sectors)
+void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pCamera, Sector_2_5D *pStart, const std::vector<Sector *>& Sectors)
 {
     //1. Compute world space 2D edges.
     const Vector3& vDir3D = pCamera->GetDir();
@@ -524,7 +525,7 @@ bool _AddToCollideList(int32_t s)
     return bInList;
 }
 
-void Sector_2_5D::_AddSectorToList(int32_t s, Vector3 *p0, Vector2& vPathMin, Vector2& vPathMax, const vector<Sector *>& Sectors)
+void Sector_2_5D::_AddSectorToList(int32_t s, Vector3 *p0, Vector2& vPathMin, Vector2& vPathMax, const std::vector<Sector *>& Sectors)
 {
     //now go through and add any portals that overlap the path...
     if ( _AddToCollideList(s) == true )
@@ -609,7 +610,7 @@ void Sector_2_5D::_AddSectorToList(int32_t s, Vector3 *p0, Vector2& vPathMin, Ve
     }
 }
 
-bool _PushOutPositionList(Vector3 *p0, float fRadius, const vector<Sector *>& Sectors)
+bool _PushOutPositionList(Vector3 *p0, float fRadius, const std::vector<Sector *>& Sectors)
 {
     bool bNeedPush = false;
 
@@ -671,7 +672,7 @@ bool _PushOutPositionList(Vector3 *p0, float fRadius, const vector<Sector *>& Se
                 
                 float ood = 1.0f/sqrtf(d2);
                 lu = ( (p0->x - v0.x)*(v1.x-v0.x) + (p0->y-v0.y)*(v1.y-v0.y) ) / d2;
-                lu = min( max(lu, 0.0f), 1.0f );
+                lu = std::min( std::max(lu, 0.0f), 1.0f );
                 ix = v0.x + lu*(v1.x-v0.x);
                 iy = v0.y + lu*(v1.y-v0.y);
 
@@ -711,7 +712,7 @@ bool _PushOutPositionList(Vector3 *p0, float fRadius, const vector<Sector *>& Se
     return bNeedPush;
 }
 
-void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector, const vector<Sector *>& Sectors)
+void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector, const std::vector<Sector *>& Sectors)
 {
     bool bHit = false;
     uint32_t s = uSector;
@@ -836,7 +837,7 @@ void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector
     }
 }
 
-void Sector_2_5D::Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, const vector<Sector *>& Sectors, bool bPassThruAdjoins)
+void Sector_2_5D::Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, const std::vector<Sector *>& Sectors, bool bPassThruAdjoins)
 {
     s_bPassThruAdjoins = bPassThruAdjoins;
     //start from p0, move to p1.
@@ -899,7 +900,7 @@ void Sector_2_5D::Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRa
     }
 }
 
-float Sector_2_5D::GetZ_Floor(float x, float y, const vector<Sector *>& Sectors)
+float Sector_2_5D::GetZ_Floor(float x, float y, const std::vector<Sector *>& Sectors)
 {
     float z = m_ZRangeCur.x + s_vCurrentOffs.z;
     if ( (m_uFlags&SEC_FLAGS_FLOOR_SLOPE) && m_auSlopeSector[0] < 0xffff )
@@ -919,7 +920,7 @@ float Sector_2_5D::GetZ_Floor(float x, float y, const vector<Sector *>& Sectors)
     return z;
 }
 
-float Sector_2_5D::GetZ_Ceil(float x, float y, const vector<Sector *>& Sectors)
+float Sector_2_5D::GetZ_Ceil(float x, float y, const std::vector<Sector *>& Sectors)
 {
     float z = m_ZRangeCur.y + s_vCurrentOffs.z;
     if ( (m_uFlags&SEC_FLAGS_CEIL_SLOPE) && m_auSlopeSector[1] < 0xffff )
@@ -970,7 +971,7 @@ void Sector_2_5D::RenderObjects(IDriver3D *pDriver)
     pDriver->SetBlendMode();
 }
 
-void Sector_2_5D::_DrawFloor(IDriver3D *pDriver, Sector_2_5D *pCurSec, const Vector2 *worldPos, const Vector2& a, const Vector2& n0, const Vector2& n1, const vector<Sector *>& Sectors)
+void Sector_2_5D::_DrawFloor(IDriver3D *pDriver, Sector_2_5D *pCurSec, const Vector2 *worldPos, const Vector2& a, const Vector2& n0, const Vector2& n1, const std::vector<Sector *>& Sectors)
 {
     const float fOO255 = (1.0f/255.0f);
     float fI;
@@ -1065,7 +1066,7 @@ void Sector_2_5D::_DrawFloor(IDriver3D *pDriver, Sector_2_5D *pCurSec, const Vec
     }
 }
 
-void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5D *pNextSec, Sector_2_5D *pBotSec, Sector_2_5D *pTopSec, uint16_t w, Vector2 *worldPos, const vector<Sector *>& Sectors)
+void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5D *pNextSec, Sector_2_5D *pBotSec, Sector_2_5D *pTopSec, uint16_t w, Vector2 *worldPos, const std::vector<Sector *>& Sectors)
 {
     const float fOO255 = (1.0f/255.0f);
     float fI;
@@ -1474,7 +1475,7 @@ void Sector_2_5D::_SetupCameraParameters(const Vector3& cPos, const Vector3& cDi
     _cpos = cPos;
 }
 
-void Sector_2_5D::WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t uEndX, Sector_2_5D *pCurSec, const vector<Sector *>& Sectors)
+void Sector_2_5D::WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t uEndX, Sector_2_5D *pCurSec, const std::vector<Sector *>& Sectors)
 {
     //transform all vertices into 2D projected space (x, 1/w)
     m_Camera2D.TransformPointsSS_2D(pCurSec->m_uVertexCount, pCurSec->m_pVertexCur, ssPos, Vector2::Zero);
@@ -1663,7 +1664,7 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t
     }
 }
 
-void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint32_t uStartX, uint32_t uEndX, Sector_2_5D *pCurSec, const vector<Sector *>& Sectors, bool bUsePortalClip, IDriver3D *pDriver)
+void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint32_t uStartX, uint32_t uEndX, Sector_2_5D *pCurSec, const std::vector<Sector *>& Sectors, bool bUsePortalClip, IDriver3D *pDriver)
 {
     //insert vadjoins first?
     if ( _bAllowVAdjoin )
@@ -2023,8 +2024,8 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
     fI = fOO255 * (float)shade;
 
     //now add objects to the list...
-    vector<uint32_t>::iterator iObj = pCurSec->m_Objects.begin();
-    vector<uint32_t>::iterator eObj = pCurSec->m_Objects.end();
+    std::vector<uint32_t>::iterator iObj = pCurSec->m_Objects.begin();
+    std::vector<uint32_t>::iterator eObj = pCurSec->m_Objects.end();
     for (; iObj != eObj; ++iObj)
     {
         uint32_t uObjID = *iObj;

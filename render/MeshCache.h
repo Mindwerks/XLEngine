@@ -6,22 +6,20 @@
 #include <string>
 #include <map>
 
-using namespace std;
-
 class Mesh;
 class MeshCollision;
 
 class MeshCache
 {
-    typedef map<string, Mesh *> MeshMap;
-    typedef map<string, MeshCollision *> MeshCollisionMap;
+    typedef std::map<std::string, Mesh *> MeshMap;
+    typedef std::map<std::string, MeshCollision *> MeshCollisionMap;
 
 public:
     static bool Init();
     static void Destroy();
 
-    static Mesh *GetMesh(const string& sName);
-    static MeshCollision *GetMeshCollision(const string& sName);
+    static Mesh *GetMesh(const std::string& sName);
+    static MeshCollision *GetMeshCollision(const std::string& sName);
 
 private:
     static MeshMap m_MeshMap;

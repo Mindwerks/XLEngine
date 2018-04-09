@@ -7,7 +7,6 @@
 
 #include <vector>
 #include <string>
-using namespace std;
 
 class WorldCell;
 class Object;
@@ -115,10 +114,10 @@ protected:
         int32_t delay;
         uint8_t  type;
     };
-    vector<State *> m_States;
-    vector<LevelFunc *> m_Clients;
-    vector<ClientObject *> m_ClientObjects;
-    vector<int32_t> m_Slaves;
+    std::vector<State *> m_States;
+    std::vector<LevelFunc *> m_Clients;
+    std::vector<ClientObject *> m_ClientObjects;
+    std::vector<int32_t> m_Slaves;
 
     LevelFunc::LFunc_ActivateCB m_ActivateCB;
     LevelFunc::LFunc_SetValueCB m_SetValueCB;

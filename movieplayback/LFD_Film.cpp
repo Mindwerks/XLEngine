@@ -3,8 +3,8 @@
 #include "../fileformats/Archive.h"
 #include "../fileformats/LFD_Anim.h"
 #include "../render/IDriver3D.h"
-#include <math.h>
-#include <string.h>
+#include <cmath>
+#include <cstring>
 
 //#include "SoundSystem.h"
 
@@ -81,8 +81,8 @@ void LFD_Film::Stop()
 
     if ( m_Graphics.size() > 0 )
     {
-        vector<Graphic *>::iterator iter = m_Graphics.begin();
-        vector<Graphic *>::iterator end  = m_Graphics.end();
+        std::vector<Graphic *>::iterator iter = m_Graphics.begin();
+        std::vector<Graphic *>::iterator end  = m_Graphics.end();
         for (; iter!=end; ++iter)
         {
             if ( *iter )
@@ -581,8 +581,8 @@ bool LFD_Film::Update()
         {
             m_Commands[m_nTime].bActivated = true;
 
-            vector<Command *>::iterator iter = m_Commands[m_nTime].commands.begin();
-            vector<Command *>::iterator end  = m_Commands[m_nTime].commands.end();
+            std::vector<Command *>::iterator iter = m_Commands[m_nTime].commands.begin();
+            std::vector<Command *>::iterator end  = m_Commands[m_nTime].commands.end();
 
             for (; iter!=end; ++iter)
             {
@@ -706,8 +706,8 @@ bool LFD_Film::Update()
         {
             if ( !bFilmFinished )
             {
-                vector<Graphic *>::iterator iter = m_Graphics.begin();
-                vector<Graphic *>::iterator end  = m_Graphics.end();
+                std::vector<Graphic *>::iterator iter = m_Graphics.begin();
+                std::vector<Graphic *>::iterator end  = m_Graphics.end();
                 for (; iter!=end; ++iter)
                 {
                     Graphic *pGraphic = *iter;
@@ -970,8 +970,8 @@ void LFD_Film::Render(float fDeltaTime)
     }
 
     //render all the graphics that are visible...
-    vector<Graphic *>::iterator iter = m_Graphics.begin();
-    vector<Graphic *>::iterator end  = m_Graphics.end();
+    std::vector<Graphic *>::iterator iter = m_Graphics.begin();
+    std::vector<Graphic *>::iterator end  = m_Graphics.end();
     for (; iter!=end; ++iter)
     {
         Graphic *pGraphic = *iter;

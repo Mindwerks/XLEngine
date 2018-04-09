@@ -9,8 +9,8 @@
 #endif
 
 int8_t Input::m_aKeyState[512];
-vector<Input::KeyDownCB_t *> Input::m_KeyDownCB;
-vector<Input::KeyDownCB_t *> Input::m_CharDownCB;
+std::vector<Input::KeyDownCB_t *> Input::m_KeyDownCB;
+std::vector<Input::KeyDownCB_t *> Input::m_CharDownCB;
 float Input::m_fMouseX;
 float Input::m_fMouseY;
 float Input::m_fMouseDeltaX;
@@ -33,16 +33,16 @@ void Input::Init()
 
 void Input::Destroy()
 {
-    vector<KeyDownCB_t *>::iterator iKeyCB = m_KeyDownCB.begin();
-    vector<KeyDownCB_t *>::iterator eKeyCB = m_KeyDownCB.end();
+    std::vector<KeyDownCB_t *>::iterator iKeyCB = m_KeyDownCB.begin();
+    std::vector<KeyDownCB_t *>::iterator eKeyCB = m_KeyDownCB.end();
     for (; iKeyCB != eKeyCB; ++iKeyCB)
     {
         xlDelete (*iKeyCB);
     }
     m_KeyDownCB.clear();
 
-    vector<KeyDownCB_t *>::iterator iCharCB = m_CharDownCB.begin();
-    vector<KeyDownCB_t *>::iterator eCharCB = m_CharDownCB.end();
+    std::vector<KeyDownCB_t *>::iterator iCharCB = m_CharDownCB.begin();
+    std::vector<KeyDownCB_t *>::iterator eCharCB = m_CharDownCB.end();
     for (; iCharCB != eCharCB; ++iCharCB)
     {
         xlDelete (*iCharCB);
@@ -63,8 +63,8 @@ void Input::SetKeyDown(int32_t key)
     key = s_OS_KeyMapping[key];
 
     //now fire off any callbacks...
-    vector<KeyDownCB_t *>::iterator iter = m_KeyDownCB.begin();
-    vector<KeyDownCB_t *>::iterator end  = m_KeyDownCB.end();
+    std::vector<KeyDownCB_t *>::iterator iter = m_KeyDownCB.begin();
+    std::vector<KeyDownCB_t *>::iterator end  = m_KeyDownCB.end();
     for (; iter != end; ++iter)
     {
         KeyDownCB_t *pKeyDownCB = *iter;
@@ -97,8 +97,8 @@ void Input::SetCharacterDown(char c)
     if ( c >= 32 && c < 127 )
     {
         //fire off any "character" callbacks.
-        vector<KeyDownCB_t *>::iterator iter = m_CharDownCB.begin();
-        vector<KeyDownCB_t *>::iterator end  = m_CharDownCB.end();
+        std::vector<KeyDownCB_t *>::iterator iter = m_CharDownCB.begin();
+        std::vector<KeyDownCB_t *>::iterator end  = m_CharDownCB.end();
         for (; iter != end; ++iter)
         {
             KeyDownCB_t *pCharDownCB = *iter;

@@ -1,7 +1,7 @@
 #include "ImageLoader.h"
-#include <stdlib.h>
+#include <cstdlib>
 #include <memory.h>
-#include <assert.h>
+#include <cassert>
 
 #define IL_USE_PRAGMA_LIBS
 #include <IL/il.h>

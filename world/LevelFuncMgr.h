@@ -3,11 +3,10 @@
 
 #include "../CommonTypes.h"
 #include "LevelFunc.h"
+
 #include <map>
 #include <string>
 #include <vector>
-
-using namespace std;
 
 class WorldCell;
 
@@ -25,7 +24,7 @@ public:
     static void RemoveFromActiveList(LevelFunc *pFunc);
     static void Update();
 
-    static void AddLevelFuncCB(const string& sFuncName, LevelFunc::LFunc_ActivateCB pActivate, LevelFunc::LFunc_SetValueCB pSetValue);
+    static void AddLevelFuncCB(const std::string& sFuncName, LevelFunc::LFunc_ActivateCB pActivate, LevelFunc::LFunc_SetValueCB pSetValue);
 
 private:
     struct LevelFuncCB
@@ -34,14 +33,14 @@ private:
         LevelFunc::LFunc_SetValueCB setValueCB;
     };
 
-    static vector<LevelFunc *> m_FuncList;
-    static vector<LevelFunc *> m_Active;
-    static vector<LevelFunc *> m_AddList;
-    static vector<LevelFunc *> m_RemoveList;
+    static std::vector<LevelFunc *> m_FuncList;
+    static std::vector<LevelFunc *> m_Active;
+    static std::vector<LevelFunc *> m_AddList;
+    static std::vector<LevelFunc *> m_RemoveList;
 
     static WorldCell *m_pWorldCell;
 
-    static map<string, LevelFuncCB> m_LevelFuncCB;
+    static std::map<std::string, LevelFuncCB> m_LevelFuncCB;
 };
 
 #endif //LEVELFUNCMGR_H

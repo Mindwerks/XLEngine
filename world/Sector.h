@@ -4,9 +4,8 @@
 #include "../CommonTypes.h"
 #include "../math/Vector3.h"
 #include "../render/IDriver3D.h"
-#include <vector>
 
-using namespace std;
+#include <vector>
 
 class IDriver3D;
 class Camera;
@@ -31,7 +30,7 @@ public:
 
     void AddLight(const Vector3& rvLoc) { m_Lights.push_back( xlNew LightObject(rvLoc) ); }
     void AddLight(LightObject *pLight) { m_Lights.push_back( pLight ); }
-    const vector<LightObject *>& GetLightList() { return m_Lights; }
+    const std::vector<LightObject *>& GetLightList() { return m_Lights; }
 
     virtual void Render(IDriver3D *pDriver, Camera *pCamera) {};
     virtual void Collide(CollisionPacket *packet, Vector3 *bounds, const Vector3& vOffset) {};
@@ -43,8 +42,8 @@ public:
     int32_t m_x, m_y;
     bool m_bActive;
     Vector3 m_Bounds[2];    //24 bytes.
-    vector<uint32_t> m_Objects; //4*cbjCnt + ~8
-    vector<LightObject *> m_Lights;
+    std::vector<uint32_t> m_Objects; //4*cbjCnt + ~8
+    std::vector<LightObject *> m_Lights;
     char m_szName[64];
     uint8_t *m_pValidNodes;
 

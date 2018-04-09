@@ -15,7 +15,7 @@ public:
     CellLoader_Daggerfall();
     ~CellLoader_Daggerfall();
 
-    WorldCell *Load(IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const string& sFile, int32_t worldX, int32_t worldY);
+    WorldCell *Load(IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const std::string& sFile, int32_t worldX, int32_t worldY);
     WorldCell *LoadFromLocation(IDriver3D *pDriver, World *pWorld, void *pLocPtr);
 
     //returns true if this CellLoader handles file handling itself.

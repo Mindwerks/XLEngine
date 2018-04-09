@@ -3,11 +3,11 @@
 
 #include "../CommonTypes.h"
 #include "TextureTypes.h"
+
 #include <string>
 #include <vector>
 #include <map>
 
-using namespace std;
 class TextureConverter;
 class Archive;
 
@@ -35,10 +35,10 @@ public:
     static void Init();
     static void Destroy();
 
-    static bool LoadTexture(uint32_t uTextureType, uint32_t uPalIndex, Archive *pTexArchive, const string& sFile, bool bCopyPal);
-    static uint32_t  LoadTexture_TexList(uint32_t uTextureType, uint32_t uPalIndex, Archive *pTexArchive, const string& sFile, int nRecord);
-    static bool LoadTexture_NoArchive(uint32_t uTextureType, uint32_t uPalIndex, const string& sFile, bool bCopyPal);
-    static uint32_t  LoadTexture_NoArchive_TexList(uint32_t uTextureType, uint32_t uPalIndex, const string& sFile, int nRecord);
+    static bool LoadTexture(uint32_t uTextureType, uint32_t uPalIndex, Archive *pTexArchive, const std::string& sFile, bool bCopyPal);
+    static uint32_t  LoadTexture_TexList(uint32_t uTextureType, uint32_t uPalIndex, Archive *pTexArchive, const std::string& sFile, int nRecord);
+    static bool LoadTexture_NoArchive(uint32_t uTextureType, uint32_t uPalIndex, const std::string& sFile, bool bCopyPal);
+    static uint32_t  LoadTexture_NoArchive_TexList(uint32_t uTextureType, uint32_t uPalIndex, const std::string& sFile, int nRecord);
     static bool LoadTexture_Mem( const uint8_t *pImgBuffer, uint32_t uPalIndex, uint32_t width, uint32_t height );
     static void GetTextureSize(int32_t& nOffsX, int32_t& nOffsY, uint32_t& uWidth, uint32_t& uHeight);
     static void *GetTexExtraData(uint32_t& uDataSize) { uDataSize = m_uExtraDataSize; return m_pTexExtraData; }

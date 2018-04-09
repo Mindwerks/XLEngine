@@ -1,7 +1,7 @@
 #include "VertexBuffer.h"
 #include "IDriver3D.h"
-#include <assert.h>
-#include <stdlib.h>
+#include <cassert>
+#include <cstdlib>
 #include <memory.h>
 
 VertexBuffer::VertexBuffer(IDriver3D *pDriver)

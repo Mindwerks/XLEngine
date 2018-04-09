@@ -4,11 +4,11 @@
 #include "../fileformats/ArchiveManager.h"
 #include "../render/TextureCache.h"
 #include "../memory/ScratchPad.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <memory.h>
-#include <string.h>
-#include <assert.h>
+#include <cstring>
+#include <cassert>
 
 SkyLoader_Daggerfall::SkyLoader_Daggerfall() : SkyLoader()
 {

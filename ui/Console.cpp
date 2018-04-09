@@ -5,10 +5,11 @@
 #include "../networking/NetworkMgr.h"
 #include "../os/Input.h"
 #include "../math/Math.h"
-#include <stdio.h>
-#include <stdlib.h>
+
+#include <cstdio>
+#include <cstdlib>
 #include <memory.h>
-#include <string.h>
+#include <cstring>
 #include <sstream>
 #include <iostream>
 
@@ -77,12 +78,12 @@ bool Console::_Compare_nocase(ConsoleItem first, ConsoleItem second)
     return (cmp < 0) ? true : false;
 }
 
-void Console::SetGameInfo(const string& gameName, int32_t versionMajor, int32_t versionMinor)
+void Console::SetGameInfo(const std::string& gameName, int32_t versionMajor, int32_t versionMinor)
 {
     sprintf(m_szGameInfo, "%s version %d.%03d", gameName.c_str(), versionMajor, versionMinor);
 }
 
-void Console::AddItem(const string& itemName, void *ptr, ConsoleItemType type, const string& itemHelp, void *pUserData)
+void Console::AddItem(const std::string& itemName, void *ptr, ConsoleItemType type, const std::string& itemHelp, void *pUserData)
 {
     ConsoleItem item;
     item.name = itemName;
@@ -98,7 +99,7 @@ void Console::AddItem(const string& itemName, void *ptr, ConsoleItemType type, c
     m_ItemList.sort( _Compare_nocase );
 }
 
-void Console::RemoveItem(const string& itemName)
+void Console::RemoveItem(const std::string& itemName)
 {
     //add ability to remove an item, later...
 }
@@ -108,7 +109,7 @@ void Console::SetDefaultCommand(ConsoleFunction func)
     m_DefaultCommand = func;
 }
 
-void Console::Print(const string& text)
+void Console::Print(const std::string& text)
 {
     m_TextBuffer.push_back(text);
     if ( m_TextBuffer.size() > m_MaxTextLines )
@@ -128,10 +129,10 @@ void Console::Print(const string& text)
     }
 }
 
-void Console::PrintCommandHelp(const string& cmd)
+void Console::PrintCommandHelp(const std::string& cmd)
 {
     bool bCmdFound = false;
-    list<ConsoleItem>::const_iterator iter;
+    std::list<ConsoleItem>::const_iterator iter;
     for (iter = m_ItemList.begin(); iter != m_ItemList.end(); ++iter)
     {
         if ( (*iter).name == cmd )
@@ -472,7 +473,7 @@ void Console::PrintCommands(const char *pszText/*=NULL*/)
             l--;
     }
 
-    list<ConsoleItem>::const_iterator iter;
+    std::list<ConsoleItem>::const_iterator iter;
     for (iter = m_ItemList.begin(); iter != m_ItemList.end(); ++iter)
     {
         if ( pszText != NULL && l > 0 )
@@ -487,10 +488,10 @@ void Console::PrintCommands(const char *pszText/*=NULL*/)
 
 bool Console::ParseCommandLine()
 {
-    ostringstream out;
-    string::size_type index = 0;
-    vector<string> arguments;
-    list<ConsoleItem>::const_iterator iter;
+    std::ostringstream out;
+    std::string::size_type index = 0;
+    std::vector<std::string> arguments;
+    std::list<ConsoleItem>::const_iterator iter;
 
     //add to text buffer - command echo.
     if ( m_bEchoCommands )
@@ -505,8 +506,8 @@ bool Console::ParseCommandLine()
     int32_t count;
     int32_t prev_index = 0;
     bool bInQuotes = false;
-    string::size_type l = m_CommandLine.length();
-    for ( string::size_type c=0; c<l; c++ )
+    std::string::size_type l = m_CommandLine.length();
+    for ( std::string::size_type c=0; c<l; c++ )
     {
         if ( (m_CommandLine.at(c) == ' ' && bInQuotes == false) || c==l-1 )
         {
@@ -628,12 +629,12 @@ bool Console::ParseCommandLine()
                     else if ( arguments.size() == 1)
                     {
                         out.str("");    //clear stringstream
-                        out << (*iter).name << " = " << *((string *)(*iter).varPtr);
+                        out << (*iter).name << " = " << *((std::string *)(*iter).varPtr);
                         Print(out.str());
                     }
                     else
                     {
-                        *((string *)(*iter).varPtr) = arguments[1];
+                        *((std::string *)(*iter).varPtr) = arguments[1];
                     }
                     return true;
                     break;
@@ -642,7 +643,7 @@ bool Console::ParseCommandLine()
                     else if ( arguments.size() == 1)
                     {
                         out.str("");    //clear stringstream
-                        out << (*iter).name << " = " << string((char *)(*iter).varPtr);
+                        out << (*iter).name << " = " << std::string((char *)(*iter).varPtr);
                         Print(out.str());
                     }
                     else

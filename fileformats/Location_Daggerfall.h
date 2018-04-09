@@ -5,8 +5,6 @@
 #include <string>
 #include <map>
 
-using namespace std;
-
 class WorldCell;
 
 class Location_Daggerfall
@@ -17,7 +15,7 @@ public:
 
     //Save and Load cached data.
     void Save(FILE *f);
-    bool Load(FILE *f, map<uint64_t, Location_Daggerfall *>& mapLoc, map<string, Location_Daggerfall *>& mapNames);
+    bool Load(FILE *f, std::map<uint64_t, Location_Daggerfall *>& mapLoc, std::map<std::string, Location_Daggerfall *>& mapNames);
 
 public:
     struct LocName
@@ -64,7 +62,7 @@ public:
 
     //Save and load cached data.
     void Save(FILE *f);
-    bool Load(FILE *f, map<uint64_t, Location_Daggerfall *>& mapLoc, map<string, Location_Daggerfall *>& mapNames);
+    bool Load(FILE *f, std::map<uint64_t, Location_Daggerfall *>& mapLoc, std::map<std::string, Location_Daggerfall *>& mapNames);
 
 public:
     uint32_t m_uLocationCount;
@@ -95,9 +93,9 @@ private:
 public:
     static uint32_t m_uRegionCount;
     static Region_Daggerfall *m_pRegions;
-    static map<uint64_t, Location_Daggerfall *> m_MapLoc;
-    static map<uint64_t, WorldCell *> m_MapCell;
-    static map<string, Location_Daggerfall *> m_MapNames;
+    static std::map<uint64_t, Location_Daggerfall *> m_MapLoc;
+    static std::map<uint64_t, WorldCell *> m_MapCell;
+    static std::map<std::string, Location_Daggerfall *> m_MapNames;
     static bool m_bMapLoaded;
 };
 

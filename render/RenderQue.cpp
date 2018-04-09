@@ -5,15 +5,15 @@
 #include "IndexBuffer.h"
 
 #include <memory.h>
-#include <stdio.h>
+#include <cstdio>
 #include <algorithm>
 
 IDriver3D *RenderQue::m_pDriver;
 RenderQuad *RenderQue::m_pQuads=NULL;
 uint32_t RenderQue::m_uQuadCnt;
 
-vector<MaterialEntry *> RenderQue::m_apRenderBuckets[RBUCKET_COUNT];
-vector<MaterialEntry>   RenderQue::m_RenderEntryPool;
+std::vector<MaterialEntry *> RenderQue::m_apRenderBuckets[RBUCKET_COUNT];
+std::vector<MaterialEntry>   RenderQue::m_RenderEntryPool;
 uint32_t RenderQue::m_uRenderEntryLoc;
 
 int RenderQue::m_nCurLightCnt;
@@ -130,8 +130,8 @@ void RenderQue::Render()
         m_pDriver->EnableCulling(true);
         m_pDriver->SetWorldMatrix(NULL, 0, 0);
         //go through the list.
-        vector<MaterialEntry *>::iterator iEntry = m_apRenderBuckets[RBUCKET_OPAQUE].begin();
-        vector<MaterialEntry *>::iterator eEntry = m_apRenderBuckets[RBUCKET_OPAQUE].end();
+        std::vector<MaterialEntry *>::iterator iEntry = m_apRenderBuckets[RBUCKET_OPAQUE].begin();
+        std::vector<MaterialEntry *>::iterator eEntry = m_apRenderBuckets[RBUCKET_OPAQUE].end();
         for (; iEntry != eEntry; ++iEntry)
         {
             const MaterialEntry *pEntry = *iEntry;

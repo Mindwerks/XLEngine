@@ -13,7 +13,7 @@ public:
     CellLoader_BloodMap();
     ~CellLoader_BloodMap();
 
-    WorldCell *Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const string& sFile, int32_t worldX, int32_t worldY );
+    WorldCell *Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const std::string& sFile, int32_t worldX, int32_t worldY );
 
 private:
     struct HeaderPart1

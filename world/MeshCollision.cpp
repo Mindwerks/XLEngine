@@ -1,7 +1,7 @@
 #include "MeshCollision.h"
 #include "../math/Math.h"
-#include <assert.h>
-#include <stdlib.h>
+#include <cassert>
+#include <cstdlib>
 #include <memory.h>
 
 MeshCollision::MeshCollision()

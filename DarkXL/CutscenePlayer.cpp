@@ -2,9 +2,9 @@
 #include "../plugin_framework/plugin.h"
 #include "../fileformats/ArchiveTypes.h"
 #include "../movieplayback/MovieTypes.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 
 bool CutscenePlayer::m_bCutscenePlaying;
 CutscenePlayer::Cutscene CutscenePlayer::m_CutSceneList[256];

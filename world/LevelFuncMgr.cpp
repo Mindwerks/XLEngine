@@ -2,13 +2,13 @@
 #include "WorldCell.h"
 #include "LevelFunc_Default.h"
 
-vector<LevelFunc *> LevelFuncMgr::m_FuncList;
-vector<LevelFunc *> LevelFuncMgr::m_Active;
-vector<LevelFunc *> LevelFuncMgr::m_AddList;
-vector<LevelFunc *> LevelFuncMgr::m_RemoveList;
+std::vector<LevelFunc *> LevelFuncMgr::m_FuncList;
+std::vector<LevelFunc *> LevelFuncMgr::m_Active;
+std::vector<LevelFunc *> LevelFuncMgr::m_AddList;
+std::vector<LevelFunc *> LevelFuncMgr::m_RemoveList;
 
 WorldCell *LevelFuncMgr::m_pWorldCell;
-map<string, LevelFuncMgr::LevelFuncCB> LevelFuncMgr::m_LevelFuncCB;
+std::map<std::string, LevelFuncMgr::LevelFuncCB> LevelFuncMgr::m_LevelFuncCB;
 
 bool LevelFuncMgr::Init()
 {
@@ -23,8 +23,8 @@ void LevelFuncMgr::Destroy()
     m_AddList.clear();
     m_RemoveList.clear();
 
-    vector<LevelFunc *>::iterator iFunc = m_FuncList.begin();
-    vector<LevelFunc *>::iterator eFunc = m_FuncList.end();
+    std::vector<LevelFunc *>::iterator iFunc = m_FuncList.begin();
+    std::vector<LevelFunc *>::iterator eFunc = m_FuncList.end();
     for (; iFunc != eFunc; ++iFunc)
     {
         delete (*iFunc);
@@ -32,9 +32,9 @@ void LevelFuncMgr::Destroy()
     m_FuncList.clear();
 }
 
-void LevelFuncMgr::AddLevelFuncCB(const string& sFuncName, LevelFunc::LFunc_ActivateCB pActivate, LevelFunc::LFunc_SetValueCB pSetValue)
+void LevelFuncMgr::AddLevelFuncCB(const std::string& sFuncName, LevelFunc::LFunc_ActivateCB pActivate, LevelFunc::LFunc_SetValueCB pSetValue)
 {
-    map<string, LevelFuncCB>::iterator iFunc = m_LevelFuncCB.find(sFuncName);
+    std::map<std::string, LevelFuncCB>::iterator iFunc = m_LevelFuncCB.find(sFuncName);
     if ( iFunc == m_LevelFuncCB.end() )
     {
         //ok to add it...
@@ -54,7 +54,7 @@ LevelFunc *LevelFuncMgr::CreateLevelFunc(const char *pszFuncName, int32_t nSecto
     //now find the appropriate callbacks.
     if ( pFunc )
     {
-        map<string, LevelFuncCB>::iterator iFunc = m_LevelFuncCB.find(pszFuncName);
+        std::map<std::string, LevelFuncCB>::iterator iFunc = m_LevelFuncCB.find(pszFuncName);
         if ( iFunc != m_LevelFuncCB.end() )
         {
             pFunc->SetActivateCB( iFunc->second.activateCB );
@@ -73,8 +73,8 @@ void LevelFuncMgr::DestroyLevelFunc(LevelFunc *pFunc)
 
     RemoveFromActiveList(pFunc);
 
-    vector<LevelFunc *>::iterator iter = m_FuncList.begin();
-    vector<LevelFunc *>::iterator end  = m_FuncList.end();
+    std::vector<LevelFunc *>::iterator iter = m_FuncList.begin();
+    std::vector<LevelFunc *>::iterator end  = m_FuncList.end();
 
     for (; iter != end; ++iter)
     {
@@ -100,8 +100,8 @@ void LevelFuncMgr::RemoveFromActiveList(LevelFunc *pFunc)
 
 void LevelFuncMgr::Update()
 {
-    vector<LevelFunc *>::iterator iActive = m_Active.begin();
-    vector<LevelFunc *>::iterator eActive = m_Active.end();
+    std::vector<LevelFunc *>::iterator iActive = m_Active.begin();
+    std::vector<LevelFunc *>::iterator eActive = m_Active.end();
     for (; iActive!=eActive; ++iActive)
     {
         if (*iActive) { (*iActive)->Update(); }
@@ -110,8 +110,8 @@ void LevelFuncMgr::Update()
     //go through the add list and add classes...
     if ( m_AddList.size() )
     {
-        vector<LevelFunc *>::iterator iAdd = m_AddList.begin();
-        vector<LevelFunc *>::iterator eAdd = m_AddList.end();
+        std::vector<LevelFunc *>::iterator iAdd = m_AddList.begin();
+        std::vector<LevelFunc *>::iterator eAdd = m_AddList.end();
         for (; iAdd!=eAdd; ++iAdd)
         {
             if (*iAdd) { m_Active.push_back( *iAdd ); }
@@ -122,8 +122,8 @@ void LevelFuncMgr::Update()
     //go through the remove list and remove classes...
     if ( m_RemoveList.size() )
     {
-        vector<LevelFunc *>::iterator iRem = m_RemoveList.begin();
-        vector<LevelFunc *>::iterator eRem = m_RemoveList.end();
+        std::vector<LevelFunc *>::iterator iRem = m_RemoveList.begin();
+        std::vector<LevelFunc *>::iterator eRem = m_RemoveList.end();
         for (; iRem!=eRem; ++iRem)
         {
             iActive = m_Active.begin();

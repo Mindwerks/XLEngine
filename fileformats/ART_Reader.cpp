@@ -1,9 +1,9 @@
 #include "ART_Reader.h"
 #include "../EngineSettings.h"
 #include "../ui/XL_Console.h"
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
 
 #define MAX_NB_TILES 9216
 #define PALETTE_SIZE (256 * 3)

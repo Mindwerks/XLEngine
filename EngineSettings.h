@@ -6,8 +6,6 @@
 #include <string>
 #include <unordered_map>
 
-using namespace std;
-
 class EngineSettings
 {
     public:
@@ -76,8 +74,7 @@ class EngineSettings
         //callback methods
         static const char *GetStartMapCB() { return sSettings.GetStartMap(); }
         static XL_BOOL IsServerCB() { return sSettings.IsServer(); }
-        static void GetStartMap_StrOutCB(string& map_name)
-        { sSettings.GetStartMap_StrOut(map_name); }
+        static void GetStartMap_StrOutCB(std::string& map_name) { sSettings.GetStartMap_StrOut(map_name); }
 
     private:
         static EngineSettings sSettings;

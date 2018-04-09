@@ -15,8 +15,8 @@ Sector::Sector()
 
 Sector::~Sector()
 {
-    vector<LightObject *>::iterator iLight = m_Lights.begin();
-    vector<LightObject *>::iterator eLight = m_Lights.end();
+    std::vector<LightObject *>::iterator iLight = m_Lights.begin();
+    std::vector<LightObject *>::iterator eLight = m_Lights.end();
     for (; iLight != eLight; ++iLight)
     {
         xlDelete *iLight;
@@ -33,8 +33,8 @@ void Sector::AddObject(uint32_t uHandle)
 void Sector::RemoveObject(uint32_t uHandle)
 {
     //search for object handle and then erase it.
-    vector<uint32_t>::iterator iObj = m_Objects.begin();
-    vector<uint32_t>::iterator eObj = m_Objects.end();
+    std::vector<uint32_t>::iterator iObj = m_Objects.begin();
+    std::vector<uint32_t>::iterator eObj = m_Objects.end();
     for ( ; iObj != eObj; ++iObj )
     {
         if ( *iObj == uHandle )

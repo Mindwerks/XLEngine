@@ -79,13 +79,13 @@ void OutlawsXL_Game::SC_Game_NewGameSettings(int episode, int difficulty)
 /************************
  *** Console commands ***
  ************************/
-void OutlawsXL_Game::CC_GameVersion(const vector<string>& args, void *pUserData)
+void OutlawsXL_Game::CC_GameVersion(const std::vector<std::string>& args, void *pUserData)
 {
     OutlawsXL_Game *pGame = (OutlawsXL_Game *)pUserData;
     pGame->m_pAPI->PrintToConsole("OutlawsXL version %d.%03d", pGame->m_nVersionMajor, pGame->m_nVersionMinor);
 }
 
-void OutlawsXL_Game::CC_LoadMap(const vector<string>& args, void *pUserData)
+void OutlawsXL_Game::CC_LoadMap(const std::vector<std::string>& args, void *pUserData)
 {
     OutlawsXL_Game *pGame = (OutlawsXL_Game *)pUserData;
     if ( args.size() < 2 )
@@ -94,14 +94,14 @@ void OutlawsXL_Game::CC_LoadMap(const vector<string>& args, void *pUserData)
     }
     else
     {
-        string mapName = args[1] + ".LVT";
+        std::string mapName = args[1] + ".LVT";
 
         pGame->m_pAPI->World_UnloadAllCells();
         pGame->m_pAPI->World_LoadCell( CELLTYPE_OUTLAWS_MAP, ARCHIVETYPE_LAB, "OLGEO_1.LAB", mapName.c_str(), 0, 0 );
     }
 }
 
-void OutlawsXL_Game::CC_PassThruAdjoins(const vector<string>& args, void *pUserData)
+void OutlawsXL_Game::CC_PassThruAdjoins(const std::vector<std::string>& args, void *pUserData)
 {
     OutlawsXL_Game *pGame = (OutlawsXL_Game *)pUserData;
 

@@ -13,7 +13,7 @@
 #if PLATFORM_OSX
     static string dynamicLibraryExtension("dylib");
 #elif PLATFORM_LINUX
-    static string dynamicLibraryExtension("so");
+    static std::string dynamicLibraryExtension("so");
 #elif PLATFORM_WIN
     static string dynamicLibraryExtension("dll");
 #endif
@@ -35,7 +35,7 @@ DynamicLibrary::~DynamicLibrary()
     }
 }
 
-DynamicLibrary *DynamicLibrary::Load(const string& name, string& errorString)
+DynamicLibrary *DynamicLibrary::Load(const std::string& name, std::string& errorString)
 {
     if (name.empty()) 
     {
@@ -44,14 +44,14 @@ DynamicLibrary *DynamicLibrary::Load(const string& name, string& errorString)
     }
 
     void *handle = NULL;
-    string path = name + "." + dynamicLibraryExtension;
+    std::string path = name + "." + dynamicLibraryExtension;
 
 #if PLATFORM_WIN
     handle = LoadLibraryA( path.c_str() );
     if ( !handle )
     {
         DWORD errorCode = GetLastError();
-        stringstream ss;
+        std::stringstream ss;
         ss << std::string("LoadLibrary(") << name 
            << std::string(") Failed. errorCode: ") 
            << errorCode; 
@@ -63,7 +63,7 @@ DynamicLibrary *DynamicLibrary::Load(const string& name, string& errorString)
     handle = dlopen( path.c_str(), RTLD_NOW );
     if (!handle) 
     {
-        string dlErrorString;
+        std::string dlErrorString;
         const char *zErrorString = dlerror();
         if (zErrorString)
             dlErrorString = zErrorString;

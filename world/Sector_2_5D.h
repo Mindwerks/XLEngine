@@ -74,12 +74,12 @@ public:
 
     void Render(IDriver3D *pDriver, Camera *pCamera);
     bool PointInsideSector(float x, float y);
-    float GetZ_Floor(float x, float y, const vector<Sector *>& Sectors);
-    float GetZ_Ceil(float x, float y, const vector<Sector *>& Sectors);
+    float GetZ_Floor(float x, float y, const std::vector<Sector *>& Sectors);
+    float GetZ_Ceil(float x, float y, const std::vector<Sector *>& Sectors);
 
-    static void RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pCamera, Sector_2_5D *pStart, const vector<Sector *>& Sectors);
-    static void Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, const vector<Sector *>& Sectors, bool bPassThruAdjoins);
-    static void RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector, const vector<Sector *>& Sectors);
+    static void RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pCamera, Sector_2_5D *pStart, const std::vector<Sector *>& Sectors);
+    static void Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, const std::vector<Sector *>& Sectors, bool bPassThruAdjoins);
+    static void RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector, const std::vector<Sector *>& Sectors);
 public:
     enum
     {
@@ -153,14 +153,14 @@ protected:
     static void VisStack_Push(Vector2& fL, Vector2& fR, uint32_t uStartX, uint32_t uEndX, Sector_2_5D *pNext, bool bUsePortalClip=true, Vector3& vOffset=s_vCurrentOffs);
     static VisStack *VisStack_Pop();
     static void VisStack_Clear();
-    static void Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint32_t uStartX, uint32_t uEndX, Sector_2_5D *pCurSec, const vector<Sector *>& Sectors, bool bUsePortalClip, IDriver3D *pDriver);
-    static void WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t uEndX, Sector_2_5D *pCurSec, const vector<Sector *>& Sectors);
+    static void Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint32_t uStartX, uint32_t uEndX, Sector_2_5D *pCurSec, const std::vector<Sector *>& Sectors, bool bUsePortalClip, IDriver3D *pDriver);
+    static void WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t uEndX, Sector_2_5D *pCurSec, const std::vector<Sector *>& Sectors);
 
-    static void _DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5D *pNextSec, Sector_2_5D *pBotSec, Sector_2_5D *pTopSec, uint16_t w, Vector2 *worldPos, const vector<Sector *>& Sectors);
-    static void _DrawFloor(IDriver3D *pDriver, Sector_2_5D *pCurSec, const Vector2 *worldPos, const Vector2& a, const Vector2& n0, const Vector2& n1, const vector<Sector *>& Sectors);
+    static void _DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5D *pNextSec, Sector_2_5D *pBotSec, Sector_2_5D *pTopSec, uint16_t w, Vector2 *worldPos, const std::vector<Sector *>& Sectors);
+    static void _DrawFloor(IDriver3D *pDriver, Sector_2_5D *pCurSec, const Vector2 *worldPos, const Vector2& a, const Vector2& n0, const Vector2& n1, const std::vector<Sector *>& Sectors);
     static void _SetupCameraParameters(const Vector3& cPos, const Vector3& cDir, Vector2 fL, Vector2 fR);
 
-    static void _AddSectorToList(int32_t s, Vector3 *p0, Vector2& vPathMin, Vector2& vPathMax, const vector<Sector *>& Sectors);
+    static void _AddSectorToList(int32_t s, Vector3 *p0, Vector2& vPathMin, Vector2& vPathMax, const std::vector<Sector *>& Sectors);
     static void AddObjectToRender(Object *pObj, float fIntensity, const Vector3& vOffs);
     static void RenderObjects(IDriver3D *pDriver);
 

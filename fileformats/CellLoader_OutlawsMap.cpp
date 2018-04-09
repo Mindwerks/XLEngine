@@ -6,19 +6,17 @@
 #include "../world/OrientedSprite.h"
 #include "../world/Sprite_ZAxis.h"
 #include "../render/TextureCache.h"
-
 #include "../fileformats/TextureTypes.h"
 #include "../fileformats/ArchiveTypes.h"
 #include "../fileformats/ArchiveManager.h"
-
 #include "../memory/ScratchPad.h"
-
 #include "../math/Math.h"
 #include "../ui/XL_Console.h"
 #include "Parser.h"
-#include <string.h>
-#include <stdio.h>
-#include <assert.h>
+
+#include <string>
+#include <cstdio>
+#include <cassert>
 
 const float m_fWorldToTexel_X = 8.0f;
 const float m_fWorldToTexel_Z = 8.0f;
@@ -201,7 +199,7 @@ TextureHandle LoadNWX(uint8_t *pData, uint32_t uLen, const char *pszName, uint32
     //CELL_NWX *pCell2 = (CELL_NWX *)&pData[48+sizeof(CELL_NWX)+pCell0->size+4 + sizeof(CELL_NWX)+pCell1->size+4];
 }
 
-WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const string& sFile, int32_t worldX, int32_t worldY )
+WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const std::string& sFile, int32_t worldX, int32_t worldY )
 {
     WorldCell *pCell = NULL;
     ObjectManager::FreeAllObjects();

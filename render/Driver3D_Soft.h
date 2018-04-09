@@ -6,7 +6,7 @@
 #include "../math/Matrix.h"
 #include "../math/Vector2.h"
 #include "../math/Vector4.h"
-#include <assert.h>
+#include <cassert>
 #include <vector>
 
 class IndexBuffer;
@@ -17,8 +17,6 @@ struct IBO;
 struct TriGradients;
 struct TriEdge;
 class Camera;
-
-using namespace std;
 
 struct Texture
 {
@@ -119,9 +117,9 @@ class Driver3D_Soft : public IDriver3D
         void GenerateMips(uint32_t uWidth, uint32_t uHeight, uint8_t *pData);
 
     private:
-        vector<Texture *> m_Textures;
-        vector<VBO *> m_VBO;
-        vector<IBO *> m_IBO;
+        std::vector<Texture *> m_Textures;
+        std::vector<VBO *> m_VBO;
+        std::vector<IBO *> m_IBO;
         int32_t m_nBitDepth;
         Matrix m_ProjMtx;
         Matrix m_ViewProj;

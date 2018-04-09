@@ -2,7 +2,7 @@
 #define VECTOR4_H
 
 #include "../Engine.h"
-#include <math.h>
+#include <cmath>
 #include "Vector3.h"
 
 class Vector4

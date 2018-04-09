@@ -2,7 +2,7 @@
 #include "../Engine.h"
 #include "../math/Math.h"
 #include "IndexBuffer.h"
-#include <stdio.h>
+#include <cstdio>
 #include <malloc.h>
 
 #if PLATFORM_WIN    //we have to include Windows.h before gl.h on Windows platforms.

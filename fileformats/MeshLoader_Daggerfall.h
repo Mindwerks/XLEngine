@@ -4,11 +4,11 @@
 #include "../CommonTypes.h"
 #include "../render/Mesh.h"
 #include "../world/MeshCollision.h"
+
 #include <string>
 #include <vector>
 #include <map>
 
-using namespace std;
 class IDriver3D;
 
 class MeshLoader_Daggerfall

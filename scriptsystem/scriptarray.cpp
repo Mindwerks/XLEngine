@@ -1,8 +1,8 @@
 #include <new>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-#include <stdio.h> // sprintf
+#include <cstdlib>
+#include <cstring>
+#include <cassert>
+#include <cstdio> // sprintf
 
 #include "scriptarray.h"
 

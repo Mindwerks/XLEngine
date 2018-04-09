@@ -1,7 +1,7 @@
 #ifndef ARCHIVE_H
 #define ARCHIVE_H
 
-#include <stdio.h>
+#include <cstdio>
 
 class Archive
 {

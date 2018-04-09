@@ -2,8 +2,8 @@
 #include "../EngineSettings.h"
 #include "../ui/XL_Console.h"
 #include "../memory/ScratchPad.h"
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 
 bool m_bEncrypt;
 

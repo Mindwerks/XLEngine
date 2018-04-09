@@ -1,8 +1,8 @@
 #include "Parser.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <memory.h>
-#include <string.h>
+#include <cstring>
 
 const char *Parser::m_pMemory=0;
 uint32_t Parser::m_uFilePtr=0;

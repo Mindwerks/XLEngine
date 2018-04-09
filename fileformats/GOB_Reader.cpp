@@ -1,8 +1,8 @@
 #include "GOB_Reader.h"
 #include "../EngineSettings.h"
 #include "../ui/XL_Console.h"
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 #include <cstdint>
 
 GOB_Reader::GOB_Reader() : Archive()

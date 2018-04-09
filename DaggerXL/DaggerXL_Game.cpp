@@ -224,7 +224,7 @@ void DaggerXL_Game::SC_Game_NewGame()
 /************************
  *** Console commands ***
  ************************/
-void DaggerXL_Game::CC_GameVersion(const vector<string>& args, void *pUserData)
+void DaggerXL_Game::CC_GameVersion(const std::vector<std::string>& args, void *pUserData)
 {
     s_pGame_Console->m_pAPI->PrintToConsole("DaggerXL version %d.%03d", s_pGame_Console->m_nVersionMajor, s_pGame_Console->m_nVersionMinor);
 }

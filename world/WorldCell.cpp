@@ -8,8 +8,8 @@
 #include "../world/CollisionComponent.h"
 #include "../world/Object.h"
 #include "../world/LogicDef.h"
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 
 #define MAX_COLLISION_ITER 3
 

@@ -7,10 +7,9 @@
 #include "../render/IDriver3D.h"
 #include "../render/VertexBuffer.h"
 #include "../render/IndexBuffer.h"
+
 #include <vector>
 #include <map>
-
-using namespace std;
 
 class IDriver3D;
 class Camera;
@@ -154,10 +153,10 @@ private:
         Chunk         m_aChunks[CHUNK_COUNT];
     };
 
-    typedef map<uint32_t, Location_Daggerfall *> LocationMap;
+    typedef std::map<uint32_t, Location_Daggerfall *> LocationMap;
 
     LOD m_LOD[2];
-    vector<Chunk *> m_ChunkRenderList;
+    std::vector<Chunk *> m_ChunkRenderList;
     LocationMap m_LocationMap;
     SkyLoader *m_pSkyLoader;
 

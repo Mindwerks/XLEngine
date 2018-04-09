@@ -1,5 +1,4 @@
 #include "Driver3D_Soft.h"
-#include <stdlib.h>
 #include "../Engine.h"
 #include "../math/Math.h"
 #include "../math/FixedPoint.h"
@@ -10,9 +9,11 @@
 #include "triangleRasterizer/DrawScanline.h"
 #include "IndexBuffer.h"
 #include "../os/Clock.h"
-#include <stdio.h>
+
+#include <cstdio>
 #include <malloc.h>
-#include <float.h>
+#include <cfloat>
+#include <cstdlib>
 #include <cstdint>
 
 #if PLATFORM_WIN    //we have to include Windows.h before gl.h on Windows platforms.
@@ -108,8 +109,8 @@ Driver3D_Soft::~Driver3D_Soft()
     //delete textures.
     if ( m_Textures.size() )
     {
-        vector<Texture *>::iterator iTex = m_Textures.begin();
-        vector<Texture *>::iterator eTex = m_Textures.end();
+        std::vector<Texture *>::iterator iTex = m_Textures.begin();
+        std::vector<Texture *>::iterator eTex = m_Textures.end();
         for (; iTex != eTex; ++iTex)
         {
             Texture *pTex = *iTex;

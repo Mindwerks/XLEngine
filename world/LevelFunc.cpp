@@ -1,7 +1,8 @@
 #include "LevelFunc.h"
 #include "LevelFuncMgr.h"
 #include "Object.h"
-#include <math.h>
+
+#include <cmath>
 
 LevelFunc::LevelFunc(WorldCell *pWorldCell, int32_t nSector, int32_t nWall)
 {
@@ -26,16 +27,16 @@ LevelFunc::LevelFunc(WorldCell *pWorldCell, int32_t nSector, int32_t nWall)
 
 LevelFunc::~LevelFunc()
 {
-    vector<State *>::iterator iState = m_States.begin();
-    vector<State *>::iterator eState = m_States.end();
+    std::vector<State *>::iterator iState = m_States.begin();
+    std::vector<State *>::iterator eState = m_States.end();
 
     for (; iState != eState; ++iState)
     {
         xlDelete (*iState);
     }
 
-    vector<ClientObject *>::iterator iCObj = m_ClientObjects.begin();
-    vector<ClientObject *>::iterator eCObj = m_ClientObjects.end();
+    std::vector<ClientObject *>::iterator iCObj = m_ClientObjects.begin();
+    std::vector<ClientObject *>::iterator eCObj = m_ClientObjects.end();
 
     for (; iCObj != eCObj; ++iCObj)
     {
@@ -125,7 +126,7 @@ void LevelFunc::Update()
         else
         {
             m_fInterp += m_fDelta*m_fVel;
-            m_fVel = min(1.0f, m_fVel+m_fAccel);
+            m_fVel = std::min(1.0f, m_fVel+m_fAccel);
         }
         if ( m_fInterp > 1.0f ) { m_fInterp = 1.0f; }
 

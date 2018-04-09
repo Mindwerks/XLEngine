@@ -2,8 +2,9 @@
 #include "ObjectManager.h"
 #include "Logic.h"
 #include "Sector.h"
-#include <assert.h>
-#include <float.h>
+
+#include <cassert>
+#include <cfloat>
 
 Object::Object()
 {
@@ -93,8 +94,8 @@ void Object::AddLogic(Logic *pLogic)
 //initialize the object
 void Object::Init()
 {
-    vector<Logic *>::iterator iLogic = m_Logics.begin();
-    vector<Logic *>::iterator eLogic = m_Logics.end();
+    std::vector<Logic *>::iterator iLogic = m_Logics.begin();
+    std::vector<Logic *>::iterator eLogic = m_Logics.end();
 
     for (; iLogic != eLogic; ++iLogic)
     {
@@ -104,8 +105,8 @@ void Object::Init()
 
 void Object::SendMessage(uint32_t uMsgID, float fValue)
 {
-    vector<Logic *>::iterator iLogic = m_Logics.begin();
-    vector<Logic *>::iterator eLogic = m_Logics.end();
+    std::vector<Logic *>::iterator iLogic = m_Logics.begin();
+    std::vector<Logic *>::iterator eLogic = m_Logics.end();
 
     for (; iLogic != eLogic; ++iLogic)
     {
@@ -117,8 +118,8 @@ void Object::Update()
 {
     if ( m_uFlags&OBJFLAGS_ACTIVE )
     {
-        vector<Logic *>::iterator iLogic = m_Logics.begin();
-        vector<Logic *>::iterator eLogic = m_Logics.end();
+        std::vector<Logic *>::iterator iLogic = m_Logics.begin();
+        std::vector<Logic *>::iterator eLogic = m_Logics.end();
 
         for (; iLogic != eLogic; ++iLogic)
         {

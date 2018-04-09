@@ -3,7 +3,7 @@
 
 #include "../CommonTypes.h"
 #include "Archive.h"
-#include <stdio.h>
+#include <cstdio>
 #include <cstdint>
 
 class GOB_Reader : public Archive

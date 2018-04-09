@@ -1,8 +1,8 @@
 #include "LFD_Reader.h"
 #include "../EngineSettings.h"
 #include "../ui/XL_Console.h"
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 
 LFD_Reader::LFD_Reader() : Archive()
 {

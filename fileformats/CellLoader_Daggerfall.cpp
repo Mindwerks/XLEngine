@@ -25,15 +25,13 @@
 #include "../ui/XL_Console.h"
 #include "Parser.h"
 
-#include <string.h>
-#include <stdio.h>
-#include <assert.h>
-#include <float.h>
+#include <cstring>
+#include <cstdio>
+#include <cassert>
+#include <cfloat>
 #include "../os/Clock.h"
 
 #include <vector>
-
-using namespace std;
 
 struct MeshAction
 {
@@ -353,7 +351,7 @@ WorldCell *CellLoader_Daggerfall::LoadFromLocation( IDriver3D *pDriver, World *p
     return pCell;
 }
 
-WorldCell *CellLoader_Daggerfall::Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const string& sFile, int32_t worldX, int32_t worldY )
+WorldCell *CellLoader_Daggerfall::Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const std::string& sFile, int32_t worldX, int32_t worldY )
 {
     Location_Daggerfall *pLocation = WorldMap::GetLocation(sFile.c_str());
     //Don't reload a location already in memory.
@@ -489,8 +487,8 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
             szModel[5] = 0;
 
             sprintf(szModelName, "%d_c%d", objID, nClimate);
-            Mesh *pMesh = MeshCache::GetMesh( string(szModelName) );
-            MeshCollision *pCol = MeshCache::GetMeshCollision( string(szModelName) );
+            Mesh *pMesh = MeshCache::GetMesh( std::string(szModelName) );
+            MeshCollision *pCol = MeshCache::GetMeshCollision( std::string(szModelName) );
             if ( pMesh->IsLoaded() == false )
             {
                 m_MeshLoader.Load(pDriver, pMesh, pCol, szModel, nClimate, 0);
@@ -667,8 +665,8 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
         char szModelName[32];
         sprintf(szModel, "%d", objID);
         sprintf(szModelName, "%d_c%d", objID, nClimate);
-        Mesh *pMesh = MeshCache::GetMesh( string(szModelName) );
-        MeshCollision *pCol = MeshCache::GetMeshCollision( string(szModelName) );
+        Mesh *pMesh = MeshCache::GetMesh( std::string(szModelName) );
+        MeshCollision *pCol = MeshCache::GetMeshCollision( std::string(szModelName) );
         if ( pMesh->IsLoaded() == false )
         {
             m_MeshLoader.Load(pDriver, pMesh, pCol, szModel, nClimate, 0);
@@ -709,8 +707,8 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
         {
             bool bValidNode = true;
             //is this point inside a mesh?
-            vector<uint32_t>::iterator iObj = pSector->m_Objects.begin();
-            vector<uint32_t>::iterator eObj = pSector->m_Objects.end();
+            std::vector<uint32_t>::iterator iObj = pSector->m_Objects.begin();
+            std::vector<uint32_t>::iterator eObj = pSector->m_Objects.end();
             for (; iObj != eObj; ++iObj)
             {
                 Object *pObj = ObjectManager::GetObjectFromID( *iObj );
@@ -948,7 +946,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
             m_nModelCnt++;
         }
     }
-    vector<LightObject *> pLights;
+    std::vector<LightObject *> pLights;
     unsigned int *pModelDataList = (unsigned int *)&pData[index];
     int mIndex = 0;
     unsigned int anModelData[750];
@@ -972,8 +970,8 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
         pszModel[4] = m_aModels[ anIndex[i] ].modelID[4];
         pszModel[5] = 0;
         sprintf(szModelName, "%s_%d", pszModel, dungeonType);
-        m_apModels[i] = MeshCache::GetMesh( string(szModelName) );
-        m_apModelsCol[i] = MeshCache::GetMeshCollision( string(szModelName) );
+        m_apModels[i] = MeshCache::GetMesh( std::string(szModelName) );
+        m_apModelsCol[i] = MeshCache::GetMeshCollision( std::string(szModelName) );
 
         if ( dungeonType == 2 || dungeonType == 3 )
         {
@@ -1480,8 +1478,8 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
     }
 
     //now resolve action records.
-    vector<uint32_t>::iterator iObj = pSector->m_Objects.begin();
-    vector<uint32_t>::iterator eObj = pSector->m_Objects.end();
+    std::vector<uint32_t>::iterator iObj = pSector->m_Objects.begin();
+    std::vector<uint32_t>::iterator eObj = pSector->m_Objects.end();
     int idx=0;
     for (; iObj != eObj; ++iObj)
     {
@@ -1494,7 +1492,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
             MeshAction *pGameDataParent = (MeshAction *)pObj->GetGameData();
 
             int idxTarget = 0;
-            vector<uint32_t>::iterator iObjTarget = pSector->m_Objects.begin();
+            std::vector<uint32_t>::iterator iObjTarget = pSector->m_Objects.begin();
             for (; iObjTarget != eObj; ++iObjTarget)
             {
                 if ( objRecordID[idxTarget] == objTarget[idx] )
@@ -1583,7 +1581,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
     xlDelete [] lightAdded;
 
     //assign lights to objects.
-    const vector<LightObject *>& lightList = pSector->GetLightList();
+    const std::vector<LightObject *>& lightList = pSector->GetLightList();
     iObj = pSector->m_Objects.begin();
     for (; iObj != eObj; ++iObj)
     {
@@ -1607,14 +1605,14 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 
 #if 0
     //now assign geometry to each light.
-    vector<DungeonMeshObj_t *>::iterator iMesh = m_MeshObjs.begin();
-    vector<DungeonMeshObj_t *>::iterator iMEnd = m_MeshObjs.end();
+    std::vector<DungeonMeshObj_t *>::iterator iMesh = m_MeshObjs.begin();
+    std::vector<DungeonMeshObj_t *>::iterator iMEnd = m_MeshObjs.end();
     for (; iMesh != iMEnd; ++iMesh)
     {
         DungeonMeshObj_t *pMesh = *iMesh;
         
-        vector<DungeonLight_t *>::iterator iLight = m_Lights.begin();
-        vector<DungeonLight_t *>::iterator iLEnd  = m_Lights.end();
+        std::vector<DungeonLight_t *>::iterator iLight = m_Lights.begin();
+        std::vector<DungeonLight_t *>::iterator iLEnd  = m_Lights.end();
         Vector3 vOffs;
         
         for( ; iLight != iLEnd; ++iLight)
@@ -1634,8 +1632,8 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
         {
             //search for the target...
             bool bMatchFound = false;
-            vector<DungeonMeshObj_t *>::iterator iMesh2 = m_MeshObjs.begin();
-            vector<DungeonMeshObj_t *>::iterator iMEnd2 = m_MeshObjs.end();
+            std::vector<DungeonMeshObj_t *>::iterator iMesh2 = m_MeshObjs.begin();
+            std::vector<DungeonMeshObj_t *>::iterator iMEnd2 = m_MeshObjs.end();
             for (; iMesh2 != iMEnd2; ++iMesh2)
             {
                 DungeonMeshObj_t *pMesh2 = *iMesh2;

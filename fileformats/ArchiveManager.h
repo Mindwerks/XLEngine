@@ -7,7 +7,6 @@
 #include <vector>
 #include <map>
 
-using namespace std;
 class Archive;
 
 class ArchiveManager
@@ -36,8 +35,8 @@ public:
 
 private:
     static const char *m_apszArchiveExt[];
-    static map<string, Archive *> m_OpenArchives;
-    static vector<Archive *> m_ArchiveList;
+    static std::map<std::string, Archive *> m_OpenArchives;
+    static std::vector<Archive *> m_ArchiveList;
     static Archive *m_pCurArchive;
     static FILE *s_pCurrentSysFile;
 };

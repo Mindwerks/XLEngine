@@ -3,7 +3,6 @@
 
 #include "VirtualKeys.h"
 #include <vector>
-using std::vector;
 
 typedef void (*Input_KeyDownCB)(int32_t);
 
@@ -53,8 +52,8 @@ private:
     } KeyDownCB_t;
 
     static int8_t m_aKeyState[512];
-    static vector<KeyDownCB_t *> m_KeyDownCB;
-    static vector<KeyDownCB_t *> m_CharDownCB;
+    static std::vector<KeyDownCB_t *> m_KeyDownCB;
+    static std::vector<KeyDownCB_t *> m_CharDownCB;
     static float m_fMouseX;
     static float m_fMouseY;
     static float m_fMouseDeltaX;

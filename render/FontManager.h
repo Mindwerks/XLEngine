@@ -7,8 +7,6 @@
 #include <string>
 #include <map>
 
-using namespace std;
-
 class XLFont;
 class IDriver3D;
 class VertexBuffer;
@@ -18,20 +16,20 @@ class IndexBuffer;
 
 class FontManager
 {
-    typedef map<string, XLFont *> FontMap;
+    typedef std::map<std::string, XLFont *> FontMap;
 
 public:
-    static bool Init(const string& szFontPath, IDriver3D *pDriver);
+    static bool Init(const std::string& szFontPath, IDriver3D *pDriver);
     static void Destroy();
 
-    static XLFont *LoadFont(const string& szFile);
+    static XLFont *LoadFont(const std::string& szFile);
 
     //Set render states for text rendering.
     static void BeginTextRendering();
     static void EndTextRendering();
     //Render a string at location(x,y) using font pFont
-    static void RenderString(int32_t x, int32_t y, const string& szString, XLFont *pFont, Vector4 *pColor=&Vector4::One);
-    static uint32_t GetLength(const string& szString, uint32_t uPosInString, XLFont *pFont);
+    static void RenderString(int32_t x, int32_t y, const std::string& szString, XLFont *pFont, Vector4 *pColor=&Vector4::One);
+    static uint32_t GetLength(const std::string& szString, uint32_t uPosInString, XLFont *pFont);
 
 private:
     static IDriver3D *m_pDriver;
@@ -39,7 +37,7 @@ private:
     static IndexBuffer *m_pIB;
 
     static FontMap m_Fonts;
-    static string m_FontPath;
+    static std::string m_FontPath;
 };
 
 #endif //FONTMANAGER_H

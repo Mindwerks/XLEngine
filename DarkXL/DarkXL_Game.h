@@ -4,8 +4,6 @@
 #include "../plugin_framework/plugin.h"
 #include <string>
 
-using namespace std;
-
 class DarkXL_Game
 {
 public:
@@ -28,7 +26,7 @@ private:
 
     //Console commands
     static DarkXL_Game *s_pGame_Console;
-    static void CC_GameVersion(const vector<string>& args, void *pUserData);
+    static void CC_GameVersion(const std::vector<std::string>& args, void *pUserData);
 };
 
 #endif //DARKXL_GAME_H

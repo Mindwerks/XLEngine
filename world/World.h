@@ -4,10 +4,10 @@
 #include "../CommonTypes.h"
 #include "../math/Vector2.h"
 #include "../math/Vector3.h"
+
 #include <vector>
 #include <string>
 
-using namespace std;
 class WorldCell;
 class IDriver3D;
 class Object;
@@ -54,14 +54,14 @@ public:
     bool CheckNode(int32_t nodeX, int32_t nodeY);
 
     //Console commands
-    static void CC_LockCamera(const vector<string>& args, void *pUserData);
+    static void CC_LockCamera(const std::vector<std::string>& args, void *pUserData);
 
 protected:
 
     void ClearPathingNodes(int32_t wx, int32_t wy);
     void AddPathingNodes(int32_t dwX, int32_t dwY, uint8_t *pValidNodes);
 
-    vector<WorldCell *> m_WorldCells;
+    std::vector<WorldCell *> m_WorldCells;
     Object *m_Player;   //There's only one player (for now).
     Camera *m_pCamera;  //The current camera.
     Terrain *m_pTerrain; //World terrain.

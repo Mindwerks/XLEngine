@@ -3,11 +3,11 @@
 
 #include "../CommonTypes.h"
 #include "MovieTypes.h"
+
 #include <string>
 #include <vector>
 #include <map>
 
-using namespace std;
 class MoviePlayer;
 class Archive;
 class IDriver3D;
@@ -26,8 +26,8 @@ public:
     static void RenderMovie(float fDeltaTime);
 
 private:
-    static map<string, MoviePlayer *> m_MoviePlayers;
-    static vector<MoviePlayer *> m_MoviePlayerList;
+    static std::map<std::string, MoviePlayer *> m_MoviePlayers;
+    static std::vector<MoviePlayer *> m_MoviePlayerList;
     static Archive *m_apArchives[2];
     static MoviePlayer *m_pCurPlayer;
     static IDriver3D *m_pDriver;

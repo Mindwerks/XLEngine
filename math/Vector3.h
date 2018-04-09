@@ -2,7 +2,7 @@
 #define VECTOR3_H
 
 #include "../Engine.h"
-#include <math.h>
+#include <cmath>
 
 #ifndef VEC_EPS
 #define VEC_EPS 0.0001f

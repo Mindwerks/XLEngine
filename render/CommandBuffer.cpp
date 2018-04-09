@@ -2,8 +2,8 @@
 #include "IDriver3D.h"
 #include "VertexBuffer.h"
 #include <memory.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 uint8_t *CommandBuffer::s_pCommandBuffer[ CommandBuffer::BUFFER_COUNT ];
 uint32_t CommandBuffer::s_uReadBuffer;

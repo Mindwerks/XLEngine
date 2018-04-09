@@ -1,7 +1,7 @@
 #include "../Clock.h"
 #include <sys/time.h>
-#include <stdio.h>
-#include <assert.h>
+#include <cstdio>
+#include <cassert>
 
 #define SEC_TO_uS 1000000.0
 

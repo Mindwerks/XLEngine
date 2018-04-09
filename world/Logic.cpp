@@ -3,7 +3,7 @@
 
 Logic *Logic::s_pCurLogic = NULL;
 
-Logic::Logic(const string& sName, void *pOwner, uint32_t uType)
+Logic::Logic(const std::string& sName, void *pOwner, uint32_t uType)
 {
     m_sName = sName;
     m_pOwner = pOwner;

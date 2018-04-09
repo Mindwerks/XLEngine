@@ -2,9 +2,10 @@
 #include "FontManager.h"
 #include "TextureCache.h"
 #include "IDriver3D.h"
-#include <assert.h>
-#include <stdlib.h>
-#include <stdio.h>
+
+#include <cassert>
+#include <cstdlib>
+#include <cstdio>
 #include <memory.h>
 
 XLFont::XLFont(void)
@@ -16,7 +17,7 @@ XLFont::~XLFont(void)
 {
 }
 
-bool XLFont::Load( const string& szFile, IDriver3D *pDriver )
+bool XLFont::Load( const std::string& szFile, IDriver3D *pDriver )
 {
     bool bResult = false;
 
@@ -145,7 +146,7 @@ bool XLFont::Load( const string& szFile, IDriver3D *pDriver )
     return bResult;
 }
 
-uint32_t XLFont::ComputePixelPos(const string& szString, uint32_t uPos)
+uint32_t XLFont::ComputePixelPos(const std::string& szString, uint32_t uPos)
 {
     const char *pszText = szString.c_str();
     int32_t nCurX = 0;
@@ -156,7 +157,7 @@ uint32_t XLFont::ComputePixelPos(const string& szString, uint32_t uPos)
     return (uint32_t)nCurX;
 }
 
-int32_t XLFont::FillVB(int32_t x, int32_t y, const string& szString, FontVertex *pVB_Data)
+int32_t XLFont::FillVB(int32_t x, int32_t y, const std::string& szString, FontVertex *pVB_Data)
 {
     int32_t nCurX = x;
     int32_t nCurY = y;

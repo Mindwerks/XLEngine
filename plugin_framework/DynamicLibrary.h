@@ -2,16 +2,15 @@
 #define DYNAMIC_LIBRARY_H
 
 #include <string>
-using namespace std;
 
 class DynamicLibrary
 {
 public:
 
-  static DynamicLibrary *Load(const string& path, string& errorString);
+  static DynamicLibrary *Load(const std::string& path, std::string& errorString);
   ~DynamicLibrary();
   
-  void *GetSymbol(const string& name);
+  void *GetSymbol(const std::string& name);
 
 private:
   DynamicLibrary();

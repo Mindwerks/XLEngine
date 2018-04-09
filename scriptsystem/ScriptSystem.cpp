@@ -4,8 +4,8 @@
 #endif
 //#include "System.h"
 #include "../ui/XL_Console.h"
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 #include <memory.h>
 
 asIScriptEngine *m_Engine;
@@ -323,7 +323,7 @@ int ScriptSystem::GetTimer(int timer)
     return 0;
 }
 
-void ScriptSystem::System_Print(string &szItem)
+void ScriptSystem::System_Print(std::string &szItem)
 {
     //System::SetTextDisp( szItem.c_str() );
 }
@@ -343,7 +343,7 @@ void ScriptSystem::System_EndString()
     //System::SetTextDisp(_szTempString);
 }
 
-void ScriptSystem::System_AppendString(string& szStr)
+void ScriptSystem::System_AppendString(std::string& szStr)
 {
     sprintf(_szTempString, "%s%s", _szTempString, szStr.c_str());
 }

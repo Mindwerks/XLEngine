@@ -1,10 +1,10 @@
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
-#include <time.h>
+#include <ctime>
 #include <unistd.h>
-#include <string.h>
+#include <cstring>
 
 #include "SDL.h"
 

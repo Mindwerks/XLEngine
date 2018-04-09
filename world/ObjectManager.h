@@ -3,10 +3,9 @@
 
 #include "../CommonTypes.h"
 #include "Object.h"
+
 #include <vector>
 #include <string>
-
-using namespace std;
 
 class World;
 
@@ -21,8 +20,8 @@ public:
 
     //Set Always update to true if this object is constantly updated regardless of it's place in the map.
     //Only use this for "permanent" objects like the player.
-    static Object *CreateObject(const string& sName);
-    static Object *FindObject(const string& sName);
+    static Object *CreateObject(const std::string& sName);
+    static Object *FindObject(const std::string& sName);
     static void MoveDynamicObjects(const Vector3& vMove);
     static void FreeObject(Object *pObj);
     static Object *GetObjectFromID(uint32_t uID);
@@ -50,9 +49,9 @@ public:
     static void ReserveObjects(uint32_t uCount) { m_uReservedCount = uCount; }
 
 private:
-    static vector<Object *> m_ObjectPool;
-    static vector<Object *> m_FreeObjects;
-    static vector<Object *> m_ActiveObjects;
+    static std::vector<Object *> m_ObjectPool;
+    static std::vector<Object *> m_FreeObjects;
+    static std::vector<Object *> m_ActiveObjects;
     static uint32_t m_uReservedCount;
     static World *m_pWorld;
 };

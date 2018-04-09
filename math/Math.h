@@ -1,7 +1,7 @@
 #ifndef MATH_H
 #define MATH_H
 
-#include <math.h>
+#include <cmath>
 #include "../CommonTypes.h"
 #include "Vector2.h"
 #include "Vector3.h"

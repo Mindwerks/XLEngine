@@ -1,5 +1,5 @@
 #include "Vector4.h"
-#include <math.h>
+#include <cmath>
 
 Vector4 Vector4::One(1.0f, 1.0f, 1.0f, 1.0f);
 Vector4 Vector4::Half(0.5f, 0.5f, 0.5f, 0.5f);

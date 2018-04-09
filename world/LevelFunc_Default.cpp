@@ -3,7 +3,7 @@
 #include "WorldCell.h"
 #include "Sector_2_5D.h"
 #include "Object.h"
-#include <math.h>
+#include <cmath>
 
 //SlidingDoor
 void LFunc_SlidingDoor_SetValue(LevelFunc *pFunc, int32_t nSector, float value, bool bInstant)

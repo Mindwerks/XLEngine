@@ -6,14 +6,13 @@
 #include "LogicDef.h"
 
 #include <string>
-using namespace std;
 
 class Object;
 
 class Logic
 {
 public:
-    Logic(const string& sName, void *pOwner, uint32_t uType=LTYPE_SCRIPT);
+    Logic(const std::string& sName, void *pOwner, uint32_t uType=LTYPE_SCRIPT);
     virtual ~Logic();
 
     //used for code based logics.
@@ -29,7 +28,7 @@ public:
 protected:
     uint32_t m_uType;
     uint32_t m_uMsgMask;
-    string m_sName;
+    std::string m_sName;
     LogicParam m_ParamList[MAX_LOGIC_PARAM];
     void *m_pOwner;
 

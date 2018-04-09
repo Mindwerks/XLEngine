@@ -11,7 +11,7 @@
 //Enable this to check memory allocations.
 //This is currently only available on Windows
 #ifdef _CRTDBG_MAP_ALLOC
-    #include <stdlib.h>
+    #include <cstdlib>
     #include <CRTDBG.h>
 
     #define xlMalloc(s)       _malloc_dbg(s, _NORMAL_BLOCK, __FILE__, __LINE__)

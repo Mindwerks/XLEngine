@@ -4,8 +4,9 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "TextureCache.h"
-#include <assert.h>
-#include <stdlib.h>
+
+#include <cassert>
+#include <cstdlib>
 #include <memory.h>
 
 IDriver3D *FontManager::m_pDriver;
@@ -14,9 +15,9 @@ FontManager::FontMap FontManager::m_Fonts;
 VertexBuffer *FontManager::m_pVB;
 IndexBuffer *FontManager::m_pIB;
 
-string FontManager::m_FontPath;
+std::string FontManager::m_FontPath;
 
-bool FontManager::Init(const string& szFontPath, IDriver3D *pDriver)
+bool FontManager::Init(const std::string& szFontPath, IDriver3D *pDriver)
 {
     m_pDriver  = pDriver;
     m_FontPath = szFontPath;
@@ -92,7 +93,7 @@ void FontManager::Destroy()
     }
 }
 
-XLFont *FontManager::LoadFont(const string& szFile)
+XLFont *FontManager::LoadFont(const std::string& szFile)
 {
     // Don't load the same font twice
     FontMap::iterator iFont = m_Fonts.find(szFile);
@@ -135,7 +136,7 @@ void FontManager::EndTextRendering()
     m_pDriver->SetColor( &Vector4::One );
 }
 
-void FontManager::RenderString(int32_t x, int32_t y, const string& szString, XLFont *pFont, Vector4 *pColor)
+void FontManager::RenderString(int32_t x, int32_t y, const std::string& szString, XLFont *pFont, Vector4 *pColor)
 {
     TextureHandle hTex = pFont->GetTexture();
 
@@ -159,7 +160,7 @@ void FontManager::RenderString(int32_t x, int32_t y, const string& szString, XLF
     }
 }
 
-uint32_t FontManager::GetLength(const string& szString, uint32_t uPosInString, XLFont *pFont)
+uint32_t FontManager::GetLength(const std::string& szString, uint32_t uPosInString, XLFont *pFont)
 {
     uint32_t uPos = uPosInString;
     uint32_t uStrLen = (uint32_t)szString.size();

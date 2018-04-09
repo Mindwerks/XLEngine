@@ -7,7 +7,6 @@
 #include "../CommonTypes.h"
 #include "../math/Vector4.h"
 
-using namespace std;
 class XLFont;
 class IDriver3D;
 class XL_Console;
@@ -31,23 +30,23 @@ public:
         CTYPE_COUNT
     };
 
-    typedef void (*ConsoleFunction)(const vector<string>&, void *);
+    typedef void (*ConsoleFunction)(const std::vector<std::string>&, void *);
 
 public:
     Console(IDriver3D *pDriver3D);
     ~Console(void);
 
-    void SetGameInfo(const string& gameName, int32_t versionMinor, int32_t versionMajor);
+    void SetGameInfo(const std::string& gameName, int32_t versionMinor, int32_t versionMajor);
 
-    void AddItem(const string& itemName, void *ptr, ConsoleItemType type, const string& itemHelp, void *pUserData=NULL);
-    void RemoveItem(const string& itemName);
+    void AddItem(const std::string& itemName, void *ptr, ConsoleItemType type, const std::string& itemHelp, void *pUserData=NULL);
+    void RemoveItem(const std::string& itemName);
 
     void SetDefaultCommand(ConsoleFunction func);
     void SetMaxCommands(int maxCmd) { m_MaxCommands = maxCmd; }
     void SetFont(XLFont *pFont) { m_pFont = pFont; }
 
-    void Print(const string& text);
-    void PrintCommandHelp(const string& cmd);
+    void Print(const std::string& text);
+    void PrintCommandHelp(const std::string& cmd);
 
     void PassKey(char key);
     void PassEnter();
@@ -70,8 +69,8 @@ private:
 public:
     struct ConsoleItem
     {
-        string name;
-        string help;
+        std::string name;
+        std::string help;
         ConsoleItemType type;
 
         union
@@ -82,12 +81,12 @@ public:
         void *userData;
     };
 
-    vector<string> m_CommandBuffer;
-    list<ConsoleItem> m_ItemList;
-    vector<string> m_TextBuffer;
+    std::vector<std::string> m_CommandBuffer;
+    std::list<ConsoleItem> m_ItemList;
+    std::vector<std::string> m_TextBuffer;
 
     ConsoleFunction m_DefaultCommand;
-    string m_CommandLine;
+    std::string m_CommandLine;
     char m_szGameInfo[128];
 
     IDriver3D *m_pDriver;

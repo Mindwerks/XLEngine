@@ -6,8 +6,6 @@
 #include "../math/Vector3.h"
 #include <string>
 
-using namespace std;
-
 class IDriver3D;
 
 struct FontVertex
@@ -45,11 +43,11 @@ public:
     XLFont(void);
     ~XLFont(void);
 
-    bool Load( const string& szFile, IDriver3D *pDriver );
+    bool Load( const std::string& szFile, IDriver3D *pDriver );
     TextureHandle GetTexture() { return m_hTex; }
-    int32_t FillVB(int32_t x, int32_t y, const string& szString, FontVertex *pVB_Data);
+    int32_t FillVB(int32_t x, int32_t y, const std::string& szString, FontVertex *pVB_Data);
 
-    uint32_t ComputePixelPos(const string& szString, uint32_t uPos);
+    uint32_t ComputePixelPos(const std::string& szString, uint32_t uPos);
 
 private:
     TextureHandle m_hTex;

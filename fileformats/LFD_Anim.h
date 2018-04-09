@@ -1,7 +1,7 @@
 #ifndef LFD_ANIM_H
 #define LFD_ANIM_H
 
-#include <math.h>
+#include <cmath>
 #include "../CommonTypes.h"
 
 class IDriver3D;

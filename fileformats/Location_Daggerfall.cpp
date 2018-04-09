@@ -3,19 +3,19 @@
 #include "../fileformats/ArchiveTypes.h"
 #include "../fileformats/ArchiveManager.h"
 #include "../memory/ScratchPad.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <memory.h>
-#include <string.h>
-#include <assert.h>
+#include <cstring>
+#include <cassert>
 
 #define CACHED_FILE_VERSION 0x01
 
 uint32_t WorldMap::m_uRegionCount;
 Region_Daggerfall *WorldMap::m_pRegions;
-map<uint64_t, Location_Daggerfall *> WorldMap::m_MapLoc;
-map<uint64_t, WorldCell *> WorldMap::m_MapCell;
-map<string, Location_Daggerfall *> WorldMap::m_MapNames;
+std::map<uint64_t, Location_Daggerfall *> WorldMap::m_MapLoc;
+std::map<uint64_t, WorldCell *> WorldMap::m_MapCell;
+std::map<std::string, Location_Daggerfall *> WorldMap::m_MapNames;
 bool WorldMap::m_bMapLoaded = false;
 
 ///////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ void Location_Daggerfall::Save(FILE *f)
     }
 }
 
-bool Location_Daggerfall::Load(FILE *f, map<uint64_t, Location_Daggerfall *>& mapLoc, map<string, Location_Daggerfall *>& mapNames)
+bool Location_Daggerfall::Load(FILE *f, std::map<uint64_t, Location_Daggerfall *>& mapLoc, std::map<std::string, Location_Daggerfall *>& mapNames)
 {
     fread(m_szName,       1, 32, f);
     fread(&m_x,           1, sizeof(float), f);
@@ -139,7 +139,7 @@ void Region_Daggerfall::Save(FILE *f)
     }
 }
 
-bool Region_Daggerfall::Load(FILE *f, map<uint64_t, Location_Daggerfall *>& mapLoc, map<string, Location_Daggerfall *>& mapNames)
+bool Region_Daggerfall::Load(FILE *f, std::map<uint64_t, Location_Daggerfall *>& mapLoc, std::map<std::string, Location_Daggerfall *>& mapNames)
 {
     fread(&m_uLocationCount, 1, sizeof(uint32_t), f);
     m_pLocations = new Location_Daggerfall[ m_uLocationCount ];
@@ -667,7 +667,7 @@ Location_Daggerfall *WorldMap::GetLocation(int32_t x, int32_t y)
     Location_Daggerfall *pLoc = NULL;
 
     uint64_t uKey = (uint64_t)y<<32ULL | (uint64_t)x;
-    map<uint64_t, Location_Daggerfall *>::iterator iLoc = m_MapLoc.find(uKey);
+    std::map<uint64_t, Location_Daggerfall *>::iterator iLoc = m_MapLoc.find(uKey);
     if ( iLoc != m_MapLoc.end() )
     {
         pLoc = iLoc->second;
@@ -680,7 +680,7 @@ Location_Daggerfall *WorldMap::GetLocation(const char *pszName)
 {
     Location_Daggerfall *pLoc = NULL;
 
-    map<string, Location_Daggerfall *>::iterator iLoc = m_MapNames.find(pszName);
+    std::map<std::string, Location_Daggerfall *>::iterator iLoc = m_MapNames.find(pszName);
     if ( iLoc != m_MapNames.end() )
     {
         pLoc = iLoc->second;
@@ -699,7 +699,7 @@ WorldCell *WorldMap::GetWorldCell(int32_t x, int32_t y)
 {
     WorldCell *pCell = NULL;
     uint64_t uKey = (uint64_t)y<<32ULL | (uint64_t)x;
-    map<uint64_t, WorldCell *>::iterator iLoc = m_MapCell.find(uKey);
+    std::map<uint64_t, WorldCell *>::iterator iLoc = m_MapCell.find(uKey);
 
     if ( iLoc != m_MapCell.end() )
     {

@@ -3,7 +3,7 @@
 #include "../memory/ScratchPad.h"
 #include "../fileformats/TextureLoader.h"
 #include "../math/Math.h"
-#include <assert.h>
+#include <cassert>
 #include <cstring>
 
 enum

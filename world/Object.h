@@ -7,11 +7,10 @@
 #include "ObjectDef.h"
 #include "RenderComponent.h"
 #include "CollisionComponent.h"
+
 #include <vector>
 #include <string>
-#include <stdlib.h>
-
-using namespace std;
+#include <cstdlib>
 
 class Logic;
 class IDriver3D;
@@ -28,8 +27,8 @@ public:
     Object();
     virtual ~Object();
 
-    void SetName(const string& sName) { m_Name = sName; }
-    const string& GetName() { return m_Name; }
+    void SetName(const std::string& sName) { m_Name = sName; }
+    const std::string& GetName() { return m_Name; }
 
     void Update();
     void Init();
@@ -114,7 +113,7 @@ public:
     };
 
 protected:
-    string m_Name;
+    std::string m_Name;
 
     uint16_t m_uPad;
     uint16_t m_uRefCnt;
@@ -125,7 +124,7 @@ protected:
     uint32_t m_uID;
     uint32_t m_uGameID; //used for game specific purposes.
     float m_fBrightness;
-    vector<Logic *> m_Logics;
+    std::vector<Logic *> m_Logics;
     void *m_pDataComp;
     RenderComponent *m_pRenderComp;
     CollisionComponent *m_pCollisionComp;

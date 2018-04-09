@@ -6,7 +6,8 @@
 #include "TextureConv_IMG.h"
 #include "../memory/ScratchPad.h"
 #include "../ui/XL_Console.h"
-#include <assert.h>
+
+#include <cassert>
 #include <cstring>
 
 #define MAX_PAL_COUNT 32
@@ -49,7 +50,7 @@ void TextureLoader::Destroy()
     m_pCurConverter=NULL;
 }
 
-bool TextureLoader::LoadTexture(uint32_t uTextureType, uint32_t uPalIndex, Archive *pTexArchive, const string& sFile, bool bCopyPal)
+bool TextureLoader::LoadTexture(uint32_t uTextureType, uint32_t uPalIndex, Archive *pTexArchive, const std::string& sFile, bool bCopyPal)
 {
     TextureConverter *pConvert = m_TextureConverters[uTextureType];
     m_pCurConverter = pConvert;
@@ -92,7 +93,7 @@ bool TextureLoader::LoadTexture(uint32_t uTextureType, uint32_t uPalIndex, Archi
     return false;
 }
 
-uint32_t TextureLoader::LoadTexture_TexList(uint32_t uTextureType, uint32_t uPalIndex, Archive *pTexArchive, const string& sFile, int nRecord)
+uint32_t TextureLoader::LoadTexture_TexList(uint32_t uTextureType, uint32_t uPalIndex, Archive *pTexArchive, const std::string& sFile, int nRecord)
 {
     uint32_t uFrameCnt = 1;
 
@@ -136,7 +137,7 @@ uint32_t TextureLoader::LoadTexture_TexList(uint32_t uTextureType, uint32_t uPal
     return 0;
 }
 
-bool TextureLoader::LoadTexture_NoArchive(uint32_t uTextureType, uint32_t uPalIndex, const string& sFile, bool bCopyPal)
+bool TextureLoader::LoadTexture_NoArchive(uint32_t uTextureType, uint32_t uPalIndex, const std::string& sFile, bool bCopyPal)
 {
     TextureConverter *pConvert = m_TextureConverters[uTextureType];
     m_pCurConverter = pConvert;
@@ -176,7 +177,7 @@ bool TextureLoader::LoadTexture_NoArchive(uint32_t uTextureType, uint32_t uPalIn
     return false;
 }
 
-uint32_t TextureLoader::LoadTexture_NoArchive_TexList(uint32_t uTextureType, uint32_t uPalIndex, const string& sFile, int nRecord)
+uint32_t TextureLoader::LoadTexture_NoArchive_TexList(uint32_t uTextureType, uint32_t uPalIndex, const std::string& sFile, int nRecord)
 {
     uint32_t uFrameCnt = 1;
 

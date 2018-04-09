@@ -5,8 +5,8 @@
 #include "LFD_Film.h"
 #include "../ui/XL_Console.h"
 
-map<string, MoviePlayer *> MovieManager::m_MoviePlayers;
-vector<MoviePlayer *> MovieManager::m_MoviePlayerList;
+std::map<std::string, MoviePlayer *> MovieManager::m_MoviePlayers;
+std::vector<MoviePlayer *> MovieManager::m_MoviePlayerList;
 MoviePlayer *MovieManager::m_pCurPlayer;
 Archive *MovieManager::m_apArchives[2];
 IDriver3D *MovieManager::m_pDriver;
@@ -22,9 +22,9 @@ void MovieManager::Init(IDriver3D *pDriver)
 void MovieManager::Destroy()
 {
     m_MoviePlayers.clear();
-    
-    vector<MoviePlayer *>::iterator iMoviePlayer = m_MoviePlayerList.begin();
-    vector<MoviePlayer *>::iterator eMoviePlayer = m_MoviePlayerList.end();
+
+    std::vector<MoviePlayer *>::iterator iMoviePlayer = m_MoviePlayerList.begin();
+    std::vector<MoviePlayer *>::iterator eMoviePlayer = m_MoviePlayerList.end();
     for (; iMoviePlayer != eMoviePlayer; ++iMoviePlayer)
     {
         xlDelete (*iMoviePlayer);

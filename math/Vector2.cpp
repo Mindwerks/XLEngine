@@ -1,5 +1,5 @@
 #include "Vector2.h"
-#include <math.h>
+#include <cmath>
 
 Vector2 Vector2::One(1.0f, 1.0f);
 Vector2 Vector2::Half(0.5f, 0.5f);

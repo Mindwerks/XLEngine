@@ -2,7 +2,6 @@
 #define PLUGIN_MANAGER_H
 
 #include <string>
-using namespace std;
 
 class DynamicLibrary;
 struct XLEngine_Plugin_API;
@@ -14,7 +13,7 @@ public:
     static bool Init(XLEngine_Plugin_API *pluginAPI);
     static void Destroy();
 
-    static bool InitGame(const string& path);
+    static bool InitGame(const std::string& path);
     static void UnloadGame();
 
 private:

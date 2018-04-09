@@ -3,7 +3,7 @@
 
 #include "../CommonTypes.h"
 #include "Archive.h"
-#include <stdio.h>
+#include <cstdio>
 
 class RFF_Reader : public Archive
 {

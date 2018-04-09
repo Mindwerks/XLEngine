@@ -5,9 +5,9 @@
 #include "../../math/Math.h"
 #include "../../math/FixedPoint.h"
 #include "../../render/Camera.h"
-#include <stdio.h>
+#include <cstdio>
 #include <malloc.h>
-#include <float.h>
+#include <cfloat>
 
 #if PLATFORM_WIN    //we have to include Windows.h before gl.h on Windows platforms.
     #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers

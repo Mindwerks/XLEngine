@@ -5,9 +5,9 @@
 #include "../../math/Math.h"
 #include "../../math/FixedPoint.h"
 #include "../../fileformats/TextureLoader.h"
-#include <stdio.h>
+#include <cstdio>
 #include <malloc.h>
-#include <float.h>
+#include <cfloat>
 
 namespace DrawScanline
 {

@@ -1,13 +1,12 @@
 #ifndef LFD_FILM_H
 #define LFD_FILM_H
 
-#include <math.h>
 #include "../CommonTypes.h"
 #include "../fileformats/LFD_Anim.h"
 #include "../movieplayback/MoviePlayer.h"
 
+#include <cmath>
 #include <vector>
-using namespace std;
 
 class LFD_Anim;
 class Archive;
@@ -49,7 +48,7 @@ private:
     struct CommandSet
     {
         bool bActivated;
-        vector<Command *> commands;
+        std::vector<Command *> commands;
     };
 
     struct Graphic
@@ -89,7 +88,7 @@ private:
         FADE_CLEAR,
     };
 
-    vector<Graphic *> m_Graphics;
+    std::vector<Graphic *> m_Graphics;
     PLTT_File m_Pal[32];
     int32_t m_nPalCount;
     int16_t m_nFilmLength;

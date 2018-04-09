@@ -1,5 +1,5 @@
 #include "Plane.h"
-#include <assert.h>
+#include <cassert>
 
 float Plane::Normalize()
 {

@@ -1,7 +1,7 @@
 #include "ProceduralFunc.h"
 #include "Noise.h"
 #include "../math/Math.h"
-#include <math.h>
+#include <cmath>
 
 namespace ProceduralFunc
 {

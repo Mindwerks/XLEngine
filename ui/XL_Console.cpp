@@ -1,24 +1,24 @@
 #include "XL_Console.h"
-#include <stdio.h>
-#include <stdarg.h>
+#include <cstdio>
+#include <cstdarg>
 
 Console *XL_Console::s_pConsole;
 static char _tmpStr[512];
 
-void XL_Console::_DefaultConsoleFunc(const vector<string>& args, void *pUserData)
+void XL_Console::_DefaultConsoleFunc(const std::vector<std::string>& args, void *pUserData)
 {
-    string errorStr;
+    std::string errorStr;
     errorStr = "^1'" + args[0] + "' is not a recognized command.";
 
     s_pConsole->Print(errorStr);
 }
 
-void XL_Console::_Echo(const vector<string>& args, void *pUserData)
+void XL_Console::_Echo(const std::vector<std::string>& args, void *pUserData)
 {
     s_pConsole->Print(args[1]);
 }
 
-void XL_Console::_CmdList(const vector<string>& args, void *pUserData)
+void XL_Console::_CmdList(const std::vector<std::string>& args, void *pUserData)
 {
     if ( args.size() <= 1 )
         s_pConsole->PrintCommands();
@@ -26,7 +26,7 @@ void XL_Console::_CmdList(const vector<string>& args, void *pUserData)
         s_pConsole->PrintCommands(args[1].c_str());
 }
 
-void XL_Console::_ConsoleTex(const vector<string>& args, void *pUserData)
+void XL_Console::_ConsoleTex(const std::vector<std::string>& args, void *pUserData)
 {
     if ( args.size() > 1 )
     {
@@ -34,7 +34,7 @@ void XL_Console::_ConsoleTex(const vector<string>& args, void *pUserData)
     }
 }
 
-void XL_Console::_Help(const vector<string>& args, void *pUserData)
+void XL_Console::_Help(const std::vector<std::string>& args, void *pUserData)
 {
     if ( args.size() == 1 )
     {
@@ -111,7 +111,7 @@ void XL_Console::Render()
     s_pConsole->Render();
 }
 
-void XL_Console::RegisterCmd(const string& itemName, void *ptr, Console::ConsoleItemType type, const string& itemHelp, void *pUserData)
+void XL_Console::RegisterCmd(const std::string& itemName, void *ptr, Console::ConsoleItemType type, const std::string& itemHelp, void *pUserData)
 {
     s_pConsole->AddItem(itemName, ptr, type, itemHelp, pUserData);
 }
@@ -140,7 +140,7 @@ bool XL_Console::IsPaused()
     return s_pConsole->IsPaused();
 }
 
-void XL_Console::Print(const string& szMsg)
+void XL_Console::Print(const std::string& szMsg)
 {
     if ( s_pConsole == NULL )
         return;

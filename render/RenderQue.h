@@ -6,14 +6,13 @@
 #include "../math/Vector3.h"
 #include "../math/Vector4.h"
 #include "../math/Matrix.h"
+
 #include <vector>
 
 class IDriver3D;
 class VertexBuffer;
 class IndexBuffer;
 class LightObject;
-
-using namespace std;
 
 struct RenderQuad
 {
@@ -76,8 +75,8 @@ private:
     static RenderQuad *m_pQuads;
     static uint32_t m_uQuadCnt;
 
-    static vector<MaterialEntry *> m_apRenderBuckets[RBUCKET_COUNT];
-    static vector<MaterialEntry>   m_RenderEntryPool;
+    static std::vector<MaterialEntry *> m_apRenderBuckets[RBUCKET_COUNT];
+    static std::vector<MaterialEntry>   m_RenderEntryPool;
     static uint32_t m_uRenderEntryLoc;
 
     static int m_nCurLightCnt;

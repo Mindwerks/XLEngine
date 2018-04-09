@@ -19,8 +19,8 @@ const char *ArchiveManager::m_apszArchiveExt[]=
     "BSA",
 };
 
-map<string, Archive *> ArchiveManager::m_OpenArchives;
-vector<Archive *> ArchiveManager::m_ArchiveList;
+std::map<std::string, Archive *> ArchiveManager::m_OpenArchives;
+std::vector<Archive *> ArchiveManager::m_ArchiveList;
 Archive *ArchiveManager::m_pCurArchive;
 FILE *ArchiveManager::s_pCurrentSysFile;
 
@@ -34,9 +34,9 @@ void ArchiveManager::Init()
 void ArchiveManager::Destroy()
 {
     m_OpenArchives.clear();
-    
-    vector<Archive *>::iterator iArchive = m_ArchiveList.begin();
-    vector<Archive *>::iterator eArchive = m_ArchiveList.end();
+
+    std::vector<Archive *>::iterator iArchive = m_ArchiveList.begin();
+    std::vector<Archive *>::iterator eArchive = m_ArchiveList.end();
     for (; iArchive != eArchive; ++iArchive)
     {
         (*iArchive)->Close();
@@ -48,7 +48,7 @@ void ArchiveManager::Destroy()
 
 Archive *ArchiveManager::OpenArchive(uint32_t uArchiveType, const char *pszArchiveName)
 {
-    map<string, Archive *>::iterator iArchive = m_OpenArchives.find(pszArchiveName);
+    std::map<std::string, Archive *>::iterator iArchive = m_OpenArchives.find(pszArchiveName);
     if ( iArchive != m_OpenArchives.end() )
     {
         Archive *pArchive = iArchive->second;

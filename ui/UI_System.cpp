@@ -9,9 +9,10 @@
 #include "../fileformats/TextureTypes.h"
 #include "../math/Math.h"
 #include "../EngineSettings.h"
-#include <assert.h>
-#include <stdlib.h>
-#include <stdio.h>
+
+#include <cassert>
+#include <cstdlib>
+#include <cstdio>
 #include <memory.h>
 
 /****************************
@@ -32,9 +33,9 @@ UI_Screen *UI_System::m_PopScreen;
 //float UI_System::m_fVirt_Scr_H;
 bool UI_System::m_bFlipX;
 bool UI_System::m_bFlipY;
-map<string, UI_Screen *> UI_System::m_ScreenMap;
-vector<UI_Screen *> UI_System::m_ScreenList;
-vector<UI_Window *> UI_System::m_WindowList;
+std::map<std::string, UI_Screen *> UI_System::m_ScreenMap;
+std::vector<UI_Screen *> UI_System::m_ScreenList;
+std::vector<UI_Window *> UI_System::m_WindowList;
 IDriver3D *UI_System::m_pDriver;
 Engine *UI_System::m_pEngine;
 Vector2 UI_System::m_uvTop(0,0);
@@ -97,8 +98,8 @@ void UI_System::Destroy()
         UI_FreeImage( Editor_UI_Atlas );
     }
 
-    vector<UI_Screen *>::iterator iScreen = m_ScreenList.begin();
-    vector<UI_Screen *>::iterator eScreen = m_ScreenList.end();
+    std::vector<UI_Screen *>::iterator iScreen = m_ScreenList.begin();
+    std::vector<UI_Screen *>::iterator eScreen = m_ScreenList.end();
     for (; iScreen != eScreen; ++iScreen)
     {
         xlDelete *iScreen;
@@ -106,8 +107,8 @@ void UI_System::Destroy()
     m_ScreenList.clear();
     m_ScreenMap.clear();
 
-    vector<UI_Window *>::iterator iWindow = m_WindowList.begin();
-    vector<UI_Window *>::iterator eWindow = m_WindowList.end();
+    std::vector<UI_Window *>::iterator iWindow = m_WindowList.begin();
+    std::vector<UI_Window *>::iterator eWindow = m_WindowList.end();
     for (; iWindow != eWindow; ++iWindow)
     {
         xlDelete *iWindow;
@@ -191,7 +192,7 @@ void UI_System::StartScript(const char *pszFile)
 
     m_pUI_Atlas = AllocRenderFrame();
     //Load Frame texture.
-    m_pUI_Atlas->hFrame = TextureCache::LoadTexture( (string)"XLEngineUI.png", false );
+    m_pUI_Atlas->hFrame = TextureCache::LoadTexture( (std::string)"XLEngineUI.png", false );
 
     //Then get the texture size and relative scale from the Texture Cache.
     int32_t nOffsX, nOffsY;
@@ -364,10 +365,10 @@ void UI_System::RenderChildWindows(UI_Window *pWin, int x, int y)
     };
 }
 
-UI_Screen *UI_System::AddScreen(const string& sName)
+UI_Screen *UI_System::AddScreen(const std::string& sName)
 {
     UI_Screen *pScreen = NULL;
-    map<string, UI_Screen *>::iterator iScreen = m_ScreenMap.find(sName);
+    std::map<std::string, UI_Screen *>::iterator iScreen = m_ScreenMap.find(sName);
     if ( iScreen != m_ScreenMap.end() )
     {
         pScreen = iScreen->second;
@@ -384,7 +385,7 @@ UI_Screen *UI_System::AddScreen(const string& sName)
     return pScreen;
 }
 
-UI_Window *UI_System::AddWindow(const string& sName, const string& sText, uint32_t uType, int32_t x, int32_t y, int32_t w, int32_t h, uint32_t flags, UI_Window *parent)
+UI_Window *UI_System::AddWindow(const std::string& sName, const std::string& sText, uint32_t uType, int32_t x, int32_t y, int32_t w, int32_t h, uint32_t flags, UI_Window *parent)
 {
     //m_Context is the parent screen.
     UI_Window *pWindow = xlNew UI_Window();
@@ -468,7 +469,7 @@ UI_Window *UI_System::AddWindow(const string& sName, const string& sText, uint32
 UI_Window *_pCurWindow = NULL;
 UI_Window *_apWindowStack[16];
 int _stackPtr = 0;
-void UI_System::UI_CreateWindow(string& sName, string& sText, int type, int x, int y, int w, int h, int flags)
+void UI_System::UI_CreateWindow(std::string& sName, std::string& sText, int type, int x, int y, int w, int h, int flags)
 {
     if ( m_Context )
     {
@@ -477,7 +478,7 @@ void UI_System::UI_CreateWindow(string& sName, string& sText, int type, int x, i
     }
 }
 
-void UI_System::UI_PushWindow(string& sName, string& sText, int type, int x, int y, int w, int h, int flags)
+void UI_System::UI_PushWindow(std::string& sName, std::string& sText, int type, int x, int y, int w, int h, int flags)
 {
     if ( m_Context && _stackPtr < 16 )
     {
@@ -506,10 +507,10 @@ void UI_System::UI_PopWindow()
     }
 }
 
-void UI_System::UI_EnableWindow(string& sName, int enable)
+void UI_System::UI_EnableWindow(std::string& sName, int enable)
 {
-    vector<UI_Window *>::iterator iWindow = m_WindowList.begin();
-    vector<UI_Window *>::iterator eWindow = m_WindowList.end();
+    std::vector<UI_Window *>::iterator iWindow = m_WindowList.begin();
+    std::vector<UI_Window *>::iterator eWindow = m_WindowList.end();
     for (; iWindow != eWindow; ++iWindow)
     {
         UI_Window *pWindow = *iWindow;
@@ -521,7 +522,7 @@ void UI_System::UI_EnableWindow(string& sName, int enable)
     }
 }
 
-void UI_System::UI_CreateWindow_FromLFDFrame(string& sName, int LFDAnim_ID, int frame, int x0, int y0)
+void UI_System::UI_CreateWindow_FromLFDFrame(std::string& sName, int LFDAnim_ID, int frame, int x0, int y0)
 {
     if ( LFDAnim_ID >= 0 && LFDAnim_ID < MAX_LFD_ANIM && m_pLFD_Anim_List[LFDAnim_ID] )
     {
@@ -532,7 +533,7 @@ void UI_System::UI_CreateWindow_FromLFDFrame(string& sName, int LFDAnim_ID, int 
     }
 }
 
-void UI_System::UI_StartScreen(string& sUI_Start)
+void UI_System::UI_StartScreen(std::string& sUI_Start)
 {
     char szFuncName[128];
     sprintf(szFuncName, "%s_OnEnter", sUI_Start.c_str());
@@ -565,7 +566,7 @@ void UI_System::UI_StartScreen(string& sUI_Start)
     }
 }
 
-void UI_System::UI_PushScreen(const string& uiName, int flags, int backgrndFX)
+void UI_System::UI_PushScreen(const std::string& uiName, int flags, int backgrndFX)
 {
     char szFuncName[128];
     sprintf(szFuncName, "%s_OnEnter", uiName.c_str());
@@ -659,7 +660,7 @@ UI_RenderFrame *UI_System::GetRenderFrame(uint32_t uFrameID)
  *** A valid m_Context is required ****
  **************************************/
 
-void LoadLFD_Pal(LFD_Anim *pAnim, Archive *pArchive, string& sFile)
+void LoadLFD_Pal(LFD_Anim *pAnim, Archive *pArchive, std::string& sFile)
 {
     if ( ArchiveManager::GameFile_Open(pArchive, sFile.c_str()) )
     {
@@ -676,7 +677,7 @@ void LoadLFD_Pal(LFD_Anim *pAnim, Archive *pArchive, string& sFile)
     }
 }
 
-void LoadLFD_File(LFD_Anim *pAnim, Archive *pArchive, string& sFile)
+void LoadLFD_File(LFD_Anim *pAnim, Archive *pArchive, std::string& sFile)
 {
     if ( ArchiveManager::GameFile_Open(pArchive, sFile.c_str()) )
     {
@@ -693,7 +694,7 @@ void LoadLFD_File(LFD_Anim *pAnim, Archive *pArchive, string& sFile)
     }
 }
 
-int UI_System::UI_CreateLFD_Anim(string& sArchive, string& sAnim, string& sPal)
+int UI_System::UI_CreateLFD_Anim(std::string& sArchive, std::string& sAnim, std::string& sPal)
 {
     //find a free slot.
     int32_t ID = -1;
@@ -741,7 +742,7 @@ void UI_System::UI_RenderLFD_Anim(int ID, int frame, int x, int y)
     }
 }
 
-int UI_System::UI_AddImage(string& sImage, int cutoutMinIdx, int cutoutMaxIdx)
+int UI_System::UI_AddImage(std::string& sImage, int cutoutMinIdx, int cutoutMaxIdx)
 {
     int hImageHandle = -1;
     if ( m_Context )
@@ -767,7 +768,7 @@ int UI_System::UI_AddImage(string& sImage, int cutoutMinIdx, int cutoutMaxIdx)
     return hImageHandle;
 }
 
-int UI_System::UI_AddGameImage(uint32_t uImageType, string &sArchive, string &sImage)
+int UI_System::UI_AddGameImage(uint32_t uImageType, std::string &sArchive, std::string &sImage)
 {
     int hImageHandle = -1;
     if ( m_Context )
@@ -1019,7 +1020,7 @@ void UI_System::UI_RenderImage(int hImage, int x, int y, float intensity, int al
     }
 }
 
-void UI_System::UI_RenderString(const string& sString, int x, int y, int size, float r, float g, float b, float a)
+void UI_System::UI_RenderString(const std::string& sString, int x, int y, int size, float r, float g, float b, float a)
 {
     XLFont *pFont = m_pEngine->GetSystemFont(size);
     if ( pFont )
@@ -1206,10 +1207,10 @@ void UI_System::KeyDownCallback(int32_t key)
     }
 }
 
-UI_Screen *UI_System::FindScreen(const string& sName)
+UI_Screen *UI_System::FindScreen(const std::string& sName)
 {
     UI_Screen *pScreen = NULL;
-    map<string, UI_Screen *>::iterator iScreen = m_ScreenMap.find(sName);
+    std::map<std::string, UI_Screen *>::iterator iScreen = m_ScreenMap.find(sName);
     if ( iScreen != m_ScreenMap.end() )
     {
         pScreen = iScreen->second;
@@ -1359,7 +1360,7 @@ void UI_Window::Draw(int x, int y)
 ////////////////////////////////////////////////////////
 // Default UI Rendering
 ////////////////////////////////////////////////////////
-void UI_Window::RenderWindow(int x, int y, int w, int h, const string& name)
+void UI_Window::RenderWindow(int x, int y, int w, int h, const std::string& name)
 {
     if ( w < 28 ) w = 28;
     if ( h < 69 ) h = 69;
@@ -1380,8 +1381,8 @@ void UI_Window::RenderWindow(int x, int y, int w, int h, const string& name)
     xx += 10;
     
     //Draw title bar text.
-    UI_System::UI_RenderString((string)name, x+25, y+9, 24, 0.0f, 0.0f, 0.0f, 1.0f);
-    UI_System::UI_RenderString((string)name, x+24, y+8, 24, 0.8f, 0.8f, 0.8f, 1.0f);
+    UI_System::UI_RenderString((std::string)name, x+25, y+9, 24, 0.0f, 0.0f, 0.0f, 1.0f);
+    UI_System::UI_RenderString((std::string)name, x+24, y+8, 24, 0.8f, 0.8f, 0.8f, 1.0f);
     
     //Render the window background.
     int yy = y+41;
@@ -1426,7 +1427,7 @@ void UI_Window::RenderWindow(int x, int y, int w, int h, const string& name)
     UI_System::UI_RenderImageRect(Editor_UI_Atlas, xx, yy, 14, (h-69), 1.0f, UI_System::UI_Align_Left, UI_System::UI_Align_Bottom);
 }
 
-void UI_Window::RenderButton(int x, int y, int w, const string& text, int state)
+void UI_Window::RenderButton(int x, int y, int w, const std::string& text, int state)
 {
     UI_System::UI_EnableImageFilter(0);
     
@@ -1442,8 +1443,8 @@ void UI_Window::RenderButton(int x, int y, int w, const string& text, int state)
         UI_System::UI_RenderImageRect(Editor_UI_Atlas, x+w-10, y, 10, 28, 1.0f, UI_System::UI_Align_Left, UI_System::UI_Align_Bottom);
         
         //Draw title bar text.
-        UI_System::UI_RenderString((string)text, x+15, y+6, 16, 0.0f, 0.0f, 0.0f, 1.0f);
-        UI_System::UI_RenderString((string)text, x+14, y+5, 16, 0.8f, 0.8f, 0.8f, 1.0f);
+        UI_System::UI_RenderString((std::string)text, x+15, y+6, 16, 0.0f, 0.0f, 0.0f, 1.0f);
+        UI_System::UI_RenderString((std::string)text, x+14, y+5, 16, 0.8f, 0.8f, 0.8f, 1.0f);
     }
     else if ( state == 1 )  //pressed.
     {
@@ -1457,8 +1458,8 @@ void UI_Window::RenderButton(int x, int y, int w, const string& text, int state)
         UI_System::UI_RenderImageRect(Editor_UI_Atlas, x+w-10, y, 10, 28, 1.0f, UI_System::UI_Align_Left, UI_System::UI_Align_Bottom);
         
         //Draw title bar text.
-        UI_System::UI_RenderString((string)text, x+15, y+6, 16, 0.0f, 0.0f, 0.0f, 1.0f);
-        UI_System::UI_RenderString((string)text, x+14, y+5, 16, 0.6f, 0.6f, 0.6f, 1.0f);
+        UI_System::UI_RenderString((std::string)text, x+15, y+6, 16, 0.0f, 0.0f, 0.0f, 1.0f);
+        UI_System::UI_RenderString((std::string)text, x+14, y+5, 16, 0.6f, 0.6f, 0.6f, 1.0f);
     }
     else    //mouse over.
     {
@@ -1472,8 +1473,8 @@ void UI_Window::RenderButton(int x, int y, int w, const string& text, int state)
         UI_System::UI_RenderImageRect(Editor_UI_Atlas, x+w-10, y, 10, 28, 1.0f, UI_System::UI_Align_Left, UI_System::UI_Align_Bottom);
         
         //Draw title bar text.
-        UI_System::UI_RenderString((string)text, x+15, y+6, 16, 0.0f, 0.0f, 0.0f, 1.0f);
-        UI_System::UI_RenderString((string)text, x+14, y+5, 16, 1.0f, 1.0f, 0.8f, 1.0f);
+        UI_System::UI_RenderString((std::string)text, x+15, y+6, 16, 0.0f, 0.0f, 0.0f, 1.0f);
+        UI_System::UI_RenderString((std::string)text, x+14, y+5, 16, 1.0f, 1.0f, 0.8f, 1.0f);
     }
     
     UI_System::UI_EnableImageFilter(1);

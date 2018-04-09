@@ -11,9 +11,10 @@
 #include "../math/Math.h"
 #include "../render/VertexBuffer.h"
 #include "../render/IndexBuffer.h"
-#include <assert.h>
-#include <float.h>
-#include <stdio.h>
+
+#include <cassert>
+#include <cfloat>
+#include <cstdio>
 
 #define STO_TERRAIN          2
 #define STO_RUINS            7
@@ -140,7 +141,7 @@ struct SM_Polygon
 struct SM_Material
 {
     TextureHandle hTex;
-    vector<short> PolyList;
+    std::vector<short> PolyList;
 
     short ImageIndex;
     short FileIndex;
@@ -683,7 +684,7 @@ bool MeshLoader_Daggerfall::LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollis
 
     }
     //then create a polygon list per material.
-    vector<uint16_t> polyList[128];
+    std::vector<uint16_t> polyList[128];
     for (int i=0; i<header.nPlaneCount; i++)
     {
         int m = polygons[i].matIdx;

@@ -4,11 +4,10 @@
 #include "../CommonTypes.h"
 #include "../scriptsystem/ScriptSystem.h"
 #include "../math/Vector2.h"
+
 #include <string>
 #include <vector>
 #include <map>
-
-using namespace std;
 
 class asIScriptArray;
 class IDriver3D;
@@ -50,7 +49,7 @@ public:
     UI_Screen();
     ~UI_Screen();
 public:
-    string m_sName;
+    std::string m_sName;
     SHANDLE m_hOnEnter;
     SHANDLE m_hOnExit;
     SHANDLE m_hOnRender;
@@ -95,16 +94,16 @@ public:
     uint32_t m_uFlags;
     uint32_t m_uState;
 
-    string m_name;
-    string m_text;
+    std::string m_name;
+    std::string m_text;
 
     UI_Screen *m_parentScreen;
     UI_Window *m_parent;
     UI_Window *m_child;
     UI_Window *m_sibling;
 private:
-    void RenderWindow(int x, int y, int w, int h, const string& name);
-    void RenderButton(int x, int y, int w, const string& text, int state);
+    void RenderWindow(int x, int y, int w, int h, const std::string& name);
+    void RenderButton(int x, int y, int w, const std::string& text, int state);
 };
 
 class UI_System
@@ -117,7 +116,7 @@ public:
     static void Update();
     static void Render();
 
-    static UI_Screen *FindScreen(const string& sName);
+    static UI_Screen *FindScreen(const std::string& sName);
 
     static void UpdateChildWindows(UI_Window *pWin, int x, int y, int nMouseX, int nMouseY);
     static void RenderChildWindows(UI_Window *pWin, int x, int y);
@@ -157,9 +156,9 @@ private:
     static UI_Screen *m_PushScreen;
     static UI_Screen *m_PopScreen;
 
-    static map<string, UI_Screen *> m_ScreenMap;
-    static vector<UI_Screen *> m_ScreenList;
-    static vector<UI_Window *> m_WindowList;
+    static std::map<std::string, UI_Screen *> m_ScreenMap;
+    static std::vector<UI_Screen *> m_ScreenList;
+    static std::vector<UI_Window *> m_WindowList;
 
     static UI_RenderFrame *m_pRenderFramePool;
     static LFD_Anim *m_pLFD_Anim_List[];
@@ -168,20 +167,20 @@ private:
     static uint32_t m_auImage_ArchiveType[];
 
     //Add a new screen, if it hasn't already been added.
-    static UI_Screen *AddScreen(const string& sName);
-    static UI_Window *AddWindow(const string& sName, const string& sText, uint32_t uType, int32_t x, int32_t y, int32_t w, int32_t h, uint32_t flags, UI_Window *parent=NULL);
+    static UI_Screen *AddScreen(const std::string& sName);
+    static UI_Window *AddWindow(const std::string& sName, const std::string& sText, uint32_t uType, int32_t x, int32_t y, int32_t w, int32_t h, uint32_t flags, UI_Window *parent=NULL);
 
     //Script Functions, these are call by the UI Scripts.
     //UI_StartScreen is the first UI screen to start up, the program entry point.
     //There will probably be other entry points due to parameters passed in or other data.
-    static void UI_StartScreen(string& sUI_Start);
-    static void UI_CreateWindow(string& sName, string& sText, int type, int x, int y, int w, int h, int flags);
-    static void UI_PushWindow(string& sName, string& sText, int type, int x, int y, int w, int h, int flags);
+    static void UI_StartScreen(std::string& sUI_Start);
+    static void UI_CreateWindow(std::string& sName, std::string& sText, int type, int x, int y, int w, int h, int flags);
+    static void UI_PushWindow(std::string& sName, std::string& sText, int type, int x, int y, int w, int h, int flags);
     static void UI_PopWindow();
-    static void UI_EnableWindow(string& sName, int enable);
-    static void UI_CreateWindow_FromLFDFrame(string& sName, int LFDAnim_ID, int frame, int x0, int y0);
-    static int  UI_AddImage(string& sImage, int cutoutMinIdx, int cutoutMaxIdx);
-    static int  UI_AddGameImage(uint32_t uImageType, string &sArchive, string &sImage);
+    static void UI_EnableWindow(std::string& sName, int enable);
+    static void UI_CreateWindow_FromLFDFrame(std::string& sName, int LFDAnim_ID, int frame, int x0, int y0);
+    static int  UI_AddImage(std::string& sImage, int cutoutMinIdx, int cutoutMaxIdx);
+    static int  UI_AddGameImage(uint32_t uImageType, std::string &sArchive, std::string &sImage);
     static void UI_FreeImage(int hImageHandle);
     static void UI_EnableImageFilter(int enable);
     static void UI_EnableImageBlending(int enable);
@@ -193,7 +192,7 @@ private:
     static void UI_SetImageUV_RangeI(int hImage, int u0, int v0, int w, int h);
     static void UI_RenderPolygon(int npt, asIScriptArray *x, asIScriptArray *y, float r, float g, float b, float a, int alignHoriz, int alignVert);
     static void UI_RenderRect(int x, int y, int w, int h, float r, float g, float b, float a, int alignHoriz, int alignVert);
-    static void UI_RenderString(const string& sString, int x, int y, int size, float r, float g, float b, float a);
+    static void UI_RenderString(const std::string& sString, int x, int y, int size, float r, float g, float b, float a);
     static void UI_PrintMousePos(int x, int y, int size);
     static void UI_GetMousePos(int& x, int& y);
     static void UI_SetVirtualScreenSize(int w, int h);
@@ -204,11 +203,11 @@ private:
     static float UI_GetCurrentBrightness();
     static float UI_GetSpeed();
     //LFD_Anim
-    static int UI_CreateLFD_Anim(string& sArchive, string& sAnim, string& sPal);
+    static int UI_CreateLFD_Anim(std::string& sArchive, std::string& sAnim, std::string& sPal);
     static void UI_DestroyLFD_Anim(int ID);
     static void UI_RenderLFD_Anim(int ID, int frame, int x, int y);
     //use different flags for overlay versus fullscreen.
-    static void UI_PushScreen(const string& uiName, int flags, int backgrndFX);
+    static void UI_PushScreen(const std::string& uiName, int flags, int backgrndFX);
     //pops the current screen off the stack, returning control to the previous.
     static void UI_PopScreen();
 

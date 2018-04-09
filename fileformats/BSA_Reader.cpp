@@ -1,9 +1,9 @@
 #include "BSA_Reader.h"
 #include "../EngineSettings.h"
 #include "../ui/XL_Console.h"
-#include <string.h>
-#include <stdio.h>
-#include <assert.h>
+#include <cstring>
+#include <cstdio>
+#include <cassert>
 
 BSA_Reader::BSA_Reader() : Archive()
 {

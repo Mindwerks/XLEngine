@@ -3,9 +3,8 @@
 
 #include "../CommonTypes.h"
 #include "RenderComponent.h"
-#include <vector>
 
-using namespace std;
+#include <vector>
 
 class IDriver3D;
 class Object;
@@ -49,7 +48,7 @@ private:
     };
 
     TextureHandle m_hTex;
-    vector<FX_Frame> m_fxFrames;
+    std::vector<FX_Frame> m_fxFrames;
     uint32_t m_uFlags;
     uint32_t m_uCurFrame;
     int32_t m_nFrameDelay;

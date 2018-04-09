@@ -75,7 +75,7 @@ void DarkXL_Game::KeyDown(int32_t key)
 /************************
  *** Console commands ***
  ************************/
-void DarkXL_Game::CC_GameVersion(const vector<string>& args, void *pUserData)
+void DarkXL_Game::CC_GameVersion(const std::vector<std::string>& args, void *pUserData)
 {
     s_pGame_Console->m_pAPI->PrintToConsole("DarkXL version %d.%03d", s_pGame_Console->m_nVersionMajor, s_pGame_Console->m_nVersionMinor);
 }

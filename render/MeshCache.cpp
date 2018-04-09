@@ -1,8 +1,8 @@
 #include "MeshCache.h"
 #include "Mesh.h"
 #include "../world/MeshCollision.h"
-#include <assert.h>
-#include <stdlib.h>
+#include <cassert>
+#include <cstdlib>
 #include <memory.h>
 
 MeshCache::MeshMap MeshCache::m_MeshMap;
@@ -32,7 +32,7 @@ void MeshCache::Destroy()
     m_MeshCollisionMap.clear();
 }
 
-Mesh *MeshCache::GetMesh(const string& sName)
+Mesh *MeshCache::GetMesh(const std::string& sName)
 {
     Mesh *pMesh = NULL;
     MeshMap::iterator iMesh = m_MeshMap.find(sName);
@@ -49,7 +49,7 @@ Mesh *MeshCache::GetMesh(const string& sName)
     return pMesh;
 }
 
-MeshCollision *MeshCache::GetMeshCollision(const string& sName)
+MeshCollision *MeshCache::GetMeshCollision(const std::string& sName)
 {
     MeshCollision *pMeshCollision = NULL;
     MeshCollisionMap::iterator iMeshCol = m_MeshCollisionMap.find(sName);

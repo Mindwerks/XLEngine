@@ -1,6 +1,6 @@
 #include "IDriver3D.h"
 #include "../math/Vector3.h"
-#include <stdio.h>
+#include <cstdio>
 #include <malloc.h>
 
 float LightObject::s_fAnimOffset0 = 0.0f;

@@ -1,8 +1,8 @@
 #include "ScratchPad.h"
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 #include <memory.h>
-#include <assert.h>
+#include <cassert>
 
 #define SCRATCH_PAD_SIZE 64*1024*1024
 #define MAX_FRAME_COUNT 128

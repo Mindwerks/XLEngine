@@ -2,9 +2,9 @@
 #include "../math/Math.h"
 #include "../render/IDriver3D.h"
 #include "../render/TextureCache.h"
-#include <math.h>
-#include <string.h>
-#include <assert.h>
+#include <cmath>
+#include <cstring>
+#include <cassert>
 
 PLTT_File LFD_Anim::m_PalFile;
 uint32_t _ImgBuffer[2048*2048];

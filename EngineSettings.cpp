@@ -1,8 +1,8 @@
 #include "EngineSettings.h"
 #include <fstream>
 #include <cctype>
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 #include <memory.h>
 
 #if PLATFORM_WIN

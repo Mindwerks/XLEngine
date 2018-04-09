@@ -4,8 +4,6 @@
 #include "SkyLoader.h"
 #include "TextureLoader.h"
 
-using namespace std;
-
 struct SkyData
 {
     bool          bLoaded;

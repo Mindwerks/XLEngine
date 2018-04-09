@@ -6,14 +6,12 @@
 #include "../math/Vector3.h"
 #include "../math/Vector4.h"
 #include "../math/Matrix.h"
+
 #include <vector>
 
 class IDriver3D;
 class VertexBuffer;
 class IndexBuffer;
-
-using namespace std;
-
 
 class CommandBuffer
 {

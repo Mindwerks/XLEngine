@@ -4,9 +4,9 @@
 #include "../CommonTypes.h"
 #include "../math/Vector3.h"
 #include "../render/Camera.h"
+
 #include <vector>
 
-using namespace std;
 class Sector;
 class IDriver3D;
 class Camera;
@@ -23,7 +23,7 @@ public:
     uint32_t GetSectorCount();
     void AddSector(Sector *pSector);
     Sector *GetSector(uint32_t uIndex);
-    const vector<Sector *>& GetSectors() { return m_Sectors; }
+    const std::vector<Sector *>& GetSectors() { return m_Sectors; }
     int32_t FindSector(const char *pszName);
 
     void SetWorldPos(int32_t x, int32_t y) { m_nWorldPosX = x; m_nWorldPosY = y; }
@@ -50,7 +50,7 @@ public:
 
 protected:
     Vector3 m_Bounds[2];    //world space bounds [min,max]
-    vector<Sector *> m_Sectors;
+    std::vector<Sector *> m_Sectors;
     int32_t m_nWorldPosX, m_nWorldPosY;
     int32_t m_nType;
     Camera m_LockCamera;

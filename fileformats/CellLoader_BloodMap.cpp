@@ -7,18 +7,15 @@
 #include "../world/Sprite_ZAxis.h"
 #include "../world/LevelFuncMgr.h"
 #include "../render/TextureCache.h"
-
 #include "../fileformats/TextureTypes.h"
 #include "../fileformats/ArchiveTypes.h"
-
 #include "../math/Math.h"
-
 #include "../ui/XL_Console.h"
-
 #include "../EngineSettings.h"
-#include <string.h>
-#include <stdio.h>
-#include <assert.h>
+
+#include <string>
+#include <cstdio>
+#include <cassert>
 
 #define MAX_TILES 9216
 
@@ -389,7 +386,7 @@ TextureHandle CellLoader_BloodMap::AddBloodTile(int32_t picnum, uint32_t uPalIdx
     return hTex;
 }
 
-WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const string& sFile, int32_t worldX, int32_t worldY )
+WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const std::string& sFile, int32_t worldX, int32_t worldY )
 {
     WorldCell *pCell = NULL;
     ObjectManager::FreeAllObjects();

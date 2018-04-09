@@ -7,7 +7,7 @@
 #include "../../math/Vector2.h"
 #include "../../math/Vector4.h"
 #include "../../math/FixedPoint.h"
-#include <assert.h>
+#include <cassert>
 
 #define DRAW_FUNC(bpp8, pow2, bilinear, alpha, gouraud, persp)  void Draw_##bpp8##_##pow2##_##bilinear##_##alpha##_##gouraud##_##persp##_(const TriGradients& Gradients, TriEdge *pLeft, TriEdge *pRight)
 

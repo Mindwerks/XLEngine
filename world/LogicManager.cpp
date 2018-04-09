@@ -1,6 +1,6 @@
 #include "LogicManager.h"
 
-map<string, Logic *> LogicManager::m_Logics;
+std::map<std::string, Logic *> LogicManager::m_Logics;
 
 bool LogicManager::Init()
 {
@@ -9,8 +9,8 @@ bool LogicManager::Init()
 
 void LogicManager::Destroy()
 {
-    map<string, Logic *>::iterator iLogic = m_Logics.begin();
-    map<string, Logic *>::iterator eLogic = m_Logics.end();
+    std::map<std::string, Logic *>::iterator iLogic = m_Logics.begin();
+    std::map<std::string, Logic *>::iterator eLogic = m_Logics.end();
 
     for (; iLogic != eLogic; ++iLogic)
     {
@@ -20,9 +20,9 @@ void LogicManager::Destroy()
     m_Logics.clear();
 }
 
-Logic *LogicManager::GetLogic(const string& sName)
+Logic *LogicManager::GetLogic(const std::string& sName)
 {
-    map<string, Logic *>::iterator iLogic = m_Logics.find(sName);
+    std::map<std::string, Logic *>::iterator iLogic = m_Logics.find(sName);
     if ( iLogic != m_Logics.end() )
     {
         return iLogic->second;
@@ -31,7 +31,7 @@ Logic *LogicManager::GetLogic(const string& sName)
     return NULL;
 }
 
-Logic *LogicManager::CreateLogicFromCode(const string& sName, void *pOwner, LogicFunction *pFunc)
+Logic *LogicManager::CreateLogicFromCode(const std::string& sName, void *pOwner, LogicFunction *pFunc)
 {
     Logic *pLogic = xlNew Logic(sName, pOwner, LTYPE_CODE);
     if ( pLogic )

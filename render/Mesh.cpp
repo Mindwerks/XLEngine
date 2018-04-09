@@ -4,8 +4,8 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "../world/Object.h"
-#include <assert.h>
-#include <stdlib.h>
+#include <cassert>
+#include <cstdlib>
 #include <memory.h>
 
 Mesh::Mesh()

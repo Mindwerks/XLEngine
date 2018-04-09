@@ -5,10 +5,11 @@
 #include "../fileformats/ArchiveManager.h"
 #include "../fileformats/TextureLoader.h"
 #include "../memory/ScratchPad.h"
-#include <assert.h>
-#include <stdlib.h>
+
+#include <cassert>
+#include <cstdlib>
 #include <memory.h>
-#include <stdio.h>
+#include <cstdio>
 
 ImageLoader *TextureCache::m_pLoader;
 IDriver3D *TextureCache::m_pDriver;
@@ -22,7 +23,7 @@ uint32_t TextureCache::m_uPrevTexHeight= 0;
 float TextureCache::m_fRelSizeX     = 1.0f;
 float TextureCache::m_fRelSizeY   = 1.0f;
 void *TextureCache::m_pPrevExtraData = NULL;
-string TextureCache::m_SavedPath;
+std::string TextureCache::m_SavedPath;
 
 bool TextureCache::Init(IDriver3D *pDriver)
 {
@@ -46,7 +47,7 @@ void TextureCache::Destroy()
     m_TextureMap.clear();
 }
 
-void TextureCache::SetPath(const string& path)
+void TextureCache::SetPath(const std::string& path)
 {
     if ( m_pLoader )
     {
@@ -64,7 +65,7 @@ void TextureCache::RestorePath()
     m_pLoader->SetPath( m_SavedPath.c_str() );
 }
 
-TextureHandle TextureCache::LoadTexture(const string& szFile, bool bGenMips)
+TextureHandle TextureCache::LoadTexture(const std::string& szFile, bool bGenMips)
 {
     // Don't load the same texture twice
     TextureMap::iterator iTexMap = m_TextureMap.find(szFile);
@@ -147,7 +148,7 @@ TextureHandle TextureCache::LoadTextureFromMem(const uint8_t *pImgBuffer, uint32
     return XL_INVALID_TEXTURE;
 }
 
-TextureHandle TextureCache::LoadTextureFromMem_Pal(const uint8_t *pImgBuffer, uint32_t uPalIndex, uint32_t width, uint32_t height, const string& sName, bool bGenMips)
+TextureHandle TextureCache::LoadTextureFromMem_Pal(const uint8_t *pImgBuffer, uint32_t uPalIndex, uint32_t width, uint32_t height, const std::string& sName, bool bGenMips)
 {
     // We have to modify the file name a little...
     char szName[32];
@@ -211,7 +212,7 @@ TextureHandle TextureCache::GameFile_LoadTexture_TexList_API(uint32_t uTextureTy
     return GameFile_LoadTexture_TexList(uTextureType, uPalIndex, uArchiveType, pszArchive, pszFile, nRecord, bGenMips!=0);
 }
 
-TextureHandle TextureCache::GameFile_LoadTexture_TexList(uint32_t uTextureType, uint32_t uPalIndex, uint32_t uArchiveType, const string& sArchive, const string& szFile, int32_t nRecord, bool bGenMips)
+TextureHandle TextureCache::GameFile_LoadTexture_TexList(uint32_t uTextureType, uint32_t uPalIndex, uint32_t uArchiveType, const std::string& sArchive, const std::string& szFile, int32_t nRecord, bool bGenMips)
 {
     // We have to modify the file name a little...
     char szName[32];
@@ -332,7 +333,7 @@ TextureHandle TextureCache::GameFile_LoadTexture_TexList(uint32_t uTextureType, 
     return XL_INVALID_TEXTURE;
 }
 
-TextureHandle TextureCache::GameFile_LoadTexture(uint32_t uTextureType, uint32_t uPalIndex, uint32_t uArchiveType, const string& sArchive, const string& szFile, bool bGenMips, bool bCopyPal)
+TextureHandle TextureCache::GameFile_LoadTexture(uint32_t uTextureType, uint32_t uPalIndex, uint32_t uArchiveType, const std::string& sArchive, const std::string& szFile, bool bGenMips, bool bCopyPal)
 {
     // We have to modify the file name a little...
     char szName[32];

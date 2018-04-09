@@ -6,7 +6,7 @@
 #include "../../math/Vector2.h"
 #include "../../math/Vector4.h"
 #include "../../math/FixedPoint.h"
-#include <assert.h>
+#include <cassert>
 
 struct Texture;
 struct PolygonData;

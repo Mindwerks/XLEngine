@@ -2,10 +2,10 @@
 #define DAGGERXL_GAME_H
 
 #include "../plugin_framework/plugin.h"
+
 #include <string>
 #include <vector>
 
-using namespace std;
 class DaggerXL_Player;
 class Logic_Door;
 class Logic_Obj_Action;
@@ -71,7 +71,7 @@ private:
 
     //Console commands
     static DaggerXL_Game *s_pGame_Console;
-    static void CC_GameVersion(const vector<string>& args, void *pUserData);
+    static void CC_GameVersion(const std::vector<std::string>& args, void *pUserData);
 };
 
 #endif //BLOODXL_GAME_H

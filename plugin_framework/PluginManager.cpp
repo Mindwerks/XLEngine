@@ -22,13 +22,13 @@ void PluginManager::Destroy()
     UnloadGame();
 }
 
-bool PluginManager::InitGame(const string& path)
+bool PluginManager::InitGame(const std::string& path)
 {
     //first unload the game, since we can only have one at a time right now.
     UnloadGame();
 
     //load the game lib.
-    string errorString;
+    std::string errorString;
     m_pGameLib = DynamicLibrary::Load(path, errorString);
     if (!m_pGameLib) // not a dynamic library? 
       return false;
