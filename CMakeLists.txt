@@ -18,9 +18,10 @@ set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 
 include(CheckLibraryExists)
 
-find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
 find_package(DevIL REQUIRED)
+find_package(ENet REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(OpenGL REQUIRED)
 find_package(Threads REQUIRED)
 if(NOT WIN32)
     find_package(SDL2 REQUIRED)
@@ -321,17 +322,16 @@ source_group("world" FILES ${world_sources})
 include_directories(${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/angelscript/include)
 
 # Include/library directories.
-# - TODO: find ENet. Currently has to be found and set manually.
-# - TODO: Use enet64.lib on 64-bit.
 set(xlengine_include_dirs
+    ${ENET_INCLUDE_DIR}
     ${GLEW_INCLUDE_DIR}
     ${IL_INCLUDE_DIR})
 set(xlengine_libraries
-    GLEW::GLEW
-    ${OPENGL_LIBRARIES}
-    ${IL_LIBRARIES}
-    enet
     angelscript
+    ${ENET_LIBRARY}
+    GLEW::GLEW
+    ${IL_LIBRARIES}
+    ${OPENGL_LIBRARIES}
     Threads::Threads)
 
 # Platform-specific includes/libraries.
