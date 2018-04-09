@@ -34,33 +34,100 @@ add_subdirectory(thirdparty)
 set(src_root ${XLEngine_SOURCE_DIR})
 
 # Organize XL Engine sources into alphabetized groups.
-# Can't use GLOB_RECURSE everywhere because some files are platform-specific.
-file(GLOB_RECURSE fileformats_sources
-    ${src_root}/fileformats/*.h*
-    ${src_root}/fileformats/*.cpp)
-file(GLOB_RECURSE math_sources
-    ${src_root}/math/*.h*
-    ${src_root}/math/*.cpp)
-file(GLOB_RECURSE memory_sources
-    ${src_root}/memory/*.h*
-    ${src_root}/memory/*.cpp)
-file(GLOB_RECURSE movieplayback_sources
-    ${src_root}/movieplayback/*.h*
-    ${src_root}/movieplayback/*.cpp)
-file(GLOB_RECURSE networking_sources
-    ${src_root}/networking/*.h*
-    ${src_root}/networking/*.cpp)
+# Not using GLOB_RECURSE so file additions/deletions automatically trigger CMake.
+set(fileformats_sources
+    ${src_root}/fileformats/Archive.h
+    ${src_root}/fileformats/ArchiveManager.h
+    ${src_root}/fileformats/ArchiveManager.cpp
+    ${src_root}/fileformats/ArchiveTypes.h
+    ${src_root}/fileformats/ART_Reader.h
+    ${src_root}/fileformats/ART_Reader.cpp
+    ${src_root}/fileformats/BSA_Reader.h
+    ${src_root}/fileformats/BSA_Reader.cpp
+    ${src_root}/fileformats/CellLoader.h
+    ${src_root}/fileformats/CellLoader_BloodMap.h
+    ${src_root}/fileformats/CellLoader_BloodMap.cpp
+    ${src_root}/fileformats/CellLoader_Daggerfall.h
+    ${src_root}/fileformats/CellLoader_Daggerfall.cpp
+    ${src_root}/fileformats/CellLoader_OutlawsMap.h
+    ${src_root}/fileformats/CellLoader_OutlawsMap.cpp
+    ${src_root}/fileformats/CellManager.h
+    ${src_root}/fileformats/CellManager.cpp
+    ${src_root}/fileformats/CellTypes.h
+    ${src_root}/fileformats/DFFaceTex.h
+    ${src_root}/fileformats/DFFaceTex.cpp
+    ${src_root}/fileformats/GOB_Reader.h
+    ${src_root}/fileformats/GOB_Reader.cpp
+    ${src_root}/fileformats/LFD_Anim.h
+    ${src_root}/fileformats/LFD_Anim.cpp
+    ${src_root}/fileformats/LFD_Reader.h
+    ${src_root}/fileformats/LFD_Reader.cpp
+    ${src_root}/fileformats/Location_Daggerfall.h
+    ${src_root}/fileformats/Location_Daggerfall.cpp
+    ${src_root}/fileformats/MeshLoader_Daggerfall.h
+    ${src_root}/fileformats/MeshLoader_Daggerfall.cpp
+    ${src_root}/fileformats/Parser.h
+    ${src_root}/fileformats/Parser.cpp
+    ${src_root}/fileformats/RFF_Reader.h
+    ${src_root}/fileformats/RFF_Reader.cpp
+    ${src_root}/fileformats/SkyLoader.h
+    ${src_root}/fileformats/SkyLoader_Daggerfall.h
+    ${src_root}/fileformats/SkyLoader_Daggerfall.cpp
+    ${src_root}/fileformats/TextureConv_ART.h
+    ${src_root}/fileformats/TextureConv_ART.cpp
+    ${src_root}/fileformats/TextureConv_IMG.h
+    ${src_root}/fileformats/TextureConv_IMG.cpp
+    ${src_root}/fileformats/TextureConv_PCX.h
+    ${src_root}/fileformats/TextureConv_PCX.cpp
+    ${src_root}/fileformats/TextureConverter.h
+    ${src_root}/fileformats/TextureLoader.h
+    ${src_root}/fileformats/TextureLoader.cpp
+    ${src_root}/fileformats/TextureTypes.h)
+set(math_sources
+    ${src_root}/math/FixedPoint.h
+    ${src_root}/math/FixedPoint.cpp
+    ${src_root}/math/Math.h
+    ${src_root}/math/Math.cpp
+    ${src_root}/math/Matrix.h
+    ${src_root}/math/Matrix.cpp
+    ${src_root}/math/Plane.h
+    ${src_root}/math/Plane.cpp
+    ${src_root}/math/Vector2.h
+    ${src_root}/math/Vector2.cpp
+    ${src_root}/math/Vector3.h
+    ${src_root}/math/Vector3.cpp
+    ${src_root}/math/Vector4.h
+    ${src_root}/math/Vector4.cpp)
+set(memory_sources
+    ${src_root}/memory/ScratchPad.h
+    ${src_root}/memory/ScratchPad.cpp)
+set(movieplayback_sources
+    ${src_root}/movieplayback/LFD_Film.h
+    ${src_root}/movieplayback/LFD_Film.cpp
+    ${src_root}/movieplayback/MovieManager.h
+    ${src_root}/movieplayback/MovieManager.cpp
+    ${src_root}/movieplayback/MoviePlayer.h
+    ${src_root}/movieplayback/MovieTypes.h)
+set(networking_sources
+    ${src_root}/networking/NetworkMgr.h
+    ${src_root}/networking/NetworkMgr.cpp)
 set(os_sources
     ${src_root}/os/Clock.h
     ${src_root}/os/Input.h
     ${src_root}/os/Input.cpp
     ${src_root}/os/VirtualKeys.h)
-file(GLOB_RECURSE plugin_framework_sources
-    ${src_root}/plugin_framework/*.h*
-    ${src_root}/plugin_framework/*.cpp)
-file(GLOB_RECURSE procedural_sources
-    ${src_root}/procedural/*.h*
-    ${src_root}/procedural/*.cpp)
+set(plugin_framework_sources
+    ${src_root}/plugin_framework/DynamicLibrary.h
+    ${src_root}/plugin_framework/DynamicLibrary.cpp
+    ${src_root}/plugin_framework/plugin.h
+    ${src_root}/plugin_framework/PluginManager.h
+    ${src_root}/plugin_framework/PluginManager.cpp
+    ${src_root}/plugin_framework/XLEngine_Plugin_API.h)
+set(procedural_sources
+    ${src_root}/procedural/Noise.h
+    ${src_root}/procedural/Noise.cpp
+    ${src_root}/procedural/ProceduralFunc.h
+    ${src_root}/procedural/ProceduralFunc.cpp)
 set(render_sources
     ${src_root}/render/Camera.h
     ${src_root}/render/Camera.cpp
@@ -105,22 +172,63 @@ set(root_sources
     ${src_root}/EngineSettings.cpp
     ${src_root}/PlatformDef.h
     ${src_root}/PluginAPI_Func.h)
-file(GLOB_RECURSE scriptsystem_sources
-    ${src_root}/scriptsystem/*.h*
-    ${src_root}/scriptsystem/*.cpp)
+set(scriptsystem_sources
+    ${src_root}/scriptsystem/scriptarray.h
+    ${src_root}/scriptsystem/scriptarray.cpp
+    ${src_root}/scriptsystem/scriptstdstring.h
+    ${src_root}/scriptsystem/scriptstdstring.cpp
+    ${src_root}/scriptsystem/ScriptSystem.h
+    ${src_root}/scriptsystem/ScriptSystem.cpp)
 set(threading_sources
     ${src_root}/threading/Mutex.h
     ${src_root}/threading/Semaphore.h
     ${src_root}/threading/Thread.h)
-file(GLOB_RECURSE ui_sources
-    ${src_root}/ui/*.h*
-    ${src_root}/ui/*.cpp)
-file(GLOB_RECURSE world_sources
-    ${src_root}/world/*.h*
-    ${src_root}/world/*.cpp)
+set(ui_sources
+    ${src_root}/ui/Console.h
+    ${src_root}/ui/Console.cpp
+    ${src_root}/ui/UI_System.h
+    ${src_root}/ui/UI_System.cpp
+    ${src_root}/ui/XL_Console.h
+    ${src_root}/ui/XL_Console.cpp)
+set(world_sources
+    ${src_root}/world/CollisionComponent.h
+    ${src_root}/world/LevelFunc.h
+    ${src_root}/world/LevelFunc.cpp
+    ${src_root}/world/LevelFunc_Default.h
+    ${src_root}/world/LevelFunc_Default.cpp
+    ${src_root}/world/LevelFuncMgr.h
+    ${src_root}/world/LevelFuncMgr.cpp
+    ${src_root}/world/Logic.h
+    ${src_root}/world/Logic.cpp
+    ${src_root}/world/LogicDef.h
+    ${src_root}/world/LogicManager.h
+    ${src_root}/world/LogicManager.cpp
+    ${src_root}/world/MeshCollision.h
+    ${src_root}/world/MeshCollision.cpp
+    ${src_root}/world/Object.h
+    ${src_root}/world/Object.cpp
+    ${src_root}/world/ObjectDef.h
+    ${src_root}/world/ObjectManager.h
+    ${src_root}/world/ObjectManager.cpp
+    ${src_root}/world/OrientedSprite.h
+    ${src_root}/world/OrientedSprite.cpp
+    ${src_root}/world/RenderComponent.h
+    ${src_root}/world/Sector.h
+    ${src_root}/world/Sector.cpp
+    ${src_root}/world/Sector_2_5D.h
+    ${src_root}/world/Sector_2_5D.cpp
+    ${src_root}/world/Sector_GeoBlock.h
+    ${src_root}/world/Sector_GeoBlock.cpp
+    ${src_root}/world/Sprite_ZAxis.h
+    ${src_root}/world/Sprite_ZAxis.cpp
+    ${src_root}/world/Terrain.h
+    ${src_root}/world/Terrain.cpp
+    ${src_root}/world/World.h
+    ${src_root}/world/World.cpp
+    ${src_root}/world/WorldCell.h
+    ${src_root}/world/WorldCell.cpp)
 
 set(xlengine_sources
-    ${root_sources}
     ${fileformats_sources}
     ${math_sources}
     ${memory_sources}
@@ -130,6 +238,7 @@ set(xlengine_sources
     ${plugin_framework_sources}
     ${procedural_sources}
     ${render_sources}
+    ${root_sources}
     ${scriptsystem_sources}
     ${threading_sources}
     ${ui_sources}
@@ -137,15 +246,18 @@ set(xlengine_sources
 
 # Append platform-specific sources.
 if(WIN32)
-    file(GLOB_RECURSE os_windows_sources
-        ${src_root}/os/Win/*.h*
-        ${src_root}/os/Win/*.cpp)
-    file(GLOB_RECURSE render_windows_sources
-        ${src_root}/render/win/*.h*
-        ${src_root}/render/win/*.cpp)
-    file(GLOB_RECURSE threading_windows_sources
-        ${src_root}/threading/Win32/*.h*
-        ${src_root}/threading/Win32/*.cpp)
+    set(os_windows_sources
+        ${src_root}/os/Win/Clock_Win.cpp
+        ${src_root}/os/Win/KeyOSMapping_Win.h)
+    set(render_windows_sources
+        ${src_root}/render/win/Driver3D_OGL_Win.h
+        ${src_root}/render/win/Driver3D_OGL_Win.cpp
+        ${src_root}/render/win/wglext.h)
+    set(threading_windows_sources
+        ${src_root}/threading/Win32/Mutex.h
+        ${src_root}/threading/Win32/Semaphore.h
+        ${src_root}/threading/Win32/Thread.h
+        ${src_root}/threading/Win32/Win32.h)
     set(xlengine_main_sources
         ${src_root}/win/main.h
         ${src_root}/win/main.cpp)
@@ -164,15 +276,16 @@ if(WIN32)
         ${xlengine_main_sources}
         ${xlengine_resources_sources})
 else(WIN32)
-    file(GLOB_RECURSE os_linux_sources
-        ${src_root}/os/linux/*.h*
-        ${src_root}/os/linux/*.cpp)
-    file(GLOB_RECURSE render_linux_sources
-        ${src_root}/render/linux/*.h*
-        ${src_root}/render/linux/*.cpp)
-    file(GLOB_RECURSE threading_posix_sources
-        ${src_root}/threading/Posix/*.h*
-        ${src_root}/threading/Posix/*.cpp)
+    set(os_linux_sources
+        ${src_root}/os/linux/Clock_Linux.cpp
+        ${src_root}/os/linux/KeyOSMapping_Linux.h)
+    set(render_linux_sources
+        ${src_root}/render/linux/Driver3D_OGL_Linux.h
+        ${src_root}/render/linux/Driver3D_OGL_Linux.cpp)
+    set(threading_posix_sources
+        ${src_root}/threading/posix/Mutex.h
+        ${src_root}/threading/posix/Semaphore.h
+        ${src_root}/threading/posix/Thread.h)
     set(xlengine_main_sources
         ${src_root}/linux/main.cpp)
 
@@ -245,24 +358,43 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 # XL Engine shared library sources.
 set(bloodxl_sources
+    ${src_root}/BloodXL/BloodXL_Game.h
     ${src_root}/BloodXL/BloodXL_Game.cpp
+    ${src_root}/BloodXL/BloodXL_main.h
     ${src_root}/BloodXL/BloodXL_main.cpp
-    ${src_root}/BloodXL/BloodXL_Player.cpp)
+    ${src_root}/BloodXL/BloodXL_Player.h
+    ${src_root}/BloodXL/BloodXL_Player.cpp
+    ${src_root}/BloodXL/targetver.h)
 set(daggerxl_sources
+    ${src_root}/DaggerXL/DaggerXL_Game.h
     ${src_root}/DaggerXL/DaggerXL_Game.cpp
+    ${src_root}/DaggerXL/DaggerXL_main.h
     ${src_root}/DaggerXL/DaggerXL_main.cpp
+    ${src_root}/DaggerXL/DaggerXL_Player.h
     ${src_root}/DaggerXL/DaggerXL_Player.cpp
+    ${src_root}/DaggerXL/Logic_Door.h
     ${src_root}/DaggerXL/Logic_Door.cpp
+    ${src_root}/DaggerXL/Logic_NPC.h
     ${src_root}/DaggerXL/Logic_NPC.cpp
-    ${src_root}/DaggerXL/Logic_Obj_Action.cpp)
+    ${src_root}/DaggerXL/Logic_Obj_Action.h
+    ${src_root}/DaggerXL/Logic_Obj_Action.cpp
+    ${src_root}/DaggerXL/targetver.h)
 set(darkxl_sources
+    ${src_root}/DarkXL/CutscenePlayer.h
     ${src_root}/DarkXL/CutscenePlayer.cpp
+    ${src_root}/DarkXL/DarkXL_Game.h
     ${src_root}/DarkXL/DarkXL_Game.cpp
-    ${src_root}/DarkXL/DarkXL_main.cpp)
+    ${src_root}/DarkXL/DarkXL_main.h
+    ${src_root}/DarkXL/DarkXL_main.cpp
+    ${src_root}/DarkXL/targetver.h)
 set(outlawsxl_sources
+    ${src_root}/OutlawsXL/OutlawsXL_Game.h
     ${src_root}/OutlawsXL/OutlawsXL_Game.cpp
+    ${src_root}/OutlawsXL/OutlawsXL_main.h
     ${src_root}/OutlawsXL/OutlawsXL_main.cpp
-    ${src_root}/OutlawsXL/OutlawsXL_Player.cpp)
+    ${src_root}/OutlawsXL/OutlawsXL_Player.h
+    ${src_root}/OutlawsXL/OutlawsXL_Player.cpp
+    ${src_root}/OutlawsXL/targetver.h)
 
 add_library(BloodXL SHARED ${bloodxl_sources})
 add_library(DaggerXL SHARED ${daggerxl_sources})
