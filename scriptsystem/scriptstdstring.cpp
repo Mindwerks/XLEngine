@@ -24,8 +24,9 @@ static void CopyConstructStringGeneric(asIScriptGeneric * gen) {
 }
 
 static void DestructStringGeneric(asIScriptGeneric * gen) {
-  std::string * ptr = static_cast<std::string *>(gen->GetObject());
-  ptr->std::string::~string();
+    using std::string;
+    std::string * ptr = static_cast<std::string *>(gen->GetObject());
+    ptr->~string();
 }
 
 static void AssignStringGeneric(asIScriptGeneric *gen) {
@@ -366,7 +367,8 @@ static void CopyConstructString(const std::string &other, std::string *thisPoint
 
 static void DestructString(std::string*thisPointer)
 {
-    thisPointer->std::string::~string();
+    using std::string;
+    thisPointer->~string();
 }
 
 static std::string &AssignUIntToString(unsigned int i, std::string &dest)
