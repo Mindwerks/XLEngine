@@ -233,9 +233,9 @@ SHANDLE ScriptSystem::GetFunc(int nModule, const char *pszFunc)
     asIScriptModule *pModule = m_Engine->GetModule(pszModules[nModule], asGM_ONLY_IF_EXISTS);
     if ( pModule )
     {
-        return pModule->GetFunctionIdByName(pszFunc);
+        return pModule->GetFunctionByName(pszFunc);
     }
-    return -1;
+    return nullptr;
 }
 
 void ScriptSystem::SetCurFunction(SHANDLE hFunc)
@@ -252,7 +252,7 @@ void ScriptSystem::ExecuteFunc()
 uint32_t ScriptSystem::ExecuteFunc(SHANDLE hFunc, int32_t nArgCnt, const ScriptArgument *pArgs, bool bRetValueExpected)
 {
     uint32_t uRetValue = 0;
-    if ( hFunc >= 0 )
+    if ( hFunc )
     {
         m_pContext->Prepare(hFunc);
         if ( nArgCnt > 0 && pArgs )

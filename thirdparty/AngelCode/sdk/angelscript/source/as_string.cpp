@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2009 Andreas Jonsson
+   Copyright (c) 2003-2017 Andreas Jonsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -31,14 +31,15 @@
 #include "as_config.h"
 
 #include <stdarg.h>		// va_list, va_start(), etc
-#include <stdlib.h>     // strtod(), strtol()
-#include <string.h> // some compilers declare memcpy() here
+#include <stdlib.h>		// strtod(), strtol()
+#include <string.h>		// some compilers declare memcpy() here
 
 #if !defined(AS_NO_MEMORY_H)
 #include <memory.h>
 #endif
 
 #include "as_string.h"
+#include "as_string_util.h"
 
 asCString::asCString()
 {
@@ -54,6 +55,26 @@ asCString::asCString(const asCString &str)
 
 	Assign(str.AddressOf(), str.length);
 }
+
+#ifdef AS_CAN_USE_CPP11
+asCString::asCString(asCString &&str)
+{
+	if( str.length <= 11 )
+	{
+		length = str.length;
+		memcpy(local, str.local, length);
+		local[length] = 0;
+	}
+	else
+	{
+		dynamic = str.dynamic;
+		length = str.length;
+	}
+
+	str.dynamic = 0;
+	str.length = 0;
+}
+#endif // c++11
 
 asCString::asCString(const char *str, size_t len)
 {
@@ -122,6 +143,11 @@ void asCString::Allocate(size_t len, bool keepData)
 	{
 		// Allocate a new dynamic buffer if the new one is larger than the old
 		char *buf = asNEWARRAY(char,len+1);
+		if( buf == 0 )
+		{
+			// Out of memory. Return without modifying anything
+			return;
+		}
 
 		if( keepData )
 		{
@@ -177,6 +203,37 @@ asCString &asCString::operator =(const asCString &str)
 	return *this;
 }
 
+#ifdef AS_CAN_USE_CPP11
+asCString &asCString::operator =(asCString &&str)
+{
+	if( this != &str )
+	{
+		if( length > 11 && dynamic )
+		{
+			asDELETEARRAY(dynamic);
+		}
+
+		if ( str.length <= 11 )
+		{
+			length = str.length;
+
+			memcpy(local, str.local, length);
+			local[length] = 0;
+		}
+		else
+		{
+			dynamic = str.dynamic;
+			length = str.length;
+		}
+
+		str.dynamic = 0;
+		str.length = 0;
+	}
+
+	return *this;
+}
+#endif // c++11
+
 asCString &asCString::operator =(char ch)
 {
 	Assign(&ch, 1);
@@ -226,20 +283,24 @@ size_t asCString::Format(const char *format, ...)
 	va_list args;
 	va_start(args, format);
 
-	char tmp[256];
-	int r = asVSNPRINTF(tmp, 255, format, args);
+	const size_t startSize = 1024;
+	char tmp[startSize];
+	int r = asVSNPRINTF(tmp, startSize-1, format, args);
 
-	if( r > 0 )
+	if( r > 0 && r < int(startSize) )
 	{
 		Assign(tmp, r);
 	}
 	else
 	{
-		size_t n = 512;
+		// TODO: For some reason this doesn't work properly on Linux. Perhaps the
+		//       problem is related to vsnprintf not keeping the state of va_arg.
+		//       Perhaps I need to rewrite this in some way to keep the state
+		size_t n = startSize*2;
 		asCString str; // Use temporary string in case the current buffer is a parameter
 		str.Allocate(n, false);
 
-		while( (r = asVSNPRINTF(str.AddressOf(), n, format, args)) < 0 )
+		while( (r = asVSNPRINTF(str.AddressOf(), n, format, args)) < 0 || r >= int(n) )
 		{
 			n *= 2;
 			str.Allocate(n, false);
@@ -267,58 +328,32 @@ const char &asCString::operator [](size_t index) const
 	return AddressOf()[index];
 }
 
-asCString asCString::SubString(size_t start, size_t length) const
+asCString asCString::SubString(size_t in_start, size_t in_length) const
 {
-	if( start >= GetLength() || length == 0 )
+	if( in_start >= GetLength() || in_length == 0 )
 		return asCString("");
 
-	if( length == (size_t)(-1) ) length = GetLength() - start;
+	if( in_length == (size_t)(-1) ) in_length = GetLength() - in_start;
 
 	asCString tmp;
-	tmp.Assign(AddressOf() + start, length);
+	tmp.Assign(AddressOf() + in_start, in_length);
 
 	return tmp;
 }
 
 int asCString::Compare(const char *str) const
 {
-	return Compare(str, strlen(str));
+	return asCompareStrings(AddressOf(), length, str, strlen(str));
 }
 
 int asCString::Compare(const asCString &str) const
 {
-	return Compare(str.AddressOf(), str.GetLength());
+	return asCompareStrings(AddressOf(), length, str.AddressOf(), str.GetLength());
 }
 
 int asCString::Compare(const char *str, size_t len) const
 {
-	if( length == 0 ) 
-	{
-		if( str == 0 || len == 0 ) return 0; // Equal
-
-		return 1; // The other string is larger than this
-	}
-
-	if( str == 0 )
-	{
-		if( length == 0 ) 
-			return 0; // Equal
-
-		return -1; // The other string is smaller than this
-	}
-
-	if( len < length )
-	{
-		int result = memcmp(AddressOf(), str, len);
-		if( result == 0 ) return -1; // The other string is smaller than this
-
-		return result;
-	}
-
-	int result = memcmp(AddressOf(), str, length);
-	if( result == 0 && length < len ) return 1; // The other string is larger than this
-
-	return result;
+	return asCompareStrings(AddressOf(), length, str, len);
 }
 
 size_t asCString::RecalculateLength()
@@ -326,6 +361,30 @@ size_t asCString::RecalculateLength()
 	SetLength(strlen(AddressOf()));
 
 	return length;
+}
+
+int asCString::FindLast(const char *str, int *count) const
+{
+	// There is no strstr that starts from the end, so 
+	// we'll iterate until we find the last occurrance.
+	// This shouldn't cause a performance problem because
+	// it is not expected that this will be done very often,
+	// and then only on quite short strings anyway.
+
+	if( count ) *count = 0;
+
+	const char *last = 0;
+	const char *curr = AddressOf()-1;
+	while( (curr = strstr(curr+1, str)) != 0 )
+	{
+		if( count ) (*count)++;
+		last = curr;
+	}
+
+	if( last )
+		return int(last - AddressOf());
+
+	return -1;
 }
 
 //-----------------------------------------------------------------------------
@@ -390,3 +449,39 @@ asCString operator +(const asCString &a, const char *b)
 	return res;
 }
 
+// wrapper class
+
+asCStringPointer::asCStringPointer()
+	: string(0), length(0), cstring(0)
+{
+}
+
+asCStringPointer::asCStringPointer(const char *str, size_t len)
+	: string(str), length(len), cstring(0)
+{
+}
+
+asCStringPointer::asCStringPointer(asCString *cstr)
+	: string(0), length(0), cstring(cstr)
+{
+}
+
+const char *asCStringPointer::AddressOf() const
+{
+	return string ? string : cstring->AddressOf();
+}
+
+size_t asCStringPointer::GetLength() const
+{
+	return string ? length : cstring->GetLength();
+}
+
+bool asCStringPointer::operator==(const asCStringPointer& other) const
+{
+	return asCompareStrings(AddressOf(), GetLength(), other.AddressOf(), other.GetLength()) == 0;
+}
+
+bool asCStringPointer::operator<(const asCStringPointer& other) const
+{
+	return asCompareStrings(AddressOf(), GetLength(), other.AddressOf(), other.GetLength()) < 0;
+}

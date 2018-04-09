@@ -30,7 +30,7 @@ using namespace std;
 #define UINT unsigned int 
 typedef unsigned int DWORD;
 
-// Linux doesn't have timeGetTime(), this essintially does the same
+// Linux doesn't have timeGetTime(), this essentially does the same
 // thing, except this is milliseconds since Epoch (Jan 1st 1970) instead
 // of system start. It will work the same though...
 DWORD timeGetTime()
@@ -73,7 +73,7 @@ int kbhit()
 #define UINT unsigned int
 typedef unsigned int DWORD;
 
-// Linux doesn't have timeGetTime(), this essintially does the same
+// MacOS doesn't have timeGetTime(), this essentially does the same
 // thing, except this is milliseconds since Epoch (Jan 1st 1970) instead
 // of system start. It will work the same though...
 DWORD timeGetTime()
@@ -130,7 +130,7 @@ int main(int argc, char **argv)
 	contextManager.SetGetTimeCallback((TIMEFUNC_t)&timeGetTime);
 
 	// Create the script engine
-	engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
+	engine = asCreateScriptEngine();
 
 	if( engine == 0 )
 	{
@@ -149,8 +149,8 @@ int main(int argc, char **argv)
 	r = CompileScript(engine);
 	if( r < 0 ) return -1;
 
-	contextManager.AddContext(engine, engine->GetModule("script1")->GetFunctionIdByDecl("void main()"));
-	contextManager.AddContext(engine, engine->GetModule("script2")->GetFunctionIdByDecl("void main()"));
+	contextManager.AddContext(engine, engine->GetModule("script1")->GetFunctionByDecl("void main()"));
+	contextManager.AddContext(engine, engine->GetModule("script2")->GetFunctionByDecl("void main()"));
 	
 	// Print some useful information and start the input loop
 	cout << "This sample shows how two scripts can be executed concurrently." << endl; 
@@ -170,8 +170,8 @@ int main(int argc, char **argv)
 		contextManager.ExecuteScripts();
 	}
 
-	// Release the engine
-	engine->Release();
+	// Shut down the engine
+	engine->ShutDownAndRelease();
 
 	return 0;
 }

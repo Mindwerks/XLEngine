@@ -3,10 +3,14 @@
 #include <string.h>  // strstr()
 #include <angelscript.h>
 #include "../../../add_on/scriptbuilder/scriptbuilder.h"
+#include "../../../add_on/scripthelper/scripthelper.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <sstream>
+#include <fstream>
 #if defined(_MSC_VER) && !defined(_WIN32_WCE)
 #include <direct.h>
+#include <crtdbg.h>
 #endif
 #ifdef _WIN32_WCE
 #include <windows.h> // For GetModuleFileName
@@ -19,8 +23,6 @@ int ConfigureEngine(asIScriptEngine *engine, const char *configFile);
 int CompileScript(asIScriptEngine *engine, const char *scriptFile);
 int SaveBytecode(asIScriptEngine *engine, const char *outputFile);
 static const char *GetCurrentDir(char *buf, size_t size);
-asETokenClass GetToken(asIScriptEngine *engine, string &token, const string &text, asUINT &pos);
-asUINT GetLineNumber(const string &text, asUINT pos);
 
 void MessageCallback(const asSMessageInfo *msg, void *param)
 {
@@ -35,6 +37,15 @@ void MessageCallback(const asSMessageInfo *msg, void *param)
 
 int main(int argc, char **argv)
 {
+#if defined(_MSC_VER)
+	// Turn on memory leak detection (use _CrtSetBreakAlloc to break at specific allocation)
+	_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF|_CRTDBG_ALLOC_MEM_DF);
+	_CrtSetReportMode(_CRT_ASSERT,_CRTDBG_MODE_FILE);
+	_CrtSetReportFile(_CRT_ASSERT,_CRTDBG_FILE_STDERR);
+
+	//_CrtSetBreakAlloc(6150);
+#endif
+
 	int r;
 
 	if( argc < 4 )
@@ -48,7 +59,7 @@ int main(int argc, char **argv)
 	}
 
 	// Create the script engine
-	asIScriptEngine *engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
+	asIScriptEngine *engine = asCreateScriptEngine();
 	if( engine == 0 )
 	{
 		cout << "Failed to create script engine." << endl;
@@ -71,11 +82,85 @@ int main(int argc, char **argv)
 	r = SaveBytecode(engine, argv[3]);
 	if( r < 0 ) return -1;
 
-	// Release the engine
-	engine->Release();
+	// Shut down the engine
+	engine->ShutDownAndRelease();
 
 	return 0;
 }
+
+#ifdef AS_CAN_USE_CPP11
+// The string factory doesn't need to keep a specific order in the
+// cache, so the unordered_map is faster than the ordinary map
+#include <unordered_map>  // std::unordered_map
+BEGIN_AS_NAMESPACE
+typedef unordered_map<string, int> map_t;
+END_AS_NAMESPACE
+#else
+#include <map>      // std::map
+BEGIN_AS_NAMESPACE
+typedef map<string, int> map_t;
+END_AS_NAMESPACE
+#endif
+
+// Default string factory. Removes duplicate string constants
+// This same implementation is provided in the scriptstdstring add-on
+class CStdStringFactory : public asIStringFactory
+{
+public:
+	CStdStringFactory() {}
+	~CStdStringFactory()
+	{
+		// The script engine must release each string 
+		// constant that it has requested
+		assert(stringCache.size() == 0);
+	}
+
+	const void *GetStringConstant(const char *data, asUINT length)
+	{
+		string str(data, length);
+		map_t::iterator it = stringCache.find(str);
+		if (it != stringCache.end())
+			it->second++;
+		else
+			it = stringCache.insert(map_t::value_type(str, 1)).first;
+
+		return reinterpret_cast<const void*>(&it->first);
+	}
+
+	int  ReleaseStringConstant(const void *str)
+	{
+		if (str == 0)
+			return asERROR;
+
+		map_t::iterator it = stringCache.find(*reinterpret_cast<const string*>(str));
+		if (it == stringCache.end())
+			return asERROR;
+
+		it->second--;
+		if (it->second == 0)
+			stringCache.erase(it);
+		return asSUCCESS;
+	}
+
+	int  GetRawStringData(const void *str, char *data, asUINT *length) const
+	{
+		if (str == 0)
+			return asERROR;
+
+		if (length)
+			*length = (asUINT)reinterpret_cast<const string*>(str)->length();
+
+		if (data)
+			memcpy(data, reinterpret_cast<const string*>(str)->c_str(), reinterpret_cast<const string*>(str)->length());
+
+		return asSUCCESS;
+	}
+
+	// TODO: Make sure the access to the string cache is thread safe
+	map_t stringCache;
+};
+
+CStdStringFactory stringFactory;
 
 // This function will register the application interface, 
 // based on information read from a configuration file. 
@@ -83,19 +168,9 @@ int ConfigureEngine(asIScriptEngine *engine, const char *configFile)
 {
 	int r;
 
-	// Since we are only going to compile the script and never actually execute it,
-	// we turn off the initialization of global variables, so that the compiler can
-	// just register dummy types and functions for the application interface.
-	r = engine->SetEngineProperty(asEP_INIT_GLOBAL_VARS_AFTER_BUILD, false); assert( r >= 0 );
-
-	// Open the config file
-#if _MSC_VER >= 1500
-	FILE *f = 0;
-	fopen_s(&f, configFile, "rb");
-#else
-	FILE *f = fopen(configFile, "rb");
-#endif
-	if( f == 0 )
+	ifstream strm;
+	strm.open(configFile);
+	if( strm.fail() )
 	{
 		// Write a message to the engine's message callback
 		char buf[256];
@@ -103,281 +178,19 @@ int ConfigureEngine(asIScriptEngine *engine, const char *configFile)
 		engine->WriteMessage(configFile, 0, 0, asMSGTYPE_ERROR, msg.c_str());
 		return -1;
 	}
-	
-	// Determine size of the file
-	fseek(f, 0, SEEK_END);
-	int len = ftell(f);
-	fseek(f, 0, SEEK_SET);
 
-	// On Win32 it is possible to do the following instead
-	// int len = _filelength(_fileno(f));
-
-	// Read the entire file
-	string config;
-	config.resize(len);
-	size_t c = fread(&config[0], len, 1, f);
-
-	fclose(f);
-
-	if( c == 0 ) 
+	// Configure the engine with the information from the file
+	r = ConfigEngineFromStream(engine, strm, configFile, &stringFactory);
+	if( r < 0 )
 	{
-		// Write a message to the engine's message callback
-		char buf[256];
-		string msg = "Failed to load config file in path: '" + string(GetCurrentDir(buf, 256)) + "'";
-		engine->WriteMessage(configFile, 0, 0, asMSGTYPE_ERROR, msg.c_str());
+		engine->WriteMessage(configFile, 0, 0, asMSGTYPE_ERROR, "Configuration failed");
 		return -1;
-	}	
-
-	// Process the configuration file and register each entity
-	asUINT pos  = 0; 
-	while( pos < config.length() )
-	{
-		string token;
-		// TODO: The position where the initial token is found should be stored for error messages
-		GetToken(engine, token, config, pos);
-		if( token == "objtype" )
-		{
-			string name, flags;
-			GetToken(engine, name, config, pos);
-			name = name.substr(1, name.length() - 2);
-			GetToken(engine, flags, config, pos);
-
-			// The size of the value type doesn't matter, because the 
-			// engine must adjust it anyway for different platforms
-			r = engine->RegisterObjectType(name.c_str(), (atol(flags.c_str()) & asOBJ_VALUE) ? 1 : 0, atol(flags.c_str()));
-			if( r < 0 )
-			{
-				engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_ERROR, "Failed to register object type");
-				return -1;
-			}
-		}
-		else if( token == "objbeh" )
-		{
-			string name, behaviour, decl;
-			GetToken(engine, name, config, pos);
-			name = name.substr(1, name.length() - 2);
-			GetToken(engine, behaviour, config, pos);
-			GetToken(engine, decl, config, pos);
-			decl = decl.substr(1, decl.length() - 2);
-
-			asEBehaviours behave = static_cast<asEBehaviours>(atol(behaviour.c_str()));
-			if( behave == asBEHAVE_TEMPLATE_CALLBACK )
-			{
-				// TODO: How can we let the compiler register this? Maybe through a plug-in system? Or maybe by implementing the callback as a script itself
-				engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_WARNING, "Cannot register template callback without the actual implementation");
-			}
-			else
-			{
-				r = engine->RegisterObjectBehaviour(name.c_str(), behave, decl.c_str(), asFUNCTION(0), asCALL_GENERIC);
-				if( r < 0 )
-				{
-					engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_ERROR, "Failed to register behaviour");
-					return -1;
-				}
-			}
-		}
-		else if( token == "objmthd" )
-		{
-			string name, decl;
-			GetToken(engine, name, config, pos);
-			name = name.substr(1, name.length() - 2);
-			GetToken(engine, decl, config, pos);
-			decl = decl.substr(1, decl.length() - 2);
-
-			r = engine->RegisterObjectMethod(name.c_str(), decl.c_str(), asFUNCTION(0), asCALL_GENERIC);
-			if( r < 0 )
-			{
-				engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_ERROR, "Failed to register object method");
-				return -1;
-			}
-		}
-		else if( token == "objprop" )
-		{
-			string name, decl;
-			GetToken(engine, name, config, pos);
-			name = name.substr(1, name.length() - 2);
-			GetToken(engine, decl, config, pos);
-			decl = decl.substr(1, decl.length() - 2);
-
-			// All properties must have different offsets in order to make them 
-			// distinct, so we simply register them with an incremental offset
-			asIObjectType *type = engine->GetObjectTypeById(engine->GetTypeIdByDecl(name.c_str()));
-			if( type == 0 )
-			{
-				engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_ERROR, "Type doesn't exist for property registration");
-				return -1;
-			}
-
-			r = engine->RegisterObjectProperty(name.c_str(), decl.c_str(), type->GetPropertyCount());
-			if( r < 0 )
-			{
-				engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_ERROR, "Failed to register object property");
-				return -1;
-			}
-		}
-		else if( token == "intf" )
-		{
-			string name, size, flags;
-			GetToken(engine, name, config, pos);
-
-			r = engine->RegisterInterface(name.c_str());
-			if( r < 0 )
-			{
-				engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_ERROR, "Failed to register interface");
-				return -1;
-			}
-		}
-		else if( token == "intfmthd" )
-		{
-			string name, decl;
-			GetToken(engine, name, config, pos);
-			GetToken(engine, decl, config, pos);
-			decl = decl.substr(1, decl.length() - 2);
-
-			r = engine->RegisterInterfaceMethod(name.c_str(), decl.c_str());
-			if( r < 0 )
-			{
-				engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_ERROR, "Failed to register interface method");
-				return -1;
-			}
-		}
-		else if( token == "func" )
-		{
-			string decl;
-			GetToken(engine, decl, config, pos);
-			decl = decl.substr(1, decl.length() - 2);
-
-			r = engine->RegisterGlobalFunction(decl.c_str(), asFUNCTION(0), asCALL_GENERIC);
-			if( r < 0 )
-			{
-				engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_ERROR, "Failed to register global function");
-				return -1;
-			}
-		}
-		else if( token == "prop" )
-		{
-			string decl;
-			GetToken(engine, decl, config, pos);
-			decl = decl.substr(1, decl.length() - 2);
-
-			r = engine->RegisterGlobalProperty(decl.c_str(), 0);
-			if( r < 0 )
-			{
-				engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_ERROR, "Failed to register global property");
-				return -1;
-			}
-		}
-		else if( token == "strfactory" )
-		{
-			string type;
-			GetToken(engine, type, config, pos);
-			type = type.substr(1, type.length() - 2);
-
-			r = engine->RegisterStringFactory(type.c_str(), asFUNCTION(0), asCALL_GENERIC);
-			if( r < 0 )
-			{
-				engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_ERROR, "Failed to register string factory");
-				return -1;
-			}
-		}
-		else if( token == "defarray" )
-		{
-			string type;
-			GetToken(engine, type, config, pos);
-			type = type.substr(1, type.length() - 2);
-
-			r = engine->RegisterDefaultArrayType(type.c_str());
-			if( r < 0 )
-			{
-				engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_ERROR, "Failed to register the default array type");
-				return -1;
-			}
-		}
-		else if( token == "enum" )
-		{
-			string type;
-			GetToken(engine, type, config, pos);
-			
-			r = engine->RegisterEnum(type.c_str());
-			if( r < 0 )
-			{
-				engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_ERROR, "Failed to register enum type");
-				return -1;
-			}
-		}
-		else if( token == "enumval" )
-		{
-			string type, name, value;
-			GetToken(engine, type, config, pos);
-			GetToken(engine, name, config, pos);
-			GetToken(engine, value, config, pos);
-
-			r = engine->RegisterEnumValue(type.c_str(), name.c_str(), atol(value.c_str()));
-			if( r < 0 )
-			{
-				engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_ERROR, "Failed to register enum value");
-				return -1;
-			}
-		}
-		else if( token == "typedef" )
-		{
-			string type, decl;
-			GetToken(engine, type, config, pos);
-			GetToken(engine, decl, config, pos);
-			decl = decl.substr(1, decl.length() - 2);
-
-			r = engine->RegisterTypedef(type.c_str(), decl.c_str());
-			if( r < 0 )
-			{
-				engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_ERROR, "Failed to register typedef");
-				return -1;
-			}
-		}
-		else if( token == "funcdef" )
-		{
-			string decl;
-			GetToken(engine, decl, config, pos);
-			decl = decl.substr(1, decl.length() - 2);
-
-			r = engine->RegisterFuncdef(decl.c_str());
-			if( r < 0 )
-			{
-				engine->WriteMessage(configFile, GetLineNumber(config, pos), 0, asMSGTYPE_ERROR, "Failed to register funcdef");
-				return -1;
-			}
-		}
 	}
+
 
 	engine->WriteMessage(configFile, 0, 0, asMSGTYPE_INFORMATION, "Configuration successfully registered");
 	
 	return 0;
-}
-
-asETokenClass GetToken(asIScriptEngine *engine, string &token, const string &text, asUINT &pos)
-{
-	int len;
-	asETokenClass t = engine->ParseToken(&text[pos], text.length() - pos, &len);
-	while( (t == asTC_WHITESPACE || t == asTC_COMMENT) && pos < text.length() )
-	{
-		pos += len;
-		t = engine->ParseToken(&text[pos], text.length() - pos, &len);
-	}
-
-	token.assign(&text[pos], len);
-
-	pos += len;
-
-	return t;
-}
-
-asUINT GetLineNumber(const string &text, asUINT pos)
-{
-	asUINT count = 1;
-	for( asUINT n = 0; n < pos; n++ )
-		if( text[n] == '\n' )
-			count++;
-
-	return count;
 }
 
 int CompileScript(asIScriptEngine *engine, const char *scriptFile)
@@ -420,12 +233,13 @@ public:
 		if( f == 0 ) return -1;
 		return 0;
 	}
-	void Write(const void *ptr, asUINT size) 
+	int Write(const void *ptr, asUINT size) 
 	{
-		if( size == 0 || f == 0 ) return; 
+		if( size == 0 || f == 0 ) return 0; 
 		fwrite(ptr, size, 1, f); 
+		return 0;
 	}
-	void Read(void *, asUINT ) {}
+	int Read(void *, asUINT) { return -1; }
 
 protected:
 	FILE *f;

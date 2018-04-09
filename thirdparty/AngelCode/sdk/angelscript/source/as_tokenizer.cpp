@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2010 Andreas Jonsson
+   Copyright (c) 2003-2015 Andreas Jonsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -47,16 +47,59 @@
 
 BEGIN_AS_NAMESPACE
 
-asCTokenizer::asCTokenizer(const asCScriptEngine *e)
+asCTokenizer::asCTokenizer()
 {
-	engine = e;
+	engine = 0;
+	memset(keywordTable, 0, sizeof(keywordTable));
+
+	// Initialize the jump table
+	for( asUINT n = 0; n < numTokenWords; n++ )
+	{
+		const sTokenWord& current = tokenWords[n];
+		unsigned char start = current.word[0];
+
+		// Create new jump table entry if none exists
+		if( !keywordTable[start] )
+		{
+			// Surely there won't ever be more than 32 keywords starting with
+			// the same character. Right?
+			keywordTable[start] = asNEWARRAY(const sTokenWord*, 32);
+			memset(keywordTable[start], 0, sizeof(sTokenWord*)*32);
+		}
+
+		// Add the token sorted from longest to shortest so
+		// we check keywords greedily.
+		const sTokenWord** tok = keywordTable[start];
+		unsigned insert = 0, index = 0;
+		while( tok[index] )
+		{
+			if(tok[index]->wordLength >= current.wordLength)
+				++insert;
+			++index;
+		}
+
+		while( index > insert )
+		{
+			tok[index] = tok[index - 1];
+			--index;
+		}
+
+		tok[insert] = &current;
+	}
 }
 
 asCTokenizer::~asCTokenizer()
 {
+	// Deallocate the jump table
+	for( asUINT n = 0; n < 256; n++ )
+	{
+		if( keywordTable[n] )
+			asDELETEARRAY(keywordTable[n]);
+	}
 }
 
-const char *asGetTokenDefinition(int tokenType)
+// static
+const char *asCTokenizer::GetDefinition(int tokenType)
 {
 	if( tokenType == ttUnrecognizedToken			) return "<unrecognized token>";
 	if( tokenType == ttEnd							) return "<end of file>";
@@ -80,41 +123,46 @@ const char *asGetTokenDefinition(int tokenType)
 	return 0;
 }
 
-eTokenType asCTokenizer::GetToken(const char *source, size_t sourceLength, size_t *tokenLength, asETokenClass *tc)
+bool asCTokenizer::IsDigitInRadix(char ch, int radix) const
+{
+	if( ch >= '0' && ch <= '9' ) return (ch -= '0') < radix;
+	if( ch >= 'A' && ch <= 'Z' ) return (ch -= 'A'-10) < radix;
+	if( ch >= 'a' && ch <= 'z' ) return (ch -= 'a'-10) < radix;
+	return false;
+}
+
+eTokenType asCTokenizer::GetToken(const char *source, size_t sourceLength, size_t *tokenLength, asETokenClass *tc) const
 {
 	asASSERT(source != 0);
 	asASSERT(tokenLength != 0);
 
-	this->source = source;
-	this->sourceLength = sourceLength;
-
-	asETokenClass t = ParseToken();
-	if( tc ) *tc = t;
-
-	// Copy the output to the token
-	*tokenLength = this->tokenLength;
+	eTokenType tokenType;
+	size_t     tlen;
+	asETokenClass t = ParseToken(source, sourceLength, tlen, tokenType);
+	if( tc          ) *tc          = t;
+	if( tokenLength ) *tokenLength = tlen;
 
 	return tokenType;
 }
 
-asETokenClass asCTokenizer::ParseToken()
+asETokenClass asCTokenizer::ParseToken(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const
 {
-	if( IsWhiteSpace() ) return asTC_WHITESPACE;
-	if( IsComment()    ) return asTC_COMMENT;
-	if( IsConstant()   ) return asTC_VALUE;
-	if( IsIdentifier() ) return asTC_IDENTIFIER;
-	if( IsKeyWord()    ) return asTC_KEYWORD;
+	if( IsWhiteSpace(source, sourceLength, tokenLength, tokenType) ) return asTC_WHITESPACE;
+	if( IsComment(source, sourceLength, tokenLength, tokenType)    ) return asTC_COMMENT;
+	if( IsConstant(source, sourceLength, tokenLength, tokenType)   ) return asTC_VALUE;
+	if( IsIdentifier(source, sourceLength, tokenLength, tokenType) ) return asTC_IDENTIFIER;
+	if( IsKeyWord(source, sourceLength, tokenLength, tokenType)    ) return asTC_KEYWORD;
 
 	// If none of the above this is an unrecognized token
 	// We can find the length of the token by advancing
 	// one step and trying to identify a token there
-	tokenType = ttUnrecognizedToken;
+	tokenType   = ttUnrecognizedToken;
 	tokenLength = 1;
 
 	return asTC_UNKNOWN;
 }
 
-bool asCTokenizer::IsWhiteSpace()
+bool asCTokenizer::IsWhiteSpace(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const
 {
 	// Treat UTF8 byte-order-mark (EF BB BF) as whitespace
 	if( sourceLength >= 3 && 
@@ -122,7 +170,7 @@ bool asCTokenizer::IsWhiteSpace()
 		asBYTE(source[1]) == 0xBBu &&
 		asBYTE(source[2]) == 0xBFu )
 	{
-		tokenType = ttWhiteSpace;
+		tokenType   = ttWhiteSpace;
 		tokenLength = 3;
 		return true;
 	}
@@ -146,7 +194,7 @@ bool asCTokenizer::IsWhiteSpace()
 
 	if( n > 0 )
 	{
-		tokenType = ttWhiteSpace;
+		tokenType   = ttWhiteSpace;
 		tokenLength = n;
 		return true;
 	}
@@ -154,7 +202,7 @@ bool asCTokenizer::IsWhiteSpace()
 	return false;
 }
 
-bool asCTokenizer::IsComment()
+bool asCTokenizer::IsComment(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const
 {
 	if( sourceLength < 2 )
 		return false;
@@ -174,8 +222,8 @@ bool asCTokenizer::IsComment()
 				break;
 		}
 
-		tokenType = ttOnelineComment;
-		tokenLength = n+1;
+		tokenType   = ttOnelineComment;
+		tokenLength = n < sourceLength ? n+1 : n;
 
 		return true;
 	}
@@ -192,7 +240,7 @@ bool asCTokenizer::IsComment()
 				break;
 		}
 
-		tokenType = ttMultilineComment;
+		tokenType   = ttMultilineComment;
 		tokenLength = n+1;
 
 		return true;
@@ -201,26 +249,35 @@ bool asCTokenizer::IsComment()
 	return false;
 }
 
-bool asCTokenizer::IsConstant()
+bool asCTokenizer::IsConstant(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const
 {
 	// Starting with number
 	if( (source[0] >= '0' && source[0] <= '9') || (source[0] == '.' && sourceLength > 1 && source[1] >= '0' && source[1] <= '9') )
 	{
-		// Is it a hexadecimal number?
-		if( source[0] == '0' && sourceLength > 1 && (source[1] == 'x' || source[1] == 'X') )
+		// Is it a based number?
+		if( source[0] == '0' && sourceLength > 1 )
 		{
-			size_t n;
-			for( n = 2; n < sourceLength; n++ )
-			{
-				if( !(source[n] >= '0' && source[n] <= '9') &&
-					!(source[n] >= 'a' && source[n] <= 'f') &&
-					!(source[n] >= 'A' && source[n] <= 'F') )
-					break;
-			}
+			// Determine the radix for the constant
+			int radix = 0;
+			switch( source[1] )
+ 			{
+			case 'b': case 'B': radix =  2; break;
+			case 'o': case 'O': radix =  8; break;
+			case 'd': case 'D': radix = 10; break;
+			case 'x': case 'X': radix = 16; break;
+ 			}
 
-			tokenType = ttBitsConstant;
-			tokenLength = n;
-			return true;
+			if( radix )
+			{
+				size_t n;
+				for( n = 2; n < sourceLength; n++ )
+					if( !IsDigitInRadix(source[n], radix) )
+						break;
+
+				tokenType   = ttBitsConstant;
+				tokenLength = n;
+				return true;
+			}
 		}
 
 		size_t n;
@@ -230,13 +287,16 @@ bool asCTokenizer::IsConstant()
 				break;
 		}
 
-		if( n < sourceLength && source[n] == '.' )
+		if( n < sourceLength && (source[n] == '.' || source[n] == 'e' || source[n] == 'E') )
 		{
-			n++;
-			for( ; n < sourceLength; n++ )
+			if( source[n] == '.' )
 			{
-				if( source[n] < '0' || source[n] > '9' )
-					break;
+				n++;
+				for( ; n < sourceLength; n++ )
+				{
+					if( source[n] < '0' || source[n] > '9' )
+						break;
+				}
 			}
 
 			if( n < sourceLength && (source[n] == 'e' || source[n] == 'E') )
@@ -254,22 +314,22 @@ bool asCTokenizer::IsConstant()
 
 			if( n < sourceLength && (source[n] == 'f' || source[n] == 'F') )
 			{
-				tokenType = ttFloatConstant;
+				tokenType   = ttFloatConstant;
 				tokenLength = n + 1;
 			}
 			else
 			{
 #ifdef AS_USE_DOUBLE_AS_FLOAT
-				tokenType = ttFloatConstant;
+				tokenType   = ttFloatConstant;
 #else
-				tokenType = ttDoubleConstant;
+				tokenType   = ttDoubleConstant;
 #endif
 				tokenLength = n;
 			}
 			return true;
 		}
 
-		tokenType = ttIntConstant;
+		tokenType   = ttIntConstant;
 		tokenLength = n;
 		return true;
 	}
@@ -290,7 +350,7 @@ bool asCTokenizer::IsConstant()
 					break;
 			}
 
-			tokenType = ttHeredocStringConstant;
+			tokenType   = ttHeredocStringConstant;
 			tokenLength = n+3;
 		}
 		else
@@ -323,7 +383,7 @@ bool asCTokenizer::IsConstant()
 				if( source[n] == '\\' ) evenSlashes = !evenSlashes; else evenSlashes = true;
 			}
 
-			tokenType = ttNonTerminatedStringConstant;
+			tokenType   = ttNonTerminatedStringConstant;
 			tokenLength = n;
 		}
 
@@ -333,39 +393,37 @@ bool asCTokenizer::IsConstant()
 	return false;
 }
 
-bool asCTokenizer::IsIdentifier()
+bool asCTokenizer::IsIdentifier(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const
 {
+	// char is unsigned by default on some architectures, e.g. ppc and arm
+	// Make sure the value is always treated as signed in the below comparisons
+	signed char c = source[0];
+
 	// Starting with letter or underscore
-	if( (source[0] >= 'a' && source[0] <= 'z') ||
-		(source[0] >= 'A' && source[0] <= 'Z') ||
-		source[0] == '_' )
+	if( (c >= 'a' && c <= 'z') ||
+		(c >= 'A' && c <= 'Z') ||
+		c == '_' ||
+		(c < 0 && engine->ep.allowUnicodeIdentifiers) )
 	{
-		tokenType = ttIdentifier;
+		tokenType   = ttIdentifier;
 		tokenLength = 1;
 
 		for( size_t n = 1; n < sourceLength; n++ )
 		{
-			if( (source[n] >= 'a' && source[n] <= 'z') ||
-				(source[n] >= 'A' && source[n] <= 'Z') ||
-				(source[n] >= '0' && source[n] <= '9') ||
-				source[n] == '_' )
+			c = source[n];
+			if( (c >= 'a' && c <= 'z') ||
+				(c >= 'A' && c <= 'Z') ||
+				(c >= '0' && c <= '9') ||
+				c == '_' ||
+				(c < 0 && engine->ep.allowUnicodeIdentifiers) )
 				tokenLength++;
 			else
 				break;
 		}
 
 		// Make sure the identifier isn't a reserved keyword
-		if( tokenLength > 50 ) return true;
-
-		char test[51];
-		memcpy(test, source, tokenLength);
-		test[tokenLength] = 0;
-
-		for( asUINT i = 0; i < numTokenWords; i++ )
-		{
-			if( strcmp(test, tokenWords[i].word) == 0 )
-				return false;
-		}
+		if( IsKeyWord(source, tokenLength, tokenLength, tokenType) )
+			return false;
 
 		return true;
 	}
@@ -373,89 +431,41 @@ bool asCTokenizer::IsIdentifier()
 	return false;
 }
 
-bool asCTokenizer::IsKeyWord()
+bool asCTokenizer::IsKeyWord(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const
 {
-	// Fill the list with all possible keywords
-	// Check each character against all the keywords in the list,
-	// remove keywords that don't match. When only one remains and
-	// it matches the source completely we have found a match.
-	int words[numTokenWords];
-	asUINT n;
-	for( n = 0; n < numTokenWords; n++ )
-		words[n] = n;
+	unsigned char start = source[0];
+	const sTokenWord **ptr = keywordTable[start];
 
-	int numWords = numTokenWords;
-	int lastPossible = -1;
+	if( !ptr )
+		return false;
 
-	n = 0;
-	while( n < sourceLength && numWords >= 0 )
+	for( ; *ptr; ++ptr )
 	{
-		for( int i = 0; i < numWords; i++ )
+		size_t wlen = (*ptr)->wordLength;
+		if( sourceLength >= wlen && strncmp(source, (*ptr)->word, wlen) == 0 )
 		{
-			if( tokenWords[words[i]].word[n] == '\0' )
+			// Tokens that end with a character that can be part of an 
+			// identifier require an extra verification to guarantee that 
+			// we don't split an identifier token, e.g. the "!is" token 
+			// and the tokens "!" and "isTrue" in the "!isTrue" expression.
+			if( wlen < sourceLength &&
+				((source[wlen-1] >= 'a' && source[wlen-1] <= 'z') ||
+				 (source[wlen-1] >= 'A' && source[wlen-1] <= 'Z') ||
+				 (source[wlen-1] >= '0' && source[wlen-1] <= '9')) &&
+				((source[wlen] >= 'a' && source[wlen] <= 'z') ||
+				 (source[wlen] >= 'A' && source[wlen] <= 'Z') ||
+				 (source[wlen] >= '0' && source[wlen] <= '9') ||
+				 (source[wlen] == '_')) )
 			{
-				// tokens that end with a character that can be part of an 
-				// identifier require an extra verification to guarantee that 
-				// we don't split an identifier token, e.g. the "!is" token 
-				// and the "!isTrue" expression.
-				if( ((tokenWords[words[i]].word[n-1] >= 'a' && tokenWords[words[i]].word[n-1] <= 'z') ||
-					 (tokenWords[words[i]].word[n-1] >= 'A' && tokenWords[words[i]].word[n-1] <= 'Z')) &&
-					((source[n] >= 'a' && source[n] <= 'z') ||
-					 (source[n] >= 'A' && source[n] <= 'Z') ||
-					 (source[n] >= '0' && source[n] <= '9') ||
-					 (source[n] == '_')) )
-				{
-					// The token doesn't really match, even though 
-					// the start of the source matches the token
-					words[i--] = words[--numWords];
-				}
-				else if( numWords > 1 )
-				{
-					// It's possible that a longer token matches, so let's 
-					// remember this match and continue searching
-					lastPossible = words[i];
-					words[i--] = words[--numWords];
-					continue;
-				}
-				else
-				{
-					// Only one token matches, so we return it
-					tokenType = tokenWords[words[i]].tokenType;
-					tokenLength = n;
-					return true;
-				}
+				// The token doesn't really match, even though 
+				// the start of the source matches the token
+				continue;
 			}
-			else if( tokenWords[words[i]].word[n] != source[n] )
-			{
-				// The token doesn't match
-				words[i--] = words[--numWords];
-			}
-		}
-		n++;
-	}
 
-	// The source length ended or there where no more matchable words
-	if( numWords )
-	{
-		// If any of the tokenWords also end at this
-		// position then we have found the matching token
-		for( int i = 0; i < numWords; i++ )
-		{
-			if( tokenWords[words[i]].word[n] == '\0' )
-			{
-				tokenType = tokenWords[words[i]].tokenType;
-				tokenLength = n;
-				return true;
-			}
+			tokenType = (*ptr)->tokenType;
+			tokenLength = wlen;
+			return true;
 		}
-	}
-
-	// It is still possible that a shorter token was found
-	if( lastPossible > -1 )
-	{
-		tokenType = tokenWords[lastPossible].tokenType;
-		tokenLength = strlen(tokenWords[lastPossible].word);
-		return true;
 	}
 
 	return false;

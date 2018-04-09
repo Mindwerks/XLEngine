@@ -180,7 +180,7 @@ void UI_System::StartScript(const char *pszFile)
         return;
     }
     SHANDLE uiMain = ScriptSystem::GetFunc( ScriptSystem::SCR_MODULE_UI, "UI_Main" );
-    if ( uiMain >= 0 )
+    if ( uiMain )
     {
         ScriptSystem::ExecuteFunc( uiMain );
         m_bScriptExeSucceeded = true;
@@ -223,7 +223,7 @@ void UI_System::Update()
         //Enter the next screen.
         m_Top = m_PendingScreenChange;
         m_PendingScreenChange = NULL;
-        assert( m_Top->m_hOnEnter >= 0 );
+        assert( m_Top->m_hOnEnter );
 
         m_Context = m_Top;
         ScriptSystem::ExecuteFunc( m_Top->m_hOnEnter );
@@ -335,7 +335,7 @@ void UI_System::Render()
     UI_Window *pWin = m_Context->m_childWindow;
     RenderChildWindows(pWin, 0, 0);
     //Post Render.
-    if ( m_Context->m_hOnPostRender > -1 )
+    if ( m_Context->m_hOnPostRender )
     {
         ScriptSystem::ExecuteFunc( m_Context->m_hOnPostRender, 1, &arg );
     }
@@ -538,7 +538,7 @@ void UI_System::UI_StartScreen(std::string& sUI_Start)
     char szFuncName[128];
     sprintf(szFuncName, "%s_OnEnter", sUI_Start.c_str());
     SHANDLE hOnEnter = ScriptSystem::GetFunc( ScriptSystem::SCR_MODULE_UI, szFuncName );
-    if ( hOnEnter >= 0 )
+    if ( hOnEnter )
     {
         UI_Screen *pScreen  = AddScreen( sUI_Start );
         pScreen->m_sName    = sUI_Start;
@@ -571,7 +571,7 @@ void UI_System::UI_PushScreen(const std::string& uiName, int flags, int backgrnd
     char szFuncName[128];
     sprintf(szFuncName, "%s_OnEnter", uiName.c_str());
     SHANDLE hOnEnter = ScriptSystem::GetFunc( ScriptSystem::SCR_MODULE_UI, szFuncName );
-    if ( hOnEnter >= 0 )
+    if ( hOnEnter )
     {
         UI_Screen *pScreen  = AddScreen(uiName);
         pScreen->m_sName    = uiName;
@@ -1188,7 +1188,7 @@ void UI_System::KeyDownCallback(int32_t key)
 {
     if ( m_Context )    //this on doesn't actually need a context... but might as well be consistent.
     {
-        if ( m_Context->m_hOnKey >= 0 )
+        if ( m_Context->m_hOnKey )
         {
             ScriptArgument arg;
             arg.uType  = SC_ARG_uint32_t;
@@ -1221,12 +1221,12 @@ UI_Screen *UI_System::FindScreen(const std::string& sName)
 /****** Basic UI_Screen *******/
 UI_Screen::UI_Screen()
 {
-    m_hOnEnter  = -1;
-    m_hOnExit   = -1;
-    m_hOnRender = -1;
-    m_hOnPostRender = -1;
-    m_hOnUpdate = -1;
-    m_hOnKey    = -1;
+    m_hOnEnter  = nullptr;
+    m_hOnExit   = nullptr;
+    m_hOnRender = nullptr;
+    m_hOnPostRender = nullptr;
+    m_hOnUpdate = nullptr;
+    m_hOnKey    = nullptr;
 
     m_uFlags = UI_System::UIFLAG_NONE;
     m_parent = NULL;
@@ -1246,10 +1246,10 @@ UI_Window::UI_Window()
     m_uType = 0;
     m_x = 0; m_y = 0;
     m_w = 0; m_h = 0;
-    m_hOnRender  = -1;
-    m_hOnUpdate  = -1;
-    m_hOnKey     = -1;
-    m_hOnRelease = -1;
+    m_hOnRender  = nullptr;
+    m_hOnUpdate  = nullptr;
+    m_hOnKey     = nullptr;
+    m_hOnRelease = nullptr;
 
     m_uFlags = UIWinFlag_None;
     m_uState = 0;
@@ -1270,7 +1270,7 @@ UI_Window::~UI_Window()
 void UI_Window::Update(bool bMouseOver, int nMouseX, int nMouseY, int x, int y)
 {
     m_uState = UI_State_Normal;
-    if ( m_hOnUpdate>=0 )   //custom script update function.
+    if ( m_hOnUpdate )   //custom script update function.
     {
         m_uState = ScriptSystem::ExecuteFunc( m_hOnUpdate, 0, NULL, true );
     }
@@ -1286,7 +1286,7 @@ void UI_Window::Update(bool bMouseOver, int nMouseX, int nMouseY, int x, int y)
         {
             if ( m_bMouseHeld == true )
             {
-                if ( m_hOnRelease >= 0 )
+                if ( m_hOnRelease )
                 {
                     ScriptSystem::ExecuteFunc( m_hOnRelease );
                 }
@@ -1305,7 +1305,7 @@ void UI_Window::Update(bool bMouseOver, int nMouseX, int nMouseY, int x, int y)
 
     if ( Input::IsKeyDown(XL_LBUTTON) )
     {
-        if ( m_uType == 0 && m_hOnRender < 0 && m_bMoving == false && s_bWindowMoving == false )
+        if ( m_uType == 0 && !m_hOnRender && m_bMoving == false && s_bWindowMoving == false )
         {
             if ( nMouseX >= x+m_x && nMouseX <= x+m_x+m_w && nMouseY >= y+m_y && nMouseY < y+m_y+40 )
             {
@@ -1333,7 +1333,7 @@ void UI_Window::Update(bool bMouseOver, int nMouseX, int nMouseY, int x, int y)
 
 void UI_Window::Draw(int x, int y)
 {
-    if ( m_hOnRender>=0 )   //custom script draw function.
+    if ( m_hOnRender )   //custom script draw function.
     {
         ScriptArgument arg[3];
         arg[0].uType  = SC_ARG_uint32_t;

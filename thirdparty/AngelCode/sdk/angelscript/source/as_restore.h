@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2010 Andreas Jonsson
+   Copyright (c) 2003-2017 Andreas Jonsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -34,10 +34,7 @@
 //
 // Functions for saving and restoring module bytecode
 // asCRestore was originally written by Dennis Bollyn, dennis@gyrbo.be
-
-
-// TODO: This should be split in two, so that an application that doesn't compile any 
-//       code but only loads precompiled code can link with only the bytecode loader
+// It was later split in two classes asCReader and asCWriter by me
 
 #ifndef AS_RESTORE_H
 #define AS_RESTORE_H
@@ -48,22 +45,132 @@
 
 BEGIN_AS_NAMESPACE
 
-class asCRestore 
+class asCReader
 {
 public:
-	asCRestore(asCModule *module, asIBinaryStream *stream, asCScriptEngine *engine);
+	asCReader(asCModule *module, asIBinaryStream *stream, asCScriptEngine *engine);
 
-	int Save();
-	int Restore();
+	int Read(bool *wasDebugInfoStripped);
 
 protected:
 	asCModule       *module;
 	asIBinaryStream *stream;
 	asCScriptEngine *engine;
+	bool             noDebugInfo;
 	bool             error;
+	asUINT           bytesRead;
 
-	void WriteData(const void *data, asUINT size);
-	void ReadData(void *data, asUINT size);
+	int                Error(const char *msg);
+
+	int                ReadInner();
+
+	int                ReadData(void *data, asUINT size);
+	void               ReadString(asCString *str);
+	asCScriptFunction *ReadFunction(bool &isNew, bool addToModule = true, bool addToEngine = true, bool addToGC = true, bool *isExternal = 0);
+	void               ReadFunctionSignature(asCScriptFunction *func, asCObjectType **parentClass = 0);
+	void               ReadGlobalProperty();
+	void               ReadObjectProperty(asCObjectType *ot);
+	void               ReadDataType(asCDataType *dt);
+	asCTypeInfo       *ReadTypeInfo();
+	void               ReadTypeDeclaration(asCTypeInfo *ot, int phase, bool *isExternal = 0);
+	void               ReadByteCode(asCScriptFunction *func);
+	asWORD             ReadEncodedUInt16();
+	asUINT             ReadEncodedUInt();
+	asQWORD            ReadEncodedUInt64();
+
+	void ReadUsedTypeIds();
+	void ReadUsedFunctions();
+	void ReadUsedGlobalProps();
+	void ReadUsedStringConstants();
+	void ReadUsedObjectProps();
+
+	asCTypeInfo *      FindType(int idx);
+	int                FindTypeId(int idx);
+	short              FindObjectPropOffset(asWORD index);
+	asCScriptFunction *FindFunction(int idx);
+
+	// After loading, each function needs to be translated to update pointers, function ids, etc
+	void TranslateFunction(asCScriptFunction *func);
+	void CalculateAdjustmentByPos(asCScriptFunction *func);
+	int  AdjustStackPosition(int pos);
+	int  AdjustGetOffset(int offset, asCScriptFunction *func, asDWORD programPos);
+	void CalculateStackNeeded(asCScriptFunction *func);
+	asCScriptFunction *GetCalledFunction(asCScriptFunction *func, asDWORD programPos);
+
+	// Temporary storage for persisting variable data
+	asCArray<int>                usedTypeIds;
+	asCArray<asCTypeInfo*>       usedTypes;
+	asCArray<asCScriptFunction*> usedFunctions;
+	asCArray<void*>              usedGlobalProperties;
+	asCArray<void*>              usedStringConstants;
+
+	asCArray<asCScriptFunction*>  savedFunctions;
+	asCArray<asCDataType>         savedDataTypes;
+	asCArray<asCString>           savedStrings;
+
+	asCArray<int>                 adjustByPos;
+	asCArray<int>                 adjustNegativeStackByPos;
+
+	struct SObjProp
+	{
+		asCObjectType     *objType;
+		asCObjectProperty *prop;
+	};
+	asCArray<SObjProp> usedObjectProperties;
+
+	asCMap<void*,bool>              existingShared;
+	asCMap<asCScriptFunction*,bool> dontTranslate;
+
+	// Helper class for adjusting offsets within initialization list buffers
+	struct SListAdjuster
+	{
+		SListAdjuster(asCReader *rd, asDWORD *bc, asCObjectType *ot);
+		void AdjustAllocMem();
+		int  AdjustOffset(int offset);
+		void SetRepeatCount(asUINT rc);
+		void SetNextType(int typeId);
+
+		struct SInfo
+		{
+			asUINT              repeatCount;
+			asSListPatternNode *startNode;
+		};
+		asCArray<SInfo> stack;
+
+		asCReader          *reader;
+		asDWORD            *allocMemBC;
+		asUINT              maxOffset;
+		asCObjectType      *patternType;
+		asUINT              repeatCount;
+		int                 lastOffset;
+		int                 nextOffset;
+		asUINT              lastAdjustedOffset;
+		asSListPatternNode *patternNode;
+		int                 nextTypeId;
+	};
+	asCArray<SListAdjuster*> listAdjusters;
+};
+
+#ifndef AS_NO_COMPILER
+
+class asCWriter
+{
+public:
+	asCWriter(asCModule *module, asIBinaryStream *stream, asCScriptEngine *engine, bool stripDebugInfo);
+
+	int Write();
+
+protected:
+	asCModule       *module;
+	asIBinaryStream *stream;
+	asCScriptEngine *engine;
+	bool             stripDebugInfo;
+	bool             error;
+	asUINT           bytesWritten;
+
+	int              Error(const char *msg);
+
+	int  WriteData(const void *data, asUINT size);
 
 	void WriteString(asCString *str);
 	void WriteFunction(asCScriptFunction *func);
@@ -71,33 +178,23 @@ protected:
 	void WriteGlobalProperty(asCGlobalProperty *prop);
 	void WriteObjectProperty(asCObjectProperty *prop);
 	void WriteDataType(const asCDataType *dt);
-	void WriteObjectType(asCObjectType *ot);
-	void WriteObjectTypeDeclaration(asCObjectType *ot, int phase);
-	void WriteByteCode(asDWORD *bc, int length);
-	void WriteEncodedUInt(asUINT i);
-
-	void ReadString(asCString *str);
-	asCScriptFunction *ReadFunction(bool addToModule = true, bool addToEngine = true);
-	void ReadFunctionSignature(asCScriptFunction *func);
-	void ReadGlobalProperty();
-	void ReadObjectProperty(asCObjectType *ot);
-	void ReadDataType(asCDataType *dt);
-	asCObjectType *ReadObjectType();
-	void ReadObjectTypeDeclaration(asCObjectType *ot, int phase);
-	void ReadByteCode(asDWORD *bc, int length);
-	asUINT ReadEncodedUInt();
+	void WriteTypeInfo(asCTypeInfo *ot);
+	void WriteTypeDeclaration(asCTypeInfo *ot, int phase);
+	void WriteByteCode(asCScriptFunction *func);
+	void WriteEncodedInt64(asINT64 i);
 
 	// Helper functions for storing variable data
-	int FindObjectTypeIdx(asCObjectType*);
-	asCObjectType *FindObjectType(int idx);
+	int FindTypeInfoIdx(asCTypeInfo *ti);
 	int FindTypeIdIdx(int typeId);
-	int FindTypeId(int idx);
 	int FindFunctionIndex(asCScriptFunction *func);
-	asCScriptFunction *FindFunction(int idx);
 	int FindGlobalPropPtrIndex(void *);
-	int FindStringConstantIndex(int id);
-	int FindObjectPropIndex(short offset, int typeId);
-	short FindObjectPropOffset(asWORD index);
+	int FindStringConstantIndex(void *str);
+	int FindObjectPropIndex(short offset, int typeId, asDWORD *bc);
+
+	void CalculateAdjustmentByPos(asCScriptFunction *func);
+	int  AdjustStackPosition(int pos);
+	int  AdjustProgramPosition(int pos);
+	int  AdjustGetOffset(int offset, asCScriptFunction *func, asDWORD programPos);
 
 	// Intermediate data used for storing that which isn't constant, function id's, pointers, etc
 	void WriteUsedTypeIds();
@@ -106,41 +203,57 @@ protected:
 	void WriteUsedStringConstants();
 	void WriteUsedObjectProps();
 
-	void ReadUsedTypeIds();
-	void ReadUsedFunctions();
-	void ReadUsedGlobalProps();
-	void ReadUsedStringConstants();
-	void ReadUsedObjectProps();
-
-	// After loading, each function needs to be translated to update pointers, function ids, etc
-	void TranslateFunction(asCScriptFunction *func);
-
-	// Temporary storage for persisting variable data	
+	// Temporary storage for persisting variable data
 	asCArray<int>                usedTypeIds;
-	asCArray<asCObjectType*>     usedTypes;
+	asCArray<asCTypeInfo*>       usedTypes;
 	asCArray<asCScriptFunction*> usedFunctions;
 	asCArray<void*>              usedGlobalProperties;
-	asCArray<int>                usedStringConstants;
+	asCArray<void*>              usedStringConstants;
+	asCMap<void*, int>           stringToIndexMap;
 
-	asCArray<asCScriptFunction*> savedFunctions;
-	asCArray<asCDataType>        savedDataTypes;
-	asCArray<asCString>          savedStrings;
+	asCArray<asCScriptFunction*>  savedFunctions;
+	asCArray<asCDataType>         savedDataTypes;
+	asCArray<asCString>           savedStrings;
+	asCMap<asCString, int>        stringToIdMap;
+	asCArray<int>                 adjustStackByPos;
+	asCArray<int>                 adjustNegativeStackByPos;
+	asCArray<int>                 bytecodeNbrByPos;
 
 	struct SObjProp
 	{
-		asCObjectType *objType;
-		int            offset;
+		asCObjectType     *objType;
+		asCObjectProperty *prop;
 	};
 	asCArray<SObjProp>           usedObjectProperties;
 
-	struct SObjChangeSize
+	// Helper class for adjusting offsets within initialization list buffers
+	struct SListAdjuster
 	{
-		asCObjectType *objType;
-		asUINT         oldSize;
+		SListAdjuster(asCObjectType *ot);
+		int  AdjustOffset(int offset, asCObjectType *listPatternType);
+		void SetRepeatCount(asUINT rc);
+		void SetNextType(int typeId);
+
+		struct SInfo
+		{
+			asUINT              repeatCount;
+			asSListPatternNode *startNode;
+		};
+		asCArray<SInfo> stack;
+
+		asCObjectType      *patternType;
+		asUINT              repeatCount;
+		asSListPatternNode *patternNode;
+		asUINT              entries;
+		int                 lastOffset;  // Last offset adjusted
+		int                 nextOffset;  // next expected offset to be adjusted
+		int                 nextTypeId;
 	};
-	asCArray<SObjChangeSize>     oldObjectSizes;
+	asCArray<SListAdjuster*> listAdjusters;
 };
+
+#endif
 
 END_AS_NAMESPACE
 
-#endif //AS_RESTORE_H
+#endif // AS_RESTORE_H

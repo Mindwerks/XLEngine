@@ -331,7 +331,7 @@ set(xlengine_libraries
     ${OPENGL_LIBRARIES}
     ${IL_LIBRARIES}
     enet
-    Angelscript
+    angelscript
     Threads::Threads)
 
 # Platform-specific includes/libraries.

@@ -20,7 +20,7 @@ using namespace std;
 #define UINT unsigned int 
 typedef unsigned int DWORD;
 
-// Linux doesn't have timeGetTime(), this essintially does the same
+// Linux doesn't have timeGetTime(), this essentially does the same
 // thing, except this is milliseconds since Epoch (Jan 1st 1970) instead
 // of system start. It will work the same though...
 DWORD timeGetTime()
@@ -88,7 +88,7 @@ int RunApplication()
 	int r;
 
 	// Create the script engine
-	asIScriptEngine *engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
+	asIScriptEngine *engine = asCreateScriptEngine();
 	if( engine == 0 )
 	{
 		cout << "Failed to create script engine." << endl;
@@ -134,9 +134,9 @@ int RunApplication()
 		return -1;
 	}
 
-	// Find the function id for the function we want to execute.
-	int funcId = engine->GetModule(0)->GetFunctionIdByDecl("float calc(float, float)");
-	if( funcId < 0 )
+	// Find the function for the function we want to execute.
+	asIScriptFunction *func = engine->GetModule(0)->GetFunctionByDecl("float calc(float, float)");
+	if( func == 0 )
 	{
 		cout << "The function 'float calc(float, float)' was not found." << endl;
 		ctx->Release();
@@ -147,9 +147,9 @@ int RunApplication()
 	// Prepare the script context with the function we wish to execute. Prepare()
 	// must be called on the context before each new script function that will be
 	// executed. Note, that if you intend to execute the same function several 
-	// times, it might be a good idea to store the function id returned by 
-	// GetFunctionIDByDecl(), so that this relatively slow call can be skipped.
-	r = ctx->Prepare(funcId);
+	// times, it might be a good idea to store the function returned by 
+	// GetFunctionByDecl(), so that this relatively slow call can be skipped.
+	r = ctx->Prepare(func);
 	if( r < 0 ) 
 	{
 		cout << "Failed to prepare the context." << endl;
@@ -181,8 +181,7 @@ int RunApplication()
 			cout << "The script ended with an exception." << endl;
 
 			// Write some information about the script exception
-			int funcID = ctx->GetExceptionFunction();
-			asIScriptFunction *func = engine->GetFunctionDescriptorById(funcID);
+			asIScriptFunction *func = ctx->GetExceptionFunction();
 			cout << "func: " << func->GetDeclaration() << endl;
 			cout << "modl: " << func->GetModuleName() << endl;
 			cout << "sect: " << func->GetScriptSectionName() << endl;
@@ -202,8 +201,8 @@ int RunApplication()
 	// We must release the contexts when no longer using them
 	ctx->Release();
 
-	// Release the engine
-	engine->Release();
+	// Shut down the engine
+	engine->ShutDownAndRelease();
 
 	return 0;
 }
@@ -267,7 +266,7 @@ int CompileScript(asIScriptEngine *engine)
 	// Read the entire file
 	string script;
 	script.resize(len);
-	int c =	fread(&script[0], len, 1, f);
+	size_t c = fread(&script[0], len, 1, f);
 	fclose(f);
 
 	if( c == 0 ) 

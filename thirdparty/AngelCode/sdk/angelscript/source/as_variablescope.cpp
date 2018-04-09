@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2010 Andreas Jonsson
+   Copyright (c) 2003-2012 Andreas Jonsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -37,6 +37,9 @@
 
 
 #include "as_config.h"
+
+#ifndef AS_NO_COMPILER
+
 #include "as_variablescope.h"
 
 BEGIN_AS_NAMESPACE
@@ -79,6 +82,11 @@ int asCVariableScope::DeclareVariable(const char *name, const asCDataType &type,
 	}
 
 	sVariable *var = asNEW(sVariable);
+	if( var == 0 )
+	{
+		// Out of memory. Return without allocating the var
+		return -2;
+	}
 	var->name           = name;
 	var->type           = type;
 	var->stackOffset    = stackOffset;
@@ -128,3 +136,7 @@ sVariable *asCVariableScope::GetVariableByOffset(int offset)
 }
 
 END_AS_NAMESPACE
+
+#endif // AS_NO_COMPILER
+
+

@@ -11,8 +11,27 @@
 #ifndef SCRIPTSTDSTRING_H
 #define SCRIPTSTDSTRING_H
 
-#include "angelscript.h"
+#ifndef ANGELSCRIPT_H 
+// Avoid having to inform include path if header is already include before
+#include <angelscript.h>
+#endif
+
 #include <string>
+
+//---------------------------
+// Compilation settings
+//
+
+// Sometimes it may be desired to use the same method names as used by C++ STL.
+// This may for example reduce time when converting code from script to C++ or
+// back.
+//
+//  0 = off
+//  1 = on
+
+#ifndef AS_USE_STLNAMES
+#define AS_USE_STLNAMES 0
+#endif
 
 BEGIN_AS_NAMESPACE
 

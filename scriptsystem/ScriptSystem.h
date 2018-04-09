@@ -8,7 +8,7 @@
 
 #include <string>
 
-typedef int32_t SHANDLE;
+typedef asIScriptFunction *SHANDLE;
 
 enum ScriptArgs_e
 {

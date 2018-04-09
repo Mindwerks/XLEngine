@@ -16,7 +16,7 @@ Logic::Logic(const std::string& sName, void *pOwner, uint32_t uType)
         if ( m_uType == LTYPE_CODE )
             m_Callbacks[c].codeCB = NULL;
         else
-            m_Callbacks[c].scriptCB = -1;
+            m_Callbacks[c].scriptCB = NULL;
     }
 
     if ( m_uType == LTYPE_SCRIPT )
@@ -51,7 +51,7 @@ void Logic::InitObject(Object *parent)
     {
         m_Callbacks[ LCB_OBJECT_SETUP ].codeCB( m_pOwner, parent->GetID(), 0, NULL );
     }
-    else if ( m_uType == LTYPE_SCRIPT && m_Callbacks[ LCB_OBJECT_SETUP ].scriptCB >= 0 )
+    else if ( m_uType == LTYPE_SCRIPT && m_Callbacks[ LCB_OBJECT_SETUP ].scriptCB )
     {
         ScriptSystem::ExecuteFunc(m_Callbacks[ LCB_OBJECT_SETUP ].scriptCB);
     }
@@ -63,7 +63,7 @@ void Logic::Update(Object *parent)
     {
         m_Callbacks[ LCB_UPDATE ].codeCB( m_pOwner, parent->GetID(), 0, NULL );
     }
-    else if ( m_uType == LTYPE_SCRIPT && m_Callbacks[ LCB_UPDATE ].scriptCB >= 0 )
+    else if ( m_uType == LTYPE_SCRIPT && m_Callbacks[ LCB_UPDATE ].scriptCB )
     {
         ScriptSystem::ExecuteFunc(m_Callbacks[ LCB_UPDATE ].scriptCB);
     }
@@ -79,7 +79,7 @@ void Logic::SendMessage(Object *parent, uint32_t uMsgID, float fValue)
             m_ParamList[1].fParam = fValue;
             m_Callbacks[ LCB_MESSAGE ].codeCB( m_pOwner, parent->GetID(), 2, m_ParamList );
         }
-        else if ( m_uType == LTYPE_SCRIPT && m_Callbacks[ LCB_MESSAGE ].scriptCB >= 0 )
+        else if ( m_uType == LTYPE_SCRIPT && m_Callbacks[ LCB_MESSAGE ].scriptCB )
         {
             ScriptArgument paramList[2];
             paramList[0].uType  = SC_ARG_uint32_t;

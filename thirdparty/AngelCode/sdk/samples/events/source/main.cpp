@@ -23,7 +23,7 @@ using namespace std;
 #define UINT unsigned int 
 typedef unsigned int DWORD;
 int ch;
-// Linux doesn't have timeGetTime(), this essintially does the same
+// Linux doesn't have timeGetTime(), this essentially does the same
 // thing, except this is milliseconds since Epoch (Jan 1st 1970) instead
 // of system start. It will work the same though...
 DWORD timeGetTime()
@@ -94,7 +94,7 @@ int main(int argc, char **argv)
 	int r;
 
 	// Create the script engine
-	asIScriptEngine *engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
+	asIScriptEngine *engine = asCreateScriptEngine();
 	if( engine == 0 )
 	{
 		cout << "Failed to create script engine." << endl;
@@ -133,7 +133,7 @@ int main(int argc, char **argv)
 	}
 
 	// Prepare the script context with the function we wish to execute
-	r = mainCtx->Prepare(engine->GetModule(0)->GetFunctionIdByDecl("void main()"));
+	r = mainCtx->Prepare(engine->GetModule(0)->GetFunctionByDecl("void main()"));
 	if( r < 0 ) 
 	{
 		cout << "Failed to prepare the context." << endl;
@@ -141,8 +141,8 @@ int main(int argc, char **argv)
 	}
 
 	// Get the function IDs for the event functions already
-	int onKeyPressID = engine->GetModule(0)->GetFunctionIdByDecl("void OnKeyPress()");
-	int onQuitID = engine->GetModule(0)->GetFunctionIdByDecl("void OnQuit()");
+	asIScriptFunction *onKeyPressFunc = engine->GetModule(0)->GetFunctionByDecl("void OnKeyPress()");
+	asIScriptFunction *onQuitFunc = engine->GetModule(0)->GetFunctionByDecl("void OnQuit()");
 
 	// Set the line callback so that we can suspend the script execution
 	// after a certain time. Before executing the script the timeOut variable
@@ -174,7 +174,7 @@ int main(int argc, char **argv)
 			if( key != 27 ) 
 			{
 				// Fire an event by calling the script function.
-				eventCtx->Prepare(onKeyPressID);
+				eventCtx->Prepare(onKeyPressFunc);
 				eventCtx->Execute();
 
 				// Note, I'm being a little lazy here, since we don't 
@@ -186,7 +186,7 @@ int main(int argc, char **argv)
 			else
 			{
 				// Fire the quit event that will tell the main script to finish
-				eventCtx->Prepare(onQuitID);
+				eventCtx->Prepare(onQuitFunc);
 				eventCtx->Execute();
 				
 				// Let the script run for at most 1sec more, to give it time 
@@ -219,8 +219,8 @@ int main(int argc, char **argv)
 	mainCtx->Release();
 	eventCtx->Release();
 
-	// Release the engine
-	engine->Release();
+	// Shut down the engine
+	engine->ShutDownAndRelease();
 
 	return 0;
 }

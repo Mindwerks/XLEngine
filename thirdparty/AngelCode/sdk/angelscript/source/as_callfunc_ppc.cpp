@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2011 Andreas Jonsson
+   Copyright (c) 2003-2015 Andreas Jonsson
 
    This software is provided 'as-is', without any express or implied
    warranty. In no event will the authors be held liable for any
@@ -48,6 +48,7 @@
 #include "as_scriptengine.h"
 #include "as_texts.h"
 #include "as_tokendef.h"
+#include "as_context.h"
 
 #include <stdlib.h>
 
@@ -481,13 +482,15 @@ static asQWORD CallThisCallFunction_objLast(const void *obj, const asDWORD* pArg
 	return ppcFunc( ppcArgs, PPC_STACK_SIZE(numTotalArgs), func );
 }
 
-asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, void *obj, asDWORD *args, void *retPointer, asQWORD &/*retQW2*/)
+asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, void *obj, asDWORD *args, void *retPointer, asQWORD &/*retQW2*/, void */*secondObject*/)
 {
+	// TODO: PPC does not yet support THISCALL_OBJFIRST/LAST
+
 	// use a working array of types, we'll configure the final one in stackArgs
 	asBYTE argsType[2*AS_PPC_MAX_ARGS + 1 + 1 + 1];
 	memset( argsType, 0, sizeof(argsType));
 
-	asCScriptEngine            *engine  = context->engine;
+	asCScriptEngine            *engine  = context->m_engine;
 	asSSystemFunctionInterface *sysFunc = descr->sysFuncIntf;
 
 	asQWORD  retQW           = 0;
@@ -573,7 +576,7 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 			if( descr->parameterTypes[n].IsObject() && !descr->parameterTypes[n].IsObjectHandle() && !descr->parameterTypes[n].IsReference() )
 			{
 #ifdef COMPLEX_OBJS_PASSED_BY_REF
-				if( descr->parameterTypes[n].GetObjectType()->flags & COMPLEX_MASK )
+				if( descr->parameterTypes[n].GetTypeInfo()->flags & COMPLEX_MASK )
 				{
 					argsType[a++] = ppcINTARG;
 					paramBuffer[dpos++] = args[spos++];
@@ -622,7 +625,6 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 	}
 	
 	int callConv = sysFunc->callConv;
-	context->isCallingSystemFunction = true;
 	switch( callConv )
 	{
 	case ICC_CDECL:
@@ -652,7 +654,6 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 	default:
 		context->SetInternalException(TXT_INVALID_CALLING_CONVENTION);
 	}
-	context->isCallingSystemFunction = false;
 
 	// If the return is a float value we need to get the value from the FP register
 	if( sysFunc->hostReturnFloat )

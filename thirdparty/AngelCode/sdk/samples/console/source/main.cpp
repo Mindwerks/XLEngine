@@ -38,7 +38,7 @@ string         p_name = "player";
 int main(int argc, char **argv)
 {
 	// Create the script engine
-	asIScriptEngine *engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
+	asIScriptEngine *engine = asCreateScriptEngine();
 	if( engine == 0 )
 	{
 		cout << "Failed to create script engine." << endl;
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 		// Trim unused characters
 		input.resize(strlen(input.c_str()));
 
-		int pos;
+		size_t pos;
 		if( (pos = input.find(" ")) != string::npos )
 		{
 			cmd = input.substr(0, pos);
@@ -102,8 +102,8 @@ int main(int argc, char **argv)
 			cout << "Unknown command." << endl;
 	}
 
-	// Release the engine
-	engine->Release();
+	// Shut down the engine
+	engine->ShutDownAndRelease();
 
 	return 0;
 }
@@ -135,7 +135,7 @@ void MessageCallback(const asSMessageInfo *msg, void *param)
 	else if( msg->type == asMSGTYPE_INFORMATION )
 		type = "INFO";
 
-	printf("%s (%d, %d) : %s : %s\n", msg->section, msg->row, msg->col, type, msg->message);
+	cout << msg->section << " (" << msg->row << ", " << msg->col << ") : " << type << " : " << msg->message << endl;
 }
 
 void ConfigureEngine(asIScriptEngine *engine)
@@ -220,10 +220,10 @@ void DeleteVariable(asIScriptEngine *engine, string &arg)
 	}
 
 	// trim the string to find the variable name
-	int p1 = arg.find_first_not_of(" \n\r\t");
+	size_t p1 = arg.find_first_not_of(" \n\r\t");
 	if( p1 != string::npos )
 		arg = arg.substr(p1, -1);
-	int p2 = arg.find_last_not_of(" \n\r\t");
+	size_t p2 = arg.find_last_not_of(" \n\r\t");
 	if( p2 != string::npos )
 		arg = arg.substr(0, p2+1);
 
@@ -251,10 +251,12 @@ void AddFunction(asIScriptEngine *engine, string &arg)
 	else
 	{
 		// The script engine supports function overloads, but to simplify the 
-		// console we'll disallow multiple functions with the same name
-		if( mod->GetFunctionIdByName(func->GetName()) == asMULTIPLE_FUNCTIONS )
+		// console we'll disallow multiple functions with the same name.
+		// We know the function was added, so if GetFunctionByName() fails it is
+		// because there already was another function with the same name.
+		if( mod->GetFunctionByName(func->GetName()) == 0 )
 		{
-			mod->RemoveFunction(func->GetId());
+			mod->RemoveFunction(func);
 			cout << "Another function with that name already exists." << endl;
 		}
 		else
@@ -276,17 +278,17 @@ void DeleteFunction(asIScriptEngine *engine, string &arg)
 	}
 
 	// trim the string to find the variable name
-	int p1 = arg.find_first_not_of(" \n\r\t");
+	size_t p1 = arg.find_first_not_of(" \n\r\t");
 	if( p1 != string::npos )
 		arg = arg.substr(p1, -1);
-	int p2 = arg.find_last_not_of(" \n\r\t");
+	size_t p2 = arg.find_last_not_of(" \n\r\t");
 	if( p2 != string::npos )
 		arg = arg.substr(0, p2+1);
 
-	int id = mod->GetFunctionIdByName(arg.c_str());
-	if( id > 0 )
+	asIScriptFunction *func = mod->GetFunctionByName(arg.c_str());
+	if( func )
 	{
-		mod->RemoveFunction(id);
+		mod->RemoveFunction(func);
 		cout << "Function removed. " << endl;
 	}
 	else
@@ -308,7 +310,7 @@ void ListVariables(asIScriptEngine *engine)
 		const char *name;
 		int typeId;
 		bool isConst;
-		engine->GetGlobalPropertyByIndex(n, &name, &typeId, &isConst);
+		engine->GetGlobalPropertyByIndex(n, &name, 0, &typeId, &isConst);
 		string decl = isConst ? " const " : " ";
 		decl += engine->GetTypeDeclaration(typeId);
 		decl += " ";
@@ -337,8 +339,7 @@ void ListFunctions(asIScriptEngine *engine)
 	cout << "Application functions:" << endl;
 	for( n = 0; n < (asUINT)engine->GetGlobalFunctionCount(); n++ )
 	{
-		int id = engine->GetGlobalFunctionIdByIndex(n);
-		asIScriptFunction *func = engine->GetFunctionDescriptorById(id);
+		asIScriptFunction *func = engine->GetGlobalFunctionByIndex(n);
 
 		// Skip the functions that start with _ as these are not meant to be called explicitly by the user
 		if( func->GetName()[0] != '_' )
@@ -353,7 +354,7 @@ void ListFunctions(asIScriptEngine *engine)
 		cout << "User functions:" << endl;
 		for( n = 0; n < (asUINT)mod->GetFunctionCount(); n++ )
 		{
-			asIScriptFunction *func = mod->GetFunctionDescriptorByIndex(n);
+			asIScriptFunction *func = mod->GetFunctionByIndex(n);
 			cout << " " << func->GetDeclaration() << endl;
 		}
 	}

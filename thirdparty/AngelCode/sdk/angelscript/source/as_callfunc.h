@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2009 Andreas Jonsson
+   Copyright (c) 2003-2017 Andreas Jonsson
 
    This software is provided 'as-is', without any express or implied
    warranty. In no event will the authors be held liable for any
@@ -46,15 +46,26 @@ BEGIN_AS_NAMESPACE
 class asCContext;
 class asCScriptEngine;
 class asCScriptFunction;
+class asCObjectType;
 struct asSSystemFunctionInterface;
 
-int DetectCallingConvention(bool isMethod, const asSFuncPtr &ptr, int callConv, asSSystemFunctionInterface *internal);
+int DetectCallingConvention(bool isMethod, const asSFuncPtr &ptr, int callConv, void *auxiliary, asSSystemFunctionInterface *internal);
 
 int PrepareSystemFunctionGeneric(asCScriptFunction *func, asSSystemFunctionInterface *internal, asCScriptEngine *engine);
 
 int PrepareSystemFunction(asCScriptFunction *func, asSSystemFunctionInterface *internal, asCScriptEngine *engine);
 
-int CallSystemFunction(int id, asCContext *context, void *objectPointer);
+int CallSystemFunction(int id, asCContext *context);
+
+inline asPWORD FuncPtrToUInt(asFUNCTION_t func)
+{
+	// A little trickery as the C++ standard doesn't allow direct
+	// conversion between function pointer and data pointer
+	union { asFUNCTION_t func; asPWORD idx; } u;
+	u.func = func;
+
+	return u.idx;
+}
 
 enum internalCallConv
 {
@@ -73,12 +84,20 @@ enum internalCallConv
 	ICC_CDECL_OBJFIRST,
 	ICC_CDECL_OBJFIRST_RETURNINMEM,
 	ICC_GENERIC_METHOD,
-	ICC_GENERIC_METHOD_RETURNINMEM // never used
+	ICC_GENERIC_METHOD_RETURNINMEM, // never used
+	ICC_THISCALL_OBJLAST,
+	ICC_THISCALL_OBJLAST_RETURNINMEM,
+	ICC_VIRTUAL_THISCALL_OBJLAST,
+	ICC_VIRTUAL_THISCALL_OBJLAST_RETURNINMEM,
+	ICC_THISCALL_OBJFIRST,
+	ICC_THISCALL_OBJFIRST_RETURNINMEM,
+	ICC_VIRTUAL_THISCALL_OBJFIRST,
+	ICC_VIRTUAL_THISCALL_OBJFIRST_RETURNINMEM
 };
 
 struct asSSystemFunctionInterface
 {
-	size_t               func;
+	asFUNCTION_t         func;
 	int                  baseOffset;
 	internalCallConv     callConv;
 	int                  scriptReturnSize;
@@ -87,11 +106,21 @@ struct asSSystemFunctionInterface
 	int                  hostReturnSize;
 	int                  paramSize;
 	bool                 takesObjByVal;
-	asCArray<bool>       paramAutoHandles;
+	asCArray<bool>       paramAutoHandles; // TODO: Should be able to remove this array. Perhaps the flags can be stored together with the inOutFlags in asCScriptFunction?
 	bool                 returnAutoHandle;
-	bool                 hasAutoHandles;
+	int                  compositeOffset;
+	bool                 isCompositeIndirect;
+	void                *auxiliary; // can be used for functors, e.g. by asCALL_THISCALL_ASGLOBAL or asCALL_THISCALL_OBJFIRST
 
-	asSSystemFunctionInterface() {}
+	struct SClean
+	{
+		asCObjectType *ot; // argument type for clean up
+		short op;          // clean up operation: 0 = release, 1 = free, 2 = destruct then free
+		short off;         // argument offset on the stack
+	};
+	asCArray<SClean>     cleanArgs;
+
+	asSSystemFunctionInterface() : func(0), baseOffset(0), callConv(ICC_GENERIC_FUNC), scriptReturnSize(0), hostReturnInMemory(false), hostReturnFloat(false), hostReturnSize(0), paramSize(0), takesObjByVal(false), returnAutoHandle(false), compositeOffset(0), isCompositeIndirect(false), auxiliary(0) {}
 
 	asSSystemFunctionInterface(const asSSystemFunctionInterface &in)
 	{
@@ -100,18 +129,21 @@ struct asSSystemFunctionInterface
 
 	asSSystemFunctionInterface &operator=(const asSSystemFunctionInterface &in)
 	{
-		func               = in.func;
-		baseOffset         = in.baseOffset;
-		callConv           = in.callConv;
-		scriptReturnSize   = in.scriptReturnSize;
-		hostReturnInMemory = in.hostReturnInMemory;
-		hostReturnFloat    = in.hostReturnFloat;
-		hostReturnSize     = in.hostReturnSize;
-		paramSize          = in.paramSize;
-		takesObjByVal      = in.takesObjByVal;
-		paramAutoHandles   = in.paramAutoHandles;
-		returnAutoHandle   = in.returnAutoHandle;
-		hasAutoHandles     = in.hasAutoHandles;
+		func                = in.func;
+		baseOffset          = in.baseOffset;
+		callConv            = in.callConv;
+		scriptReturnSize    = in.scriptReturnSize;
+		hostReturnInMemory  = in.hostReturnInMemory;
+		hostReturnFloat     = in.hostReturnFloat;
+		hostReturnSize      = in.hostReturnSize;
+		paramSize           = in.paramSize;
+		takesObjByVal       = in.takesObjByVal;
+		paramAutoHandles    = in.paramAutoHandles;
+		returnAutoHandle    = in.returnAutoHandle;
+		compositeOffset     = in.compositeOffset;
+		isCompositeIndirect = in.isCompositeIndirect;
+		auxiliary           = in.auxiliary;
+		cleanArgs           = in.cleanArgs;
 		return *this;
 	}
 };
