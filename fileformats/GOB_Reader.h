@@ -11,16 +11,16 @@ class GOB_Reader : public Archive
 public:
     GOB_Reader();
 
-    bool Open(const char *pszName);
-    void Close();
+    bool Open(const char *pszName) override;
+    void Close() override;
 
-    bool OpenFile(const char *pszFile);
-    void CloseFile();
-    uint32_t GetFileLen();
-    bool ReadFile(void *pData, uint32_t uLength);
+    bool OpenFile(const char *pszFile) override;
+    void CloseFile() override;
+    uint32_t GetFileLen() override;
+    bool ReadFile(void *pData, uint32_t uLength) override;
 
-    int32_t GetFileCount();
-    const char *GetFileName(int32_t nFileIdx);
+    int32_t GetFileCount() override;
+    const char *GetFileName(int32_t nFileIdx) override;
 
 private:
 

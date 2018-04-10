@@ -1,10 +1,6 @@
 #include "TextureConv_ART.h"
 #include "ArchiveManager.h"
 
-TextureConv_ART::TextureConv_ART() : TextureConverter()
-{
-}
-
 TextureConv_ART::~TextureConv_ART()
 {
 }

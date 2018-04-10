@@ -70,9 +70,9 @@ class Sector_2_5D : public Sector
 {
 public:
     Sector_2_5D();
-    ~Sector_2_5D();
+    virtual ~Sector_2_5D();
 
-    void Render(IDriver3D *pDriver, Camera *pCamera);
+    void Render(IDriver3D *pDriver, Camera *pCamera) override;
     bool PointInsideSector(float x, float y);
     float GetZ_Floor(float x, float y, const std::vector<Sector *>& Sectors);
     float GetZ_Ceil(float x, float y, const std::vector<Sector *>& Sectors);

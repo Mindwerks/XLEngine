@@ -6,8 +6,8 @@
 class Driver3D_IPlatform
 {
     public:
-        Driver3D_IPlatform() {}
-        virtual ~Driver3D_IPlatform() {}
+        Driver3D_IPlatform() = default;
+        virtual ~Driver3D_IPlatform() = default;
 
         virtual void SetWindowData(int32_t nParam, void **param) {}
 

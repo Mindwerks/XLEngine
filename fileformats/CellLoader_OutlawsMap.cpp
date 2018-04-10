@@ -23,14 +23,6 @@ const float m_fWorldToTexel_Z = 8.0f;
 
 #define MAX_WALLS 32768
 
-CellLoader_OutlawsMap::CellLoader_OutlawsMap() : CellLoader()
-{
-}
-
-CellLoader_OutlawsMap::~CellLoader_OutlawsMap()
-{
-}
-
 //Outlaws Sector Flags.
 enum
 {
@@ -197,6 +189,10 @@ TextureHandle LoadNWX(uint8_t *pData, uint32_t uLen, const char *pszName, uint32
 
     //CELL_NWX *pCell1 = (CELL_NWX *)&pData[48+sizeof(CELL_NWX)+pCell0->size+4];
     //CELL_NWX *pCell2 = (CELL_NWX *)&pData[48+sizeof(CELL_NWX)+pCell0->size+4 + sizeof(CELL_NWX)+pCell1->size+4];
+}
+
+CellLoader_OutlawsMap::~CellLoader_OutlawsMap()
+{
 }
 
 WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const std::string& sFile, int32_t worldX, int32_t worldY )

@@ -34,10 +34,6 @@ struct ImageHeader
 
 #pragma pack(pop)
 
-TextureConv_IMG::TextureConv_IMG() : TextureConverter()
-{
-}
-
 TextureConv_IMG::~TextureConv_IMG()
 {
 }

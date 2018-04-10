@@ -10,10 +10,10 @@ class World;
 class CellLoader_OutlawsMap : public CellLoader
 {
 public:
-    CellLoader_OutlawsMap();
-    ~CellLoader_OutlawsMap();
+    CellLoader_OutlawsMap() = default;
+    virtual ~CellLoader_OutlawsMap();
 
-    WorldCell *Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const std::string& sFile, int32_t worldX, int32_t worldY );
+    WorldCell *Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const std::string& sFile, int32_t worldX, int32_t worldY ) override;
 
 private:
 

@@ -10,10 +10,6 @@
 
 #define MAX_WORLD_UPDATE_RANGE 30
 
-Sector_GeoBlock::Sector_GeoBlock() : Sector()
-{
-}
-
 Sector_GeoBlock::~Sector_GeoBlock()
 {
 }

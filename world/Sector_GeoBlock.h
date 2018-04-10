@@ -19,13 +19,13 @@ class WorldCell;
 class Sector_GeoBlock : public Sector
 {
 public:
-    Sector_GeoBlock();
-    ~Sector_GeoBlock();
+    Sector_GeoBlock() = default;
+    virtual ~Sector_GeoBlock();
 
-    void Render(IDriver3D *pDriver, Camera *pCamera);
-    void Collide(CollisionPacket *packet, Vector3 *bounds, const Vector3& vOffset);
-    void Raycast(RaycastPacket *packet, const Vector3& vOffset);
-    void Update(float dt);
+    void Render(IDriver3D *pDriver, Camera *pCamera) override;
+    void Collide(CollisionPacket *packet, Vector3 *bounds, const Vector3& vOffset) override;
+    void Raycast(RaycastPacket *packet, const Vector3& vOffset) override;
+    void Update(float dt) override;
 public:
 };
 

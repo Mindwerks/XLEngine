@@ -6,8 +6,8 @@
 class TextureConverter
 {
 public:
-    TextureConverter()  {};
-    virtual ~TextureConverter() {};
+    TextureConverter() = default;
+    virtual ~TextureConverter() = default;
 
     //Some games have weird format deviations that must be discovered based on the file name.
     //These are "data hacks" that cannot be fixed without changing the data.

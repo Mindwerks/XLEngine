@@ -13,10 +13,10 @@ class MeshCollision : public CollisionComponent
 {
 public:
     MeshCollision();
-    ~MeshCollision();
+    virtual ~MeshCollision();
 
-    bool Collide(CollisionPacket *packet, Matrix *pWorldMtx, const Vector3& vOffset);
-    bool Raycast(RaycastPacket *packet, Matrix *pWorldMtx, Object *parent, Sector *pSector, const Vector3& vOffset);
+    bool Collide(CollisionPacket *packet, Matrix *pWorldMtx, const Vector3& vOffset) override;
+    bool Raycast(RaycastPacket *packet, Matrix *pWorldMtx, Object *parent, Sector *pSector, const Vector3& vOffset) override;
     void TransformUpdateRequired() { m_pWorldMtx = 0; }
     void AddPolygon(int numVerts, Vector3 *pvVertices );
     void SetMaxPolygonCount(int maxPolyCount);

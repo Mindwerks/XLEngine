@@ -13,10 +13,10 @@ class Sprite_ZAxis : public RenderComponent
 {
 public:
     Sprite_ZAxis();
-    virtual ~Sprite_ZAxis(){};
+    virtual ~Sprite_ZAxis();
 
-    void Render(Object *pObj, IDriver3D *pDriver, float fIntensity, const Vector3& vOffset);
-    void SetUV_Flip(bool bFlipX, bool bFlipY, bool bFlipAxis=false) { m_aFlip[0] = bFlipX?1:0; m_aFlip[1] = bFlipY?1:0; m_aFlip[2] = bFlipAxis?1:0; }
+    void Render(Object *pObj, IDriver3D *pDriver, float fIntensity, const Vector3& vOffset) override;
+    void SetUV_Flip(bool bFlipX, bool bFlipY, bool bFlipAxis=false) override { m_aFlip[0] = bFlipX?1:0; m_aFlip[1] = bFlipY?1:0; m_aFlip[2] = bFlipAxis?1:0; }
     void SetAlpha(float fAlpha=1.0f) { m_fAlpha = fAlpha; }
     void AddFX_Frame(TextureHandle frameTex, uint32_t uWidth, uint32_t uHeight)
     {
@@ -28,7 +28,7 @@ public:
     }
 
     //Oriented Sprite specific functions.
-    void SetTextureHandle(TextureHandle hTex) { m_hTex = hTex; }
+    void SetTextureHandle(TextureHandle hTex) override { m_hTex = hTex; }
     void SetBaseIntensity(float fBaseItens) { m_fBaseItens = fBaseItens; }
 
     void SetFlag(uint32_t uFlag) { m_uFlags |= uFlag; }
