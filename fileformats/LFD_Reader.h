@@ -10,13 +10,13 @@ class LFD_Reader : public Archive
 public:
     LFD_Reader();
 
-    virtual bool Open(const char *pszName) override;
-    virtual void Close() override;
+    bool Open(const char *pszName) override;
+    void Close() override;
 
-    virtual bool OpenFile(const char *pszFile) override;
-    virtual void CloseFile() override;
-    virtual uint32_t GetFileLen() override;
-    virtual bool ReadFile(void *pData, uint32_t uLength) override;
+    bool OpenFile(const char *pszFile) override;
+    void CloseFile() override;
+    uint32_t GetFileLen() override;
+    bool ReadFile(void *pData, uint32_t uLength) override;
 
 private:
 

@@ -1,6 +1,10 @@
 #include "TextureConv_ART.h"
 #include "ArchiveManager.h"
 
+TextureConv_ART::~TextureConv_ART()
+{
+}
+
 bool TextureConv_ART::ConvertTexture_Pal8(uint8_t *pConvertedData, int32_t& nOffsX, int32_t& nOffsY, uint32_t& uWidth, uint32_t& uHeight, const uint8_t *pSourceData, uint32_t uLen, const uint8_t *pPalette, bool bCopyPal, uint32_t uHackID/*=0*/)
 {
     uint16_t *pSizeInfo = (uint16_t *)ArchiveManager::GameFile_GetFileInfo();

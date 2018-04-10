@@ -13,10 +13,10 @@ class Sprite_ZAxis : public RenderComponent
 {
 public:
     Sprite_ZAxis();
-    virtual ~Sprite_ZAxis() = default;
+    virtual ~Sprite_ZAxis();
 
-    virtual void Render(Object *pObj, IDriver3D *pDriver, float fIntensity, const Vector3& vOffset) override;
-    virtual void SetUV_Flip(bool bFlipX, bool bFlipY, bool bFlipAxis=false) override { m_aFlip[0] = bFlipX?1:0; m_aFlip[1] = bFlipY?1:0; m_aFlip[2] = bFlipAxis?1:0; }
+    void Render(Object *pObj, IDriver3D *pDriver, float fIntensity, const Vector3& vOffset) override;
+    void SetUV_Flip(bool bFlipX, bool bFlipY, bool bFlipAxis=false) override { m_aFlip[0] = bFlipX?1:0; m_aFlip[1] = bFlipY?1:0; m_aFlip[2] = bFlipAxis?1:0; }
     void SetAlpha(float fAlpha=1.0f) { m_fAlpha = fAlpha; }
     void AddFX_Frame(TextureHandle frameTex, uint32_t uWidth, uint32_t uHeight)
     {

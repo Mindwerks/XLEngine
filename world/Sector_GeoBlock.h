@@ -20,12 +20,12 @@ class Sector_GeoBlock : public Sector
 {
 public:
     Sector_GeoBlock() = default;
-    virtual ~Sector_GeoBlock() = default;
+    virtual ~Sector_GeoBlock();
 
-    virtual void Render(IDriver3D *pDriver, Camera *pCamera) override;
-    virtual void Collide(CollisionPacket *packet, Vector3 *bounds, const Vector3& vOffset) override;
-    virtual void Raycast(RaycastPacket *packet, const Vector3& vOffset) override;
-    virtual void Update(float dt) override;
+    void Render(IDriver3D *pDriver, Camera *pCamera) override;
+    void Collide(CollisionPacket *packet, Vector3 *bounds, const Vector3& vOffset) override;
+    void Raycast(RaycastPacket *packet, const Vector3& vOffset) override;
+    void Update(float dt) override;
 public:
 };
 

@@ -18,6 +18,10 @@ SkyLoader_Daggerfall::SkyLoader_Daggerfall() : SkyLoader()
     }
 }
 
+SkyLoader_Daggerfall::~SkyLoader_Daggerfall()
+{
+}
+
 bool SkyLoader_Daggerfall::LoadSky(int32_t regionID)
 {
     if ( m_aSkyData[regionID].bLoaded )

@@ -7,9 +7,9 @@ class TextureConv_PCX : public TextureConverter
 {
 public:
     TextureConv_PCX() = default;
-    virtual ~TextureConv_PCX() = default;
+    virtual ~TextureConv_PCX();
 
-    virtual bool ConvertTexture_Pal8(uint8_t *pConvertedData, int32_t& nOffsX, int32_t& nOffsY, uint32_t& uWidth, uint32_t& uHeight, const uint8_t *pSourceData, uint32_t uLen, const uint8_t *pPalette, bool bCopyPal, uint32_t uHackID=0) override;
+    bool ConvertTexture_Pal8(uint8_t *pConvertedData, int32_t& nOffsX, int32_t& nOffsY, uint32_t& uWidth, uint32_t& uHeight, const uint8_t *pSourceData, uint32_t uLen, const uint8_t *pPalette, bool bCopyPal, uint32_t uHackID=0) override;
 };
 
 #endif //TEXTURECONVERTER_PCX_H

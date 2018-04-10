@@ -13,12 +13,12 @@ public:
     OrientedSprite();
     virtual ~OrientedSprite() = default;
 
-    virtual void Render(Object *pObj, IDriver3D *pDriver, float fIntensity, const Vector3& vOffset) override;
-    virtual void SetUV_Flip(bool bFlipX, bool bFlipY, bool bFlipAxis=false) override { m_aFlip[0] = bFlipX?1:0; m_aFlip[1] = bFlipY?1:0; m_aFlip[2] = bFlipAxis?1:0; }
+    void Render(Object *pObj, IDriver3D *pDriver, float fIntensity, const Vector3& vOffset) override;
+    void SetUV_Flip(bool bFlipX, bool bFlipY, bool bFlipAxis=false) override { m_aFlip[0] = bFlipX?1:0; m_aFlip[1] = bFlipY?1:0; m_aFlip[2] = bFlipAxis?1:0; }
     void SetAlpha(float fAlpha=1.0f) { m_fAlpha = fAlpha; }
 
     //Oriented Sprite specific functions.
-    virtual void SetTextureHandle(TextureHandle hTex) override { m_hTex = hTex; }
+    void SetTextureHandle(TextureHandle hTex) override { m_hTex = hTex; }
     void SetBaseIntensity(float fBaseItens) { m_fBaseItens = fBaseItens; }
 
 private:

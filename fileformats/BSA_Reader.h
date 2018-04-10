@@ -10,19 +10,19 @@ class BSA_Reader : public Archive
 public:
     BSA_Reader();
 
-    virtual bool Open(const char *pszName) override;
-    virtual void Close() override;
+    bool Open(const char *pszName) override;
+    void Close() override;
 
-    virtual bool OpenFile(const char *pszFile) override;
-    virtual bool OpenFile(const uint32_t uID) override;
-    virtual bool SearchForFile(const char *pszFileIn, char *pszFileOut) override;
-    virtual void CloseFile() override;
-    virtual uint32_t GetFileLen() override;
-    virtual bool ReadFile(void *pData, uint32_t uLength) override;
+    bool OpenFile(const char *pszFile) override;
+    bool OpenFile(const uint32_t uID) override;
+    bool SearchForFile(const char *pszFileIn, char *pszFileOut) override;
+    void CloseFile() override;
+    uint32_t GetFileLen() override;
+    bool ReadFile(void *pData, uint32_t uLength) override;
 
-    virtual int32_t GetFileCount() override;
-    virtual const char *GetFileName(int32_t nFileIdx) override;
-    virtual uint32_t GetFileID(int32_t nFileIdx) override;
+    int32_t GetFileCount() override;
+    const char *GetFileName(int32_t nFileIdx) override;
+    uint32_t GetFileID(int32_t nFileIdx) override;
 
 private:
 

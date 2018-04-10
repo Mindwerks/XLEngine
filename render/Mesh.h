@@ -13,8 +13,8 @@ public:
     Mesh();
     virtual ~Mesh();
 
-    virtual void Render(Object *pObj, IDriver3D *pDriver, float fIntensity, const Vector3& vOffset) override;
-    virtual void GetBounds(Vector3& vMin, Vector3& vMax) override;
+    void Render(Object *pObj, IDriver3D *pDriver, float fIntensity, const Vector3& vOffset) override;
+    void GetBounds(Vector3& vMin, Vector3& vMax) override;
 
     bool IsLoaded() { return m_bLoaded; }
     void SetLoaded() { m_bLoaded = true; }

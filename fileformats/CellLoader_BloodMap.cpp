@@ -29,6 +29,10 @@ CellLoader_BloodMap::CellLoader_BloodMap() : CellLoader()
     m_pBloodSprites = nullptr;
 }
 
+CellLoader_BloodMap::~CellLoader_BloodMap()
+{
+}
+
 void CellLoader_BloodMap::DecryptBuffer(uint8_t *pBuffer, const uint32_t uDataSize, uint8_t uDecryptKey)
 {
     // Variables

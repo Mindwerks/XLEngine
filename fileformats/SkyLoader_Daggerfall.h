@@ -17,10 +17,10 @@ class SkyLoader_Daggerfall : public SkyLoader
 {
 public:
     SkyLoader_Daggerfall();
-    virtual ~SkyLoader_Daggerfall() = default;
+    virtual ~SkyLoader_Daggerfall();
 
-    virtual bool LoadSky(int32_t regionID) override;
-    virtual void *GetSkyData(int32_t regionID) override;
+    bool LoadSky(int32_t regionID) override;
+    void *GetSkyData(int32_t regionID) override;
 
 private:
     enum

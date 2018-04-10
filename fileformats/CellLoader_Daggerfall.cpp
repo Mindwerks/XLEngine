@@ -343,6 +343,10 @@ WorldCell *CellLoader_Daggerfall::LoadFromLocation( IDriver3D *pDriver, World *p
     return pCell;
 }
 
+CellLoader_Daggerfall::~CellLoader_Daggerfall()
+{
+}
+
 WorldCell *CellLoader_Daggerfall::Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const std::string& sFile, int32_t worldX, int32_t worldY )
 {
     Location_Daggerfall *pLocation = WorldMap::GetLocation(sFile.c_str());

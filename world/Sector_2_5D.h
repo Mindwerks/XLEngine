@@ -72,7 +72,7 @@ public:
     Sector_2_5D();
     virtual ~Sector_2_5D();
 
-    virtual void Render(IDriver3D *pDriver, Camera *pCamera) override;
+    void Render(IDriver3D *pDriver, Camera *pCamera) override;
     bool PointInsideSector(float x, float y);
     float GetZ_Floor(float x, float y, const std::vector<Sector *>& Sectors);
     float GetZ_Ceil(float x, float y, const std::vector<Sector *>& Sectors);
