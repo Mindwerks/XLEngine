@@ -68,7 +68,7 @@ Console::Console(IDriver3D *pDriver)
     m_Color.Set(0.20f, 0.20f, 0.20f, 0.85f);
 }
 
-Console::~Console(void)
+Console::~Console()
 {
 }
 

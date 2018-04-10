@@ -8,12 +8,12 @@
 #include <cstdio>
 #include <memory.h>
 
-XLFont::XLFont(void)
+XLFont::XLFont()
 {
     m_hTex = XL_INVALID_TEXTURE;
 }
 
-XLFont::~XLFont(void)
+XLFont::~XLFont()
 {
 }
 

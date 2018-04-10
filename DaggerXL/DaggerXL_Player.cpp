@@ -63,7 +63,7 @@ DaggerXL_Player::DaggerXL_Player(const XLEngine_Plugin_API *API)
     m_bAutoMove           = false;
 }
 
-DaggerXL_Player::~DaggerXL_Player(void)
+DaggerXL_Player::~DaggerXL_Player()
 {
 }
 

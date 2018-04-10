@@ -8,7 +8,7 @@ class DarkXL_Game
 {
 public:
     DarkXL_Game(const XLEngine_Plugin_API *API);
-    ~DarkXL_Game(void);
+    ~DarkXL_Game();
 
     void FixedUpdate();
     void VariableUpdate(float dt);

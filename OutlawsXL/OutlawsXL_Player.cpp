@@ -32,7 +32,7 @@ OutlawsXL_Player::OutlawsXL_Player(const XLEngine_Plugin_API *API)
     m_bPassthruAdjoins = false;
 }
 
-OutlawsXL_Player::~OutlawsXL_Player(void)
+OutlawsXL_Player::~OutlawsXL_Player()
 {
 }
 

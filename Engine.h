@@ -55,7 +55,7 @@ class Engine
         static bool m_bContinueLoop;
 
         static void Engine_SetCameraData(float *pos, float *dir, float fSkew, float fSpeed, uint32_t uSector);
-        static XL_BOOL Engine_AllowPlayerControls(void);
+        static XL_BOOL Engine_AllowPlayerControls();
         static void Object_GetCameraVector(uint32_t uObjID, float& x, float& y, float& z);
     private:
         void Destroy();

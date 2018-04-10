@@ -24,7 +24,7 @@ public:
 
     float m[16];
 
-    Matrix(void) {;}
+    Matrix() {;}
     Matrix(int32_t identity)
     {
         if ( identity )
@@ -32,7 +32,7 @@ public:
             Identity();
         }
     }
-    ~Matrix(void) {;}
+    ~Matrix() {;}
 
     void ProjPersp(float fov, float aspect, float fZNear=0.1f, float fZFar=1000.0f, float fSkew=0.0f);
     void ProjOrtho(float w, float h, float zMin=0.1f, float zMax=1000.0f);

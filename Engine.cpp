@@ -489,7 +489,7 @@ void Game_SetGameData(const char *pszName, int versionMajor, int versionMinor)
     TextureCache::SetPath( szGameDir );
 }
 
-void Game_LoadWorldMap(void)
+void Game_LoadWorldMap()
 {
     WorldMap::Load();
 }
@@ -506,12 +506,12 @@ void Engine::Engine_SetCameraData(float *pos, float *dir, float fSkew, float fSp
     pCamera->SetSector( uSector );
 }
 
-XL_BOOL Engine::Engine_AllowPlayerControls(void)
+XL_BOOL Engine::Engine_AllowPlayerControls()
 {
     return (XL_Console::IsActive() == true || XL_Console::IsChatActive() == true ) ? false : true;
 }
 
-void UnloadAllWorldCells(void)
+void UnloadAllWorldCells()
 {
     m_pEngineForAPI->GetWorld()->UnloadWorldCells();
 }
@@ -695,7 +695,7 @@ void Engine::SetupPluginAPI()
     m_pPluginAPI->SetColormap            = TextureLoader::SetColormap;
     //World
     m_pPluginAPI->World_CreateTerrain    = World_CreateTerrain;
-    m_pPluginAPI->World_UnloadAllCells   = UnloadAllWorldCells;     //void World_UnloadAllCells(void);
+    m_pPluginAPI->World_UnloadAllCells   = UnloadAllWorldCells;     //void World_UnloadAllCells();
     m_pPluginAPI->World_LoadCell         = LoadWorldCell;           //void World_LoadCell(uint32_t cellType, uint32_t archiveType, const char *pszArchive, const char *pszFile, int32_t worldX, int32_t worldY);
     m_pPluginAPI->World_Collide          = World_Collide;
     m_pPluginAPI->World_Activate         = World_Activate;

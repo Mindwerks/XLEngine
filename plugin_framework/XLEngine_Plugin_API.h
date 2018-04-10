@@ -22,19 +22,19 @@ typedef void (*XAPI_Game_Update)(int32_t, float, XLEngine_Plugin_API*, void*);
 typedef void (*XAPI_Game_Render)(int32_t, float, XLEngine_Plugin_API*, void*);
 typedef void (*XAPI_World_Update)(int32_t, int32_t, XLEngine_Plugin_API*, void*);
 typedef void (*XAPI_Engine_SetCameraData)(float *, float *, float, float, uint32_t);
-typedef XL_BOOL (*XAPI_AllowPlayerControls)(void);
+typedef XL_BOOL (*XAPI_AllowPlayerControls)();
 
-typedef const char* (*XAPI_Startup_GetStartMap)(void);
-typedef int32_t (*XAPI_IsServer)(void);
+typedef const char* (*XAPI_Startup_GetStartMap)();
+typedef int32_t (*XAPI_IsServer)();
 
 typedef int32_t (*XAPI_Game_SetUpdateCB)(XAPI_Game_Update, void*);
 typedef int32_t (*XAPI_Game_SetRenderCB)(XAPI_Game_Render, void*);
 typedef void (*XAPI_Game_SetGameInfo)(const char*, int, int);
-typedef void (*XAPI_Game_LoadWorldMap)(void);
+typedef void (*XAPI_Game_LoadWorldMap)();
 typedef int32_t (*XAPI_World_SetUpdateCB)(XAPI_World_Update, void*);
 typedef int32_t (*XAPI_Input_KeyDown)(int32_t);
-typedef float (*XAPI_Input_MousePos)(void);
-typedef float (*XAPI_Input_GetMouseDelta)(void);
+typedef float (*XAPI_Input_MousePos)();
+typedef float (*XAPI_Input_GetMouseDelta)();
 typedef int32_t (*XAPI_Input_GameKeyDownCB)(Input_KeyDownCB, int32_t);
 typedef int32_t (*XAPI_Input_GameCharDownCB)(Input_KeyDownCB);
 typedef void (*XAPI_Input_EnableMouseLocking)(XL_BOOL);
@@ -47,30 +47,30 @@ typedef void (*XAPI_Start_Script)(const char *);
 typedef int32_t (*XAPI_ScriptSystem_RegisterFunc)(const char *, const asSFuncPtr&);
 
 typedef int32_t (*XAPI_GameFile_Open)(uint32_t, const char *, const char *);
-typedef uint32_t (*XAPI_GameFile_Length)(void);
+typedef uint32_t (*XAPI_GameFile_Length)();
 typedef void (*XAPI_GameFile_Read)(void *, uint32_t);
-typedef void (*XAPI_GameFile_Close)(void);
+typedef void (*XAPI_GameFile_Close)();
 
 typedef int32_t (*XAPI_SysFile_Open)(const char *);
-typedef uint32_t (*XAPI_SysFile_Length)(void);
+typedef uint32_t (*XAPI_SysFile_Length)();
 typedef void (*XAPI_SysFile_Read)(void *, uint32_t, uint32_t);
-typedef void (*XAPI_SysFile_Close)(void);
+typedef void (*XAPI_SysFile_Close)();
 
 typedef void (*XAPI_Parser_SetData)(char *, uint32_t, uint32_t);
 typedef int32_t (*XAPI_Parser_SearchKeyword_int32_t)(const char *, int32_t&);
-typedef uint32_t (*XAPI_Parser_GetFilePtr)(void);
+typedef uint32_t (*XAPI_Parser_GetFilePtr)();
 
 typedef void (*XAPI_MoviePlayer_SetPlayer)(uint32_t);
 typedef void (*XAPI_MoviePlayer_SetArchives)(uint32_t, const char *, const char *);
 typedef int32_t (*XAPI_MoviePlayer_Start)(const char *, uint32_t, int32_t);
-typedef int32_t (*XAPI_MoviePlayer_Update)(void);
-typedef void (*XAPI_MoviePlayer_Stop)(void);
+typedef int32_t (*XAPI_MoviePlayer_Update)();
+typedef void (*XAPI_MoviePlayer_Stop)();
 typedef void (*XAPI_MoviePlayer_Render)(float);
 
 typedef void (*XAPI_SetGamePalette)(uint8_t, uint8_t *, uint32_t, uint32_t);
 typedef void (*XAPI_SetColormap)(uint8_t, uint8_t *, int32_t);
 typedef void (*XAPI_World_CreateTerrain)(int32_t, int32_t);
-typedef void (*XAPI_World_UnloadAllCells)(void);
+typedef void (*XAPI_World_UnloadAllCells)();
 typedef void (*XAPI_World_LoadCell)(uint32_t, uint32_t, const char *, const char *, int32_t, int32_t);
 typedef void (*XAPI_World_Collide)(void *, void *, uint32_t& , float, int32_t);
 typedef void (*XAPI_World_Activate)(void *, void *, uint32_t&);
@@ -86,7 +86,7 @@ typedef ObjectPhysicsData* (*XAPI_Object_GetPhysicsData)(uint32_t);
 typedef void* (*XAPI_Object_GetGameData)(uint32_t);
 typedef void (*XAPI_Object_SetGameData)(uint32_t, void *);
 typedef void (*XAPI_Object_ReserveObjects)(uint32_t);
-typedef void (*XAPI_Object_FreeAllObjects)(void);
+typedef void (*XAPI_Object_FreeAllObjects)();
 typedef void (*XAPI_SetObjectAngles)(uint32_t, float, float, float);
 typedef void (*XAPI_ObjectEnableCollision)(uint32_t, int32_t);
 typedef void (*XAPI_Object_SendMessage)(uint32_t, uint32_t, float);
@@ -129,10 +129,10 @@ struct XLEngine_Plugin_API
 
     //Input
     XAPI_Input_KeyDown    IsKeyDown;                //int32_t IsKeyDown(int32_t key);
-    XAPI_Input_MousePos   GetMouseX;                //float GetMouseX(void);
-    XAPI_Input_MousePos   GetMouseY;                //float GetMouesY(void);
-    XAPI_Input_GetMouseDelta GetMouseDx;            //float GetMouseDx(void)
-    XAPI_Input_GetMouseDelta GetMouseDy;            //float GetMouseDy(void)
+    XAPI_Input_MousePos   GetMouseX;                //float GetMouseX();
+    XAPI_Input_MousePos   GetMouseY;                //float GetMouesY();
+    XAPI_Input_GetMouseDelta GetMouseDx;            //float GetMouseDx()
+    XAPI_Input_GetMouseDelta GetMouseDy;            //float GetMouseDy()
     XAPI_Input_GameKeyDownCB  AddKeyDownCallback;   //int32_t AddKeyDownCallback(  Input_KeyDownCB pCB, int32_t nFlags );
     XAPI_Input_GameCharDownCB AddCharDownCallback;  //int32_t AddCharDownCallback( Input_KeyDownCB pCB );
     XAPI_Input_EnableMouseLocking EnableMouseLocking; //void EnableMouseLocking( XL_BOOL bEnable );
@@ -177,7 +177,7 @@ struct XLEngine_Plugin_API
 
     //World
     XAPI_World_CreateTerrain      World_CreateTerrain;          //void World_CreateTerrain(int width, int height)
-    XAPI_World_UnloadAllCells     World_UnloadAllCells;         //void World_UnloadAllCells(void);
+    XAPI_World_UnloadAllCells     World_UnloadAllCells;         //void World_UnloadAllCells();
     XAPI_World_LoadCell           World_LoadCell;               //void World_LoadCell(uint32_t cellType, uint32_t archiveType, const char *pszArchive, const char *pszFile, int32_t worldX, int32_t worldY);
     XAPI_World_Collide            World_Collide;                //void World_Collision(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, int32_t nPassThruAdjoins=0);
     XAPI_World_Activate           World_Activate;               //void World_Activate(Vector3 *p0, Vector3 *p1, uint32_t& uSector);

@@ -98,7 +98,7 @@ BloodXL_Game::BloodXL_Game(const XLEngine_Plugin_API *API)
     }
 }
 
-BloodXL_Game::~BloodXL_Game(void)
+BloodXL_Game::~BloodXL_Game()
 {
     if ( m_Player )
     {

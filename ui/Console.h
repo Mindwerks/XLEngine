@@ -34,7 +34,7 @@ public:
 
 public:
     Console(IDriver3D *pDriver3D);
-    ~Console(void);
+    ~Console();
 
     void SetGameInfo(const std::string& gameName, int32_t versionMinor, int32_t versionMajor);
 

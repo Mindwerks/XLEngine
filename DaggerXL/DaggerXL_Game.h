@@ -16,7 +16,7 @@ class DaggerXL_Game
 {
 public:
     DaggerXL_Game(const XLEngine_Plugin_API *API);
-    ~DaggerXL_Game(void);
+    ~DaggerXL_Game();
 
     void FixedUpdate();
     void VariableUpdate(float dt);

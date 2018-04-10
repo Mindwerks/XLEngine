@@ -93,7 +93,7 @@ int32_t MovieManager::UpdateMovie()
     return 0;
 }
 
-void MovieManager::StopMovie(void)
+void MovieManager::StopMovie()
 {
     if ( m_pCurPlayer )
     {

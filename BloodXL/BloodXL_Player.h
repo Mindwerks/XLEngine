@@ -9,7 +9,7 @@ class BloodXL_Player
 {
 public:
     BloodXL_Player(const XLEngine_Plugin_API *API);
-    ~BloodXL_Player(void);
+    ~BloodXL_Player();
 
     void SetPassthruAdjoins(bool bPassthru) { m_bPassthruAdjoins = bPassthru; }
     void KeyDown(int32_t key);

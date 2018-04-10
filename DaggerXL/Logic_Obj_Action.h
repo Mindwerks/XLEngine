@@ -9,7 +9,7 @@ class Logic_Obj_Action
 {
 public:
     Logic_Obj_Action(const XLEngine_Plugin_API *API);
-    ~Logic_Obj_Action(void);
+    ~Logic_Obj_Action();
 
 private:
     const XLEngine_Plugin_API *m_pAPI;

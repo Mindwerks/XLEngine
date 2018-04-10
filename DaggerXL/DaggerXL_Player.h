@@ -9,7 +9,7 @@ class DaggerXL_Player
 {
 public:
     DaggerXL_Player(const XLEngine_Plugin_API *API);
-    ~DaggerXL_Player(void);
+    ~DaggerXL_Player();
 
     void KeyDown(int32_t key);
 

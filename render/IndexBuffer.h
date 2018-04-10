@@ -9,7 +9,7 @@ class IndexBuffer
 {
 public:
     IndexBuffer(IDriver3D *pDriver);
-    ~IndexBuffer(void);
+    ~IndexBuffer();
 
     bool Create(uint32_t uCount, uint32_t uStride, bool bDynamic);
     void Destroy();

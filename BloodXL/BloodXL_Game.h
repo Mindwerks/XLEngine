@@ -10,7 +10,7 @@ class BloodXL_Game
 {
 public:
     BloodXL_Game(const XLEngine_Plugin_API *API);
-    ~BloodXL_Game(void);
+    ~BloodXL_Game();
 
     void FixedUpdate();
     void VariableUpdate(float dt);
