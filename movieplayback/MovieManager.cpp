@@ -23,12 +23,11 @@ void MovieManager::Destroy()
 {
     m_MoviePlayers.clear();
 
-    std::vector<MoviePlayer *>::iterator iMoviePlayer = m_MoviePlayerList.begin();
-    std::vector<MoviePlayer *>::iterator eMoviePlayer = m_MoviePlayerList.end();
-    for (; iMoviePlayer != eMoviePlayer; ++iMoviePlayer)
+    for (MoviePlayer *moviePlayer : m_MoviePlayerList)
     {
-        xlDelete (*iMoviePlayer);
+        xlDelete moviePlayer;
     }
+
     m_MoviePlayerList.clear();
 }
 

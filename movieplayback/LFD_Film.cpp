@@ -81,17 +81,15 @@ void LFD_Film::Stop()
 
     if ( m_Graphics.size() > 0 )
     {
-        std::vector<Graphic *>::iterator iter = m_Graphics.begin();
-        std::vector<Graphic *>::iterator end  = m_Graphics.end();
-        for (; iter!=end; ++iter)
+        for (Graphic *graphic : m_Graphics)
         {
-            if ( *iter )
+            if (graphic != nullptr)
             {
-                Graphic *pGraphic = *iter;
-                pGraphic->pAnim->Destroy();
-                xlDelete pGraphic->pAnim;
+                graphic->pAnim->Destroy();
+                xlDelete graphic->pAnim;
             }
         }
+
         m_Graphics.clear();
     }
 

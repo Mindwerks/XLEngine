@@ -40,13 +40,11 @@ void ObjectManager::Destroy()
 {
     LogicManager::Destroy();
 
-    std::vector<Object *>::iterator iObjPool = m_ObjectPool.begin();
-    std::vector<Object *>::iterator eObjPool = m_ObjectPool.end();
-    for (; iObjPool != eObjPool; ++iObjPool)
+    for (Object *pool : m_ObjectPool)
     {
-        Object *pool = *iObjPool;
-        xlDelete [] pool;
+        xlDelete[] pool;
     }
+
     m_ObjectPool.clear();
     m_FreeObjects.clear();
     m_ActiveObjects.clear();

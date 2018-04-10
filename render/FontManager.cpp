@@ -73,12 +73,11 @@ bool FontManager::Init(const std::string& szFontPath, IDriver3D *pDriver)
 void FontManager::Destroy()
 {
     //delete the fonts.
-    FontMap::iterator iFont = m_Fonts.begin();
-    FontMap::iterator eFont = m_Fonts.end();
-    for (; iFont != eFont; ++iFont)
+    for (auto &pair : m_Fonts)
     {
-        xlDelete (*iFont).second;
+        xlDelete pair.second;
     }
+
     m_Fonts.clear();
 
     if ( m_pVB )

@@ -33,20 +33,18 @@ void Input::Init()
 
 void Input::Destroy()
 {
-    std::vector<KeyDownCB_t *>::iterator iKeyCB = m_KeyDownCB.begin();
-    std::vector<KeyDownCB_t *>::iterator eKeyCB = m_KeyDownCB.end();
-    for (; iKeyCB != eKeyCB; ++iKeyCB)
+    for (KeyDownCB_t *keyCB : m_KeyDownCB)
     {
-        xlDelete (*iKeyCB);
+        xlDelete keyCB;
     }
+
     m_KeyDownCB.clear();
 
-    std::vector<KeyDownCB_t *>::iterator iCharCB = m_CharDownCB.begin();
-    std::vector<KeyDownCB_t *>::iterator eCharCB = m_CharDownCB.end();
-    for (; iCharCB != eCharCB; ++iCharCB)
+    for (KeyDownCB_t *charCB : m_CharDownCB)
     {
-        xlDelete (*iCharCB);
+        xlDelete charCB;
     }
+
     m_CharDownCB.clear();
 }
 

@@ -109,20 +109,19 @@ Driver3D_Soft::~Driver3D_Soft()
     //delete textures.
     if ( m_Textures.size() )
     {
-        std::vector<Texture *>::iterator iTex = m_Textures.begin();
-        std::vector<Texture *>::iterator eTex = m_Textures.end();
-        for (; iTex != eTex; ++iTex)
+        for (Texture *tex : m_Textures)
         {
-            Texture *pTex = *iTex;
-            if (!pTex)
-                continue;
-
-            for (int32_t f=0; f<pTex->m_nFrameCnt; f++)
+            if (tex != nullptr)
             {
-                free( pTex->m_pData[f] );
+                for (int32_t f = 0; f < tex->m_nFrameCnt; f++)
+                {
+                    free(tex->m_pData[f]);
+                }
+
+                delete tex;
             }
-            delete pTex;
         }
+
         m_Textures.clear();
     }
 

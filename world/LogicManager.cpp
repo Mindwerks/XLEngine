@@ -9,12 +9,9 @@ bool LogicManager::Init()
 
 void LogicManager::Destroy()
 {
-    std::map<std::string, Logic *>::iterator iLogic = m_Logics.begin();
-    std::map<std::string, Logic *>::iterator eLogic = m_Logics.end();
-
-    for (; iLogic != eLogic; ++iLogic)
+    for (auto &pair : m_Logics)
     {
-        xlDelete iLogic->second;
+        xlDelete pair.second;
     }
 
     m_Logics.clear();
