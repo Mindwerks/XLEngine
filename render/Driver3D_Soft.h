@@ -105,7 +105,7 @@ class Driver3D_Soft : public IDriver3D
         int GetFrameHeight();
         bool GetBilinear() { return m_bBilinear; }
         bool GetGouraud()  { return m_bGouraud; }
-        void SetClearColorFromTex(TextureHandle hTex);
+        void SetClearColorFromTex(TextureHandle hTex) override;
         //optional polygon data to accelerate triangle processing.
         static uint8_t GetColormapID() { return s_uColormapID; }
         static Texture *GetCurTex() { return m_pCurTex; }
