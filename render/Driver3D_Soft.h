@@ -95,6 +95,8 @@ class Driver3D_Soft : public IDriver3D
         virtual bool ApplyOpaqueSort() override { return false; }
         virtual bool ApplyTransSort() override { return false; }
 
+        virtual Camera *GetCamera() override { return m_pRenderCamera; }
+
         //Software Rendering specific.
         void SetBitDepth(int32_t bitDepth);
         int32_t GetBitDepth() { return m_nBitDepth; }
@@ -103,7 +105,6 @@ class Driver3D_Soft : public IDriver3D
         int GetFrameHeight();
         bool GetBilinear() { return m_bBilinear; }
         bool GetGouraud()  { return m_bGouraud; }
-        Camera *GetCamera() { return m_pRenderCamera; }
         void SetClearColorFromTex(TextureHandle hTex);
         //optional polygon data to accelerate triangle processing.
         static uint8_t GetColormapID() { return s_uColormapID; }
