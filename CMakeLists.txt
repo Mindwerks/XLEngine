@@ -32,6 +32,22 @@ endif(NOT WIN32)
 
 add_subdirectory(thirdparty)
 
+# Build AngelScript add-ons we use
+add_library(scriptarray_addon STATIC
+    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/add_on/scriptarray/scriptarray.cpp
+    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/add_on/scriptarray/scriptarray.h)
+target_include_directories(scriptarray_addon PUBLIC
+    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/angelscript/include
+    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/add_on/scriptarray)
+add_library(scriptstdstring_addon STATIC
+    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/add_on/scriptstdstring/scriptstdstring.cpp
+    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/add_on/scriptstdstring/scriptstdstring.h
+    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/add_on/scriptstdstring/scriptstdstring_utils.cpp)
+target_include_directories(scriptstdstring_addon PUBLIC
+    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/angelscript/include
+    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/add_on/scriptstdstring)
+
+
 set(src_root ${XLEngine_SOURCE_DIR})
 
 # Organize XL Engine sources into alphabetized groups.
@@ -174,8 +190,6 @@ set(root_sources
     ${src_root}/PlatformDef.h
     ${src_root}/PluginAPI_Func.h)
 set(scriptsystem_sources
-    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/add_on/scriptarray/scriptarray.cpp
-    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/add_on/scriptstdstring/scriptstdstring.cpp
     ${src_root}/scriptsystem/ScriptSystem.h
     ${src_root}/scriptsystem/ScriptSystem.cpp)
 set(threading_sources
@@ -323,12 +337,12 @@ include_directories(
 
 # Include/library directories.
 set(xlengine_include_dirs
-    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/add_on/scriptarray
-    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/add_on/scriptstdstring
     ${ENET_INCLUDE_DIRS}
     ${GLEW_INCLUDE_DIR}
     ${IL_INCLUDE_DIR})
 set(xlengine_libraries
+    scriptarray_addon
+    scriptstdstring_addon
     angelscript
     ${ENET_LIBRARIES}
     GLEW::GLEW
