@@ -1,0 +1,18 @@
+version:                          0.2.0.{build}
+pull_requests:
+  do_not_increment_build_number:  true
+image:                            Visual Studio 2017
+cache:                            C:\Tools\vcpkg\installed\
+configuration:                    Release
+install:
+- cmd:                            vcpkg install devil enet glew
+before_build:
+- cmd:                            cmake -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake .
+build:
+  project:                        XLEngine.sln
+  parallel:                       true
+  verbosity:                      normal
+test:                             off
+artifacts:
+- path:                           Release
+  name:                           XLEngine-V%APPVEYOR_BUILD_VERSION%
