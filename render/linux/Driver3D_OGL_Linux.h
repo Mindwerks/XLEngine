@@ -9,9 +9,9 @@ class Driver3D_OGL_Linux : public Driver3D_IPlatform
         Driver3D_OGL_Linux();
         virtual ~Driver3D_OGL_Linux();
 
-        virtual void SetWindowData(int32_t nParam, void **param) override;
+        void SetWindowData(int32_t nParam, void **param) override;
 
-        virtual void Present() override;
+        void Present() override;
     protected:
     private:
 };

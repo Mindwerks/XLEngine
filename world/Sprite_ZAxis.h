@@ -28,7 +28,7 @@ public:
     }
 
     //Oriented Sprite specific functions.
-    virtual void SetTextureHandle(TextureHandle hTex) override { m_hTex = hTex; }
+    void SetTextureHandle(TextureHandle hTex) override { m_hTex = hTex; }
     void SetBaseIntensity(float fBaseItens) { m_fBaseItens = fBaseItens; }
 
     void SetFlag(uint32_t uFlag) { m_uFlags |= uFlag; }
