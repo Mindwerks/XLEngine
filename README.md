@@ -17,9 +17,14 @@ handler) error when linking (tested in Visual Studio 2017). (TODO: build script?
 
 ## Building
 We use CMake as the cross-platform build system.
+
 ```bash
-git checkout https://github.com/Mindwerks/XLEngine.git;
-mkdir build; cd build; cmake ../XLEngine; make -j4
+git clone https://github.com/Mindwerks/XLEngine.git
+cd XLEngine
+mkdir build
+cd build; 
+cmake ..
+make -j4
 ```
 
 ## Runtime Configuration
