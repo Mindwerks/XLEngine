@@ -7,7 +7,7 @@
 
 //WGL Extension crap... fortunately only on Windows.
 typedef BOOL (WINAPI * PFNWGLSWAPINTERVALEXTPROC)(int interval);
-typedef const char * (WINAPI * PFNWGLGETEXTENSIONSSTRINGEXTPROC)(void);
+typedef const char * (WINAPI * PFNWGLGETEXTENSIONSSTRINGEXTPROC)();
 PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = nullptr;
 
 HGLRC m_hRC;

@@ -33,7 +33,7 @@ OutlawsXL_Game::OutlawsXL_Game(const XLEngine_Plugin_API *API)
     m_Player = xlNew OutlawsXL_Player(API);
 }
 
-OutlawsXL_Game::~OutlawsXL_Game(void)
+OutlawsXL_Game::~OutlawsXL_Game()
 {
     if ( m_Player )
     {

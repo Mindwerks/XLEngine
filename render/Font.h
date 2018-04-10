@@ -40,8 +40,8 @@ struct Charset
 class XLFont
 {
 public:
-    XLFont(void);
-    ~XLFont(void);
+    XLFont();
+    ~XLFont();
 
     bool Load( const std::string& szFile, IDriver3D *pDriver );
     TextureHandle GetTexture() { return m_hTex; }

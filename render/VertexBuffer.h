@@ -9,7 +9,7 @@ class VertexBuffer
 {
 public:
     VertexBuffer(IDriver3D *pDriver);
-    ~VertexBuffer(void);
+    ~VertexBuffer();
 
     bool Create(uint32_t uStride, uint32_t uCount, bool bDynamic, uint32_t uVBO_Flags);
     void Destroy();

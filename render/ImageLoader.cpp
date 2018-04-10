@@ -8,7 +8,7 @@
 
 #define MAX_IMAGE_WIDTH 2048
 
-ImageLoader::ImageLoader(void)
+ImageLoader::ImageLoader()
 {
     //we're going to allocate a buffer for image loading.
     m_pImageData      = (uint8_t *)xlMalloc(MAX_IMAGE_WIDTH*MAX_IMAGE_WIDTH*4);
@@ -23,7 +23,7 @@ ImageLoader::ImageLoader(void)
     ilEnable(IL_ORIGIN_SET);
 }
 
-ImageLoader::~ImageLoader(void)
+ImageLoader::~ImageLoader()
 {
     if ( m_pImageData )
     {

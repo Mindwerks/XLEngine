@@ -31,7 +31,7 @@ Logic_Obj_Action::Logic_Obj_Action(const XLEngine_Plugin_API *API)
     m_pAPI->Logic_CreateFromCode("LOGIC_OBJ_ACTION", this, funcs);
 }
 
-Logic_Obj_Action::~Logic_Obj_Action(void)
+Logic_Obj_Action::~Logic_Obj_Action()
 {
 }
 

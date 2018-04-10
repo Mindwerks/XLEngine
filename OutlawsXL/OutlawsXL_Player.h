@@ -9,7 +9,7 @@ class OutlawsXL_Player
 {
 public:
     OutlawsXL_Player(const XLEngine_Plugin_API *API);
-    ~OutlawsXL_Player(void);
+    ~OutlawsXL_Player();
 
     void SetPassthruAdjoins(bool bPassthru) { m_bPassthruAdjoins = bPassthru; }
 

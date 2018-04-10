@@ -22,7 +22,7 @@ public:
     static void SetPlayerArchives(uint32_t uArchiveType, const char *pszArchive0, const char *pszArchive1);
     static int32_t StartMovie(const char *pszFile, uint32_t uFlags, int32_t nSpeed);
     static int32_t UpdateMovie();
-    static void StopMovie(void);
+    static void StopMovie();
     static void RenderMovie(float fDeltaTime);
 
 private:

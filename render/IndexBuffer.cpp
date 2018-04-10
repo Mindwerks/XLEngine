@@ -14,7 +14,7 @@ IndexBuffer::IndexBuffer(IDriver3D *pDriver)
     m_pDriver = pDriver;
 }
 
-IndexBuffer::~IndexBuffer(void)
+IndexBuffer::~IndexBuffer()
 {
     if ( m_pMemory )
     {

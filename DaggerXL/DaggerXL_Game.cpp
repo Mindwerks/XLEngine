@@ -58,7 +58,7 @@ DaggerXL_Game::DaggerXL_Game(const XLEngine_Plugin_API *API)
     s_pGamePtr = this;
 }
 
-DaggerXL_Game::~DaggerXL_Game(void)
+DaggerXL_Game::~DaggerXL_Game()
 {
     if ( m_Player )
     {

@@ -22,9 +22,9 @@
 class Vector2
 {
 public:
-    Vector2(void) { x = 0.0f; y = 0.0f; }
+    Vector2() { x = 0.0f; y = 0.0f; }
     Vector2(float _x, float _y) { x = _x; y = _y; }
-    ~Vector2(void) {;}
+    ~Vector2() {;}
 
     float Normalize();
     float Length()

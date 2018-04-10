@@ -9,7 +9,7 @@ class Logic_Door
 {
 public:
     Logic_Door(const XLEngine_Plugin_API *API);
-    ~Logic_Door(void);
+    ~Logic_Door();
 
 private:
     const XLEngine_Plugin_API *m_pAPI;

@@ -96,7 +96,7 @@ bool NPC::IsEnabled()
     return m_Data.uState!=NPC_STATE_DISABLED;
 }
 
-NPC::~NPC(void)
+NPC::~NPC()
 {
 }
 
@@ -111,7 +111,7 @@ Logic_NPC::Logic_NPC(const XLEngine_Plugin_API *API)
     m_pAPI->Logic_CreateFromCode("LOGIC_NPC", this, funcs);
 }
 
-Logic_NPC::~Logic_NPC(void)
+Logic_NPC::~Logic_NPC()
 {
 }
 

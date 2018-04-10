@@ -15,7 +15,7 @@ Logic_Door::Logic_Door(const XLEngine_Plugin_API *API)
     m_pAPI->Logic_CreateFromCode("LOGIC_DOOR", this, funcs);
 }
 
-Logic_Door::~Logic_Door(void)
+Logic_Door::~Logic_Door()
 {
 }
 

@@ -36,7 +36,7 @@ BloodXL_Player::BloodXL_Player(const XLEngine_Plugin_API *API)
     m_bPassthruAdjoins = false;
 }
 
-BloodXL_Player::~BloodXL_Player(void)
+BloodXL_Player::~BloodXL_Player()
 {
 }
 

@@ -11,7 +11,7 @@ class OutlawsXL_Game
 {
 public:
     OutlawsXL_Game(const XLEngine_Plugin_API *API);
-    ~OutlawsXL_Game(void);
+    ~OutlawsXL_Game();
 
     void FixedUpdate();
     void VariableUpdate(float dt);

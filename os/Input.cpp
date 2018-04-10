@@ -155,12 +155,12 @@ int32_t Input_IsKeyDown(int32_t key)
     return Input::IsKeyDown(key) ? 1 : 0;
 }
 
-float Input_GetMousePosX(void)
+float Input_GetMousePosX()
 {
     return Input::GetMouseX();
 }
 
-float Input_GetMousePosY(void)
+float Input_GetMousePosY()
 {
     return Input::GetMouseY();
 }

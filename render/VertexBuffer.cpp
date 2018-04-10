@@ -16,7 +16,7 @@ VertexBuffer::VertexBuffer(IDriver3D *pDriver)
     m_pDriver = pDriver;
 }
 
-VertexBuffer::~VertexBuffer(void)
+VertexBuffer::~VertexBuffer()
 {
     if ( m_pMemory )
     {

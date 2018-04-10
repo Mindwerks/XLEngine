@@ -32,7 +32,7 @@ DarkXL_Game::DarkXL_Game(const XLEngine_Plugin_API *API)
     CutscenePlayer::Init(API);
 }
 
-DarkXL_Game::~DarkXL_Game(void)
+DarkXL_Game::~DarkXL_Game()
 {
 }
 

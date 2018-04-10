@@ -9,7 +9,7 @@ class Logic_NPC
 {
 public:
     Logic_NPC(const XLEngine_Plugin_API *API);
-    ~Logic_NPC(void);
+    ~Logic_NPC();
 
 private:
     const XLEngine_Plugin_API *m_pAPI;
@@ -26,7 +26,7 @@ class NPC
 {
 public:
     NPC(const XLEngine_Plugin_API *pAPI);
-    ~NPC(void);
+    ~NPC();
 
     void Reset(const XLEngine_Plugin_API *pAPI, int32_t NPC_file, float x, float y, float z, int32_t worldX, int32_t worldY, float dirx=0.0f, float diry=1.0f);
     void Enable(const XLEngine_Plugin_API *pAPI, bool bEnable);

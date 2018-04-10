@@ -21,7 +21,7 @@ LFD_Anim::LFD_Anim(IDriver3D *pDriver)
     m_pDriver = pDriver;
 }
 
-LFD_Anim::~LFD_Anim(void)
+LFD_Anim::~LFD_Anim()
 {
     Destroy();
 }

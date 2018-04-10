@@ -25,7 +25,7 @@ class LFD_Anim
 {
 public:
     LFD_Anim(IDriver3D *pDriver);
-    ~LFD_Anim(void);
+    ~LFD_Anim();
     void Destroy();
 
     static bool LoadPLTT(char *pData, int32_t len);
