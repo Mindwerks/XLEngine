@@ -8,6 +8,9 @@
 #include <cstring>
 #include <memory.h>
 
+#include "scriptstdstring.h"
+#include "scriptarray.h"
+
 asIScriptEngine *m_Engine;
 asIScriptContext *m_pContext;
 float m_afGlobalStore[32];

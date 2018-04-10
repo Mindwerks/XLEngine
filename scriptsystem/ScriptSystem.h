@@ -3,8 +3,6 @@
 
 #include "../CommonTypes.h"
 #include "angelscript.h"
-#include "scriptstdstring.h"
-#include "scriptarray.h"
 
 #include <string>
 
