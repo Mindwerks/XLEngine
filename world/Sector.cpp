@@ -15,12 +15,11 @@ Sector::Sector()
 
 Sector::~Sector()
 {
-    std::vector<LightObject *>::iterator iLight = m_Lights.begin();
-    std::vector<LightObject *>::iterator eLight = m_Lights.end();
-    for (; iLight != eLight; ++iLight)
+    for (LightObject *light : m_Lights)
     {
-        xlDelete *iLight;
+        xlDelete light;
     }
+
     m_Lights.clear();
     xlDelete [] m_pValidNodes;
 }

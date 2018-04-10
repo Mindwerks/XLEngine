@@ -15,20 +15,18 @@ bool MeshCache::Init()
 
 void MeshCache::Destroy()
 {
-    MeshMap::iterator iMesh = m_MeshMap.begin();
-    MeshMap::iterator eMesh = m_MeshMap.end();
-    for (; iMesh != eMesh; ++iMesh)
+    for (auto &pair : m_MeshMap)
     {
-        delete iMesh->second;
+        delete pair.second;
     }
+
     m_MeshMap.clear();
 
-    MeshCollisionMap::iterator iMeshCol = m_MeshCollisionMap.begin();
-    MeshCollisionMap::iterator eMeshCol = m_MeshCollisionMap.end();
-    for (; iMeshCol != eMeshCol; ++iMeshCol)
+    for (auto &pair : m_MeshCollisionMap)
     {
-        delete iMeshCol->second;
+        delete pair.second;
     }
+
     m_MeshCollisionMap.clear();
 }
 

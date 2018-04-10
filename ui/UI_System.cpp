@@ -98,21 +98,19 @@ void UI_System::Destroy()
         UI_FreeImage( Editor_UI_Atlas );
     }
 
-    std::vector<UI_Screen *>::iterator iScreen = m_ScreenList.begin();
-    std::vector<UI_Screen *>::iterator eScreen = m_ScreenList.end();
-    for (; iScreen != eScreen; ++iScreen)
+    for (UI_Screen *screen : m_ScreenList)
     {
-        xlDelete *iScreen;
+        xlDelete screen;
     }
+
     m_ScreenList.clear();
     m_ScreenMap.clear();
 
-    std::vector<UI_Window *>::iterator iWindow = m_WindowList.begin();
-    std::vector<UI_Window *>::iterator eWindow = m_WindowList.end();
-    for (; iWindow != eWindow; ++iWindow)
+    for (UI_Window *window : m_WindowList)
     {
-        xlDelete *iWindow;
+        xlDelete window;
     }
+
     m_WindowList.clear();
 
     FreeRenderFramePool();

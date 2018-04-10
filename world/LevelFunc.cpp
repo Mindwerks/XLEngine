@@ -27,20 +27,14 @@ LevelFunc::LevelFunc(WorldCell *pWorldCell, int32_t nSector, int32_t nWall)
 
 LevelFunc::~LevelFunc()
 {
-    std::vector<State *>::iterator iState = m_States.begin();
-    std::vector<State *>::iterator eState = m_States.end();
-
-    for (; iState != eState; ++iState)
+    for (State *state : m_States)
     {
-        xlDelete (*iState);
+        xlDelete state;
     }
 
-    std::vector<ClientObject *>::iterator iCObj = m_ClientObjects.begin();
-    std::vector<ClientObject *>::iterator eCObj = m_ClientObjects.end();
-
-    for (; iCObj != eCObj; ++iCObj)
+    for (ClientObject *cObj : m_ClientObjects)
     {
-        xlDelete (*iCObj);
+        xlDelete cObj;
     }
 }
 

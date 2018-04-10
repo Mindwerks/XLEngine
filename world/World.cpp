@@ -32,12 +32,11 @@ World::~World()
 
 void World::UnloadWorldCells()
 {
-    std::vector<WorldCell *>::iterator iCell = m_WorldCells.begin();
-    std::vector<WorldCell *>::iterator eCell = m_WorldCells.end();
-    for (; iCell != eCell; ++iCell)
+    for (WorldCell *cell : m_WorldCells)
     {
-        xlDelete *iCell;
+        xlDelete cell;
     }
+
     m_WorldCells.clear();
 }
 

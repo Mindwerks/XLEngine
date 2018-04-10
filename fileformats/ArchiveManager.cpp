@@ -35,13 +35,12 @@ void ArchiveManager::Destroy()
 {
     m_OpenArchives.clear();
 
-    std::vector<Archive *>::iterator iArchive = m_ArchiveList.begin();
-    std::vector<Archive *>::iterator eArchive = m_ArchiveList.end();
-    for (; iArchive != eArchive; ++iArchive)
+    for (Archive *archive : m_ArchiveList)
     {
-        (*iArchive)->Close();
-        xlDelete (*iArchive);
+        archive->Close();
+        xlDelete archive;
     }
+
     m_ArchiveList.clear();
     TextureLoader::Destroy();
 }

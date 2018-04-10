@@ -23,12 +23,11 @@ void LevelFuncMgr::Destroy()
     m_AddList.clear();
     m_RemoveList.clear();
 
-    std::vector<LevelFunc *>::iterator iFunc = m_FuncList.begin();
-    std::vector<LevelFunc *>::iterator eFunc = m_FuncList.end();
-    for (; iFunc != eFunc; ++iFunc)
+    for (LevelFunc *func : m_FuncList)
     {
-        delete (*iFunc);
+        delete func;
     }
+
     m_FuncList.clear();
 }
 
