@@ -7,7 +7,7 @@
 #define SCRATCH_PAD_SIZE 64*1024*1024
 #define MAX_FRAME_COUNT 128
 
-uint8_t *ScratchPad::m_pMemory=NULL;
+uint8_t *ScratchPad::m_pMemory=nullptr;
 uint32_t ScratchPad::m_uFramePtr=0;
 
 int32_t ScratchPad::m_nCurFrame;
@@ -28,7 +28,7 @@ void ScratchPad::Destroy()
     {
         xlDelete [] m_pMemory;
     }
-    m_pMemory = NULL;
+    m_pMemory = nullptr;
 }
 
 void ScratchPad::StartFrame()
@@ -46,7 +46,7 @@ void *ScratchPad::AllocMem(uint32_t uSize)
     if ( m_uFramePtr + uSize >= SCRATCH_PAD_SIZE )
     {
         assert(0);
-        return NULL;
+        return nullptr;
     }
 
     uint32_t uLoc = m_uFramePtr;

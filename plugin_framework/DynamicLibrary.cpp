@@ -40,10 +40,10 @@ DynamicLibrary *DynamicLibrary::Load(const std::string& name, std::string& error
     if (name.empty()) 
     {
         errorString = "Empty path.";
-        return NULL;
+        return nullptr;
     }
 
-    void *handle = NULL;
+    void *handle = nullptr;
     std::string path = name + "." + dynamicLibraryExtension;
 
 #if PLATFORM_WIN
@@ -57,7 +57,7 @@ DynamicLibrary *DynamicLibrary::Load(const std::string& name, std::string& error
            << errorCode; 
         errorString = ss.str();
 
-        return NULL;
+        return nullptr;
     }
 #else
     handle = dlopen( path.c_str(), RTLD_NOW );
@@ -72,7 +72,7 @@ DynamicLibrary *DynamicLibrary::Load(const std::string& name, std::string& error
         if(dlErrorString.size())
             errorString += ": " + dlErrorString;
 
-        return NULL;
+        return nullptr;
     }
 #endif
 
@@ -82,7 +82,7 @@ DynamicLibrary *DynamicLibrary::Load(const std::string& name, std::string& error
 void *DynamicLibrary::GetSymbol(const std::string& symbol)
 {
     if ( !m_handle )
-        return NULL;
+        return nullptr;
 
 #if PLATFORM_WIN
     return GetProcAddress( (HMODULE)m_handle, symbol.c_str() );

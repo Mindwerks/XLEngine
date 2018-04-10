@@ -46,7 +46,7 @@ void checkSDLError(int ret)
 
 int main(int argc, char **argv)
 {
-    const char *game_name = NULL;
+    const char *game_name = nullptr;
 
     for(int i = 1;i < argc;i++)
     {
@@ -234,7 +234,7 @@ int main(int argc, char **argv)
     }
 
     delete m_pEngine;
-    m_pEngine = NULL;
+    m_pEngine = nullptr;
 
     SDL_GL_MakeCurrent(0, 0);
     SDL_GL_DeleteContext(glctx);

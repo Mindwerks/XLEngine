@@ -54,7 +54,7 @@ bool ScriptSystem::Init()
 {
     // Create the script engine
     m_Engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
-    if( m_Engine == NULL )
+    if( m_Engine == nullptr )
     {
         return false;
     }
@@ -69,7 +69,7 @@ bool ScriptSystem::Init()
     RegisterStdString(m_Engine);
     RegisterScriptArray(m_Engine, true);
 
-    m_pContext = NULL;
+    m_pContext = nullptr;
 
     memset(m_afGlobalStore, 0, sizeof(float)*32);
     memset(m_aTimers, 0, sizeof(int)*32);

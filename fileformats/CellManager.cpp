@@ -25,16 +25,16 @@ void CellManager::Destroy()
         {
             xlDelete m_CellLoaders[c];
         }
-        m_CellLoaders[c] = NULL;
+        m_CellLoaders[c] = nullptr;
     }
 }
 
 WorldCell *CellManager::LoadFromLocation(IDriver3D *pDriver, World *pWorld, uint32_t uCellType, void *pLocPtr)
 {
-    WorldCell *pCell = NULL;
+    WorldCell *pCell = nullptr;
 
     if ( uCellType >= CELLTYPE_COUNT )  //unsupported type.
-        return NULL;
+        return nullptr;
 
     CellLoader *pLoader = m_CellLoaders[uCellType];
 
@@ -49,16 +49,16 @@ WorldCell *CellManager::LoadFromLocation(IDriver3D *pDriver, World *pWorld, uint
 
 WorldCell *CellManager::LoadCell(IDriver3D *pDriver, World *pWorld, uint32_t uCellType, Archive *pCellArchive, const std::string& sFile, int32_t worldX, int32_t worldY)
 {
-    WorldCell *pCell = NULL;
+    WorldCell *pCell = nullptr;
 
     if ( uCellType >= CELLTYPE_COUNT )  //unsupported type.
-        return NULL;
+        return nullptr;
 
     CellLoader *pLoader = m_CellLoaders[uCellType];
 
     if ( pLoader->UsesOwnFiles() )
     {
-        pCell = pLoader->Load( pDriver, pWorld, NULL, 0, sFile, worldX, worldY );
+        pCell = pLoader->Load( pDriver, pWorld, nullptr, 0, sFile, worldX, worldY );
     }
     else if ( ArchiveManager::GameFile_Open(pCellArchive, sFile.c_str()) )
     {

@@ -1,7 +1,7 @@
 #include "Logic.h"
 #include "Object.h"
 
-Logic *Logic::s_pCurLogic = NULL;
+Logic *Logic::s_pCurLogic = nullptr;
 
 Logic::Logic(const std::string& sName, void *pOwner, uint32_t uType)
 {
@@ -10,13 +10,13 @@ Logic::Logic(const std::string& sName, void *pOwner, uint32_t uType)
     m_uType = uType;
     m_uMsgMask = 0;
 
-    //first initiliaze all the callbacks to NULL.
+    //first initialize all the callbacks to null.
     for (uint32_t c=0; c<LCB_COUNT; c++)
     {
         if ( m_uType == LTYPE_CODE )
-            m_Callbacks[c].codeCB = NULL;
+            m_Callbacks[c].codeCB = nullptr;
         else
-            m_Callbacks[c].scriptCB = NULL;
+            m_Callbacks[c].scriptCB = nullptr;
     }
 
     if ( m_uType == LTYPE_SCRIPT )
@@ -38,8 +38,8 @@ bool Logic::AddCallback(uint32_t uCallbackID, LogicFunction pCallback)
         //store away this as the current logic, so the logic setup knows which logic to
         //reference.
         s_pCurLogic = this;
-        m_Callbacks[ uCallbackID ].codeCB( m_pOwner, 0, 0, NULL );
-        s_pCurLogic = NULL;
+        m_Callbacks[ uCallbackID ].codeCB( m_pOwner, 0, 0, nullptr );
+        s_pCurLogic = nullptr;
     }
 
     return true;
@@ -49,7 +49,7 @@ void Logic::InitObject(Object *parent)
 {
     if ( m_uType == LTYPE_CODE && m_Callbacks[ LCB_OBJECT_SETUP ].codeCB )
     {
-        m_Callbacks[ LCB_OBJECT_SETUP ].codeCB( m_pOwner, parent->GetID(), 0, NULL );
+        m_Callbacks[ LCB_OBJECT_SETUP ].codeCB( m_pOwner, parent->GetID(), 0, nullptr );
     }
     else if ( m_uType == LTYPE_SCRIPT && m_Callbacks[ LCB_OBJECT_SETUP ].scriptCB )
     {
@@ -61,7 +61,7 @@ void Logic::Update(Object *parent)
 {
     if ( m_uType == LTYPE_CODE && m_Callbacks[ LCB_UPDATE ].codeCB )
     {
-        m_Callbacks[ LCB_UPDATE ].codeCB( m_pOwner, parent->GetID(), 0, NULL );
+        m_Callbacks[ LCB_UPDATE ].codeCB( m_pOwner, parent->GetID(), 0, nullptr );
     }
     else if ( m_uType == LTYPE_SCRIPT && m_Callbacks[ LCB_UPDATE ].scriptCB )
     {

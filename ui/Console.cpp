@@ -44,10 +44,10 @@ Vector4 m_aColorTable[]=
 Console::Console(IDriver3D *pDriver)
 {
     m_pDriver = pDriver;
-    m_DefaultCommand = NULL;
+    m_DefaultCommand = nullptr;
     m_MaxCommands = 32;
     m_MaxTextLines = 256;
-    m_pFont = NULL;
+    m_pFont = nullptr;
     m_nCommandHistory = -1;
     m_nScrollOffs = 0;
     m_bActive = false;
@@ -462,7 +462,7 @@ void Console::Render()
     FontManager::EndTextRendering();
 }
 
-void Console::PrintCommands(const char *pszText/*=NULL*/)
+void Console::PrintCommands(const char *pszText/*=nullptr*/)
 {
     char szCmdText[256];
     size_t l=0;
@@ -476,7 +476,7 @@ void Console::PrintCommands(const char *pszText/*=NULL*/)
     std::list<ConsoleItem>::const_iterator iter;
     for (iter = m_ItemList.begin(); iter != m_ItemList.end(); ++iter)
     {
-        if ( pszText != NULL && l > 0 )
+        if ( pszText != nullptr && l > 0 )
         {
             if ( strnicmp(pszText, (*iter).name.c_str(), l) != 0 )
                 continue;
@@ -692,13 +692,13 @@ bool Console::ParseCommandLine()
                     return true;
                     break;
                 default:
-                    m_DefaultCommand(arguments, NULL);
+                    m_DefaultCommand(arguments, nullptr);
                     return false;
                     break;
             }
         }
     }
-    m_DefaultCommand(arguments, NULL);
+    m_DefaultCommand(arguments, nullptr);
     m_CommandLine.clear();
 
     return false;

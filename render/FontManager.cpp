@@ -22,7 +22,7 @@ bool FontManager::Init(const std::string& szFontPath, IDriver3D *pDriver)
     m_pDriver  = pDriver;
     m_FontPath = szFontPath;
 
-    if ( m_pDriver == NULL )
+    if ( m_pDriver == nullptr )
         return false;
 
     m_pVB = xlNew VertexBuffer(pDriver);
@@ -84,12 +84,12 @@ void FontManager::Destroy()
     if ( m_pVB )
     {
         xlDelete m_pVB;
-        m_pVB = NULL;
+        m_pVB = nullptr;
     }
     if ( m_pIB )
     {
         xlDelete m_pIB;
-        m_pIB = NULL;
+        m_pIB = nullptr;
     }
 }
 
@@ -118,7 +118,7 @@ XLFont *FontManager::LoadFont(const std::string& szFile)
         return pFont;
     }
     TextureCache::RestorePath();
-    return NULL;
+    return nullptr;
 }
 
 void FontManager::BeginTextRendering()

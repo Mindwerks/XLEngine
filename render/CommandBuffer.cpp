@@ -30,7 +30,7 @@ void CommandBuffer::Destroy()
     for (int c=0; c<CommandBuffer::BUFFER_COUNT; c++)
     {
         delete s_pCommandBuffer[c];
-        s_pCommandBuffer[c] = NULL;
+        s_pCommandBuffer[c] = nullptr;
     }
 }
 
@@ -102,7 +102,7 @@ void CommandBuffer::DrawCall(const Matrix& mWorld, TextureHandle hTex, VertexBuf
 //Custom command, returns memory allocated from the command buffer.
 void *CommandBuffer::CB_Command(uint32_t uSize)
 {
-    void *pMem = NULL;
+    void *pMem = nullptr;
     if ( s_uCommandPos+uSize+END_MARKER_SIZE <= BUFFER_SIZE )
     {
         pMem = &s_pCommandBuffer[s_uWriteBuffer];

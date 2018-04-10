@@ -2,7 +2,7 @@
 #include "DarkXL_Game.h"
 
 //this is static for now.
-DarkXL_Game *m_pGame=NULL;
+DarkXL_Game *m_pGame=nullptr;
 
 //Interface between Game classes and C library interface.
 void DarkXL_Update(int32_t stage, float dt, XLEngine_Plugin_API *API, void *pUserData)
@@ -45,7 +45,7 @@ void DarkXL_DestroyGame()
     {
         xlDelete m_pGame;
     }
-    m_pGame = NULL;
+    m_pGame = nullptr;
 }
 
 //Dynamic library C interface.
@@ -58,8 +58,8 @@ extern "C" PLUGIN_API int32_t ExitFunc()
 
 extern "C" PLUGIN_API XL_ExitFunc XL_initPlugin(const XLEngine_Plugin_API *API)
 {
-    API->SetGameUpdateCallback( DarkXL_Update, NULL );
-    API->SetGameRenderCallback( DarkXL_Render, NULL );
+    API->SetGameUpdateCallback( DarkXL_Update, nullptr );
+    API->SetGameRenderCallback( DarkXL_Render, nullptr );
     API->AddKeyDownCallback( DarkXL_KeyDownCallback, Input::KDCb_FLAGS_NONE );
     
     DarkXL_CreateGame( API );

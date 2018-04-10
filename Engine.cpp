@@ -47,13 +47,13 @@ const float m_fFixedLoopsPerSec = 60.0f;
 const float m_fFixedLoopTime = (1.0f/m_fFixedLoopsPerSec);
 
 //Plugin API.
-Engine *m_pEngineForAPI=NULL;
-XAPI_Game_Update m_pGameUpdate=NULL;
-XAPI_Game_Render m_pGameRender=NULL;
-XAPI_World_Update m_pWorldUpdate=NULL;
-void *m_pGameUpdate_UD=NULL;
-void *m_pGameRender_UD=NULL;
-void *m_pWorldUpdate_UD=NULL;
+Engine *m_pEngineForAPI=nullptr;
+XAPI_Game_Update m_pGameUpdate=nullptr;
+XAPI_Game_Render m_pGameRender=nullptr;
+XAPI_World_Update m_pWorldUpdate=nullptr;
+void *m_pGameUpdate_UD=nullptr;
+void *m_pGameRender_UD=nullptr;
+void *m_pWorldUpdate_UD=nullptr;
 char m_szGameName[64]="";
 int m_anVersion[2]={0,0};
 
@@ -68,7 +68,7 @@ struct DisplayMessage
 DisplayMessage m_aMessages[MAX_MESSAGE_COUNT];
 int32_t m_nMessageCnt=0;
 
-IDriver3D *g_pDriver3D = NULL;
+IDriver3D *g_pDriver3D = nullptr;
 
 #define _MAX_TIMEOUT 5.0f
 #define _FRAME_COUNT_BEFORE_EXIT 60
@@ -80,14 +80,14 @@ bool Engine::m_bContinueLoop=true;
 
 Engine::Engine()
 {
-    m_pDriver3D = NULL;
-    m_pCamera = NULL;
-    m_pPluginAPI = NULL;
+    m_pDriver3D = nullptr;
+    m_pCamera = nullptr;
+    m_pPluginAPI = nullptr;
     m_fTotalTime = 0.0f;
-    m_pSystemFont16 = NULL;
-    m_pSystemFont24 = NULL;
-    m_pSystemFont32 = NULL;
-    m_pWorld = NULL;
+    m_pSystemFont16 = nullptr;
+    m_pSystemFont24 = nullptr;
+    m_pSystemFont32 = nullptr;
+    m_pWorld = nullptr;
     m_FPS = 60.0f;
 }
 
@@ -120,7 +120,7 @@ bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
             ((Driver3D_Soft *)m_pDriver3D)->SetBitDepth(8);
         }
 
-        if ( m_pDriver3D == NULL )
+        if ( m_pDriver3D == nullptr )
             return false;
 
         g_pDriver3D = m_pDriver3D;
@@ -128,7 +128,7 @@ bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
 
     //Create the default camera.
     m_pCamera = xlNew Camera();
-    if ( m_pCamera == NULL )
+    if ( m_pCamera == nullptr )
         return false;
 
     //pick the correct platform based on OS.
@@ -340,12 +340,12 @@ void Engine::Destroy()
     if ( m_pCamera )
     {
         xlDelete m_pCamera;
-        m_pCamera = NULL;
+        m_pCamera = nullptr;
     }
     if ( m_pPluginAPI )
     {
         xlFree( m_pPluginAPI );
-        m_pPluginAPI = NULL;
+        m_pPluginAPI = nullptr;
     }
     MovieManager::Destroy();
     Input::Destroy();
@@ -367,7 +367,7 @@ void Engine::Destroy()
     if ( m_pDriver3D )
     {
         xlDelete m_pDriver3D;
-        m_pDriver3D = NULL;
+        m_pDriver3D = nullptr;
     }
 
     //ScratchPad
@@ -376,7 +376,7 @@ void Engine::Destroy()
     if ( m_pWorld )
     {
         xlDelete m_pWorld;
-        m_pWorld = NULL;
+        m_pWorld = nullptr;
     }
 }
 
@@ -387,7 +387,7 @@ void Engine::InitGame(const char *pszGameLib)
 
 XLFont *Engine::GetSystemFont(int32_t size)
 {
-    XLFont *pFont = NULL;
+    XLFont *pFont = nullptr;
 
     if ( size == 16 )
         pFont = m_pSystemFont16;
@@ -432,7 +432,7 @@ void Engine::AddDisplayMessage(const char *pszMsg, Vector4 *color, float fShowTi
 float Engine::GetCurrentBrightness()
 {
     Object *player = m_pWorld->GetPlayer();
-    if ( player == NULL )
+    if ( player == nullptr )
         return 1.0f;
 
     return player->GetBrightness();

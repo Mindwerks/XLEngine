@@ -13,8 +13,8 @@ char _szFileName[32];
 ART_Reader::ART_Reader() : Archive()
 {
     m_CurFile = -1;
-    m_pFile = NULL;
-    m_pTilesList = NULL;
+    m_pFile = nullptr;
+    m_pTilesList = nullptr;
     m_uFileCount = 0;
 }
 
@@ -129,7 +129,7 @@ void ART_Reader::CloseFile()
     if ( m_pFile )
     {
         fclose(m_pFile);
-        m_pFile = NULL;
+        m_pFile = nullptr;
     }
     m_CurFile = -1;
 }

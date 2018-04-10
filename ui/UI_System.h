@@ -168,7 +168,7 @@ private:
 
     //Add a new screen, if it hasn't already been added.
     static UI_Screen *AddScreen(const std::string& sName);
-    static UI_Window *AddWindow(const std::string& sName, const std::string& sText, uint32_t uType, int32_t x, int32_t y, int32_t w, int32_t h, uint32_t flags, UI_Window *parent=NULL);
+    static UI_Window *AddWindow(const std::string& sName, const std::string& sText, uint32_t uType, int32_t x, int32_t y, int32_t w, int32_t h, uint32_t flags, UI_Window *parent=nullptr);
 
     //Script Functions, these are call by the UI Scripts.
     //UI_StartScreen is the first UI screen to start up, the program entry point.

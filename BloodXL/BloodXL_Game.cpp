@@ -5,7 +5,7 @@
 #include "../ui/Console.h"
 
 //Game instance used for console commands.
-BloodXL_Game *BloodXL_Game::s_pGame_Console=NULL;
+BloodXL_Game *BloodXL_Game::s_pGame_Console=nullptr;
 
 BloodXL_Game::BloodXL_Game(const XLEngine_Plugin_API *API)
 {
@@ -103,7 +103,7 @@ BloodXL_Game::~BloodXL_Game(void)
     if ( m_Player )
     {
         xlDelete m_Player;
-        m_Player = NULL;
+        m_Player = nullptr;
     }
 }
 

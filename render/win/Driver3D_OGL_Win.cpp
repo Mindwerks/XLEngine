@@ -8,7 +8,7 @@
 //WGL Extension crap... fortunately only on Windows.
 typedef BOOL (WINAPI * PFNWGLSWAPINTERVALEXTPROC)(int interval);
 typedef const char * (WINAPI * PFNWGLGETEXTENSIONSSTRINGEXTPROC)(void);
-PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
+PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = nullptr;
 
 HGLRC m_hRC;
 HDC m_hDC;
@@ -20,12 +20,12 @@ WORD m_GammaRamp[3][256];
 bool _WGLExtensionSupported(const char *extension_name)
 {
     // this is pointer to function which returns pointer to string with list of all wgl extensions
-    PFNWGLGETEXTENSIONSSTRINGEXTPROC _wglGetExtensionsStringEXT = NULL;
+    PFNWGLGETEXTENSIONSSTRINGEXTPROC _wglGetExtensionsStringEXT = nullptr;
 
     // determine pointer to wglGetExtensionsStringEXT function
     _wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)wglGetProcAddress("wglGetExtensionsStringEXT");
 
-    if (strstr(_wglGetExtensionsStringEXT(), extension_name) == NULL)
+    if (strstr(_wglGetExtensionsStringEXT(), extension_name) == nullptr)
     {
         // string was not found
         return false;
@@ -46,7 +46,7 @@ Driver3D_OGL_Win::~Driver3D_OGL_Win()
     //Restore the gamma ramp.
     if ( EngineSettings::get().IsFeatureEnabled(EngineSettings::FULLSCREEN) )
     {
-        HDC hdc = GetDC(NULL);
+        HDC hdc = GetDC(nullptr);
         SetDeviceGammaRamp(hdc, m_GammaRamp_Default);
     }
 }

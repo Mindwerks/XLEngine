@@ -38,7 +38,7 @@ public:
 
     void SetGameInfo(const std::string& gameName, int32_t versionMinor, int32_t versionMajor);
 
-    void AddItem(const std::string& itemName, void *ptr, ConsoleItemType type, const std::string& itemHelp, void *pUserData=NULL);
+    void AddItem(const std::string& itemName, void *ptr, ConsoleItemType type, const std::string& itemHelp, void *pUserData=nullptr);
     void RemoveItem(const std::string& itemName);
 
     void SetDefaultCommand(ConsoleFunction func);
@@ -60,7 +60,7 @@ public:
     bool IsChatActive() { return m_bChatMode; }
     void EnableCommandEcho(bool bEnable) { m_bEchoCommands = bEnable; }
 
-    void PrintCommands(const char *pszText=NULL);
+    void PrintCommands(const char *pszText=nullptr);
     void LoadNewBackground(const char *pszBackground);
 
 private:

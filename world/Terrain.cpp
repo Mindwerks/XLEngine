@@ -137,17 +137,17 @@ Terrain::Terrain(IDriver3D *pDriver, World *pWorld)
     m_nHeight = 0;
     m_x = -1;
     m_y = -1;
-    m_afHeightmap = NULL;
-    m_pClimate    = NULL;
-    m_afCoastalDist = NULL;
-    m_pSector = NULL;
-    m_pWorldCell = NULL;
+    m_afHeightmap = nullptr;
+    m_pClimate    = nullptr;
+    m_afCoastalDist = nullptr;
+    m_pSector = nullptr;
+    m_pWorldCell = nullptr;
 
     for (uint32_t l=0; l<LOD_COUNT; l++)
     {
-        m_LOD[l].m_pVB       = NULL;
-        for (int i=0; i<CHUNK_COUNT; i++) m_LOD[l].m_aChunks[i].m_pChunkIB  = NULL;
-        m_LOD[l].m_pGlobalIB = NULL;
+        m_LOD[l].m_pVB       = nullptr;
+        for (int i=0; i<CHUNK_COUNT; i++) m_LOD[l].m_aChunks[i].m_pChunkIB  = nullptr;
+        m_LOD[l].m_pGlobalIB = nullptr;
 
         m_LOD[l].m_pLocalHM = xlNew float[(CHUNK_TILE_WIDTH*TILE_QUAD_WIDTH+1) * (CHUNK_TILE_WIDTH*TILE_QUAD_WIDTH+1)];
         m_LOD[l].m_pLocalNM = xlNew Vector3[(CHUNK_TILE_WIDTH*TILE_QUAD_WIDTH+1) * (CHUNK_TILE_WIDTH*TILE_QUAD_WIDTH+1)];
@@ -966,7 +966,7 @@ void Terrain::Render(Camera *pCamera)
         m_pDriver->ForceMipmapping(true);
 
         int32_t bEnable = 1;
-        m_pDriver->SetExtension_Data( IDriver3D::EXT_GOURAUD, &bEnable, NULL);
+        m_pDriver->SetExtension_Data( IDriver3D::EXT_GOURAUD, &bEnable, nullptr);
 
         //m_fZRange = 8000.0f * 4.0f;
         //m_pDriver->EnableFog(true, 8000.0f * 4.0f);
@@ -982,7 +982,7 @@ void Terrain::Render(Camera *pCamera)
         //pCamera->SetMaxRenderDistance( 400.0f );
         m_pDriver->EnableFog(true, 400.0f);
         bEnable = 0;
-        m_pDriver->SetExtension_Data( IDriver3D::EXT_GOURAUD, &bEnable, NULL);
+        m_pDriver->SetExtension_Data( IDriver3D::EXT_GOURAUD, &bEnable, nullptr);
 
         m_pDriver->ForceMipmapping(false);
     }
@@ -1121,7 +1121,7 @@ void Terrain::RenderLOD(Camera *pCamera, int32_t lod)
         }
     }
 
-    m_pDriver->SetExtension_Data(IDriver3D::EXT_TEXTURE_INDEX, NULL, NULL);
+    m_pDriver->SetExtension_Data(IDriver3D::EXT_TEXTURE_INDEX, nullptr, nullptr);
 }
 
 void Terrain::RenderChunk(Camera *pCamera, int32_t lod, int32_t chunkNum)
@@ -1348,7 +1348,7 @@ int32_t Terrain::GetSkyIndex(int x, int y)
     return m_anMapSky[idx];
 }
 
-int32_t Terrain::GetClimate(int x, int y, int *pnFlat/*=NULL*/)
+int32_t Terrain::GetClimate(int x, int y, int *pnFlat/*=nullptr*/)
 {
     int xp = x + ((m_x-7)<<4);
     int yp = y + ((m_y-7)<<4);
@@ -1656,9 +1656,9 @@ void Terrain::BuildHeightmap(int32_t newX, int32_t newY, int32_t prevX, int32_t 
     Vector3 pos = c_startPos;
 
     //first copy the part of the heightmap that stays the same but moves.
-    static float *pTmpBuffer = NULL;
-    static Vector3 *pTmpV3Buffer = NULL;
-    static float *pTmpFltBuffer = NULL;
+    static float *pTmpBuffer = nullptr;
+    static Vector3 *pTmpV3Buffer = nullptr;
+    static float *pTmpFltBuffer = nullptr;
     int32_t bufferSize = (CHUNK_TILE_WIDTH*TILE_QUAD_WIDTH+1) * (CHUNK_TILE_WIDTH*TILE_QUAD_WIDTH+1);
     if ( !pTmpBuffer )
     {

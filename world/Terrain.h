@@ -56,7 +56,7 @@ public:
     bool IsActive() { return m_bActive; }
 
     //Update the terrain mesh and texturing based on the world position.
-    bool Update(int32_t x, int32_t y, int32_t nRectCnt=0, LocationRect *pRects=NULL);
+    bool Update(int32_t x, int32_t y, int32_t nRectCnt=0, LocationRect *pRects=nullptr);
 
     //Render the terrain.
     void Render(Camera *pCamera);
@@ -94,7 +94,7 @@ private:
     float SampleBaseHeightmap(int lod, int x, int y);
     float SampleCoastalDistance(int x, int y);
     void ComputeNormal(int32_t x, int32_t y);
-    int32_t GetClimate(int x, int y, int *pnFlat=NULL);
+    int32_t GetClimate(int x, int y, int *pnFlat=nullptr);
     int32_t GetSkyIndex(int x, int y);
 
     void RenderSky(int32_t skyIndex, int32_t timeIndex, Camera *pCamera);
@@ -163,7 +163,7 @@ private:
     inline Location_Daggerfall *FindLocation(int32_t x, int32_t y)
     {
         LocationMap::iterator iLoc = m_LocationMap.find( LOC_KEY(x, y) );
-        Location_Daggerfall *pLoc = NULL;
+        Location_Daggerfall *pLoc = nullptr;
         if ( iLoc != m_LocationMap.end() )
         {
             pLoc = iLoc->second;

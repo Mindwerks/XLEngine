@@ -74,7 +74,7 @@ void CutscenePlayer::LoadCutsceneData()
 
         //free pData
         xlDelete [] pData;
-        pData = NULL;
+        pData = nullptr;
     }
 }
 

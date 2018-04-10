@@ -52,9 +52,9 @@ struct FileInfo
 RFF_Reader::RFF_Reader() : Archive()
 {
     m_CurFile = -1;
-    m_pFile = NULL;
-    m_pFileLocal = NULL;
-    m_pFileList = NULL;
+    m_pFile = nullptr;
+    m_pFileLocal = nullptr;
+    m_pFileList = nullptr;
     m_uFileCount = 0;
     m_bEncrypt = false;
 }
@@ -156,9 +156,9 @@ FILE *OpenFile_Local(const char *pszFile)
 //This is different then other archives, we're reading indices here...
 bool RFF_Reader::OpenFile(const char *pszFile)
 {
-    if((m_pFileLocal=OpenFile_Local(pszFile)) != NULL)
+    if((m_pFileLocal=OpenFile_Local(pszFile)) != nullptr)
     {
-        m_pFile = NULL;
+        m_pFile = nullptr;
         return true;
     }
 
@@ -191,14 +191,14 @@ void RFF_Reader::CloseFile()
     if ( m_pFileLocal )
     {
         fclose(m_pFileLocal);
-        m_pFileLocal = NULL;
+        m_pFileLocal = nullptr;
         return;
     }
 
     if ( m_pFile )
     {
         fclose(m_pFile);
-        m_pFile = NULL;
+        m_pFile = nullptr;
     }
     m_CurFile = -1;
 }
@@ -249,7 +249,7 @@ bool RFF_Reader::ReadFile(void *pData, uint32_t uLength)
 //This is needed for this particular archive because it contains size info for the tile.
 void *RFF_Reader::ReadFileInfo()
 {
-    return NULL;
+    return nullptr;
 }
 
 int32_t RFF_Reader::GetFileCount()

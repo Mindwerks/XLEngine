@@ -68,7 +68,7 @@ struct TriEdge
 namespace TriangleRasterizer
 {
     void BuildTables();
-    void DrawClippedNGon_Indexed(Driver3D_Soft *pDriver, VBO *pVertices, int vCnt, const uint16_t *pIdx, bool bRecLighting, int alphaMode, PolygonData *polygonData=NULL);
+    void DrawClippedNGon_Indexed(Driver3D_Soft *pDriver, VBO *pVertices, int vCnt, const uint16_t *pIdx, bool bRecLighting, int alphaMode, PolygonData *polygonData=nullptr);
     void DrawClippedNGon(Driver3D_Soft *pDriver, VBO *pVertices, int vCnt, int offs, int alphaMode);
 };
 

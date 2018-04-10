@@ -11,7 +11,7 @@ VertexBuffer::VertexBuffer(IDriver3D *pDriver)
     m_uSize = 0;
     m_uVBO_ID = 0xffffffff;
     m_bLocked = false;
-    m_pMemory = NULL;
+    m_pMemory = nullptr;
 
     m_pDriver = pDriver;
 }
@@ -21,7 +21,7 @@ VertexBuffer::~VertexBuffer(void)
     if ( m_pMemory )
     {
         xlFree(m_pMemory);
-        m_pMemory = NULL;
+        m_pMemory = nullptr;
     }
     if ( m_uVBO_ID != 0xffffffff )
     {
@@ -39,7 +39,7 @@ bool VertexBuffer::Create(uint32_t uStride, uint32_t uCount, bool bDynamic, uint
 {
     bool bSuccess = true;
     m_pMemory = xlMalloc( uStride * uCount );
-    if ( m_pMemory == NULL )
+    if ( m_pMemory == nullptr )
         bSuccess = false;
 
     m_uStride = uStride;
@@ -68,7 +68,7 @@ void VertexBuffer::Destroy()
     if ( m_pMemory )
     {
         xlFree(m_pMemory);
-        m_pMemory = NULL;
+        m_pMemory = nullptr;
     }
     m_uCount = 0;
     m_uSize = 0;
@@ -85,7 +85,7 @@ void VertexBuffer::Fill(void *pData)
 
 void *VertexBuffer::Lock()
 {
-    void *pRet = NULL;
+    void *pRet = nullptr;
     assert( m_bLocked == false );
     if ( m_bLocked == false )
     {

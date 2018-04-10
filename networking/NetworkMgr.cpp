@@ -8,9 +8,9 @@
 
 #define MAX_PLAYERS 32
 
-ENetHost *_pServer = NULL;
-ENetHost *_pClient = NULL;
-ENetPeer *_pServerPeer = NULL;
+ENetHost *_pServer = nullptr;
+ENetHost *_pClient = nullptr;
+ENetPeer *_pServerPeer = nullptr;
 
 struct NetworkPlayer
 {
@@ -100,7 +100,7 @@ void NetworkMgr::Destroy()
     if ( _pServer )
     {
         enet_host_destroy(_pServer);
-        _pServer = NULL;
+        _pServer = nullptr;
     }
     if ( _pClient )
     {
@@ -134,11 +134,11 @@ void NetworkMgr::Destroy()
         {
             //force the disconnection.
             enet_peer_reset(_pServerPeer);
-            _pServerPeer = NULL;
+            _pServerPeer = nullptr;
         }
 
         enet_host_destroy(_pClient);
-        _pClient = NULL;
+        _pClient = nullptr;
     }
     enet_deinitialize();
 }
@@ -183,7 +183,7 @@ bool NetworkMgr::CreateServer()
         enet_address_set_host(&address, pszServerIP);
     }
 
-    if (_pServer == NULL)
+    if (_pServer == nullptr)
     {
         XL_Console::PrintF("^1Error: An error occurred while trying to create an ENet server host.");
         return false;
@@ -198,9 +198,9 @@ bool NetworkMgr::CreateClient()
     uint32_t uChannelCount = 1;
     uint32_t uIncomingBandwidth = 57600 / 8;    //56K modem with 56 Kbps downstream bandwidth
     uint32_t uOutgoingBandwidth = 14400 / 8; //56K modem with 14 Kbps upstream bandwidth
-    _pClient = enet_host_create(NULL, 1, uChannelCount, uIncomingBandwidth, uOutgoingBandwidth);
+    _pClient = enet_host_create(nullptr, 1, uChannelCount, uIncomingBandwidth, uOutgoingBandwidth);
 
-    if (_pClient == NULL)
+    if (_pClient == nullptr)
     {
         XL_Console::PrintF("^1Error: An error occurred while trying to create an ENet client host.");
         return false;
@@ -217,7 +217,7 @@ bool NetworkMgr::CreateClient()
 
     /* Initiate the connection, allocating the two channels 0 and 1. */
     _pServerPeer = enet_host_connect(_pClient, &address, 2, 0);    
-    if (_pServerPeer == NULL)
+    if (_pServerPeer == nullptr)
     {
         XL_Console::PrintF("^1Error: No available peers for initiating an ENet connection.");
         return false;
@@ -291,7 +291,7 @@ void NetworkMgr::SetLocalPlayerName(const char *pszName)
 
 void NetworkMgr::SendPacket_Client(uint32_t uChannel, const uint8_t *data, uint32_t uDataSize)
 {
-    if ( _pServerPeer == NULL )
+    if ( _pServerPeer == nullptr )
         return;
 
     ENetPacket *packet = enet_packet_create(data, uDataSize, ENET_PACKET_FLAG_RELIABLE);
@@ -417,7 +417,7 @@ void NetworkMgr::_ServerLoop()
                     }
                 }
                 /* Reset the peer's client information. */
-                event.peer->data = NULL;
+                event.peer->data = nullptr;
             break;
 
             case ENET_EVENT_TYPE_NONE:
@@ -469,8 +469,8 @@ void NetworkMgr::_ClientLoop()
                 Vector4 red(1.0f, 0.0f, 0.0f, 1.0f);
                 m_pEngine->AddDisplayMessage( "You have been disconnected.", &red, 1000.0f );
                 /* Reset the peer's client information. */
-                event.peer->data = NULL;
-                _pServerPeer = NULL;
+                event.peer->data = nullptr;
+                _pServerPeer = nullptr;
             }
             break;
 

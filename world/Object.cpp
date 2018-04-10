@@ -14,9 +14,9 @@ Object::Object()
     m_uRefCnt = 0;
     m_uRenderKey = 0xffffffff;
     
-    m_pDataComp   = NULL;
-    m_pRenderComp = NULL;
-    m_pCollisionComp = NULL;
+    m_pDataComp   = nullptr;
+    m_pRenderComp = nullptr;
+    m_pCollisionComp = nullptr;
 
     m_ObjPhysicsData.m_Loc.Set(0.0f, 0.0f, 0.0f);
     m_ObjPhysicsData.m_Dir.Set(0.0f, 1.0f, 0.0f);
@@ -57,12 +57,12 @@ void Object::Reset()
         {
             xlFree(m_pDataComp);
         }
-        m_pDataComp = NULL;
+        m_pDataComp = nullptr;
     }
     if ( m_pRenderComp )
     {
         //xlDelete m_pRenderComp;
-        m_pRenderComp = NULL;
+        m_pRenderComp = nullptr;
     }
 
     m_Logics.clear();
@@ -130,7 +130,7 @@ void Object::Update()
 
 void Object::ComputeTransformedBounds()
 {
-    if ( m_pRenderComp == NULL )
+    if ( m_pRenderComp == nullptr )
         return;
 
     Vector3 vMin, vMax;

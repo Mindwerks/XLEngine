@@ -9,8 +9,8 @@ XL_ExitFunc m_ExitFunc;
 
 bool PluginManager::Init(XLEngine_Plugin_API *pluginAPI)
 {
-    m_pGameLib = NULL;
-    m_ExitFunc = NULL;
+    m_pGameLib = nullptr;
+    m_ExitFunc = nullptr;
     m_pAPI = pluginAPI;
 
     return true;
@@ -50,11 +50,11 @@ void PluginManager::UnloadGame()
     if ( m_ExitFunc )
     {
         m_ExitFunc();
-        m_ExitFunc = NULL;
+        m_ExitFunc = nullptr;
     }
     if ( m_pGameLib )
     {
         xlDelete m_pGameLib;
-        m_pGameLib = NULL;
+        m_pGameLib = nullptr;
     }
 }

@@ -8,8 +8,8 @@
 GOB_Reader::GOB_Reader() : Archive()
 {
     m_CurFile = -1;
-    m_pFile = NULL;
-    m_FileList.pEntries = NULL;
+    m_pFile = nullptr;
+    m_FileList.pEntries = nullptr;
 }
 
 bool GOB_Reader::Open(const char *pszName)
@@ -65,7 +65,7 @@ bool GOB_Reader::Open(const char *pszName)
             }
 
             xlDelete [] pStringTable;
-            pStringTable = NULL;
+            pStringTable = nullptr;
         }
 
         fclose(f);
@@ -84,7 +84,7 @@ void GOB_Reader::Close()
     if ( m_FileList.pEntries )
     {
         xlDelete [] m_FileList.pEntries;
-        m_FileList.pEntries = NULL;
+        m_FileList.pEntries = nullptr;
     }
     m_bOpen = false;
 }
@@ -120,7 +120,7 @@ void GOB_Reader::CloseFile()
     if ( m_pFile )
     {
         fclose(m_pFile);
-        m_pFile = NULL;
+        m_pFile = nullptr;
     }
     m_CurFile = -1;
 }

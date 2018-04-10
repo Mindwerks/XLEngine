@@ -266,8 +266,8 @@ void WorldCell::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector, 
         raycastPacket.bFoundIntersection = false;
         raycastPacket.bounds[0].Set( Math::Min(p0->x, p1->x), Math::Min(p0->y, p1->y), Math::Min(p0->z, p1->z) );
         raycastPacket.bounds[1].Set( Math::Max(p0->x, p1->x), Math::Max(p0->y, p1->y), Math::Max(p0->z, p1->z) );
-        raycastPacket.pCollisionObj = NULL;
-        raycastPacket.pCollisionSector = NULL;
+        raycastPacket.pCollisionObj = nullptr;
+        raycastPacket.pCollisionSector = nullptr;
 
         for (uint32_t i=0; i<(uint32_t)m_Sectors.size(); i++)
         {
@@ -308,8 +308,8 @@ bool WorldCell::Raycast(Vector3 *p0, Vector3 *p1, Vector3 *pInter, uint32_t uSec
         raycastPacket.bFoundIntersection = false;
         raycastPacket.bounds[0].Set( Math::Min(p0->x, p1->x), Math::Min(p0->y, p1->y), Math::Min(p0->z, p1->z) );
         raycastPacket.bounds[1].Set( Math::Max(p0->x, p1->x), Math::Max(p0->y, p1->y), Math::Max(p0->z, p1->z) );
-        raycastPacket.pCollisionObj = NULL;
-        raycastPacket.pCollisionSector = NULL;
+        raycastPacket.pCollisionObj = nullptr;
+        raycastPacket.pCollisionSector = nullptr;
 
         for (uint32_t i=0; i<(uint32_t)m_Sectors.size(); i++)
         {

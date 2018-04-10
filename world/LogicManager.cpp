@@ -28,7 +28,7 @@ Logic *LogicManager::GetLogic(const std::string& sName)
         return iLogic->second;
     }
     
-    return NULL;
+    return nullptr;
 }
 
 Logic *LogicManager::CreateLogicFromCode(const std::string& sName, void *pOwner, LogicFunction *pFunc)

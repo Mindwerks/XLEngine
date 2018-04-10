@@ -34,7 +34,7 @@ void MeshCache::Destroy()
 
 Mesh *MeshCache::GetMesh(const std::string& sName)
 {
-    Mesh *pMesh = NULL;
+    Mesh *pMesh = nullptr;
     MeshMap::iterator iMesh = m_MeshMap.find(sName);
     if ( iMesh != m_MeshMap.end() )
     {
@@ -51,7 +51,7 @@ Mesh *MeshCache::GetMesh(const std::string& sName)
 
 MeshCollision *MeshCache::GetMeshCollision(const std::string& sName)
 {
-    MeshCollision *pMeshCollision = NULL;
+    MeshCollision *pMeshCollision = nullptr;
     MeshCollisionMap::iterator iMeshCol = m_MeshCollisionMap.find(sName);
     if ( iMeshCol != m_MeshCollisionMap.end() )
     {

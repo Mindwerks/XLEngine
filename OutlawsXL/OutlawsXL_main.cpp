@@ -2,7 +2,7 @@
 #include "OutlawsXL_Game.h"
 
 //this is static for now.
-OutlawsXL_Game *m_pGame=NULL;
+OutlawsXL_Game *m_pGame=nullptr;
 
 //Interface between Game classes and C library interface.
 void OutlawsXL_Update(int32_t stage, float dt, XLEngine_Plugin_API *API, void *pUserData)
@@ -45,7 +45,7 @@ void OutlawsXL_DestroyGame()
     {
         xlDelete m_pGame;
     }
-    m_pGame = NULL;
+    m_pGame = nullptr;
 }
 
 //Dynamic library C interface.
@@ -58,8 +58,8 @@ extern "C" PLUGIN_API int32_t ExitFunc()
 
 extern "C" PLUGIN_API XL_ExitFunc XL_initPlugin(const XLEngine_Plugin_API *API)
 {
-    API->SetGameUpdateCallback( OutlawsXL_Update, NULL );
-    API->SetGameRenderCallback( OutlawsXL_Render, NULL );
+    API->SetGameUpdateCallback( OutlawsXL_Update, nullptr );
+    API->SetGameRenderCallback( OutlawsXL_Render, nullptr );
     API->AddKeyDownCallback( OutlawsXL_KeyDownCallback, Input::KDCb_FLAGS_NONE );
 
     OutlawsXL_CreateGame( API );

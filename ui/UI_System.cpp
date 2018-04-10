@@ -40,9 +40,9 @@ IDriver3D *UI_System::m_pDriver;
 Engine *UI_System::m_pEngine;
 Vector2 UI_System::m_uvTop(0,0);
 Vector2 UI_System::m_uvBot(1,1);
-UI_RenderFrame *m_pUI_Atlas=NULL;
+UI_RenderFrame *m_pUI_Atlas=nullptr;
 
-UI_RenderFrame *UI_System::m_pRenderFramePool=NULL;
+UI_RenderFrame *UI_System::m_pRenderFramePool=nullptr;
 LFD_Anim *UI_System::m_pLFD_Anim_List[MAX_LFD_ANIM];
 
 int Editor_UI_Atlas;
@@ -68,12 +68,12 @@ bool UI_System::Init(IDriver3D *pDriver, Engine *pEngine)
 {
     m_bScriptsLoaded = false;
     m_bScriptExeSucceeded = false;
-    m_Top = NULL;
-    m_Leaf = NULL;
-    m_Context = NULL;
-    m_PendingScreenChange = NULL;
-    m_PushScreen = NULL;
-    m_PopScreen = NULL;
+    m_Top = nullptr;
+    m_Leaf = nullptr;
+    m_Context = nullptr;
+    m_PendingScreenChange = nullptr;
+    m_PushScreen = nullptr;
+    m_PopScreen = nullptr;
 
     //m_fVirt_Scr_W = 320.0f;
     //m_fVirt_Scr_H = 200.0f;
@@ -222,7 +222,7 @@ void UI_System::Update()
 
         //Enter the next screen.
         m_Top = m_PendingScreenChange;
-        m_PendingScreenChange = NULL;
+        m_PendingScreenChange = nullptr;
         assert( m_Top->m_hOnEnter );
 
         m_Context = m_Top;
@@ -235,14 +235,14 @@ void UI_System::Update()
         UI_Screen *pScreen = m_Top;
         m_Leaf->m_child = m_PushScreen;
         m_PushScreen->m_parent = m_Leaf;
-        m_PushScreen->m_child  = NULL;
+        m_PushScreen->m_child  = nullptr;
 
         assert( m_PushScreen->m_hOnEnter >= 0 );
         m_Context = m_PushScreen;
         ScriptSystem::ExecuteFunc( m_PushScreen->m_hOnEnter );
 
         m_Leaf = m_PushScreen;
-        m_PushScreen = NULL;
+        m_PushScreen = nullptr;
     }
     else if ( m_PopScreen && m_PopScreen->m_parent )
     {
@@ -250,8 +250,8 @@ void UI_System::Update()
         ScriptSystem::ExecuteFunc( m_PopScreen->m_hOnExit );
 
         m_Leaf = m_PopScreen->m_parent;
-        m_Leaf->m_child = NULL;
-        m_PopScreen = NULL;
+        m_Leaf->m_child = nullptr;
+        m_PopScreen = nullptr;
     }
     m_Context = m_Leaf;
 
@@ -367,7 +367,7 @@ void UI_System::RenderChildWindows(UI_Window *pWin, int x, int y)
 
 UI_Screen *UI_System::AddScreen(const std::string& sName)
 {
-    UI_Screen *pScreen = NULL;
+    UI_Screen *pScreen = nullptr;
     std::map<std::string, UI_Screen *>::iterator iScreen = m_ScreenMap.find(sName);
     if ( iScreen != m_ScreenMap.end() )
     {
@@ -410,10 +410,10 @@ UI_Window *UI_System::AddWindow(const std::string& sName, const std::string& sTe
     sprintf(szFuncName, "%s_OnRelease", sName.c_str());
     pWindow->m_hOnRelease = ScriptSystem::GetFunc( ScriptSystem::SCR_MODULE_UI, szFuncName );
 
-    if ( parent == NULL )
+    if ( parent == nullptr )
     {
-        pWindow->m_parent = NULL;
-        if ( m_Context->m_childWindow == NULL )
+        pWindow->m_parent = nullptr;
+        if ( m_Context->m_childWindow == nullptr )
         {
             m_Context->m_childWindow = pWindow;
         }
@@ -422,7 +422,7 @@ UI_Window *UI_System::AddWindow(const std::string& sName, const std::string& sTe
             UI_Window *curWin = m_Context->m_childWindow;
             while (1)
             {
-                if ( curWin->m_sibling == NULL )
+                if ( curWin->m_sibling == nullptr )
                 {
                     curWin->m_sibling = pWindow;
                     break;
@@ -437,7 +437,7 @@ UI_Window *UI_System::AddWindow(const std::string& sName, const std::string& sTe
     else
     {
         pWindow->m_parent = parent;
-        if ( parent->m_child == NULL )
+        if ( parent->m_child == nullptr )
         {
             parent->m_child = pWindow;
         }
@@ -446,7 +446,7 @@ UI_Window *UI_System::AddWindow(const std::string& sName, const std::string& sTe
             UI_Window *curWin = parent->m_child;
             while (1)
             {
-                if ( curWin->m_sibling == NULL )
+                if ( curWin->m_sibling == nullptr )
                 {
                     curWin->m_sibling = pWindow;
                     break;
@@ -466,7 +466,7 @@ UI_Window *UI_System::AddWindow(const std::string& sName, const std::string& sTe
 /********************************************************
  ***** UI Script Functions (called from UI scripts) *****
  ********************************************************/
-UI_Window *_pCurWindow = NULL;
+UI_Window *_pCurWindow = nullptr;
 UI_Window *_apWindowStack[16];
 int _stackPtr = 0;
 void UI_System::UI_CreateWindow(std::string& sName, std::string& sText, int type, int x, int y, int w, int h, int flags)
@@ -502,7 +502,7 @@ void UI_System::UI_PopWindow()
         else
         {
             _stackPtr   = 0;
-            _pCurWindow = NULL;
+            _pCurWindow = nullptr;
         }
     }
 }
@@ -544,8 +544,8 @@ void UI_System::UI_StartScreen(std::string& sUI_Start)
         pScreen->m_sName    = sUI_Start;
         pScreen->m_hOnEnter = hOnEnter;
         pScreen->m_uFlags   = UIFLAG_NONE;
-        pScreen->m_parent   = NULL;
-        pScreen->m_child    = NULL;
+        pScreen->m_parent   = nullptr;
+        pScreen->m_child    = nullptr;
 
         sprintf(szFuncName, "%s_OnExit", sUI_Start.c_str());
         pScreen->m_hOnExit   = ScriptSystem::GetFunc( ScriptSystem::SCR_MODULE_UI, szFuncName );
@@ -577,8 +577,8 @@ void UI_System::UI_PushScreen(const std::string& uiName, int flags, int backgrnd
         pScreen->m_sName    = uiName;
         pScreen->m_hOnEnter = hOnEnter;
         pScreen->m_uFlags   = (uint32_t)flags;
-        pScreen->m_parent   = NULL;
-        pScreen->m_child    = NULL;
+        pScreen->m_parent   = nullptr;
+        pScreen->m_child    = nullptr;
 
         sprintf(szFuncName, "%s_OnExit",   uiName.c_str());
         pScreen->m_hOnExit   = ScriptSystem::GetFunc( ScriptSystem::SCR_MODULE_UI, szFuncName );
@@ -626,13 +626,13 @@ void UI_System::FreeRenderFramePool()
     {
         xlDelete [] m_pRenderFramePool;
     }
-    m_pRenderFramePool = NULL;
+    m_pRenderFramePool = nullptr;
 }
 
 UI_RenderFrame *UI_System::AllocRenderFrame()
 {
-    if ( m_pRenderFramePool == NULL )
-        return NULL;
+    if ( m_pRenderFramePool == nullptr )
+        return nullptr;
 
     for (uint32_t i=0; i<MAX_RENDERFRAMEPOOL_SIZE; i++)
     {
@@ -642,7 +642,7 @@ UI_RenderFrame *UI_System::AllocRenderFrame()
             return &m_pRenderFramePool[i];
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 void UI_System::FreeRenderFrame(uint32_t uFrameID)
@@ -700,7 +700,7 @@ int UI_System::UI_CreateLFD_Anim(std::string& sArchive, std::string& sAnim, std:
     int32_t ID = -1;
     for (int32_t i=0; i<MAX_LFD_ANIM; i++)
     {
-        if ( m_pLFD_Anim_List[i] == NULL )
+        if ( m_pLFD_Anim_List[i] == nullptr )
         {
             ID = i;
             break;
@@ -728,7 +728,7 @@ void UI_System::UI_DestroyLFD_Anim(int ID)
     {
         xlDelete m_pLFD_Anim_List[ID];
     }
-    m_pLFD_Anim_List[ID] = NULL;
+    m_pLFD_Anim_List[ID] = nullptr;
 }
 
 void UI_System::UI_RenderLFD_Anim(int ID, int frame, int x, int y)
@@ -1094,7 +1094,7 @@ void UI_System::UI_PrintMousePos(int x, int y, int size)
 
 float UI_System::UI_GetCurrentBrightness()
 {
-    if ( m_pEngine == NULL )
+    if ( m_pEngine == nullptr )
         return 1.0f;
 
     return m_pEngine->GetCurrentBrightness();
@@ -1102,7 +1102,7 @@ float UI_System::UI_GetCurrentBrightness()
 
 float UI_System::UI_GetSpeed()
 {
-    if ( m_pEngine == NULL )
+    if ( m_pEngine == nullptr )
         return 0.0f;
 
     return m_pEngine->GetCurrentSpeed();
@@ -1200,7 +1200,7 @@ void UI_System::KeyDownCallback(int32_t key)
     if ( key == XL_F11 )
     {
         UI_Screen *pUI_Editor = FindScreen("XL_UI_Editor");
-        if ( pUI_Editor == NULL || m_Context != pUI_Editor )
+        if ( pUI_Editor == nullptr || m_Context != pUI_Editor )
         {
             UI_PushScreen( "XL_UI_Editor", UIFLAG_OVERLAY, 0);
         }
@@ -1209,7 +1209,7 @@ void UI_System::KeyDownCallback(int32_t key)
 
 UI_Screen *UI_System::FindScreen(const std::string& sName)
 {
-    UI_Screen *pScreen = NULL;
+    UI_Screen *pScreen = nullptr;
     std::map<std::string, UI_Screen *>::iterator iScreen = m_ScreenMap.find(sName);
     if ( iScreen != m_ScreenMap.end() )
     {
@@ -1229,9 +1229,9 @@ UI_Screen::UI_Screen()
     m_hOnKey    = nullptr;
 
     m_uFlags = UI_System::UIFLAG_NONE;
-    m_parent = NULL;
-    m_child  = NULL;
-    m_childWindow = NULL;
+    m_parent = nullptr;
+    m_child  = nullptr;
+    m_childWindow = nullptr;
 }
 
 UI_Screen::~UI_Screen()
@@ -1257,10 +1257,10 @@ UI_Window::UI_Window()
     m_bMoving = false;
     m_bEnabled = true;
 
-    m_parentScreen = NULL;
-    m_child        = NULL;
-    m_sibling      = NULL;
-    m_parent       = NULL;
+    m_parentScreen = nullptr;
+    m_child        = nullptr;
+    m_sibling      = nullptr;
+    m_parent       = nullptr;
 }
 
 UI_Window::~UI_Window()
@@ -1272,7 +1272,7 @@ void UI_Window::Update(bool bMouseOver, int nMouseX, int nMouseY, int x, int y)
     m_uState = UI_State_Normal;
     if ( m_hOnUpdate )   //custom script update function.
     {
-        m_uState = ScriptSystem::ExecuteFunc( m_hOnUpdate, 0, NULL, true );
+        m_uState = ScriptSystem::ExecuteFunc( m_hOnUpdate, 0, nullptr, true );
     }
     else if ( bMouseOver )
     {
