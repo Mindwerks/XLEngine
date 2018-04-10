@@ -317,9 +317,11 @@ source_group("ui" FILES ${ui_sources})
 source_group("world" FILES ${world_sources})
 
 # This path is included globally, since XLEngine and all the games use it.
-include_directories(${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/angelscript/include)
-include_directories(${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/add_on/scriptarray)
-include_directories(${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/add_on/scriptstdstring)
+include_directories(
+    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/angelscript/include
+    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/add_on/scriptarray
+    ${XLEngine_SOURCE_DIR}/thirdparty/AngelCode/sdk/add_on/scriptstdstring
+)
 
 # Include/library directories.
 set(xlengine_include_dirs
