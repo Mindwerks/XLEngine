@@ -34,14 +34,6 @@ struct ImageHeader
 
 #pragma pack(pop)
 
-TextureConv_IMG::TextureConv_IMG() : TextureConverter()
-{
-}
-
-TextureConv_IMG::~TextureConv_IMG()
-{
-}
-
 uint32_t TextureConv_IMG::GetHackID(const char *pszImage)
 {
     uint32_t uHackID = 0;

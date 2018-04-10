@@ -23,14 +23,6 @@ const float m_fWorldToTexel_Z = 8.0f;
 
 #define MAX_WALLS 32768
 
-CellLoader_OutlawsMap::CellLoader_OutlawsMap() : CellLoader()
-{
-}
-
-CellLoader_OutlawsMap::~CellLoader_OutlawsMap()
-{
-}
-
 //Outlaws Sector Flags.
 enum
 {

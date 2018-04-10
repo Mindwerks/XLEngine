@@ -5,14 +5,6 @@
 #include <cassert>
 #include <cstring>
 
-TextureConv_PCX::TextureConv_PCX() : TextureConverter()
-{
-}
-
-TextureConv_PCX::~TextureConv_PCX()
-{
-}
-
 struct PCX_Header
 {
     uint8_t Manufacturer;

@@ -11,9 +11,9 @@ class CellLoader_BloodMap : public CellLoader
 {
 public:
     CellLoader_BloodMap();
-    ~CellLoader_BloodMap();
+    virtual ~CellLoader_BloodMap() = default;
 
-    WorldCell *Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const std::string& sFile, int32_t worldX, int32_t worldY );
+    virtual WorldCell *Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const std::string& sFile, int32_t worldX, int32_t worldY ) override;
 
 private:
     struct HeaderPart1

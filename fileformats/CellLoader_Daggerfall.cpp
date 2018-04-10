@@ -198,14 +198,6 @@ struct DT_ActionRecord
 
 #pragma pack(pop)
 
-CellLoader_Daggerfall::CellLoader_Daggerfall() : CellLoader()
-{
-}
-
-CellLoader_Daggerfall::~CellLoader_Daggerfall()
-{
-}
-
 WorldCell *CellLoader_Daggerfall::LoadFromLocation( IDriver3D *pDriver, World *pWorld, void *pLocPtr )
 {
     Location_Daggerfall *pLocation = (Location_Daggerfall *)pLocPtr;

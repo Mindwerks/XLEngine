@@ -21,7 +21,7 @@ public:
         m_fLightAnim1 = s_fAnimOffset1; s_fAnimOffset1 += 32.0f*0.13f;
         m_fIntensity = 0.2f * (sinf(m_fLightAnim0)*0.5f+0.5f) + 0.1f * (sinf(m_fLightAnim1)*0.5f+0.5f) + 0.7f;
     }
-    ~LightObject() {};
+    ~LightObject() = default;
 
     void Update(float dt)
     {
@@ -102,7 +102,7 @@ class IDriver3D
         virtual void SetViewMatrix(Matrix *pMtx, Vector3 *pLoc, Vector3 *pDir) {};
         virtual void SetProjMtx(Matrix *pMtx) {};
         virtual void SetCamera(Camera *pCamera) {};
-        virtual Camera *GetCamera() {return 0;}
+        virtual Camera *GetCamera() {return nullptr;}
 
         virtual void ChangeWindowSize(int32_t w, int32_t h) {};
 

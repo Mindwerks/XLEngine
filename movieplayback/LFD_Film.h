@@ -16,11 +16,11 @@ class LFD_Film : public MoviePlayer
 public:
     LFD_Film(IDriver3D *pDriver);
 
-    bool Start(Archive *pRes0, Archive *pRes1, const char *pszFile, uint32_t uFlags, int32_t nSpeed);
-    void Stop();
+    virtual bool Start(Archive *pRes0, Archive *pRes1, const char *pszFile, uint32_t uFlags, int32_t nSpeed) override;
+    virtual void Stop() override;
 
-    bool Update();
-    void Render(float fDeltaTime);
+    virtual bool Update() override;
+    virtual void Render(float fDeltaTime) override;
 
 private:
     struct FilmEntry

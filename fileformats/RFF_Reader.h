@@ -10,18 +10,18 @@ class RFF_Reader : public Archive
 public:
     RFF_Reader();
 
-    bool Open(const char *pszName);
-    void Close();
+    virtual bool Open(const char *pszName) override;
+    virtual void Close() override;
 
-    bool OpenFile(const char *pszFile);
-    void CloseFile();
-    uint32_t GetFileLen();
-    bool ReadFile(void *pData, uint32_t uLength);
+    virtual bool OpenFile(const char *pszFile) override;
+    virtual void CloseFile() override;
+    virtual uint32_t GetFileLen() override;
+    virtual bool ReadFile(void *pData, uint32_t uLength) override;
 
-    int32_t GetFileCount();
-    const char *GetFileName(int32_t nFileIdx);
+    virtual int32_t GetFileCount() override;
+    virtual const char *GetFileName(int32_t nFileIdx) override;
 
-    void *ReadFileInfo();
+    virtual void *ReadFileInfo() override;
 
 private:
 

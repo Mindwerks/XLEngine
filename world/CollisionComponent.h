@@ -47,8 +47,8 @@ struct RaycastPacket
 class CollisionComponent
 {
 public:
-    CollisionComponent(){};
-    virtual ~CollisionComponent(){};
+    CollisionComponent() = default;
+    virtual ~CollisionComponent() = default;
 
     virtual bool Collide(CollisionPacket *packet, Matrix *pWorldMtx, const Vector3& vOffset) {return false; }
     virtual bool Raycast(RaycastPacket *packet, Matrix *pWorldMtx, Object *parent, Sector *pSector, const Vector3& vOffset) {return false;}

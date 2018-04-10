@@ -12,14 +12,14 @@ class Sector;
 class CellLoader_Daggerfall : public CellLoader
 {
 public:
-    CellLoader_Daggerfall();
-    ~CellLoader_Daggerfall();
+    CellLoader_Daggerfall() = default;
+    virtual ~CellLoader_Daggerfall() = default;
 
-    WorldCell *Load(IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const std::string& sFile, int32_t worldX, int32_t worldY);
-    WorldCell *LoadFromLocation(IDriver3D *pDriver, World *pWorld, void *pLocPtr);
+    virtual WorldCell *Load(IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const std::string& sFile, int32_t worldX, int32_t worldY) override;
+    virtual WorldCell *LoadFromLocation(IDriver3D *pDriver, World *pWorld, void *pLocPtr) override;
 
     //returns true if this CellLoader handles file handling itself.
-    bool UsesOwnFiles() { return true; }
+    virtual bool UsesOwnFiles() override { return true; }
 
 private:
     Sector *LoadBlock(IDriver3D *pDriver, uint32_t uLength, int& index, char *pData, const Vector3& vBlockLoc, Vector3& vStartTagLoc, bool bStartBlock, int32_t worldX, int32_t worldY, int blockType);
