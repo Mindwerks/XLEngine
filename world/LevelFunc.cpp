@@ -21,8 +21,8 @@ LevelFunc::LevelFunc(WorldCell *pWorldCell, int32_t nSector, int32_t nWall)
     m_nWall = nWall;
     m_pWorldCell = pWorldCell;
 
-    m_ActivateCB = NULL;
-    m_SetValueCB = NULL;
+    m_ActivateCB = nullptr;
+    m_SetValueCB = nullptr;
 }
 
 LevelFunc::~LevelFunc()

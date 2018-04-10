@@ -60,9 +60,9 @@ typedef int32_t XL_BOOL;
 #define XL_INVALID_TEXTURE 0xffffffff
 typedef uint32_t TextureHandle;
 
-//Make sure that the point is non-null before delete. Set to NULL.
-#define SafeDeleteArr(p) if (p) { xlDelete [] (p); (p) = NULL; }
+//Make sure that the point is non-null before delete. Set to null.
+#define SafeDeleteArr(p) if (p) { xlDelete [] (p); (p) = nullptr; }
 //p must be non-null before deletion. Test and set to null.
-#define SafeDeleteArr_Test(p) { assert(p); if (p) { xlDelete [] (p); (p) = NULL; } }
+#define SafeDeleteArr_Test(p) { assert(p); if (p) { xlDelete [] (p); (p) = nullptr; } }
 
 #endif  //COMMON_TYPES

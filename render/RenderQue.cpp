@@ -9,7 +9,7 @@
 #include <algorithm>
 
 IDriver3D *RenderQue::m_pDriver;
-RenderQuad *RenderQue::m_pQuads=NULL;
+RenderQuad *RenderQue::m_pQuads=nullptr;
 uint32_t RenderQue::m_uQuadCnt;
 
 std::vector<MaterialEntry *> RenderQue::m_apRenderBuckets[RBUCKET_COUNT];
@@ -38,7 +38,7 @@ void RenderQue::Destroy()
     {
         xlDelete [] m_pQuads;
     }
-    m_pQuads = NULL;
+    m_pQuads = nullptr;
 
     m_RenderEntryPool.clear();
 }
@@ -55,7 +55,7 @@ void RenderQue::Reset()
 
 RenderQuad *RenderQue::GetRenderQuad()
 {
-    RenderQuad *pQuad = NULL;
+    RenderQuad *pQuad = nullptr;
     if ( m_uQuadCnt < MAX_QUADS )
     {
         pQuad = &m_pQuads[m_uQuadCnt];
@@ -85,7 +85,7 @@ void RenderQue::AddQuad(TextureHandle hTex, Vector3 *posList, Vector2 *uvList, c
 
 MaterialEntry *RenderQue::GetEntry(RenderBuckets bucket)
 {
-    MaterialEntry *pEntry=NULL;
+    MaterialEntry *pEntry=nullptr;
     if ( m_uRenderEntryLoc < m_RenderEntryPool.size() )
     {
         pEntry = &m_RenderEntryPool[ m_uRenderEntryLoc ];
@@ -128,7 +128,7 @@ void RenderQue::Render()
         m_pDriver->EnableAlphaTest(false);
         m_pDriver->SetColor();
         m_pDriver->EnableCulling(true);
-        m_pDriver->SetWorldMatrix(NULL, 0, 0);
+        m_pDriver->SetWorldMatrix(nullptr, 0, 0);
         //go through the list.
         std::vector<MaterialEntry *>::iterator iEntry = m_apRenderBuckets[RBUCKET_OPAQUE].begin();
         std::vector<MaterialEntry *>::iterator eEntry = m_apRenderBuckets[RBUCKET_OPAQUE].end();
@@ -183,7 +183,7 @@ void RenderQue::Render()
         //Render
         m_pDriver->RenderWorldQuad(m_pQuads[q].posList, m_pQuads[q].uvList, m_pQuads[q].color, m_pQuads[q].bApplyLighting);
     }
-    m_pDriver->SetLights(0, NULL);
+    m_pDriver->SetLights(0, nullptr);
 
     //Cleanup.
     m_pDriver->SetBlendMode();

@@ -22,7 +22,7 @@ uint32_t TextureCache::m_uPrevTexWidth = 0;
 uint32_t TextureCache::m_uPrevTexHeight= 0;
 float TextureCache::m_fRelSizeX     = 1.0f;
 float TextureCache::m_fRelSizeY   = 1.0f;
-void *TextureCache::m_pPrevExtraData = NULL;
+void *TextureCache::m_pPrevExtraData = nullptr;
 std::string TextureCache::m_SavedPath;
 
 bool TextureCache::Init(IDriver3D *pDriver)
@@ -31,7 +31,7 @@ bool TextureCache::Init(IDriver3D *pDriver)
     m_pLoader = xlNew ImageLoader();
     m_SavedPath = "";
 
-    if ( m_pLoader == NULL || m_pDriver == NULL )
+    if ( m_pLoader == nullptr || m_pDriver == nullptr )
         return false;
 
     return true;
@@ -42,7 +42,7 @@ void TextureCache::Destroy()
     if ( m_pLoader )
     {
         xlDelete m_pLoader;
-        m_pLoader = NULL;
+        m_pLoader = nullptr;
     }
     m_TextureMap.clear();
 }
@@ -102,7 +102,7 @@ TextureHandle TextureCache::LoadTexture(const std::string& szFile, bool bGenMips
         tex.uHeight = uHeight;
         tex.fRelSizeX = 1.0f;
         tex.fRelSizeY = 1.0f;
-        tex.pExtraData = NULL;
+        tex.pExtraData = nullptr;
 
         uint32_t uDataSize = 0;
         void *pExtraData = TextureLoader::GetTexExtraData(uDataSize);
@@ -180,7 +180,7 @@ TextureHandle TextureCache::LoadTextureFromMem_Pal(const uint8_t *pImgBuffer, ui
         tex.uHeight = height;
         tex.fRelSizeX = 1.0f;
         tex.fRelSizeY = 1.0f;
-        tex.pExtraData = NULL;
+        tex.pExtraData = nullptr;
 
         uint32_t uDataSize = 0;
         void *pExtraData = TextureLoader::GetTexExtraData(uDataSize);
@@ -257,7 +257,7 @@ TextureHandle TextureCache::GameFile_LoadTexture_TexList(uint32_t uTextureType, 
                 tex.uHeight = uHeight;
                 tex.fRelSizeX = 1.0f;
                 tex.fRelSizeY = 1.0f;
-                tex.pExtraData = NULL;
+                tex.pExtraData = nullptr;
 
                 uint32_t uDataSize = 0;
                 void *pExtraData = TextureLoader::GetTexExtraData(uDataSize);
@@ -304,7 +304,7 @@ TextureHandle TextureCache::GameFile_LoadTexture_TexList(uint32_t uTextureType, 
             tex.uHeight = uHeight;
             tex.fRelSizeX = 1.0f;
             tex.fRelSizeY = 1.0f;
-            tex.pExtraData = NULL;
+            tex.pExtraData = nullptr;
 
             uint32_t uDataSize = 0;
             void *pExtraData = TextureLoader::GetTexExtraData(uDataSize);
@@ -378,7 +378,7 @@ TextureHandle TextureCache::GameFile_LoadTexture(uint32_t uTextureType, uint32_t
                 tex.uHeight = uHeight;
                 tex.fRelSizeX = 1.0f;
                 tex.fRelSizeY = 1.0f;
-                tex.pExtraData = NULL;
+                tex.pExtraData = nullptr;
 
                 uint32_t uDataSize = 0;
                 void *pExtraData = TextureLoader::GetTexExtraData(uDataSize);
@@ -424,7 +424,7 @@ TextureHandle TextureCache::GameFile_LoadTexture(uint32_t uTextureType, uint32_t
             tex.uHeight = uHeight;
             tex.fRelSizeX = 1.0f;
             tex.fRelSizeY = 1.0f;
-            tex.pExtraData = NULL;
+            tex.pExtraData = nullptr;
 
             uint32_t uDataSize = 0;
             void *pExtraData = TextureLoader::GetTexExtraData(uDataSize);

@@ -18,12 +18,12 @@ typedef int32_t (*XL_ExitFunc)();
 /** Type definition of the XL_initPlugin function below (used by PluginManager to initialize plugins)
  * Note the return type is the XL_ExitFunc (used by PluginManager to tell plugins to cleanup). If 
  * the initialization failed for any reason the plugin may report the error via the error reporting
- * function of the provided platform services. Nevertheless, it must return NULL exit func in this case
+ * function of the provided platform services. Nevertheless, it must return null exit func in this case
  * to let the plugin manger that the plugin wasn't initialized properly. The plugin may use the runtime
  * services - allocate memory, log messages and of course register node types.
  *
  * @param  [const XL_PlatformServices *] params - the platform services struct 
- * @retval [XL_ExitFunc] the exit func of the plugin or NULL if initialization failed.
+ * @retval [XL_ExitFunc] the exit func of the plugin or null if initialization failed.
  */
 typedef XL_ExitFunc (*XL_InitFunc)(const XLEngine_Plugin_API *);
 
@@ -38,7 +38,7 @@ typedef XL_ExitFunc (*XL_InitFunc)(const XLEngine_Plugin_API *);
  * (and conform to the signature of course).
  *
  * @param  [const XL_PlatformServices *] params - the platform services struct 
- * @retval [XL_ExitFunc] the exit func of the plugin or NULL if initialization failed.
+ * @retval [XL_ExitFunc] the exit func of the plugin or null if initialization failed.
  */
 
 #ifndef PLUGIN_API

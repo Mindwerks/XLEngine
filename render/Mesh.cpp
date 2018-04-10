@@ -10,9 +10,9 @@
 
 Mesh::Mesh()
 {
-    m_pVB = NULL;
-    m_pIB = NULL;
-    m_pMaterials = NULL;
+    m_pVB = nullptr;
+    m_pIB = nullptr;
+    m_pMaterials = nullptr;
     m_nMtlCnt = 0;
     m_bLoaded = false;
 }

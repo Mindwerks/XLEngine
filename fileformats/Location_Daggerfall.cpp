@@ -25,9 +25,9 @@ bool WorldMap::m_bMapLoaded = false;
 Location_Daggerfall::Location_Daggerfall()
 {
     m_bLoaded           = false;
-    m_pBlockNames       = NULL;
-    m_pDungeonBlocks    = NULL;
-    m_pTexData          = NULL;
+    m_pBlockNames       = nullptr;
+    m_pDungeonBlocks    = nullptr;
+    m_pTexData          = nullptr;
     m_dungeonBlockCnt   = 0;
     m_startDungeonBlock = 0;
 }
@@ -121,7 +121,7 @@ bool Location_Daggerfall::Load(FILE *f, std::map<uint64_t, Location_Daggerfall *
 ///////////////////////////////////////////////////////
 Region_Daggerfall::Region_Daggerfall()
 {
-    m_pLocations = NULL;
+    m_pLocations = nullptr;
 }
 
 Region_Daggerfall::~Region_Daggerfall()
@@ -157,7 +157,7 @@ bool Region_Daggerfall::Load(FILE *f, std::map<uint64_t, Location_Daggerfall *>&
 ///////////////////////////////////////////////////////
 void WorldMap::Init()
 {
-    m_pRegions = NULL;
+    m_pRegions = nullptr;
 }
 
 void WorldMap::Destroy()
@@ -175,7 +175,7 @@ bool WorldMap::Load()
 
     // TODO: Disabled until a proper cache location can be handled.
     bool bSuccess;
-    FILE *f = NULL;//fopen(szCachedFile, "rb");
+    FILE *f = nullptr;//fopen(szCachedFile, "rb");
     if ( f )
     {
         int version;
@@ -210,7 +210,7 @@ bool WorldMap::Load()
 void WorldMap::Save()
 {
     // TODO: Disabled until a proper cache location can be handled.
-    FILE *f = NULL;//fopen(szCachedFile, "wb");
+    FILE *f = nullptr;//fopen(szCachedFile, "wb");
     if ( f )
     {
         int version = CACHED_FILE_VERSION;
@@ -377,7 +377,7 @@ bool WorldMap::Cache()
         if ( ArchiveManager::GameFile_Open(ARCHIVETYPE_BSA, "MAPS.BSA", szFileName) )
         {
             m_pRegions[r].m_uLocationCount = 0;
-            m_pRegions[r].m_pLocations     = NULL;
+            m_pRegions[r].m_pLocations     = nullptr;
 
             uint32_t uLength = ArchiveManager::GameFile_GetLength();
             if ( uLength == 0 )
@@ -455,7 +455,7 @@ bool WorldMap::Cache()
                 {
                     index = base_index + offsets[i];
                     int nPreRecCount = *((int *)&pData[index]); index += 4;
-                    uint8_t *PreRecords = NULL;
+                    uint8_t *PreRecords = nullptr;
                     if ( nPreRecCount > 0 )
                     {
                         PreRecords = (uint8_t *)&pData[index]; index += nPreRecCount*6;
@@ -474,7 +474,7 @@ bool WorldMap::Cache()
 
                     m_pRegions[r].m_pLocations[i].m_BlockWidth  = 0;
                     m_pRegions[r].m_pLocations[i].m_BlockHeight = 0;
-                    m_pRegions[r].m_pLocations[i].m_pBlockNames = NULL;
+                    m_pRegions[r].m_pLocations[i].m_pBlockNames = nullptr;
 
                     if ( pLocation->LocType == 0x00008000 )
                     {
@@ -587,7 +587,7 @@ bool WorldMap::Cache()
                     index = base_index + pOffsets[i].Offset;
 
                     //find matching exterior record...
-                    Location_Daggerfall *pCurLoc=NULL;
+                    Location_Daggerfall *pCurLoc=nullptr;
                     for (int e=0; e<(int)m_pRegions[r].m_uLocationCount; e++)
                     {
                         if ( m_pRegions[r].m_pLocations[e].m_LocationID == pOffsets[i].ExteriorLocID )
@@ -599,7 +599,7 @@ bool WorldMap::Cache()
                     assert(pCurLoc);
 
                     int nPreRecCount = *((int *)&pData[index]); index += 4;
-                    uint8_t *PreRecords = NULL;
+                    uint8_t *PreRecords = nullptr;
                     if ( nPreRecCount > 0 )
                     {
                         PreRecords = (uint8_t *)&pData[index]; index += nPreRecCount*6;
@@ -664,7 +664,7 @@ bool WorldMap::Cache()
 
 Location_Daggerfall *WorldMap::GetLocation(int32_t x, int32_t y)
 {
-    Location_Daggerfall *pLoc = NULL;
+    Location_Daggerfall *pLoc = nullptr;
 
     uint64_t uKey = (uint64_t)y<<32ULL | (uint64_t)x;
     std::map<uint64_t, Location_Daggerfall *>::iterator iLoc = m_MapLoc.find(uKey);
@@ -678,7 +678,7 @@ Location_Daggerfall *WorldMap::GetLocation(int32_t x, int32_t y)
 
 Location_Daggerfall *WorldMap::GetLocation(const char *pszName)
 {
-    Location_Daggerfall *pLoc = NULL;
+    Location_Daggerfall *pLoc = nullptr;
 
     std::map<std::string, Location_Daggerfall *>::iterator iLoc = m_MapNames.find(pszName);
     if ( iLoc != m_MapNames.end() )
@@ -697,7 +697,7 @@ void WorldMap::SetWorldCell(int32_t x, int32_t y, WorldCell *pCell)
 
 WorldCell *WorldMap::GetWorldCell(int32_t x, int32_t y)
 {
-    WorldCell *pCell = NULL;
+    WorldCell *pCell = nullptr;
     uint64_t uKey = (uint64_t)y<<32ULL | (uint64_t)x;
     std::map<uint64_t, WorldCell *>::iterator iLoc = m_MapCell.find(uKey);
 

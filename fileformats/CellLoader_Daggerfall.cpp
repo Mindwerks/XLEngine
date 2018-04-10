@@ -210,7 +210,7 @@ WorldCell *CellLoader_Daggerfall::LoadFromLocation( IDriver3D *pDriver, World *p
 {
     Location_Daggerfall *pLocation = (Location_Daggerfall *)pLocPtr;
 
-    WorldCell *pCell = NULL;
+    WorldCell *pCell = nullptr;
     int32_t worldX = (int32_t)pLocation->m_x;
     int32_t worldY = (int32_t)pLocation->m_y;
 
@@ -222,7 +222,7 @@ WorldCell *CellLoader_Daggerfall::LoadFromLocation( IDriver3D *pDriver, World *p
     }
     else
     {
-        return NULL;
+        return nullptr;
     }
 
     WorldMap::SetWorldCell(worldX>>3, worldY>>3, pCell);
@@ -257,7 +257,7 @@ WorldCell *CellLoader_Daggerfall::LoadFromLocation( IDriver3D *pDriver, World *p
         int32_t wy_map = worldY_Orig>>3;
         float fTileHeight = Math::Max( pTerrain->GetHeight_MapScale(wx_map, wy_map), 16.0f );
         int32_t worldY = worldY_Orig;
-        if ( pLocation->m_pTexData == NULL )
+        if ( pLocation->m_pTexData == nullptr )
         {
              pLocation->m_pTexData = new uint8_t[256*pLocation->m_BlockWidth*pLocation->m_BlockHeight];
         }
@@ -292,7 +292,7 @@ WorldCell *CellLoader_Daggerfall::LoadFromLocation( IDriver3D *pDriver, World *p
     {
         int dungeonType = 1;
 
-        Vector3 *pvStartLoc = NULL;
+        Vector3 *pvStartLoc = nullptr;
         int startBlock = pLocation->m_startDungeonBlock;
         if ( pLocation->m_dungeonBlockCnt == 1 )
         {
@@ -356,7 +356,7 @@ WorldCell *CellLoader_Daggerfall::Load( IDriver3D *pDriver, World *pWorld, uint8
     Location_Daggerfall *pLocation = WorldMap::GetLocation(sFile.c_str());
     //Don't reload a location already in memory.
     if ( pLocation && pLocation->m_bLoaded )
-        return NULL;
+        return nullptr;
 
     return LoadFromLocation( pDriver, pWorld, pLocation );
 }
@@ -443,7 +443,7 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
     {
         index = outside_index;
         int32_t extIndex = (int32_t)pSector->m_Objects.size()-1;
-        Object *pExtMesh=NULL;
+        Object *pExtMesh=nullptr;
         //exterior
         BlockHeader *pBlockHeader = (BlockHeader *)&pData[index]; index += 17;
         for (uint32_t i=0; i<pBlockHeader->Num3DObjRec; i++)
@@ -588,7 +588,7 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
             //assert( pExtMesh );
 
             Block3DObj *pObj = (Block3DObj *)&pData[index]; index += 66;
-            if ( pExtMesh == NULL ) continue;
+            if ( pExtMesh == nullptr ) continue;
             int objID = pObj->ObjID1*100 + pObj->ObjID2;
 
             //finish the rest here....
@@ -602,7 +602,7 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
             uint16_t uTex = *((uint16_t *)&pData[index]); index += 2;
             index += 2; //unknown 1
             index++;    //unknown 2
-            if ( pExtMesh == NULL ) continue;
+            if ( pExtMesh == nullptr ) continue;
 
             //finish the rest here...
         }
@@ -619,7 +619,7 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
             uint16_t factionID = *((uint16_t *)&pData[index]); index += 2;
             index++;    //unknown
 
-            if ( pExtMesh == NULL ) continue;
+            if ( pExtMesh == nullptr ) continue;
 
             //finish the rest here...
         }
@@ -628,7 +628,7 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
             DoorData *pDoor = (DoorData *)&pData[index];
             index += 19;
 
-            if ( pExtMesh == NULL ) continue;
+            if ( pExtMesh == nullptr ) continue;
 
             //finish the rest here...
         }
@@ -1198,7 +1198,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
                         DT_ActionRecord *pActionRec = (DT_ActionRecord *)&pData[ obj3D.ActionOffset ];
                         
                         pMeshObj->action.nTargetOffs = pActionRec->TargetOffset;
-                        pMeshObj->action.pParent = NULL;
+                        pMeshObj->action.pParent = nullptr;
                         pMeshObj->action.Type = pActionRec->Type&0x0f;
                         pMeshObj->action.Axis = pActionRec->DataEntry[0];
                         pMeshObj->action.Duration = (float)( *((unsigned short *)&pActionRec->DataEntry[1]) ) / 16.0f;
@@ -1208,7 +1208,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
                     {
                         pMeshObj->action.Type = 0;
                         pMeshObj->action.nTargetOffs = -1;
-                        pMeshObj->action.pParent = NULL;
+                        pMeshObj->action.pParent = nullptr;
                         pMeshObj->action.Duration = 0;
                     }
                     */
@@ -1374,7 +1374,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
                             pObj->SetBoundingSphere(vLoc, sqrtf(vScale.x*vScale.x + vScale.z*vScale.z));
 
                             //texture index: 190 or 210 = lighting (emissive)
-                            //DungeonLight_t *pLight = NULL;
+                            //DungeonLight_t *pLight = nullptr;
                             static int8_t _bLit190[] = { 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
                             static int8_t _bLit200[] = { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
                             static int8_t _bLit202[] = { 0, 0, 1, 0, 0, 0, 0 };
@@ -1417,7 +1417,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
                             //
 
                             //texture index: 190 or 210 = lighting (emissive)
-                            DungeonLight_t *pLight = NULL;
+                            DungeonLight_t *pLight = nullptr;
                             if ( FileIndex == 190 || FileIndex == 210 )
                             {
                                 bEmissive = true;
@@ -1474,7 +1474,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
     if ( obj_root_offs )
     {
         ScratchPad::FreeFrame();
-        obj_root_offs = NULL;
+        obj_root_offs = nullptr;
     }
 
     //now resolve action records.
@@ -1647,13 +1647,13 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
             }
             if ( bMatchFound == false )
             {
-                pMesh->action.pTarget = NULL;
-                pMesh->action.pParent = NULL;
+                pMesh->action.pTarget = nullptr;
+                pMesh->action.pParent = nullptr;
             }
         }
         else
         {
-            pMesh->action.pTarget = NULL;
+            pMesh->action.pTarget = nullptr;
         }
     }
 #endif

@@ -8,10 +8,10 @@
 #include "../ui/Console.h"
 
 //Game instance used for console commands.
-DaggerXL_Game *DaggerXL_Game::s_pGame_Console=NULL;
+DaggerXL_Game *DaggerXL_Game::s_pGame_Console=nullptr;
 #define NPC_COUNT 32
 
-static DaggerXL_Game *s_pGamePtr = NULL;
+static DaggerXL_Game *s_pGamePtr = nullptr;
 
 DaggerXL_Game::DaggerXL_Game(const XLEngine_Plugin_API *API)
 {
@@ -53,7 +53,7 @@ DaggerXL_Game::DaggerXL_Game(const XLEngine_Plugin_API *API)
     m_NPC_Logic = xlNew Logic_NPC(API);
     m_Player = xlNew DaggerXL_Player(API);
 
-    m_pAPI->World_SetUpdateCallback( DaggerXL_Game::WorldUpdate, NULL );
+    m_pAPI->World_SetUpdateCallback( DaggerXL_Game::WorldUpdate, nullptr );
 
     s_pGamePtr = this;
 }
@@ -63,22 +63,22 @@ DaggerXL_Game::~DaggerXL_Game(void)
     if ( m_Player )
     {
         xlDelete m_Player;
-        m_Player = NULL;
+        m_Player = nullptr;
     }
     if ( m_DoorLogic )
     {
         xlDelete m_DoorLogic;
-        m_DoorLogic = NULL;
+        m_DoorLogic = nullptr;
     }
     if ( m_ObjActionLogic )
     {
         xlDelete m_ObjActionLogic;
-        m_ObjActionLogic = NULL;
+        m_ObjActionLogic = nullptr;
     }
     if ( m_NPC_Logic )
     {
         xlDelete m_NPC_Logic;
-        m_NPC_Logic = NULL;
+        m_NPC_Logic = nullptr;
     }
     for (uint32_t n=0; n<NPC_COUNT; n++)
     {

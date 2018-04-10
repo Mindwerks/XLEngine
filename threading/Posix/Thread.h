@@ -135,16 +135,16 @@ class Thread
 
       if ( I.Flags & 1 /*CancelEnable*/ )
       {
-        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
+        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,nullptr);
 
         if ( I.Flags & 2 /*CancelAsync*/ )
-          pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
+          pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,nullptr);
         else
-          pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
+          pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,nullptr);
       }
       else
       {
-        pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);
+        pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,nullptr);
       }
 
       if ( I.Owner )
@@ -278,16 +278,16 @@ class Thread<void>
 
       if ( I.Flags & 1 /*CancelEnable*/ )
       {
-        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
+        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,nullptr);
 
         if ( I.Flags & 2 /*CancelAsync*/ )
-          pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
+          pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,nullptr);
         else
-          pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
+          pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,nullptr);
       }
       else
       {
-        pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);
+        pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,nullptr);
       }
 
       if ( I.Owner )

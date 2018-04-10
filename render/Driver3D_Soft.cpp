@@ -27,12 +27,12 @@
 #include <GL/glu.h>
 
 #define TEST_COLORMAP 0
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+#define BUFFER_OFFSET(i) ((char *)nullptr + (i))
 
 Texture *Driver3D_Soft::m_pCurTex;
 uint32_t Driver3D_Soft::s_uColormapID;
 
-Matrix *_prevWorldMtxPtr_Soft = NULL;
+Matrix *_prevWorldMtxPtr_Soft = nullptr;
 int32_t _prevWorldX = 0;
 int32_t _prevWorldY = 0;
 uint32_t *m_pFrameBuffer_32bpp;
@@ -52,7 +52,7 @@ float m_QuadHeightScale = 1.0f;
 float m_fTexAnimFrameRate = 8.0f;
 
 int32_t _trianglesPerFrame = 0;
-static uint32_t *_pCurPal = NULL;
+static uint32_t *_pCurPal = nullptr;
 
 //#define MAX_FRAMEBUFFER_WIDTH 2048
 #define MAX_FRAMEBUFFER_WIDTH 1024
@@ -63,8 +63,8 @@ void *aligned_malloc(size_t size, size_t align_size)
     int align_mask = (int)align_size-1;
 
     ptr = (char *)malloc( size + align_size + sizeof(int) );
-    if ( ptr == NULL)
-        return NULL;
+    if ( ptr == nullptr)
+        return nullptr;
 
     ptr2 = ptr + sizeof(int);
     aligned_ptr = ptr2 + ( align_size - ((size_t)ptr2 & align_mask) );
@@ -88,11 +88,11 @@ void aligned_free(void *ptr)
 Driver3D_Soft::Driver3D_Soft() : IDriver3D()
 {
     m_nBitDepth = 32;
-    m_pCurVBO   = NULL;
-    m_pTexArray = NULL;
-    m_pTexIndex = NULL;
-    m_pRenderCamera = NULL;
-    m_pCurPolygonData = NULL;
+    m_pCurVBO   = nullptr;
+    m_pTexArray = nullptr;
+    m_pTexIndex = nullptr;
+    m_pRenderCamera = nullptr;
+    m_pCurPolygonData = nullptr;
     m_bBilinear = false;
     m_bGouraud  = false;
     m_uClearColor = 0;
@@ -241,7 +241,7 @@ bool Driver3D_Soft::Init(int32_t w, int32_t h)
     if ( m_nBitDepth == 32 )
     {
         m_pFrameBuffer_32bpp = (uint32_t *)aligned_malloc( m_FrameWidth*m_FrameHeight*sizeof(uint32_t), 16 );
-        m_pFrameBuffer_8bpp  = NULL;
+        m_pFrameBuffer_8bpp  = nullptr;
     }
     else
     {
@@ -272,7 +272,7 @@ bool Driver3D_Soft::Init(int32_t w, int32_t h)
     DrawScanline::_nFrameWidth   = m_FrameWidth;
     DrawScanline::_nFrameHeight  = m_FrameHeight;
     DrawScanline::_uColormapID   = s_uColormapID;
-    DrawScanline::_pCurTex       = NULL;
+    DrawScanline::_pCurTex       = nullptr;
     DrawScanline::_pFrameBuffer_32 = m_pFrameBuffer_32bpp;
     DrawScanline::_pFrameBuffer_8  = m_pFrameBuffer_8bpp;
     DrawScanline::_pDepthBuffer    = m_pDepthBuffer;
@@ -536,7 +536,7 @@ void Driver3D_Soft::Present()
     //if ( m_nBitDepth == 8 )
     {
         static uint32_t _palIdx = 0xffffffff;
-        if ( _pCurPal == NULL || _palIdx != m_uPaletteID || m_bUpdatePal )
+        if ( _pCurPal == nullptr || _palIdx != m_uPaletteID || m_bUpdatePal )
         {
             uint8_t *pal = TextureLoader::GetPaletteData(m_uPaletteID);
             int index = 0;
@@ -632,9 +632,9 @@ void Driver3D_Soft::Clear(bool bClearColor)
 
 void Driver3D_Soft::SetWorldMatrix(Matrix *pMtx, int32_t worldX, int32_t worldY)
 {
-    if ( pMtx == NULL )
+    if ( pMtx == nullptr )
     {
-        _prevWorldMtxPtr_Soft = NULL;
+        _prevWorldMtxPtr_Soft = nullptr;
     }
     else if ( pMtx != _prevWorldMtxPtr_Soft || worldX != _prevWorldX || worldY != _prevWorldY )
     {
@@ -659,7 +659,7 @@ void Driver3D_Soft::SetViewMatrix(Matrix *pMtx, Vector3 *pLoc, Vector3 *pDir)
     m_ViewMtx = *pMtx;
     m_Eye = *pLoc;
     m_ViewDir = *pDir;
-    _prevWorldMtxPtr_Soft = NULL;   //reset so the world matrix applies the proper transform.
+    _prevWorldMtxPtr_Soft = nullptr;   //reset so the world matrix applies the proper transform.
 
     m_ViewProj = m_ProjMtx.MatMul( m_ViewMtx );
     m_nMatrixViewKey++;
@@ -706,7 +706,7 @@ void Driver3D_Soft::SetColor(Vector4 *pColor)
 {
 }
 
-TextureHandle Driver3D_Soft::CreateTexture(uint32_t uWidth, uint32_t uHeight, uint32_t uFormat/*=TEX_FORMAT_RGBA8*/, uint8_t *pData/*=NULL*/, bool bGenMips/*=false*/, int32_t nFrameCnt/*=1*/)
+TextureHandle Driver3D_Soft::CreateTexture(uint32_t uWidth, uint32_t uHeight, uint32_t uFormat/*=TEX_FORMAT_RGBA8*/, uint8_t *pData/*=nullptr*/, bool bGenMips/*=false*/, int32_t nFrameCnt/*=1*/)
 {
     Texture *pTex = new Texture();
 
@@ -718,7 +718,7 @@ TextureHandle Driver3D_Soft::CreateTexture(uint32_t uWidth, uint32_t uHeight, ui
     assert( nFrameCnt < 32 );
     for (int32_t f=0; f<32; f++)
     {
-        pTex->m_pData[f] = NULL;
+        pTex->m_pData[f] = nullptr;
     }
 
     int32_t nBytesPerPixel = (uFormat!=TEX_FORMAT_FORCE_32bpp) ? (m_nBitDepth>>3) : 4;
@@ -969,7 +969,7 @@ uint32_t Driver3D_Soft::CreateIB()
     IBO *ibo    = new IBO;
     uint32_t uIBO_ID = (uint32_t)m_IBO.size();
     ibo->uFlags = 0;
-    ibo->pRendererData = NULL;
+    ibo->pRendererData = nullptr;
     m_IBO.push_back(ibo);
 
     return uIBO_ID;
@@ -997,8 +997,8 @@ void Driver3D_Soft::ResetIBFlags(uint32_t uID)
 void Driver3D_Soft::ClearDrawData()
 {
     _trianglesPerFrame = 0;
-    m_pCurVBO = NULL;
-    m_pCurPolygonData = NULL;
+    m_pCurVBO = nullptr;
+    m_pCurPolygonData = nullptr;
     m_uBlendMode = BLEND_NONE;
     m_bAlphaTest = false;
 }
@@ -1089,7 +1089,7 @@ void Driver3D_Soft::WorldToClip(VBO *pVBO)
 //The function assumes a vertex buffer has already been set.
 void Driver3D_Soft::RenderIndexedTriangles(IndexBuffer *pIB, int32_t nTriCnt, int32_t startIndex/*=0*/)
 {
-    if ( m_pCurVBO == NULL )
+    if ( m_pCurVBO == nullptr )
         return;
 
     uint32_t uIB_ID = pIB->GetID();
@@ -1147,7 +1147,7 @@ void Driver3D_Soft::RenderIndexedTriangles(IndexBuffer *pIB, int32_t nTriCnt, in
     }
 #endif
 
-    PolygonData *polyData = NULL;//(PolygonData *)pIbo->pRendererData;
+    PolygonData *polyData = nullptr;//(PolygonData *)pIbo->pRendererData;
     for (int t=0, i=startIndex; t<nTriCnt; t++, i+=3)
     {
         //EXT_TEXTURE_INDEX
@@ -1159,7 +1159,7 @@ void Driver3D_Soft::RenderIndexedTriangles(IndexBuffer *pIB, int32_t nTriCnt, in
             DrawScanline::_texFlip = m_pTexIndex[t>>1]>>8;
         }
 
-        TriangleRasterizer::DrawClippedNGon_Indexed(this, m_pCurVBO, 3, &pIndices[i], s_uColormapID == 0 ? true : false, alphaMode, NULL);//polyData?&polyData[t]:NULL);
+        TriangleRasterizer::DrawClippedNGon_Indexed(this, m_pCurVBO, 3, &pIndices[i], s_uColormapID == 0 ? true : false, alphaMode, nullptr);//polyData?&polyData[t]:nullptr);
     }
 
     _trianglesPerFrame += nTriCnt;

@@ -2,7 +2,7 @@
 #include "DaggerXL_Game.h"
 
 //this is static for now.
-DaggerXL_Game *m_pGame=NULL;
+DaggerXL_Game *m_pGame=nullptr;
 
 void DaggerXL_Update(int32_t stage, float dt, XLEngine_Plugin_API *API, void *pUserData)
 {
@@ -44,7 +44,7 @@ void DaggerXL_DestroyGame()
     {
         xlDelete m_pGame;
     }
-    m_pGame = NULL;
+    m_pGame = nullptr;
 }
 
 extern "C" PLUGIN_API int32_t ExitFunc()
@@ -56,8 +56,8 @@ extern "C" PLUGIN_API int32_t ExitFunc()
 
 extern "C" PLUGIN_API XL_ExitFunc XL_initPlugin(const XLEngine_Plugin_API *API)
 {
-    API->SetGameUpdateCallback( DaggerXL_Update, NULL );
-    API->SetGameRenderCallback( DaggerXL_Render, NULL );
+    API->SetGameUpdateCallback( DaggerXL_Update, nullptr );
+    API->SetGameRenderCallback( DaggerXL_Render, nullptr );
     API->AddKeyDownCallback( DaggerXL_KeyDownCallback, Input::KDCb_FLAGS_NOREPEAT );
     
     DaggerXL_CreateGame( API );

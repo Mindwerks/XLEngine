@@ -67,7 +67,7 @@ LFD_Film::LFD_Film(IDriver3D *pDriver) : MoviePlayer(pDriver)
     m_nCut = -1;
     m_fCutTime = 0.0f;
     m_fCurCutTime = 0.0f;
-    m_Commands = NULL;
+    m_Commands = nullptr;
 }
 
 void LFD_Film::Stop()
@@ -102,7 +102,7 @@ void LFD_Film::Stop()
             m_Commands[i].commands.clear();
         }
         xlDelete [] m_Commands;
-        m_Commands = NULL;
+        m_Commands = nullptr;
     }
 
 
@@ -378,11 +378,11 @@ bool LFD_Film::Start(Archive *pRes0, Archive *pRes1, const char *pszFile, uint32
         switch (pEntry->nBlockType)
         {
             case BTYPE_VIEW:
-                pFile = NULL;
+                pFile = nullptr;
                 m_nEntry = BTYPE_VIEW;
             break;
             case BTYPE_VOIC:
-                pFile = NULL;
+                pFile = nullptr;
                 m_nEntry = BTYPE_VOIC;
 
                 memcpy(szName, pEntry->szName, 8);
@@ -427,7 +427,7 @@ bool LFD_Film::Start(Archive *pRes0, Archive *pRes1, const char *pszFile, uint32
             }
             break;
             case BTYPE_DELT_ANIM_CUST:
-                pFile = NULL;
+                pFile = nullptr;
                 m_nEntry = BTYPE_DELT_ANIM_CUST;
                 if ( pEntry->szType[0] == 'D' && pEntry->szType[1] == 'E' && pEntry->szType[2] == 'L' && pEntry->szType[3] == 'T' )
                 {
@@ -928,7 +928,7 @@ void LFD_Film::StartCut(int how, int type)
 
 void LFD_Film::AddGraphicToQueue(Graphic *pGraphic, int nLayer)
 {
-    pGraphic->pNext = NULL;
+    pGraphic->pNext = nullptr;
     if ( nLayer < 0 ) { nLayer = 0; }
     if ( nLayer > 201 ) { nLayer = 201; }
 
@@ -966,7 +966,7 @@ void LFD_Film::Render(float fDeltaTime)
     int32_t i;
     for (i=0; i<202; i++)
     {
-        m_apAnimQueue[i] = NULL;
+        m_apAnimQueue[i] = nullptr;
     }
 
     //render all the graphics that are visible...

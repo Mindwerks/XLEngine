@@ -8,7 +8,7 @@ float LightObject::s_fAnimOffset1 = 0.0f;
 
 IDriver3D::IDriver3D()
 {
-    m_Platform    = NULL;
+    m_Platform    = nullptr;
     m_uPaletteID  = 0;
     m_uColormapID = 0;
     m_nLightCnt   = 0;
@@ -28,7 +28,7 @@ IDriver3D::~IDriver3D()
     if ( m_Platform )
     {
         xlDelete m_Platform;
-        m_Platform = NULL;
+        m_Platform = nullptr;
     }
 }
 

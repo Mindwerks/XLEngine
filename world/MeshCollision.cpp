@@ -6,10 +6,10 @@
 
 MeshCollision::MeshCollision()
 {
-    m_pWorldMtx = NULL;
+    m_pWorldMtx = nullptr;
     m_eRadius.Set(0,0,0);
     m_vOffset.Set(0,0,0);
-    m_Polygons = NULL;
+    m_Polygons = nullptr;
     m_nPolygonCount = 0;
 }
 
@@ -23,7 +23,7 @@ MeshCollision::~MeshCollision()
             xlDelete[] m_Polygons[p].pVertexES;
         }
         xlDelete [] m_Polygons;
-        m_Polygons = NULL;
+        m_Polygons = nullptr;
     }
 }
 

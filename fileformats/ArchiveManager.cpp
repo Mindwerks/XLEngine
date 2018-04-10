@@ -26,8 +26,8 @@ FILE *ArchiveManager::s_pCurrentSysFile;
 
 void ArchiveManager::Init()
 {
-    m_pCurArchive=NULL;
-    s_pCurrentSysFile=NULL;
+    m_pCurArchive=nullptr;
+    s_pCurrentSysFile=nullptr;
     TextureLoader::Init();
 }
 
@@ -60,7 +60,7 @@ Archive *ArchiveManager::OpenArchive(uint32_t uArchiveType, const char *pszArchi
     }
 
     //now we have to allocate and setup the archive...
-    Archive *pArchive=NULL;
+    Archive *pArchive=nullptr;
     switch (uArchiveType)
     {
         case ARCHIVETYPE_GOB:
@@ -173,7 +173,7 @@ void *ArchiveManager::GameFile_GetFileInfo()
     {
         return m_pCurArchive->ReadFileInfo();
     }
-    return NULL;
+    return nullptr;
 }
 
 void ArchiveManager::GameFile_Close()
@@ -182,7 +182,7 @@ void ArchiveManager::GameFile_Close()
     {
         m_pCurArchive->CloseFile();
     }
-    m_pCurArchive=NULL;
+    m_pCurArchive=nullptr;
 }
 
 int32_t ArchiveManager::File_Open(const char *pszFileName)
@@ -222,7 +222,7 @@ void ArchiveManager::File_Read(void *pData, uint32_t uStart, uint32_t uLength)
 
 void *ArchiveManager::File_GetFileInfo()
 {
-    return NULL;
+    return nullptr;
 }
 
 void ArchiveManager::File_Close()
@@ -231,5 +231,5 @@ void ArchiveManager::File_Close()
     {
         fclose(s_pCurrentSysFile);
     }
-    s_pCurrentSysFile = NULL;
+    s_pCurrentSysFile = nullptr;
 }

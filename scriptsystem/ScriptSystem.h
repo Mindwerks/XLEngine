@@ -69,7 +69,7 @@ public:
     //Execute the current script function.
     static void ExecuteFunc();
     //Make this the current function and then execute.
-    static uint32_t ExecuteFunc(SHANDLE hFunc, int32_t nArgCnt=0, const ScriptArgument *pArgs=NULL, bool bRetValueExpected=false);
+    static uint32_t ExecuteFunc(SHANDLE hFunc, int32_t nArgCnt=0, const ScriptArgument *pArgs=nullptr, bool bRetValueExpected=false);
 
     //Global memory store that can be accessed by the scripts...
     static void SetGlobalStoreVal(int var, float val);

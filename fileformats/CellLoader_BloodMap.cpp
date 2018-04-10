@@ -24,9 +24,9 @@ const float m_fWorldToTexel_Z = 8.0f;
 
 CellLoader_BloodMap::CellLoader_BloodMap() : CellLoader()
 {
-    m_pBloodSectors = NULL;
-    m_pBloodWalls = NULL;
-    m_pBloodSprites = NULL;
+    m_pBloodSectors = nullptr;
+    m_pBloodWalls = nullptr;
+    m_pBloodSprites = nullptr;
 }
 
 CellLoader_BloodMap::~CellLoader_BloodMap()
@@ -36,7 +36,7 @@ CellLoader_BloodMap::~CellLoader_BloodMap()
 void CellLoader_BloodMap::DecryptBuffer(uint8_t *pBuffer, const uint32_t uDataSize, uint8_t uDecryptKey)
 {
     // Variables
-    assert(pBuffer != NULL);
+    assert(pBuffer != nullptr);
 
     // If the map isn't encrypted
     if (!m_bIsEncrypted)
@@ -388,7 +388,7 @@ TextureHandle CellLoader_BloodMap::AddBloodTile(int32_t picnum, uint32_t uPalIdx
 
 WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const std::string& sFile, int32_t worldX, int32_t worldY )
 {
-    WorldCell *pCell = NULL;
+    WorldCell *pCell = nullptr;
     ObjectManager::FreeAllObjects();
     if ( uLen )
     {
@@ -397,20 +397,20 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
         int32_t offset = FindFirstSector((char *)pData, index);
         if ( offset < 0 )
         {
-            return NULL;
+            return nullptr;
         }
         index = offset;
         if ( ExtractSectors((char *)pData, index) == false )
         {
-            return NULL;
+            return nullptr;
         }
         if ( ExtractWalls((char *)pData, index) == false )
         {
-            return NULL;
+            return nullptr;
         }
         if ( ExtractSprites((char *)pData, index) == false )
         {
-            return NULL;
+            return nullptr;
         }
 
         pCell = xlNew WorldCell();
@@ -510,7 +510,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
 
             /****************** Setup LevelFunc ****************/
             //is this a sliding door sector?
-            pSector->m_pFunc = NULL;
+            pSector->m_pFunc = nullptr;
             int16_t rxID = -1;
             int16_t waitTime = 0;
             bool bLink = false;
@@ -518,7 +518,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
             if ( m_pBloodSectors[i].lotag == 600 )  //Z-Motion
             {
                 //z-motion - like an elevator.
-                pSector->m_pFunc = NULL;
+                pSector->m_pFunc = nullptr;
 
                 //floor or ceiling, add for both?
                 if ( m_pBloodSectors[i].floorStates[0] != m_pBloodSectors[i].floorStates[1] )
@@ -783,7 +783,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
                 }
             }
 
-            if ( /*pSector->m_pFunc == NULL && */(m_pBloodSectors[i].motionFX_flags&MOTIONFX_PANALWAYS) )
+            if ( /*pSector->m_pFunc == nullptr && */(m_pBloodSectors[i].motionFX_flags&MOTIONFX_PANALWAYS) )
             {
                 pSector->m_pFunc = LevelFuncMgr::CreateLevelFunc("MotionFX", i, -1);
                 pSector->m_pFunc->SetSpeed( (float)m_pBloodSectors[i].motionFX_speed/(64.0f*30.0f) );
@@ -798,7 +798,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
 
                 pSector->m_pFunc->SetDirection(dir);
             }
-            else if ( pSector->m_pFunc == NULL && m_pBloodSectors[i].lightFX_wave > 0 )
+            else if ( pSector->m_pFunc == nullptr && m_pBloodSectors[i].lightFX_wave > 0 )
             {
                 pSector->m_pFunc = LevelFuncMgr::CreateLevelFunc("LightFX", i, -1);
                 pSector->m_pFunc->SetSpeed( 0.33f/60.0f );
@@ -814,7 +814,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
             {
                 int32_t ww = m_pBloodSectors[i].wallptr + w;
 
-                pSector->m_Walls[w].m_pFunc = NULL;
+                pSector->m_Walls[w].m_pFunc = nullptr;
                 if ( (rxID > -1 && m_pBloodWalls[ww].txID == rxID) || bTriggerAllWalls )
                 {
                     pSector->m_Walls[w].m_pFunc = LevelFuncMgr::CreateLevelFunc("TriggerToggle", i, w);
@@ -1116,7 +1116,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
                                     }
                                 }
                             }
-                            if ( nClosest > -1 && pSector->m_Walls[nClosest].m_pFunc == NULL )
+                            if ( nClosest > -1 && pSector->m_Walls[nClosest].m_pFunc == nullptr )
                             {
                                 pSector->m_Walls[nClosest].m_pFunc = LevelFuncMgr::CreateLevelFunc("TriggerToggle", pSector->m_uID, nClosest);
                                 pSector->m_Walls[nClosest].m_pFunc->AddClient( pSector->m_pFunc );
@@ -1358,17 +1358,17 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
         if ( m_pBloodSectors )
         {
             xlDelete [] m_pBloodSectors;
-            m_pBloodSectors = NULL;
+            m_pBloodSectors = nullptr;
         }
         if ( m_pBloodWalls )
         {
             xlDelete [] m_pBloodWalls;
-            m_pBloodWalls = NULL;
+            m_pBloodWalls = nullptr;
         }
         if ( m_pBloodSprites )
         {
             xlDelete [] m_pBloodSprites;
-            m_pBloodSprites = NULL;
+            m_pBloodSprites = nullptr;
         }
     }
 

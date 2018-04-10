@@ -5,7 +5,7 @@
 #include "../ui/Console.h"
 
 //Game instance used for console commands.
-OutlawsXL_Game *OutlawsXL_Game::s_pGame_Console=NULL;
+OutlawsXL_Game *OutlawsXL_Game::s_pGame_Console=nullptr;
 
 OutlawsXL_Game::OutlawsXL_Game(const XLEngine_Plugin_API *API)
 {
@@ -38,7 +38,7 @@ OutlawsXL_Game::~OutlawsXL_Game(void)
     if ( m_Player )
     {
         xlDelete m_Player;
-        m_Player = NULL;
+        m_Player = nullptr;
     }
 }
 

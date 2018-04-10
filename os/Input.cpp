@@ -124,7 +124,7 @@ void Input::SetMousePos(float x, float y)
 bool Input::AddKeyDownCallback(Input_KeyDownCB pCB, int32_t nFlags)
 {
     KeyDownCB_t *pKeyDownCB = xlNew KeyDownCB_t;
-    if (pKeyDownCB == NULL)
+    if (pKeyDownCB == nullptr)
         return false;
 
     pKeyDownCB->pCB    = pCB;
@@ -137,7 +137,7 @@ bool Input::AddKeyDownCallback(Input_KeyDownCB pCB, int32_t nFlags)
 bool Input::AddCharDownCallback( Input_KeyDownCB pCB )
 {
     KeyDownCB_t *pCharDownCB = xlNew KeyDownCB_t;
-    if (pCharDownCB == NULL)
+    if (pCharDownCB == nullptr)
         return false;
 
     pCharDownCB->pCB    = pCB;

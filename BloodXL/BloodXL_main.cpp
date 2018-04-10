@@ -2,7 +2,7 @@
 #include "BloodXL_Game.h"
 
 //this is static for now.
-BloodXL_Game *m_pGame=NULL;
+BloodXL_Game *m_pGame=nullptr;
 
 //Interface between Game classes and C library interface.
 void BloodXL_Update(int32_t stage, float dt, XLEngine_Plugin_API *API, void *pUserData)
@@ -45,7 +45,7 @@ void BloodXL_DestroyGame()
     {
         xlDelete m_pGame;
     }
-    m_pGame = NULL;
+    m_pGame = nullptr;
 }
 
 //Dynamic library C interface.
@@ -58,8 +58,8 @@ extern "C" PLUGIN_API int32_t ExitFunc()
 
 extern "C" PLUGIN_API XL_ExitFunc XL_initPlugin(const XLEngine_Plugin_API *API)
 {
-    API->SetGameUpdateCallback( BloodXL_Update, NULL );
-    API->SetGameRenderCallback( BloodXL_Render, NULL );
+    API->SetGameUpdateCallback( BloodXL_Update, nullptr );
+    API->SetGameRenderCallback( BloodXL_Render, nullptr );
     API->AddKeyDownCallback( BloodXL_KeyDownCallback, Input::KDCb_FLAGS_NONE );
     
     BloodXL_CreateGame( API );

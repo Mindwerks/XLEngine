@@ -111,7 +111,7 @@ bool SkyLoader_Daggerfall::LoadSky(int32_t regionID)
 
 void *SkyLoader_Daggerfall::GetSkyData(int32_t regionID)
 {
-    void *pData = NULL;
+    void *pData = nullptr;
     if ( m_aSkyData[regionID].bLoaded )
     {
         pData = &m_aSkyData[regionID];

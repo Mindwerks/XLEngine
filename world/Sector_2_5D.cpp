@@ -84,14 +84,14 @@ Sector_2_5D::Sector_2_5D() : Sector()
 
     memset(m_szName, 0, 64);
     
-    m_pVertexBase=NULL;
-    m_pVertexCur =NULL;
+    m_pVertexBase=nullptr;
+    m_pVertexCur =nullptr;
     m_ZRangeBase.Set(0,0);
     m_ZRangeCur.Set(0,0);
     m_vAdjOffset[0].Set(0,0,0);
     m_vAdjOffset[1].Set(0,0,0);
 
-    m_Walls = NULL;
+    m_Walls = nullptr;
     m_vAdjoin[0] = SOLID_WALL;
     m_vAdjoin[1] = SOLID_WALL;
 
@@ -101,7 +101,7 @@ Sector_2_5D::Sector_2_5D() : Sector()
     m_hFloorTex = XL_INVALID_TEXTURE;
     m_hCeilTex  = XL_INVALID_TEXTURE;
 
-    m_pFunc = NULL;
+    m_pFunc = nullptr;
 
     m_aLightFX[0] = 0;
     m_aLightFX[1] = 0;
@@ -385,7 +385,7 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
             {
                 VisStack *pVAdjoin = &m_visStack_VAdjoin[v];
 
-                if ( pVAdjoin->depth == NULL )
+                if ( pVAdjoin->depth == nullptr )
                     continue;
 
                 for (uint32_t x=pVAdjoin->uStartX; x<=pVAdjoin->uEndX; x++)
@@ -788,7 +788,7 @@ void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector
         p0->x = p0->x + min_u_sec*(p1->x - p0->x);
         p0->y = p0->y + min_u_sec*(p1->y - p0->y);
         p0->z = p0->z + min_u_sec*(p1->z - p0->z);
-        LevelFunc *pWallFunc = NULL;
+        LevelFunc *pWallFunc = nullptr;
         if ( nClosestWall < 0xfffe )
         {
             //Is this an adjoin?
@@ -804,7 +804,7 @@ void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector
 
                 if ( (pSec->m_uFlags&SEC_FLAGS_ALLOW_NONSOLID_ACTIVATE) || (pNext->m_uFlags&SEC_FLAGS_ALLOW_NONSOLID_ACTIVATE) )
                 {
-                    if ( pWallFunc == NULL )
+                    if ( pWallFunc == nullptr )
                     {
                         //we hit the wall in the next sector...
                         pWallFunc = pNext->m_Walls[ pSec->m_Walls[nClosestWall].m_mirror[0] ].m_pFunc;
@@ -821,7 +821,7 @@ void Sector_2_5D::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector
                     RayCastAndActivate(p0, p1, uSector, Sectors);
                     return;
                 }
-                else if ( pWallFunc == NULL )
+                else if ( pWallFunc == nullptr )
                 {
                     //we hit the wall in the next sector...
                     pWallFunc = pNext->m_Walls[ pSec->m_Walls[nClosestWall].m_mirror[0] ].m_pFunc;
@@ -1130,11 +1130,11 @@ void Sector_2_5D::_DrawWall(IDriver3D *pDriver, Sector_2_5D *pCurSec, Sector_2_5
     float u1 = uv0.x * (1.0f - t1) + uv1.x * t1;
     uv0.x = u0; uv1.x = u1;
 
-    if ( pNextSec == NULL || (pCurSec->m_Walls[w].m_flags&Wall::WALL_FLAGS_MASKWALL) )
+    if ( pNextSec == nullptr || (pCurSec->m_Walls[w].m_flags&Wall::WALL_FLAGS_MASKWALL) )
     {
         Vector3 posList[4];
         Vector2 uvList[4];
-        if ( pNextSec == NULL )
+        if ( pNextSec == nullptr )
         {
             posList[0].Set(worldPos[0].x, worldPos[0].y, pCurSec->GetZ_Floor(worldPos[0].x, worldPos[0].y, Sectors));
             posList[1].Set(worldPos[1].x, worldPos[1].y, pCurSec->GetZ_Floor(worldPos[1].x, worldPos[1].y, Sectors));
@@ -1606,7 +1606,7 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t
     int32_t x0=uStartX;
     uint16_t id = idBuffer[uStartX];
     uint16_t sec = sBuffer[uStartX];
-    Sector_2_5D *pNextSec = NULL;
+    Sector_2_5D *pNextSec = nullptr;
     int32_t x=(int32_t)uStartX+1;
     for (; x<=(int32_t)uEndX; x++)
     {
@@ -1624,12 +1624,12 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t
                 m_Camera2D.InverseTransformPointsSS_2D((float)(x1+0.5f)/fbwidth * 2.0f - 1.0f, z1, worldPos[1]);
 
                 //draw the wall
-                pNextSec = pCurSec->m_Walls[id].m_adjoin[0] == 0xffff ? NULL : (Sector_2_5D *)Sectors[pCurSec->m_Walls[id].m_adjoin[0]];
+                pNextSec = pCurSec->m_Walls[id].m_adjoin[0] == 0xffff ? nullptr : (Sector_2_5D *)Sectors[pCurSec->m_Walls[id].m_adjoin[0]];
 
                 //add the next buffer.
                 //now make sure that the wall opening is visible...
                 if ( pNextSec && pNextSec->m_ZRangeCur.y <= pNextSec->m_ZRangeCur.x )
-                    pNextSec = NULL;
+                    pNextSec = nullptr;
                 if ( pNextSec && x1-x0 > 1 )
                 {
                     VisStack_Push(worldPos[0], worldPos[1], x0, x1, pNextSec);
@@ -1651,12 +1651,12 @@ void Sector_2_5D::WallRasterizer(const Vector3& cPos, uint32_t uStartX, uint32_t
         m_Camera2D.InverseTransformPointsSS_2D((float)(x1+0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x1], worldPos[1]);
 
         //draw the wall
-        pNextSec = pCurSec->m_Walls[id].m_adjoin[0] == 0xffff ? NULL : (Sector_2_5D *)Sectors[pCurSec->m_Walls[id].m_adjoin[0]];
+        pNextSec = pCurSec->m_Walls[id].m_adjoin[0] == 0xffff ? nullptr : (Sector_2_5D *)Sectors[pCurSec->m_Walls[id].m_adjoin[0]];
 
         //add the next buffer.
         //now make sure that the wall opening is visible...
         if ( pNextSec && pNextSec->m_ZRangeCur.y <= pNextSec->m_ZRangeCur.x )
-            pNextSec = NULL;
+            pNextSec = nullptr;
         if ( pNextSec && x1-x0 > 1 )
         {
             VisStack_Push(worldPos[0], worldPos[1], x0, x1, pNextSec);
@@ -1902,10 +1902,10 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
     int32_t x0=uStartX;
     uint16_t id = idBuffer[uStartX];
     uint16_t sec = sBuffer[uStartX];
-    Sector_2_5D *pNextSec = NULL;
+    Sector_2_5D *pNextSec = nullptr;
     int32_t x=(int32_t)uStartX+1;
-    Sector_2_5D *pBotSec = pCurSec->m_vAdjoin[0] == 0xffff ? NULL : (Sector_2_5D *)Sectors[pCurSec->m_vAdjoin[0]];
-    Sector_2_5D *pTopSec = pCurSec->m_vAdjoin[1] == 0xffff ? NULL : (Sector_2_5D *)Sectors[pCurSec->m_vAdjoin[1]];
+    Sector_2_5D *pBotSec = pCurSec->m_vAdjoin[0] == 0xffff ? nullptr : (Sector_2_5D *)Sectors[pCurSec->m_vAdjoin[0]];
+    Sector_2_5D *pTopSec = pCurSec->m_vAdjoin[1] == 0xffff ? nullptr : (Sector_2_5D *)Sectors[pCurSec->m_vAdjoin[1]];
     for (; x<=(int32_t)uEndX; x++)
     {
         if ( idBuffer[x] != id || sBuffer[x] != sec )
@@ -1919,7 +1919,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
                 m_Camera2D.InverseTransformPointsSS_2D((float)(x1+0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x1], worldPos[1]);
 
                 //draw the wall
-                pNextSec = pCurSec->m_Walls[id].m_adjoin[0] == 0xffff ? NULL : (Sector_2_5D *)Sectors[pCurSec->m_Walls[id].m_adjoin[0]];
+                pNextSec = pCurSec->m_Walls[id].m_adjoin[0] == 0xffff ? nullptr : (Sector_2_5D *)Sectors[pCurSec->m_Walls[id].m_adjoin[0]];
                 _DrawWall(pDriver, pCurSec, pNextSec, pBotSec, pTopSec, id, worldPos, Sectors);
 
                 //draw the floor
@@ -1928,7 +1928,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
                 //add the next buffer.
                 //now make sure that the wall opening is visible...
                 if ( pNextSec && pNextSec->m_ZRangeCur.y <= pNextSec->m_ZRangeCur.x )
-                    pNextSec = NULL;
+                    pNextSec = nullptr;
                 if ( pNextSec && x1-x0 > 1 )
                 {
                     VisStack_Push(worldPos[0], worldPos[1], x0, x1, pNextSec);
@@ -1976,7 +1976,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
         m_Camera2D.InverseTransformPointsSS_2D((float)(x1+0.5f)/fbwidth * 2.0f - 1.0f, fDepth[x1], worldPos[1]);
 
         //draw the wall
-        pNextSec = pCurSec->m_Walls[id].m_adjoin[0] == 0xffff ? NULL : (Sector_2_5D *)Sectors[pCurSec->m_Walls[id].m_adjoin[0]];
+        pNextSec = pCurSec->m_Walls[id].m_adjoin[0] == 0xffff ? nullptr : (Sector_2_5D *)Sectors[pCurSec->m_Walls[id].m_adjoin[0]];
         _DrawWall(pDriver, pCurSec, pNextSec, pBotSec, pTopSec, id, worldPos, Sectors);
 
         //draw the floor
@@ -1985,7 +1985,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
         //add the next buffer.
         //now make sure that the wall opening is visible...
         if ( pNextSec && pNextSec->m_ZRangeCur.y <= pNextSec->m_ZRangeCur.x )
-            pNextSec = NULL;
+            pNextSec = nullptr;
         if ( pNextSec && x1-x0 > 1 )
         {
             VisStack_Push(worldPos[0], worldPos[1], x0, x1, pNextSec);

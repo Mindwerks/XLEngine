@@ -295,12 +295,12 @@ void LFunc_TriggerToggle_Activate(LevelFunc *pFunc, int32_t mask, int32_t items,
 //Global setup.
 void SetupDefaultLevelFuncs()
 {
-    LevelFuncMgr::AddLevelFuncCB("SlidingDoor", NULL, LFunc_SlidingDoor_SetValue);
-    LevelFuncMgr::AddLevelFuncCB("Slide", NULL, LFunc_Slide_SetValue);
-    LevelFuncMgr::AddLevelFuncCB("Elevator_MoveFloor", NULL, LFunc_Elevator_MoveFloor_SetValue);
-    LevelFuncMgr::AddLevelFuncCB("Elevator_MoveCeil", NULL, LFunc_Elevator_MoveCeil_SetValue);
-    LevelFuncMgr::AddLevelFuncCB("Rotate", NULL, LFunc_Rotate_SetValue);
-    LevelFuncMgr::AddLevelFuncCB("LightFX", NULL, LFunc_LightFX_SetValue);
-    LevelFuncMgr::AddLevelFuncCB("MotionFX", NULL, LFunc_MotionFX_SetValue);
-    LevelFuncMgr::AddLevelFuncCB("TriggerToggle", LFunc_TriggerToggle_Activate, NULL);
+    LevelFuncMgr::AddLevelFuncCB("SlidingDoor", nullptr, LFunc_SlidingDoor_SetValue);
+    LevelFuncMgr::AddLevelFuncCB("Slide", nullptr, LFunc_Slide_SetValue);
+    LevelFuncMgr::AddLevelFuncCB("Elevator_MoveFloor", nullptr, LFunc_Elevator_MoveFloor_SetValue);
+    LevelFuncMgr::AddLevelFuncCB("Elevator_MoveCeil", nullptr, LFunc_Elevator_MoveCeil_SetValue);
+    LevelFuncMgr::AddLevelFuncCB("Rotate", nullptr, LFunc_Rotate_SetValue);
+    LevelFuncMgr::AddLevelFuncCB("LightFX", nullptr, LFunc_LightFX_SetValue);
+    LevelFuncMgr::AddLevelFuncCB("MotionFX", nullptr, LFunc_MotionFX_SetValue);
+    LevelFuncMgr::AddLevelFuncCB("TriggerToggle", LFunc_TriggerToggle_Activate, nullptr);
 }

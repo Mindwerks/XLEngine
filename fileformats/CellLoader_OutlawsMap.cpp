@@ -201,7 +201,7 @@ TextureHandle LoadNWX(uint8_t *pData, uint32_t uLen, const char *pszName, uint32
 
 WorldCell *CellLoader_OutlawsMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t *pData, uint32_t uLen, const std::string& sFile, int32_t worldX, int32_t worldY )
 {
-    WorldCell *pCell = NULL;
+    WorldCell *pCell = nullptr;
     ObjectManager::FreeAllObjects();
     if ( uLen )
     {

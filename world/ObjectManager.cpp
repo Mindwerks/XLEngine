@@ -54,7 +54,7 @@ void ObjectManager::Destroy()
 
 Object *ObjectManager::CreateObject(const std::string& sName)
 {
-    Object *pObj = NULL;
+    Object *pObj = nullptr;
     if ( m_FreeObjects.size() )
     {
         //if there is a free object, just use it.
@@ -91,7 +91,7 @@ Object *ObjectManager::CreateObject(const std::string& sName)
 void ObjectManager::SetRenderComponent(uint32_t uID, const char *pszComponent)
 {
     Object *pObj = GetObjectFromID(uID);
-    if ( pObj == NULL )
+    if ( pObj == nullptr )
         return;
 
     if ( stricmp(pszComponent, "Mesh") == 0 )
@@ -219,7 +219,7 @@ Object *ObjectManager::FindObject(const std::string& sName)
             return pObj;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 Object *ObjectManager::GetObjectFromID(uint32_t uID)
@@ -316,7 +316,7 @@ ObjectPhysicsData *ObjectManager::GetObjectPhysicsData(uint32_t uID)
     {
         return pObj->GetPhysicsData();
     }
-    return NULL;
+    return nullptr;
 }
 
 void *ObjectManager::GetObjectGameData(uint32_t uID)
@@ -326,7 +326,7 @@ void *ObjectManager::GetObjectGameData(uint32_t uID)
     {
         return pObj->GetGameData();
     }
-    return NULL;
+    return nullptr;
 }
 
 void ObjectManager::SetObjectGameData(uint32_t uID, void *pData)

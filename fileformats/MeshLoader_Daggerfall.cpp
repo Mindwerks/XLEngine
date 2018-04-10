@@ -371,7 +371,7 @@ bool MeshLoader_Daggerfall::LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollis
 
         if ( polygons[i].header.nPlanePointCount < 3 )
         {
-            polygons[i].points = NULL;
+            polygons[i].points = nullptr;
             polygons[i].header.nPlanePointCount = 0;
             continue;
         }
@@ -414,7 +414,7 @@ bool MeshLoader_Daggerfall::LoadMesh(IDriver3D *pDriver, Mesh *pMesh, MeshCollis
         }
         else
         {
-            polygons[i].points = NULL;
+            polygons[i].points = nullptr;
             polygons[i].hTex = 0;
             w = 64; h = 64;
             polygons[i].vUVScale.x = 1.0f / (16.0f * (float)w);

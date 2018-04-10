@@ -8,9 +8,9 @@
 BSA_Reader::BSA_Reader() : Archive()
 {
     m_CurFile = -1;
-    m_pFile = NULL;
-    m_pFileListName = NULL;
-    m_pFileListNum  = NULL;
+    m_pFile = nullptr;
+    m_pFileListName = nullptr;
+    m_pFileListNum  = nullptr;
 }
 
 bool BSA_Reader::Open(const char *pszName)
@@ -54,12 +54,12 @@ void BSA_Reader::Close()
     if ( m_pFileListName )
     {
         delete [] m_pFileListName;
-        m_pFileListName = NULL;
+        m_pFileListName = nullptr;
     }
     if ( m_pFileListNum )
     {
         delete [] m_pFileListNum;
-        m_pFileListNum = NULL;
+        m_pFileListNum = nullptr;
     }
     m_bOpen = false;
 }
@@ -69,7 +69,7 @@ bool BSA_Reader::OpenFile(const char *pszFile)
     if ( m_Header.DirectoryType != DT_NameRecord )
         return false;
 
-    assert(m_pFile == NULL);
+    assert(m_pFile == nullptr);
     m_pFile = fopen(m_szFileName, "rb");
     m_CurFile = -1;
     
@@ -88,7 +88,7 @@ bool BSA_Reader::OpenFile(const char *pszFile)
         if ( m_CurFile == -1 )
         {
             fclose(m_pFile);
-            m_pFile = NULL;
+            m_pFile = nullptr;
             XL_Console::PrintF("^1Error: Failed to load %s from \"%s\"", pszFile, m_szFileName);
         }
     }
@@ -101,7 +101,7 @@ bool BSA_Reader::OpenFile(const uint32_t uID)
     if ( m_Header.DirectoryType != DT_NumberRecord )
         return false;
 
-    assert(m_pFile == NULL);
+    assert(m_pFile == nullptr);
     m_pFile = fopen(m_szFileName, "rb");
     assert(m_pFile);
     m_CurFile = -1;
@@ -121,7 +121,7 @@ bool BSA_Reader::OpenFile(const uint32_t uID)
         if ( m_CurFile == -1 )
         {
             fclose(m_pFile);
-            m_pFile = NULL;
+            m_pFile = nullptr;
 
             XL_Console::PrintF("^1Error: Failed to load %u from \"%s\"", uID, m_szFileName);
         }
@@ -186,7 +186,7 @@ void BSA_Reader::CloseFile()
     if ( m_pFile )
     {
         fclose(m_pFile);
-        m_pFile = NULL;
+        m_pFile = nullptr;
     }
     m_CurFile = -1;
 }

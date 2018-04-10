@@ -84,8 +84,8 @@ uint32_t TextureConv_IMG::GetHackID(const char *pszImage)
 bool TextureConv_IMG::ConvertTexture_Pal8(uint8_t *pConvertedData, int32_t& nOffsX, int32_t& nOffsY, uint32_t& uWidth, uint32_t& uHeight, const uint8_t *pSourceData, uint32_t uLen, const uint8_t *pPalette, bool bCopyPal, uint32_t uHackID/*=0*/)
 {
     ImageHeader header;
-    uint8_t *pImageData=NULL;
-    uint8_t *pCustomPal=NULL;
+    uint8_t *pImageData=nullptr;
+    uint8_t *pCustomPal=nullptr;
     int nPal = PAL_PAL;
     nOffsX = 0;
     nOffsY = 0;
@@ -241,7 +241,7 @@ bool TextureConv_IMG::ConvertTexture_Pal8(uint8_t *pConvertedData, int32_t& nOff
         int pitch = header.Width;
 
         //now we'll create an RGBA texture and create a hardware texture out of it.
-        uint8_t *pal = NULL;
+        uint8_t *pal = nullptr;
         uint32_t palStride = 3;
         if ( pCustomPal )
         {
@@ -392,7 +392,7 @@ bool TextureConv_IMG::ConvertTexture_Pal8_TexList(uint8_t *pConvertedData, int32
     TexRecord *pRec = (TexRecord *)&pSourceData[index];
     bool bCompressed = (pRec->compression == Ctx_RleCompressed || pRec->compression == Ctx_ImageRle || pRec->compression == Ctx_RecordRle);
     index = pHeaders[ nRecord ].recordPos + (int32_t)pRec->dataOffs;
-    uint8_t *buffer = NULL;
+    uint8_t *buffer = nullptr;
 
     nOffsX  = (int32_t)pRec->offsetX;
     nOffsY  = (int32_t)pRec->offsetY;
@@ -564,8 +564,8 @@ bool TextureConv_IMG::ConvertTexture_Pal8_TexList(uint8_t *pConvertedData, int32
 bool TextureConv_IMG::ConvertTexture_8bpp(uint8_t *pConvertedData, int32_t& nOffsX, int32_t& nOffsY, uint32_t& uWidth, uint32_t& uHeight, const uint8_t *pSourceData, uint32_t uLen, uint32_t uHackID/*=0*/)
 {
     ImageHeader header;
-    uint8_t *pImageData=NULL;
-    uint8_t *pCustomPal=NULL;
+    uint8_t *pImageData=nullptr;
+    uint8_t *pCustomPal=nullptr;
     int nPal = PAL_PAL;
     nOffsX = 0;
     nOffsY = 0;
@@ -744,7 +744,7 @@ uint32_t TextureConv_IMG::ConvertTexture_8bpp_TexList(uint8_t *pConvertedData, i
     TexRecord *pRec = (TexRecord *)&pSourceData[index];
     bool bCompressed = (pRec->compression == Ctx_RleCompressed || pRec->compression == Ctx_ImageRle || pRec->compression == Ctx_RecordRle);
     index = pHeaders[ nRecord ].recordPos + (int32_t)pRec->dataOffs;
-    uint8_t *buffer = NULL;
+    uint8_t *buffer = nullptr;
 
     nOffsX  = (int32_t)pRec->offsetX;
     nOffsY  = (int32_t)pRec->offsetY;

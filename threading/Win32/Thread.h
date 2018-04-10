@@ -105,7 +105,7 @@ class Thread
     static Handle Self()
     {
       //Handle Hnd = InvalidHandle;
-      //DuplicateHandle(GetCurrentProcess(),GetCurrentThread(),GetCurrentProcess(),(LPHANDLE)&Hnd,NULL,0,NULL);
+      //DuplicateHandle(GetCurrentProcess(),GetCurrentThread(),GetCurrentProcess(),(LPHANDLE)&Hnd,nullptr,0,nullptr);
       //return Hnd;
 
       // only a pseudo-handle!

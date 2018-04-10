@@ -14,12 +14,12 @@
 
 World::World()
 {
-    m_Player   = NULL;
-    m_pCamera  = NULL;
-    m_pTerrain = NULL;
+    m_Player   = nullptr;
+    m_pCamera  = nullptr;
+    m_pTerrain = nullptr;
 
     XL_Console::RegisterCmd("r_lockcam", (void*)CC_LockCamera, Console::CTYPE_FUNCTION, "Lock the camera so that the visibility stops updating.", this);
-    XL_Console::RegisterCmd("r_maxRecursion", &Sector::s_MaxSecDrawCnt, Console::CTYPE_UINT, "Maximum portal recursion, 0 = default.", NULL);
+    XL_Console::RegisterCmd("r_maxRecursion", &Sector::s_MaxSecDrawCnt, Console::CTYPE_UINT, "Maximum portal recursion, 0 = default.", nullptr);
 
     m_uSectorTypeVis = SECTOR_TYPE_EXTERIOR;
     //m_uSectorTypeVis = SECTOR_TYPE_DUNGEON;
@@ -185,7 +185,7 @@ bool World::Raycast(Vector3 *p0, Vector3 *p1, Vector3 *pInter)
 
 WorldCell *World::GetCameraWorldCell()
 {
-    WorldCell *pCell = NULL;
+    WorldCell *pCell = nullptr;
     if ( m_pCamera )
     {
         pCell = WorldMap::GetWorldCell( m_pCamera->GetWorldPosX()>>3, m_pCamera->GetWorldPosY()>>3 );

@@ -3,7 +3,7 @@
 #include "../ui/Console.h"
 
 //Game instance used for console commands.
-DarkXL_Game *DarkXL_Game::s_pGame_Console=NULL;
+DarkXL_Game *DarkXL_Game::s_pGame_Console=nullptr;
 
 DarkXL_Game::DarkXL_Game(const XLEngine_Plugin_API *API)
 {

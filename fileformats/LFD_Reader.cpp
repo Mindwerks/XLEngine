@@ -7,7 +7,7 @@
 LFD_Reader::LFD_Reader() : Archive()
 {
     m_CurFile = -1;
-    m_pFile = NULL;
+    m_pFile = nullptr;
 }
 
 bool LFD_Reader::Open(const char *pszName)
@@ -56,7 +56,7 @@ void LFD_Reader::Close()
     if ( m_FileList.pEntries )
     {
         xlDelete [] m_FileList.pEntries;
-        m_FileList.pEntries = NULL;
+        m_FileList.pEntries = nullptr;
     }
     m_bOpen = false;
 }
@@ -113,7 +113,7 @@ void LFD_Reader::CloseFile()
     if ( m_pFile )
     {
         fclose(m_pFile);
-        m_pFile = NULL;
+        m_pFile = nullptr;
     }
     m_CurFile = -1;
 }

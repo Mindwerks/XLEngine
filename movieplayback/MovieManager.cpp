@@ -13,9 +13,9 @@ IDriver3D *MovieManager::m_pDriver;
 
 void MovieManager::Init(IDriver3D *pDriver)
 {
-    m_pCurPlayer=NULL;
-    m_apArchives[0] = NULL;
-    m_apArchives[1] = NULL;
+    m_pCurPlayer=nullptr;
+    m_apArchives[0] = nullptr;
+    m_apArchives[1] = nullptr;
     m_pDriver = pDriver;
 }
 
@@ -37,7 +37,7 @@ void MovieManager::SetPlayerType(uint32_t uPlayerType)
     if ( m_pCurPlayer )
     {
         m_pCurPlayer->Stop();
-        m_pCurPlayer = NULL;
+        m_pCurPlayer = nullptr;
     }
 
     switch (uPlayerType)
@@ -58,8 +58,8 @@ void MovieManager::SetPlayerType(uint32_t uPlayerType)
 
 void MovieManager::SetPlayerArchives(uint32_t uArchiveType, const char *pszArchive0, const char *pszArchive1)
 {
-    m_apArchives[0] = NULL;
-    m_apArchives[1] = NULL;
+    m_apArchives[0] = nullptr;
+    m_apArchives[1] = nullptr;
     if ( pszArchive0 && pszArchive0[0] )
     {
         m_apArchives[0] = ArchiveManager::OpenArchive(uArchiveType, pszArchive0);

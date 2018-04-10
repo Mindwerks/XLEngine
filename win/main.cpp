@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
     // Main message loop:
     while (true)
     {
-        if ( PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) )
+        if ( PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE) )
         {
             if ( msg.message == WM_QUIT )
                 break;
@@ -298,7 +298,7 @@ int main(int argc, char *argv[])
     if ( m_pEngine )
     {
         xlDelete m_pEngine;
-        m_pEngine = NULL;
+        m_pEngine = nullptr;
     }
 
     if ( settings.IsServer() )
@@ -334,7 +334,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_XLENGINE));
-    wcex.hCursor        = LoadCursor(NULL, IDC_ARROW);
+    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = 0;
     wcex.lpszMenuName   = 0;
     wcex.lpszClassName  = szWindowClass;
@@ -376,14 +376,14 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, int w, int h)
         if (ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN)!=DISP_CHANGE_SUCCESSFUL)
         {
             // If The Mode Fails, Offer Two Options.  Quit Or Use Windowed Mode.
-            if ( MessageBox(NULL,"The Requested Fullscreen Mode Is Not Supported By\nYour Video Card. Use Windowed Mode Instead?", "XL Engine", MB_YESNO|MB_ICONEXCLAMATION) == IDYES )
+            if ( MessageBox(nullptr,"The Requested Fullscreen Mode Is Not Supported By\nYour Video Card. Use Windowed Mode Instead?", "XL Engine", MB_YESNO|MB_ICONEXCLAMATION) == IDYES )
             {
                 g_bFullScreen = false;      // Windowed Mode Selected.  Fullscreen = FALSE
             }
             else
             {
                 // Pop Up A Message Box Letting User Know The Program Is Closing.
-                MessageBox(NULL,"Program Will Now Close.", "ERROR", MB_OK|MB_ICONSTOP);
+                MessageBox(nullptr,"Program Will Now Close.", "ERROR", MB_OK|MB_ICONSTOP);
                 return FALSE;                                   // Return FALSE
             }
         }
@@ -408,7 +408,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, int w, int h)
         desiredSize.bottom = h;
         AdjustWindowRect(&desiredSize, dwStyle, FALSE);
 
-        hWnd = CreateWindow(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, 0, desiredSize.right-desiredSize.left, desiredSize.bottom-desiredSize.top, NULL, NULL, hInstance, NULL);
+        hWnd = CreateWindow(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, 0, desiredSize.right-desiredSize.left, desiredSize.bottom-desiredSize.top, nullptr, nullptr, hInstance, nullptr);
     }
     else
     {
@@ -416,7 +416,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, int w, int h)
         DWORD dwStyle=WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN; // Windows Style
         ShowCursor(FALSE);
 
-        hWnd = CreateWindowEx(dwExStyle, szWindowClass, szTitle, dwStyle, 0, 0, w, h, NULL, NULL, hInstance, NULL);
+        hWnd = CreateWindowEx(dwExStyle, szWindowClass, szTitle, dwStyle, 0, 0, w, h, nullptr, nullptr, hInstance, nullptr);
     }
 
     if (!hWnd)

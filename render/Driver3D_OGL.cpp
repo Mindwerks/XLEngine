@@ -15,7 +15,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+#define BUFFER_OFFSET(i) ((char *)nullptr + (i))
 
 uint32_t _uPrevVBO = 0xffffffff;
 uint32_t _uBlendFunc = 0;
@@ -49,7 +49,7 @@ bool _bFogEnable = false;
 float _fFogDensity = 1.0f;
 float _fFogEnd = 0.0f;
 
-Matrix *_prevWorldMtxPtr = NULL;
+Matrix *_prevWorldMtxPtr = nullptr;
 
 Vector4 _prevColor(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -267,9 +267,9 @@ void Driver3D_OGL::Clear(bool bClearColor)
 
 void Driver3D_OGL::SetWorldMatrix(Matrix *pMtx, int32_t worldX, int32_t worldY)
 {
-    if ( pMtx == NULL )
+    if ( pMtx == nullptr )
     {
-        _prevWorldMtxPtr = NULL;
+        _prevWorldMtxPtr = nullptr;
     }
     else if ( pMtx != _prevWorldMtxPtr )
     {
@@ -288,7 +288,7 @@ void Driver3D_OGL::SetViewMatrix(Matrix *pMtx, Vector3 *pLoc, Vector3 *pDir)
     m_ViewMtx = *pMtx;
     m_Eye = *pLoc;
     m_ViewDir = *pDir;
-    _prevWorldMtxPtr = NULL;    //reset so the world matrix applies the proper transform.
+    _prevWorldMtxPtr = nullptr;    //reset so the world matrix applies the proper transform.
 }
 
 void Driver3D_OGL::SetProjMtx(Matrix *pMtx)
@@ -349,7 +349,7 @@ void Driver3D_OGL::SetTexture(int32_t slot, TextureHandle hTex, uint32_t uFilter
 
 void Driver3D_OGL::SetColor(Vector4 *pColor)
 {
-    if ( pColor == NULL ) pColor = &Vector4::One;
+    if ( pColor == nullptr ) pColor = &Vector4::One;
 
     if ( *pColor != _prevColor )
     {
@@ -358,7 +358,7 @@ void Driver3D_OGL::SetColor(Vector4 *pColor)
     }
 }
 
-TextureHandle Driver3D_OGL::CreateTexture(uint32_t uWidth, uint32_t uHeight, uint32_t uFormat/*=TEX_FORMAT_RGBA8*/, uint8_t *pData/*=NULL*/, bool bGenMips/*=false*/, int32_t nFrameCnt/*=1*/)
+TextureHandle Driver3D_OGL::CreateTexture(uint32_t uWidth, uint32_t uHeight, uint32_t uFormat/*=TEX_FORMAT_RGBA8*/, uint8_t *pData/*=nullptr*/, bool bGenMips/*=false*/, int32_t nFrameCnt/*=1*/)
 {
     GLint internalFormat=GL_RGBA8;
     GLenum type=GL_UNSIGNED_BYTE;
@@ -573,7 +573,7 @@ uint32_t Driver3D_OGL::CreateVBO()
 void Driver3D_OGL::AllocVBO_Mem(uint32_t uID, uint32_t uVtxCnt, uint32_t uSize, bool bDynamic)
 {
     if ( uID != _uBindBufferVB ) { glBindBuffer(GL_ARRAY_BUFFER, uID); _uBindBufferVB = uID; }
-    glBufferData(GL_ARRAY_BUFFER, uSize, NULL, bDynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, uSize, nullptr, bDynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     _uBindBufferVB = 0;
 }
@@ -582,8 +582,8 @@ void Driver3D_OGL::FillVBO(uint32_t uID, void *pData, uint32_t uSize, bool bDyna
 {
     if ( uID != _uBindBufferVB ) { glBindBuffer(GL_ARRAY_BUFFER, uID); _uBindBufferVB = uID; }
 
-    //cause the "discard" buffer behavior, which is done by first calling glBufferData() with NULL data.
-    glBufferData(GL_ARRAY_BUFFER, uSize, NULL, bDynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+    //cause the "discard" buffer behavior, which is done by first calling glBufferData() with null data.
+    glBufferData(GL_ARRAY_BUFFER, uSize, nullptr, bDynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
     //now lock and update the buffer.
     void *pMem = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
     if ( pMem )

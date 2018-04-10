@@ -78,7 +78,7 @@ void XL_Console::Destroy()
 
 void XL_Console::_KeyDownCallback(int32_t key)
 {
-    if ( s_pConsole == NULL )
+    if ( s_pConsole == nullptr )
         return;
 
     if ( key == XL_BACK )
@@ -97,7 +97,7 @@ void XL_Console::_KeyDownCallback(int32_t key)
 
 void XL_Console::_CharDownCallback(int32_t key)
 {
-    if ( s_pConsole == NULL )
+    if ( s_pConsole == nullptr )
         return;
 
     s_pConsole->PassKey((char)key);
@@ -105,7 +105,7 @@ void XL_Console::_CharDownCallback(int32_t key)
 
 void XL_Console::Render()
 {
-    if ( s_pConsole == NULL )
+    if ( s_pConsole == nullptr )
         return;
 
     s_pConsole->Render();
@@ -118,7 +118,7 @@ void XL_Console::RegisterCmd(const std::string& itemName, void *ptr, Console::Co
 
 bool XL_Console::IsActive()
 {
-    if ( s_pConsole == NULL )
+    if ( s_pConsole == nullptr )
         return false;
 
     return s_pConsole->IsActive();
@@ -126,7 +126,7 @@ bool XL_Console::IsActive()
 
 bool XL_Console::IsChatActive()
 {
-    if ( s_pConsole == NULL )
+    if ( s_pConsole == nullptr )
         return false;
 
     return s_pConsole->IsChatActive();
@@ -134,7 +134,7 @@ bool XL_Console::IsChatActive()
 
 bool XL_Console::IsPaused()
 {
-    if ( s_pConsole == NULL )
+    if ( s_pConsole == nullptr )
         return false;
 
     return s_pConsole->IsPaused();
@@ -142,7 +142,7 @@ bool XL_Console::IsPaused()
 
 void XL_Console::Print(const std::string& szMsg)
 {
-    if ( s_pConsole == NULL )
+    if ( s_pConsole == nullptr )
         return;
 
     s_pConsole->Print(szMsg);
@@ -150,7 +150,7 @@ void XL_Console::Print(const std::string& szMsg)
 
 void XL_Console::PrintF(const char *pszString, ...)
 {
-    if ( s_pConsole == NULL )
+    if ( s_pConsole == nullptr )
         return;
 
     va_list args;

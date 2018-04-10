@@ -28,12 +28,12 @@ ImageLoader::~ImageLoader(void)
     if ( m_pImageData )
     {
         xlFree(m_pImageData);
-        m_pImageData = NULL;
+        m_pImageData = nullptr;
     }
     if ( m_pImageData_Work )
     {
         xlFree(m_pImageData_Work);
-        m_pImageData_Work = NULL;
+        m_pImageData_Work = nullptr;
     }
 }
 

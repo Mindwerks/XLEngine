@@ -22,14 +22,14 @@ uint32_t TextureLoader::m_uWidth;
 uint32_t TextureLoader::m_uHeight;
 uint32_t TextureLoader::m_uExtraDataSize=0;
 uint32_t TextureLoader::m_uTexColorDepth=32;
-void *TextureLoader::m_pTexExtraData=NULL;
+void *TextureLoader::m_pTexExtraData=nullptr;
 Palette TextureLoader::m_CurPal[MAX_PAL_COUNT];
 Colormap TextureLoader::m_ColorMap[MAX_COLORMAP_COUNT];
 
 void TextureLoader::Init()
 {
-    m_pCurConverter=NULL;
-    m_pConvertedData=NULL;
+    m_pCurConverter=nullptr;
+    m_pConvertedData=nullptr;
 
     //create the texture converter list here.
     m_TextureConverters[TEXTURETYPE_ART] = xlNew TextureConv_ART();
@@ -45,9 +45,9 @@ void TextureLoader::Destroy()
         {
             xlDelete m_TextureConverters[c];
         }
-        m_TextureConverters[c] = NULL;
+        m_TextureConverters[c] = nullptr;
     }
-    m_pCurConverter=NULL;
+    m_pCurConverter=nullptr;
 }
 
 bool TextureLoader::LoadTexture(uint32_t uTextureType, uint32_t uPalIndex, Archive *pTexArchive, const std::string& sFile, bool bCopyPal)
@@ -228,7 +228,7 @@ bool TextureLoader::LoadTexture_Mem(const uint8_t *pImgBuffer, uint32_t uPalInde
     uint32_t uDataSize = width*height;
     if ( m_uTexColorDepth == 32 ) uDataSize *= 4;
     m_pConvertedData = (uint8_t *)ScratchPad::AllocMem( uDataSize );
-    if ( !(m_pConvertedData != NULL) )
+    if ( !(m_pConvertedData != nullptr) )
         return false;
 
     if ( m_uTexColorDepth == 32 )
@@ -269,7 +269,7 @@ uint8_t *TextureLoader::GetData_RGBA8()
 void TextureLoader::FreeData()
 {
     ScratchPad::FreeFrame();
-    m_pConvertedData = NULL;
+    m_pConvertedData = nullptr;
 }
 
 void TextureLoader::SetPalette(uint8_t uPalIndex, uint8_t *pData, uint32_t uSize, uint32_t uTransparentIndex)
