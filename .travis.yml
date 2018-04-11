@@ -22,6 +22,6 @@ matrix:
     - os: osx
 before_script:
   - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CXX="g++-5"; fi
-  - if [[ $TRAVIS_OS_NAME == "osx" ]]; then brew install devil enet glew; fi
+  - if [[ $TRAVIS_OS_NAME == "osx" ]]; then brew install devil enet glew sdl2; fi
 script:
   - mkdir build; cd build; cmake ..; make -j4
