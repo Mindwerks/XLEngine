@@ -252,8 +252,8 @@ uint32_t ScriptSystem::ExecuteFunc(SHANDLE hFunc, int32_t nArgCnt, const ScriptA
     {
         int32_t return_code = 0;
         return_code = m_pContext->Prepare(hFunc);
-        if (return_code){
-            XL_Console::PrintF("AS return code %i in %s:%s ", return_code, hFunc->GetModuleName(), hFunc->GetName());
+        if (return_code < asSUCCESS){
+            XL_Console::PrintF("AS return code %d in %s:%s ", return_code, hFunc->GetModuleName(), hFunc->GetName());
             return uRetValue;
         }
 
@@ -278,16 +278,16 @@ uint32_t ScriptSystem::ExecuteFunc(SHANDLE hFunc, int32_t nArgCnt, const ScriptA
                     default:
                         XL_Console::PrintF("Bad Argument Type %i", pArgs[i].uType);
                 };
-                if (return_code){
-                    XL_Console::PrintF("AS return code %i in %s:%s ", return_code, hFunc->GetModuleName(), hFunc->GetName());
+                if (return_code < asSUCCESS){
+                    XL_Console::PrintF("AS return code %d in %s:%s ", return_code, hFunc->GetModuleName(), hFunc->GetName());
                     return uRetValue;
                 }
             }
         }
 
         return_code = m_pContext->Execute();
-        if (return_code){
-            XL_Console::PrintF("AS return code %i in %s:%s ", return_code, hFunc->GetModuleName(), hFunc->GetName());
+        if (return_code < asSUCCESS){
+            XL_Console::PrintF("AS return code %d in %s:%s ", return_code, hFunc->GetModuleName(), hFunc->GetName());
             return uRetValue;
         }
 
