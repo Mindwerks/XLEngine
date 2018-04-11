@@ -1,13 +1,27 @@
 language: cpp
 sudo:     required
 dist:     trusty
-os:       linux
+os:
+ - linux
+ - osx
 group:    stable
-install:
-  - sudo apt-get update
-  - sudo apt-get install libdevil-dev libenet-dev libglew-dev libsdl2-dev libegl1-mesa-dev libgles2-mesa-dev -y
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages: [
+      # Dev Tool Chain
+      g++-5, cmake,
+      # Audio & Video
+      libsdl2-dev, libglew-dev, libsdl2-dev, libegl1-mesa-dev, libgles2-mesa-dev,
+      # Additional 3rd party required libraries
+      libdevil-dev libenet-dev,
+    ]
+matrix:
+  allow_failures:
+    - os: osx
+before_script:
+  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CXX="g++-5"; fi
+  - if [[ $TRAVIS_OS_NAME == "osx" ]]; then brew install devil enet glew sdl2; fi
 script:
-  - mkdir build
-  - cd build
-  - cmake ..
-  - make -j4
+  - mkdir build; cd build; cmake ..; make -j4
