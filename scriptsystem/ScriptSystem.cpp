@@ -42,13 +42,6 @@ void _MessageCallback(const asSMessageInfo *msg, void *param)
         type = "INFO";
 
     char szDebugOut[256];
-    sprintf(szDebugOut, "%s (%d, %d) : %s : %s\n", msg->section, msg->row, msg->col, type, msg->message);
-#if PLATFORM_WIN
-    OutputDebugString(szDebugOut);
-#else
-    printf("%s", szDebugOut);
-#endif
-
     sprintf(szDebugOut, "^1ScriptError: %s (%d, %d) : %s : %s\n", msg->section, msg->row, msg->col, type, msg->message);
     XL_Console::Print(szDebugOut);
 }
@@ -257,7 +250,13 @@ uint32_t ScriptSystem::ExecuteFunc(SHANDLE hFunc, int32_t nArgCnt, const ScriptA
     uint32_t uRetValue = 0;
     if ( hFunc )
     {
-        m_pContext->Prepare(hFunc);
+        int32_t return_code = 0;
+        return_code = m_pContext->Prepare(hFunc);
+        if (return_code){
+            XL_Console::PrintF("AS return code %i in %s:%s ", return_code, hFunc->GetModuleName(), hFunc->GetName());
+            return uRetValue;
+        }
+
         if ( nArgCnt > 0 && pArgs )
         {
             for (int32_t i=0; i<nArgCnt; i++)
@@ -265,21 +264,33 @@ uint32_t ScriptSystem::ExecuteFunc(SHANDLE hFunc, int32_t nArgCnt, const ScriptA
                 switch (pArgs[i].uType)
                 {
                     case SC_ARG_uint8_t:
-                        m_pContext->SetArgByte(i, pArgs[i].arguint8_t);
+                        return_code =m_pContext->SetArgByte(i, pArgs[i].arguint8_t);
                         break;
                     case SC_ARG_uint16_t:
-                        m_pContext->SetArgWord(i, pArgs[i].arguint16_t);
+                        return_code = m_pContext->SetArgWord(i, pArgs[i].arguint16_t);
                         break;
                     case SC_ARG_uint32_t:
-                        m_pContext->SetArgDWord(i, pArgs[i].arguint32_t);
+                        return_code = m_pContext->SetArgDWord(i, pArgs[i].arguint32_t);
                         break;
                     case SC_ARG_float:
-                        m_pContext->SetArgFloat(i, pArgs[i].argfloat);
+                        return_code = m_pContext->SetArgFloat(i, pArgs[i].argfloat);
                         break;
+                    default:
+                        XL_Console::PrintF("Bad Argument Type %i", pArgs[i].uType);
                 };
+                if (return_code){
+                    XL_Console::PrintF("AS return code %i in %s:%s ", return_code, hFunc->GetModuleName(), hFunc->GetName());
+                    return uRetValue;
+                }
             }
         }
-        m_pContext->Execute();
+
+        return_code = m_pContext->Execute();
+        if (return_code){
+            XL_Console::PrintF("AS return code %i in %s:%s ", return_code, hFunc->GetModuleName(), hFunc->GetName());
+            return uRetValue;
+        }
+
         if ( bRetValueExpected )
         {
             uRetValue = (uint32_t)m_pContext->GetReturnDWord();
