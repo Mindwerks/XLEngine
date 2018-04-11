@@ -1,0 +1,13 @@
+language: cpp
+sudo:     required
+dist:     trusty
+os:       linux
+group:    stable
+install:
+  - sudo apt-get update
+  - sudo apt-get install libdevil-dev libenet-dev libglew-dev libsdl2-dev -y
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make -j4
