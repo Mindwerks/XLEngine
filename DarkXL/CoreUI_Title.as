@@ -47,9 +47,9 @@ void UI_Title_OnEnter()
 	//Start music playback.
 
 	//buttons	
-	UI_CreateWindow("UIT_StartBtn", "", int(0), (196+offset)*scale, 652, 204*scale, 66, UIWinFlag_None);
-	UI_CreateWindow("UIT_SettingsBtn", "", 0, (409+offset)*scale, 652, 204*scale, 66, UIWinFlag_None);
-	UI_CreateWindow("UIT_ExitBtn", "", 0, (622+offset)*scale, 652, 204*scale, 66, UIWinFlag_None);
+	UI_CreateWindow("UIT_StartBtn", "", 0, int((196+offset)*scale), 652, int(204*scale), 66, UIWinFlag_None);
+	UI_CreateWindow("UIT_SettingsBtn", "", 0, int((409+offset)*scale), 652, int(204*scale), 66, UIWinFlag_None);
+	UI_CreateWindow("UIT_ExitBtn", "", 0, int((622+offset)*scale), 652, int(204*scale), 66, UIWinFlag_None);
 }
 
 void UI_Title_OnExit()
@@ -72,11 +72,11 @@ void UI_Title_OnExit()
 void UI_Title_OnRender(int state)
 {
 	//Render the background.
-	UI_RenderImageRect(DXL_Title_Img0,  (-64+offset)*scale, 0, 768*scale, 820, 1.0, UI_Align_Left,  UI_Align_Bottom);
-	UI_RenderImageRect(DXL_Title_Img1,  ( 64-offset)*scale+extOffs, 0, 384*scale, 820, 1.0, UI_Align_Right, UI_Align_Bottom);
+	UI_RenderImageRect(DXL_Title_Img0,  int((-64+offset)*scale), 0, int(768*scale), 820, 1.0, UI_Align_Left,  UI_Align_Bottom);
+	UI_RenderImageRect(DXL_Title_Img1,  int((64-offset)*scale+extOffs), 0, int(384*scale), 820, 1.0, UI_Align_Right, UI_Align_Bottom);
 	
 	//Render version text.
-	UI_RenderString("Alpha Build 9.50", (850+offset)*scale, 740, 16, 0.8f, 0.8f, 0.8f, 1.0f);
+	UI_RenderString("Alpha Build 9.50", int((850+offset)*scale), 740, 16, 0.8f, 0.8f, 0.8f, 1.0f);
 }
 
 void UI_Title_OnUpdate()
@@ -95,11 +95,11 @@ void UIT_StartBtn_OnRender(int state)
 	UI_SetImageUV_Range(0.0, 0.0, 0.53125, 0.640625);
 	if ( state == 1 )
 	{
-		UI_RenderImageRect(DXL_StartBtn1, (196+offset)*scale, 652, 204*scale, 66, 1.0, UI_Align_Left, UI_Align_Bottom);
+		UI_RenderImageRect(DXL_StartBtn1, int((196+offset)*scale), 652, int(204*scale), 66, 1.0, UI_Align_Left, UI_Align_Bottom);
 	}
 	else
 	{
-		UI_RenderImageRect(DXL_StartBtn0, (196+offset)*scale, 652, 204*scale, 66, 1.0, UI_Align_Left, UI_Align_Bottom);
+		UI_RenderImageRect(DXL_StartBtn0, int((196+offset)*scale), 652, int(204*scale), 66, 1.0, UI_Align_Left, UI_Align_Bottom);
 	}
 	UI_SetImageUV_Range(0.0, 0.0, 1.0, 1.0);
 }
@@ -115,11 +115,11 @@ void UIT_SettingsBtn_OnRender(int state)
 	UI_SetImageUV_Range(0.0, 0.0, 0.53125, 0.640625);
 	if ( state == 1 )
 	{
-		UI_RenderImageRect(DXL_SettingsBtn1, (409+offset)*scale, 652, 204*scale, 66, 1.0, UI_Align_Left, UI_Align_Bottom);
+		UI_RenderImageRect(DXL_SettingsBtn1, int((409+offset)*scale), 652, int(204*scale), 66, 1.0, UI_Align_Left, UI_Align_Bottom);
 	}
 	else
 	{
-		UI_RenderImageRect(DXL_SettingsBtn0, (409+offset)*scale, 652, 204*scale, 66, 1.0, UI_Align_Left, UI_Align_Bottom);
+		UI_RenderImageRect(DXL_SettingsBtn0, int((409+offset)*scale), 652, int(204*scale), 66, 1.0, UI_Align_Left, UI_Align_Bottom);
 	}
 	UI_SetImageUV_Range(0.0, 0.0, 1.0, 1.0);
 }
@@ -135,11 +135,11 @@ void UIT_ExitBtn_OnRender(int state)
 	UI_SetImageUV_Range(0.0, 0.0, 0.53125, 0.640625);
 	if ( state == 1 )
 	{
-		UI_RenderImageRect(DXL_ExitBtn1, (622+offset)*scale, 652, 204*scale, 66, 1.0, UI_Align_Left, UI_Align_Bottom);
+		UI_RenderImageRect(DXL_ExitBtn1, int((622+offset)*scale), 652, int(204*scale), 66, 1.0, UI_Align_Left, UI_Align_Bottom);
 	}
 	else
 	{
-		UI_RenderImageRect(DXL_ExitBtn0, (622+offset)*scale, 652, 204*scale, 66, 1.0, UI_Align_Left, UI_Align_Bottom);
+		UI_RenderImageRect(DXL_ExitBtn0, int((622+offset)*scale), 652, int(204*scale), 66, 1.0, UI_Align_Left, UI_Align_Bottom);
 	}
 	UI_SetImageUV_Range(0.0, 0.0, 1.0, 1.0);
 }
