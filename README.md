@@ -5,21 +5,36 @@
 * have cmake place images, as and other things into the build directory
 
 ## Dependencies
-* DevIL (libdevil-dev) Cross-platform image loading and manipulation toolkit
-* enet (libenet-dev) Thin network communication layer on top of UDP
-* GLEW (libglew-dev) OpenGL Extension Wrangler Library
-* SDL2 (libsdl2-dev) Cross-platform low-level I/O access
+* DevIL Cross-platform image loading and manipulation toolkit
+* enet Thin network communication layer on top of UDP
+* GLEW OpenGL Extension Wrangler Library
+* SDL2 Cross-platform low-level I/O access
 * cmake
 
-Visual Studio users: it is recommended you build the ENet library yourself since
-the .libs provided with the download are old and cause a SAFESEH (safe exception
-handler) error when linking (tested in Visual Studio 2017). (TODO: build script?)
+### Install the dependencies on Linux:
+```bash
+sudo apt install libdevil-dev libenet-dev libglew-dev libsdl2-dev
+```
+
+### Install the dependencies on Windows with [vcpkg](https://docs.microsoft.com/en-us/cpp/vcpkg):
+```bash
+vcpkg install devil enet glew sdl2
+```
 
 ## Building
 We use CMake as the cross-platform build system.
+
+### Building on Linux:
 ```bash
-git checkout https://github.com/Mindwerks/XLEngine.git;
+git checkout https://github.com/Mindwerks/XLEngine.git
 mkdir build; cd build; cmake ../XLEngine; make -j4
+```
+
+### Building on Windows:
+(Replace ```< Location of vcpkg >``` with the location where you installed vcpkg)
+```bash
+git checkout https://github.com/Mindwerks/XLEngine.git
+mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=< Location of vcpkg >\scripts\buildsystems\vcpkg.cmake ../XLEngine
 ```
 
 ## Runtime Configuration
