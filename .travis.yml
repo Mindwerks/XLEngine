@@ -20,6 +20,7 @@ addons:
 matrix:
   allow_failures:
     - os: osx
-install: export CXX="g++-5"
+before_script:
+  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CXX="g++-5"; fi
 script:
   - mkdir build; cd build; cmake ..; make -j4
