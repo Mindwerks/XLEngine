@@ -194,20 +194,28 @@ int main(int argc, char **argv)
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
-                    if(event.button.button == 0)
+                    if((event.button.button&SDL_BUTTON_LMASK))
                         Input::SetKeyDown(XL_LBUTTON);
-                    else if(event.button.button == 1)
+                    else if((event.button.button&SDL_BUTTON_RMASK))
                         Input::SetKeyDown(XL_RBUTTON);
-                    else
-                        Input::SetKeyDown(XL_MBUTTON+event.button.button-2);
+                    else if((event.button.button&SDL_BUTTON_MMASK))
+                        Input::SetKeyDown(XL_MBUTTON);
+                    else if((event.button.button&SDL_BUTTON_X1MASK))
+                        Input::SetKeyDown(XL_XBUTTON1);
+                    else if((event.button.button&SDL_BUTTON_X2MASK))
+                        Input::SetKeyDown(XL_XBUTTON2);
                     break;
                 case SDL_MOUSEBUTTONUP:
-                    if(event.button.button == 0)
+                    if((event.button.button&SDL_BUTTON_LMASK))
                         Input::SetKeyUp(XL_LBUTTON);
-                    else if(event.button.button == 1)
+                    else if((event.button.button&SDL_BUTTON_RMASK))
                         Input::SetKeyUp(XL_RBUTTON);
-                    else
-                        Input::SetKeyUp(XL_MBUTTON+event.button.button-2);
+                    else if((event.button.button&SDL_BUTTON_MMASK))
+                        Input::SetKeyUp(XL_MBUTTON);
+                    else if((event.button.button&SDL_BUTTON_X1MASK))
+                        Input::SetKeyUp(XL_XBUTTON1);
+                    else if((event.button.button&SDL_BUTTON_X2MASK))
+                        Input::SetKeyUp(XL_XBUTTON2);
                     break;
 
                 case SDL_MOUSEMOTION:
