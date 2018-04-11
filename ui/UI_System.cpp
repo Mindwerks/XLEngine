@@ -1340,7 +1340,8 @@ void UI_Window::Draw(int x, int y)
         arg[1].arguint32_t = m_x+x;
         arg[2].uType  = SC_ARG_uint32_t;
         arg[2].arguint32_t = m_y+y;
-        ScriptSystem::ExecuteFunc( m_hOnRender, 3, arg );
+        // FIXME: The script only takes one argument, even though we're preparing three?
+        ScriptSystem::ExecuteFunc( m_hOnRender, 1, arg );
     }
     else    //basic window drawing.
     {
