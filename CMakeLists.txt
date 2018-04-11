@@ -372,6 +372,16 @@ elseif(NOT WIN32)
     set_target_properties(XLEngine PROPERTIES INSTALL_RPATH "$ORIGIN")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
+
+# Copy required resources to the build directory
+add_custom_command(
+    TARGET XLEngine POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${XLEngine_SOURCE_DIR}/XLEngine.conf $<TARGET_FILE_DIR:XLEngine>/
+    COMMAND ${CMAKE_COMMAND} -E copy_directory    ${XLEngine_SOURCE_DIR}/resources     $<TARGET_FILE_DIR:XLEngine>/
+    COMMENT "Copy required resources to the build directory"
+    VERBATIM
+)
+
 # XL Engine shared library sources.
 set(bloodxl_sources
     ${src_root}/BloodXL/BloodXL_Game.h
