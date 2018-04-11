@@ -2,6 +2,7 @@
 #define LOCATION_DAGGERFALL_H
 
 #include "../CommonTypes.h"
+#include <memory>
 #include <string>
 #include <map>
 
@@ -44,14 +45,14 @@ public:
     int16_t   m_locCat;
     bool  m_bLoaded;
 
-    LocName *m_pBlockNames;
+    std::unique_ptr<LocName[]> m_pBlockNames;
     //dungeon data...
     int16_t m_dungeonBlockCnt;
     int16_t m_startDungeonBlock;    //start point.
-    DungeonBlock *m_pDungeonBlocks;
+    std::unique_ptr<DungeonBlock[]> m_pDungeonBlocks;
 
     //filled when loaded.
-    uint8_t *m_pTexData;
+    std::unique_ptr<uint8_t[]> m_pTexData;
 };
 
 class Region_Daggerfall
@@ -66,7 +67,7 @@ public:
 
 public:
     uint32_t m_uLocationCount;
-    Location_Daggerfall *m_pLocations;
+    std::unique_ptr<Location_Daggerfall[]> m_pLocations;
 };
 
 class WorldMap
@@ -92,7 +93,7 @@ private:
 
 public:
     static uint32_t m_uRegionCount;
-    static Region_Daggerfall *m_pRegions;
+    static std::unique_ptr<Region_Daggerfall[]> m_pRegions;
     static std::map<uint64_t, Location_Daggerfall *> m_MapLoc;
     static std::map<uint64_t, WorldCell *> m_MapCell;
     static std::map<std::string, Location_Daggerfall *> m_MapNames;

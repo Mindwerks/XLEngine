@@ -12,7 +12,7 @@
 #define CACHED_FILE_VERSION 0x01
 
 uint32_t WorldMap::m_uRegionCount;
-Region_Daggerfall *WorldMap::m_pRegions;
+std::unique_ptr<Region_Daggerfall[]> WorldMap::m_pRegions;
 std::map<uint64_t, Location_Daggerfall *> WorldMap::m_MapLoc;
 std::map<uint64_t, WorldCell *> WorldMap::m_MapCell;
 std::map<std::string, Location_Daggerfall *> WorldMap::m_MapNames;
@@ -25,18 +25,12 @@ bool WorldMap::m_bMapLoaded = false;
 Location_Daggerfall::Location_Daggerfall()
 {
     m_bLoaded           = false;
-    m_pBlockNames       = nullptr;
-    m_pDungeonBlocks    = nullptr;
-    m_pTexData          = nullptr;
     m_dungeonBlockCnt   = 0;
     m_startDungeonBlock = 0;
 }
 
 Location_Daggerfall::~Location_Daggerfall()
 {
-    SafeDeleteArr(m_pBlockNames);
-    SafeDeleteArr(m_pDungeonBlocks);
-    SafeDeleteArr(m_pTexData);
 }
 
 //Save and Load cached data.
@@ -89,7 +83,7 @@ bool Location_Daggerfall::Load(FILE *f, std::map<uint64_t, Location_Daggerfall *
     fread(&m_locType,     1, sizeof(int16_t), f);
     fread(&m_locCat,      1, sizeof(int16_t), f);
 
-    m_pBlockNames = new Location_Daggerfall::LocName[m_BlockWidth*m_BlockHeight];
+    m_pBlockNames.reset(new Location_Daggerfall::LocName[m_BlockWidth*m_BlockHeight]);
     for (int b=0; b<m_BlockWidth*m_BlockHeight; b++)
     {
         fread(m_pBlockNames[b].szName, 1, 32, f);
@@ -99,7 +93,7 @@ bool Location_Daggerfall::Load(FILE *f, std::map<uint64_t, Location_Daggerfall *
     fread(&m_dungeonBlockCnt,   1, sizeof(int16_t), f);
     fread(&m_startDungeonBlock, 1, sizeof(int16_t), f);
 
-    m_pDungeonBlocks = new DungeonBlock[m_dungeonBlockCnt];
+    m_pDungeonBlocks.reset(new DungeonBlock[m_dungeonBlockCnt]);
     for (int b=0; b<m_dungeonBlockCnt; b++)
     {
         fread( m_pDungeonBlocks[b].szName, 1, 16, f);
@@ -121,12 +115,10 @@ bool Location_Daggerfall::Load(FILE *f, std::map<uint64_t, Location_Daggerfall *
 ///////////////////////////////////////////////////////
 Region_Daggerfall::Region_Daggerfall()
 {
-    m_pLocations = nullptr;
 }
 
 Region_Daggerfall::~Region_Daggerfall()
 {
-    SafeDeleteArr(m_pLocations);
 }
 
 //Save and load cached data.
@@ -142,7 +134,7 @@ void Region_Daggerfall::Save(FILE *f)
 bool Region_Daggerfall::Load(FILE *f, std::map<uint64_t, Location_Daggerfall *>& mapLoc, std::map<std::string, Location_Daggerfall *>& mapNames)
 {
     fread(&m_uLocationCount, 1, sizeof(uint32_t), f);
-    m_pLocations = new Location_Daggerfall[ m_uLocationCount ];
+    m_pLocations.reset(new Location_Daggerfall[m_uLocationCount]);
     for (uint32_t l=0; l<m_uLocationCount; l++)
     {
         m_pLocations[l].Load(f, mapLoc, mapNames);
@@ -157,12 +149,13 @@ bool Region_Daggerfall::Load(FILE *f, std::map<uint64_t, Location_Daggerfall *>&
 ///////////////////////////////////////////////////////
 void WorldMap::Init()
 {
-    m_pRegions = nullptr;
 }
 
 void WorldMap::Destroy()
 {
-    SafeDeleteArr(m_pRegions);
+    m_bMapLoaded = false;
+    m_uRegionCount = 0;
+    m_pRegions = nullptr;
 }
 
 //load cached data from disk if present.
@@ -187,7 +180,7 @@ bool WorldMap::Load()
             return Cache();
         }
         fread(&m_uRegionCount, 1, sizeof(uint32_t), f);
-        m_pRegions = new Region_Daggerfall[ m_uRegionCount ];
+        m_pRegions.reset(new Region_Daggerfall[m_uRegionCount]);
 
         for (uint32_t r=0; r<m_uRegionCount; r++)
         {
@@ -370,14 +363,14 @@ bool WorldMap::Cache()
 
     //Load global data.
     m_uRegionCount = 62;
-    m_pRegions = new Region_Daggerfall[ m_uRegionCount ];
+    m_pRegions.reset(new Region_Daggerfall[m_uRegionCount]);
     for (int r=0; r<62; r++)
     {
         sprintf(szFileName, "MAPNAMES.0%02d", r);
         if ( ArchiveManager::GameFile_Open(ARCHIVETYPE_BSA, "MAPS.BSA", szFileName) )
         {
             m_pRegions[r].m_uLocationCount = 0;
-            m_pRegions[r].m_pLocations     = nullptr;
+            m_pRegions[r].m_pLocations = nullptr;
 
             uint32_t uLength = ArchiveManager::GameFile_GetLength();
             if ( uLength == 0 )
@@ -390,7 +383,8 @@ bool WorldMap::Cache()
             ArchiveManager::GameFile_Close();
 
             m_pRegions[r].m_uLocationCount = *((unsigned int *)pData);
-            m_pRegions[r].m_pLocations     = new Location_Daggerfall[ m_pRegions[r].m_uLocationCount ];
+            m_pRegions[r].m_pLocations.reset(
+                new Location_Daggerfall[m_pRegions[r].m_uLocationCount]);
             TotalLocCount += m_pRegions[r].m_uLocationCount;
         }
     }
@@ -492,7 +486,8 @@ bool WorldMap::Cache()
                         uint8_t *BlockFileChar = (uint8_t *)&pData[index]; index += 64;
                         m_pRegions[r].m_pLocations[i].m_BlockWidth  = BlockWidth;
                         m_pRegions[r].m_pLocations[i].m_BlockHeight = BlockHeight;
-                        m_pRegions[r].m_pLocations[i].m_pBlockNames = new Location_Daggerfall::LocName[BlockWidth*BlockHeight];
+                        m_pRegions[r].m_pLocations[i].m_pBlockNames.reset(
+                            new Location_Daggerfall::LocName[BlockWidth*BlockHeight]);
                         char szName[64];
                         for (int by=0; by<BlockHeight; by++)
                         {
@@ -620,7 +615,8 @@ bool WorldMap::Cache()
 
                         pCurLoc->m_dungeonBlockCnt = blockCnt;
                         pCurLoc->m_startDungeonBlock = 0;
-                        pCurLoc->m_pDungeonBlocks = new Location_Daggerfall::DungeonBlock[blockCnt];
+                        pCurLoc->m_pDungeonBlocks.reset(
+                            new Location_Daggerfall::DungeonBlock[blockCnt]);
                         bool bStartFound = false;
                         for (uint32_t b=0; b<blockCnt; b++)
                         {

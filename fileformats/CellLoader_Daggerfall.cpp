@@ -249,10 +249,9 @@ WorldCell *CellLoader_Daggerfall::LoadFromLocation( IDriver3D *pDriver, World *p
         int32_t wy_map = worldY_Orig>>3;
         float fTileHeight = Math::Max( pTerrain->GetHeight_MapScale(wx_map, wy_map), 16.0f );
         int32_t worldY = worldY_Orig;
-        if ( pLocation->m_pTexData == nullptr )
-        {
-             pLocation->m_pTexData = new uint8_t[256*pLocation->m_BlockWidth*pLocation->m_BlockHeight];
-        }
+        if(!pLocation->m_pTexData)
+             pLocation->m_pTexData.reset(
+                 new uint8_t[256*pLocation->m_BlockWidth*pLocation->m_BlockHeight]);
         for (int y=0; y<pLocation->m_BlockHeight; y++, worldY++)
         {
             int32_t worldX = worldX_Orig;
