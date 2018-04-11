@@ -5,6 +5,8 @@
 #include "../world/World.h"
 #include "../world/Terrain.h"
 
+#include <algorithm>
+
 std::vector<Object *> ObjectManager::m_ObjectPool;
 std::vector<Object *> ObjectManager::m_FreeObjects;
 std::vector<Object *> ObjectManager::m_ActiveObjects;
@@ -176,11 +178,8 @@ uint32_t ObjectManager::CreateObjectID(const char *pszName, int32_t nSector)
 
 void ObjectManager::MoveDynamicObjects(const Vector3& vMove)
 {
-    std::vector<Object *>::iterator iObj = m_ActiveObjects.begin();
-    std::vector<Object *>::iterator eObj = m_ActiveObjects.end();
-    for (; iObj != eObj; ++iObj)
+    for (Object *pObj : m_ActiveObjects)
     {
-        Object *pObj = *iObj;
         if ( pObj->IsFlagSet( Object::OBJFLAGS_DYNAMIC ) )
         {
             //Update the object location.
@@ -207,17 +206,13 @@ void ObjectManager::MoveDynamicObjects(const Vector3& vMove)
 
 Object *ObjectManager::FindObject(const std::string& sName)
 {
-    std::vector<Object *>::iterator iObj = m_ActiveObjects.begin();
-    std::vector<Object *>::iterator eObj = m_ActiveObjects.end();
-    for (; iObj != eObj; ++iObj)
+    const auto iter = std::find_if(m_ActiveObjects.begin(), m_ActiveObjects.end(),
+        [&sName](Object *pObj)
     {
-        Object *pObj = *iObj;
-        if ( pObj->GetName() == sName )
-        {
-            return pObj;
-        }
-    }
-    return nullptr;
+        return pObj->GetName() == sName;
+    });
+
+    return (iter != m_ActiveObjects.end()) ? *iter : nullptr;
 }
 
 Object *ObjectManager::GetObjectFromID(uint32_t uID)
@@ -262,11 +257,8 @@ void ObjectManager::FreeAllObjects()
 {
     m_FreeObjects.clear();
     uint32_t uStartObj = m_uReservedCount;
-    std::vector<Object *>::iterator iBank = m_ObjectPool.begin();
-    std::vector<Object *>::iterator eBank = m_ObjectPool.end();
-    for (; iBank != eBank; ++iBank)
+    for (Object *pool : m_ObjectPool)
     {
-        Object *pool = *iBank;
         for (uint32_t i=uStartObj; i<OBJCOUNT_PER_BANK; i++)
         {
             pool[i].Reset();
@@ -286,11 +278,9 @@ void ObjectManager::FreeAllObjects()
 
 void ObjectManager::Update()
 {
-    std::vector<Object *>::iterator iObj = m_ActiveObjects.begin();
-    std::vector<Object *>::iterator eObj = m_ActiveObjects.end();
-    for (; iObj != eObj; ++iObj)
+    for (Object *obj : m_ActiveObjects)
     {
-        (*iObj)->Update();
+        obj->Update();
     }
 }
 

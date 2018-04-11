@@ -74,11 +74,8 @@ void World::Collide(Vector3 *p0, Vector3 *p1, uint32_t& uSector, float fRadius, 
         int32_t camY = m_pCamera->GetWorldPosY()>>3;
         int32_t cx, cy;
 
-        std::vector<WorldCell *>::iterator iCell = m_WorldCells.begin();
-        std::vector<WorldCell *>::iterator eCell = m_WorldCells.end();
-        for (; iCell != eCell; ++iCell)
+        for (WorldCell *pCell : m_WorldCells)
         {
-            WorldCell *pCell = *iCell;
             pCell->GetWorldPos(cx, cy);
 
             //only try to collide if in the same world cell or neighboring cell.
@@ -119,11 +116,8 @@ void World::RayCastAndActivate(Vector3 *p0, Vector3 *p1, uint32_t& uSector)
         int32_t camY = m_pCamera->GetWorldPosY()>>3;
         int32_t cx, cy;
 
-        std::vector<WorldCell *>::iterator iCell = m_WorldCells.begin();
-        std::vector<WorldCell *>::iterator eCell = m_WorldCells.end();
-        for (; iCell != eCell; ++iCell)
+        for (WorldCell *pCell : m_WorldCells)
         {
-            WorldCell *pCell = *iCell;
             pCell->GetWorldPos(cx, cy);
 
             //only try to collide if in the same world cell or neighboring cell.
@@ -148,11 +142,8 @@ bool World::Raycast(Vector3 *p0, Vector3 *p1, Vector3 *pInter)
             int32_t camY = m_pCamera->GetWorldPosY()>>3;
             int32_t cx, cy;
 
-            std::vector<WorldCell *>::iterator iCell = m_WorldCells.begin();
-            std::vector<WorldCell *>::iterator eCell = m_WorldCells.end();
-            for (; iCell != eCell; ++iCell)
+            for (WorldCell *pCell : m_WorldCells)
             {
-                WorldCell *pCell = *iCell;
                 pCell->GetWorldPos(cx, cy);
 
                 //only try to collide if in the same world cell or neighboring cell.
@@ -198,12 +189,10 @@ bool World::Update(float dt, IDriver3D *pDriver)
     if ( !player || !m_pCamera )
         return false;
 
-    std::vector<WorldCell *>::iterator iCell = m_WorldCells.begin();
-    std::vector<WorldCell *>::iterator eCell = m_WorldCells.end();
-    for (; iCell != eCell; ++iCell)
+    for (WorldCell *pCell : m_WorldCells)
     {
         //add culling, won't affect games that only have a single cell..
-        (*iCell)->Update( m_pCamera, dt, m_uSectorTypeVis );
+        pCell->Update( m_pCamera, dt, m_uSectorTypeVis );
     }
     if ( (m_uSectorTypeVis&SECTOR_TYPE_EXTERIOR) && m_pTerrain )
     {
@@ -461,12 +450,10 @@ void World::Render(IDriver3D *pDriver)
         m_pTerrain->Render( m_pCamera );
     }
 
-    std::vector<WorldCell *>::iterator iCell = m_WorldCells.begin();
-    std::vector<WorldCell *>::iterator eCell = m_WorldCells.end();
-    for (; iCell != eCell; ++iCell)
+    for (WorldCell *pCell : m_WorldCells)
     {
         //add culling, won't affect games that only have a single cell..
-        (*iCell)->Render( pDriver, m_pCamera, m_uSectorTypeVis );
+        pCell->Render( pDriver, m_pCamera, m_uSectorTypeVis );
     }
 }
 
@@ -483,11 +470,9 @@ void World::CC_LockCamera(const std::vector<std::string>& args, void *pUserData)
     }
 
     Camera::EnableCameraUpdating( !bLock );
-    std::vector<WorldCell *>::iterator iCell = pThis->m_WorldCells.begin();
-    std::vector<WorldCell *>::iterator eCell = pThis->m_WorldCells.end();
-    for (; iCell != eCell; ++iCell)
+    for (WorldCell *pCell : pThis->m_WorldCells)
     {
         //add culling, won't affect games that only have a single cell..
-        (*iCell)->LockCamera( pThis->m_pCamera, bLock );
+        pCell->LockCamera( pThis->m_pCamera, bLock );
     }
 }

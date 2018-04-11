@@ -579,12 +579,8 @@ bool LFD_Film::Update()
         {
             m_Commands[m_nTime].bActivated = true;
 
-            std::vector<Command *>::iterator iter = m_Commands[m_nTime].commands.begin();
-            std::vector<Command *>::iterator end  = m_Commands[m_nTime].commands.end();
-
-            for (; iter!=end; ++iter)
+            for (Command *pCmd : m_Commands[m_nTime].commands)
             {
-                Command *pCmd = *iter;
                 if ( pCmd->cmd == CMD_SWITCH )
                 {
                     Graphic *pGraphic = (Graphic *)pCmd->pData;
@@ -704,12 +700,8 @@ bool LFD_Film::Update()
         {
             if ( !bFilmFinished )
             {
-                std::vector<Graphic *>::iterator iter = m_Graphics.begin();
-                std::vector<Graphic *>::iterator end  = m_Graphics.end();
-                for (; iter!=end; ++iter)
+                for (Graphic *pGraphic : m_Graphics)
                 {
-                    Graphic *pGraphic = *iter;
-
                     if ( pGraphic->nAnimate > 0)
                     {
                         pGraphic->nFrame++;
@@ -968,12 +960,8 @@ void LFD_Film::Render(float fDeltaTime)
     }
 
     //render all the graphics that are visible...
-    std::vector<Graphic *>::iterator iter = m_Graphics.begin();
-    std::vector<Graphic *>::iterator end  = m_Graphics.end();
-    for (; iter!=end; ++iter)
+    for (Graphic *pGraphic : m_Graphics)
     {
-        Graphic *pGraphic = *iter;
-
         if ( pGraphic->bVisible )
         {
             AddGraphicToQueue(pGraphic, pGraphic->nLayer+100);

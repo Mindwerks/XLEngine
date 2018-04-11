@@ -130,12 +130,8 @@ void RenderQue::Render()
         m_pDriver->EnableCulling(true);
         m_pDriver->SetWorldMatrix(nullptr, 0, 0);
         //go through the list.
-        std::vector<MaterialEntry *>::iterator iEntry = m_apRenderBuckets[RBUCKET_OPAQUE].begin();
-        std::vector<MaterialEntry *>::iterator eEntry = m_apRenderBuckets[RBUCKET_OPAQUE].end();
-        for (; iEntry != eEntry; ++iEntry)
+        for (const MaterialEntry *pEntry : m_apRenderBuckets[RBUCKET_OPAQUE])
         {
-            const MaterialEntry *pEntry = *iEntry;
-
             //Set the world matrix.
             m_pDriver->SetWorldMatrix(pEntry->mWorld, pEntry->worldX, pEntry->worldY);
             //Set the texture.

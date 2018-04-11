@@ -703,11 +703,9 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
         {
             bool bValidNode = true;
             //is this point inside a mesh?
-            std::vector<uint32_t>::iterator iObj = pSector->m_Objects.begin();
-            std::vector<uint32_t>::iterator eObj = pSector->m_Objects.end();
-            for (; iObj != eObj; ++iObj)
+            for (const uint32_t objID : pSector->m_Objects)
             {
-                Object *pObj = ObjectManager::GetObjectFromID( *iObj );
+                Object *pObj = ObjectManager::GetObjectFromID(objID);
                 Vector3 vMin, vMax;
                 pObj->GetWorldBounds(vMin, vMax);
                 //is this node inside an object? If so, it is invalid...
@@ -1474,12 +1472,10 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
     }
 
     //now resolve action records.
-    std::vector<uint32_t>::iterator iObj = pSector->m_Objects.begin();
-    std::vector<uint32_t>::iterator eObj = pSector->m_Objects.end();
-    int idx=0;
-    for (; iObj != eObj; ++iObj)
+    int idx = 0;
+    for (const uint32_t objID : pSector->m_Objects)
     {
-        Object *pObj = ObjectManager::GetObjectFromID( *iObj );
+        Object *pObj = ObjectManager::GetObjectFromID(objID);
         assert(pObj);
 
         //resolve parent/child relationship.
@@ -1488,18 +1484,17 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
             MeshAction *pGameDataParent = (MeshAction *)pObj->GetGameData();
 
             int idxTarget = 0;
-            std::vector<uint32_t>::iterator iObjTarget = pSector->m_Objects.begin();
-            for (; iObjTarget != eObj; ++iObjTarget)
+            for (const uint32_t objTargetID : pSector->m_Objects)
             {
                 if ( objRecordID[idxTarget] == objTarget[idx] )
                 {
-                    Object *pObjTarget = ObjectManager::GetObjectFromID( *iObjTarget );
+                    Object *pObjTarget = ObjectManager::GetObjectFromID(objTargetID);
                     MeshAction *pGameDataTarget = (MeshAction *)pObjTarget->GetGameData();
 
                     if ( pGameDataTarget )
                     {
-                        pGameDataTarget->nParentID = *iObj;
-                        pGameDataParent->nTargetID = *iObjTarget;
+                        pGameDataTarget->nParentID = objID;
+                        pGameDataParent->nTargetID = objTargetID;
                     }
 
                     break;
@@ -1511,10 +1506,9 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
     }
 
     //Initialize the objects.
-    iObj = pSector->m_Objects.begin();
-    for (; iObj != eObj; ++iObj)
+    for (const uint32_t objID : pSector->m_Objects)
     {
-        Object *pObj = ObjectManager::GetObjectFromID( *iObj );
+        Object *pObj = ObjectManager::GetObjectFromID(objID);
         assert(pObj);
 
         //Finish the object initialization. Setup logics and such.
@@ -1578,10 +1572,9 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
 
     //assign lights to objects.
     const std::vector<LightObject *>& lightList = pSector->GetLightList();
-    iObj = pSector->m_Objects.begin();
-    for (; iObj != eObj; ++iObj)
+    for (const uint32_t objID : pSector->m_Objects)
     {
-        Object *pObj = ObjectManager::GetObjectFromID( *iObj );
+        Object *pObj = ObjectManager::GetObjectFromID(objID);
         assert(pObj);
 
         Vector3 vCen;
