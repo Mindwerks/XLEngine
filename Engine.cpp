@@ -5,7 +5,7 @@
 #include "render/Driver3D_Soft.h"
 #if PLATFORM_WIN
     #include "render/Win/Driver3D_OGL_Win.h"
-#elif PLATFORM_LINUX
+#else
     #include "render/linux/Driver3D_OGL_Linux.h"
     #include <memory.h>
     #include <malloc.h>

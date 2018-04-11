@@ -36,7 +36,7 @@
 #endif
 
 
-#elif PLATFORM_LINUX
+#else
 
 
 #define stricmp strcasecmp
