@@ -61,12 +61,8 @@ void Input::SetKeyDown(int32_t key)
     key = s_OS_KeyMapping[key];
 
     //now fire off any callbacks...
-    std::vector<KeyDownCB_t *>::iterator iter = m_KeyDownCB.begin();
-    std::vector<KeyDownCB_t *>::iterator end  = m_KeyDownCB.end();
-    for (; iter != end; ++iter)
+    for (KeyDownCB_t *pKeyDownCB : m_KeyDownCB)
     {
-        KeyDownCB_t *pKeyDownCB = *iter;
-
         bool bFireCB = true;
         if ( (pKeyDownCB->nFlags&KDCb_FLAGS_NOREPEAT) && (m_aKeyState[key] != 0) )
              bFireCB = false;
@@ -95,11 +91,8 @@ void Input::SetCharacterDown(char c)
     if ( c >= 32 && c < 127 )
     {
         //fire off any "character" callbacks.
-        std::vector<KeyDownCB_t *>::iterator iter = m_CharDownCB.begin();
-        std::vector<KeyDownCB_t *>::iterator end  = m_CharDownCB.end();
-        for (; iter != end; ++iter)
+        for (KeyDownCB_t *pCharDownCB : m_CharDownCB)
         {
-            KeyDownCB_t *pCharDownCB = *iter;
             if ( pCharDownCB )
             {
                 pCharDownCB->pCB(c);

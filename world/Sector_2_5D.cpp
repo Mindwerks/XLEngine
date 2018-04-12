@@ -2024,11 +2024,8 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
     fI = fOO255 * (float)shade;
 
     //now add objects to the list...
-    std::vector<uint32_t>::iterator iObj = pCurSec->m_Objects.begin();
-    std::vector<uint32_t>::iterator eObj = pCurSec->m_Objects.end();
-    for (; iObj != eObj; ++iObj)
+    for (const uint32_t uObjID : pCurSec->m_Objects)
     {
-        uint32_t uObjID = *iObj;
         Object *pObj = ObjectManager::GetObjectFromID(uObjID);
         if ( pObj->GetRenderKey() != _uRenderKey )
         {

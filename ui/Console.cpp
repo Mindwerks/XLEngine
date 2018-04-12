@@ -132,14 +132,13 @@ void Console::Print(const std::string& text)
 void Console::PrintCommandHelp(const std::string& cmd)
 {
     bool bCmdFound = false;
-    std::list<ConsoleItem>::const_iterator iter;
-    for (iter = m_ItemList.begin(); iter != m_ItemList.end(); ++iter)
+    for (const ConsoleItem &item : m_ItemList)
     {
-        if ( (*iter).name == cmd )
+        if ( item.name == cmd )
         {
             Print("^8---------------------------------------------------");
-            Print("^8" + (*iter).name + ": ");
-            Print("^2" + (*iter).help);
+            Print("^8" + item.name + ": ");
+            Print("^2" + item.help);
             Print("^8---------------------------------------------------");
             bCmdFound = true;
             break;
@@ -473,15 +472,14 @@ void Console::PrintCommands(const char *pszText/*=nullptr*/)
             l--;
     }
 
-    std::list<ConsoleItem>::const_iterator iter;
-    for (iter = m_ItemList.begin(); iter != m_ItemList.end(); ++iter)
+    for (const ConsoleItem &item : m_ItemList)
     {
         if ( pszText != nullptr && l > 0 )
         {
-            if ( strnicmp(pszText, (*iter).name.c_str(), l) != 0 )
+            if ( strnicmp(pszText, item.name.c_str(), l) != 0 )
                 continue;
         }
-        sprintf(szCmdText, "^7%s", (*iter).name.c_str());
+        sprintf(szCmdText, "^7%s", item.name.c_str());
         Print(szCmdText);
     }
 }
@@ -491,7 +489,6 @@ bool Console::ParseCommandLine()
     std::ostringstream out;
     std::string::size_type index = 0;
     std::vector<std::string> arguments;
-    std::list<ConsoleItem>::const_iterator iter;
 
     //add to text buffer - command echo.
     if ( m_bEchoCommands )
@@ -534,23 +531,23 @@ bool Console::ParseCommandLine()
     }
 
     //execute (must look for a command or variable).
-    for (iter = m_ItemList.begin(); iter != m_ItemList.end(); ++iter)
+    for (const ConsoleItem &item : m_ItemList)
     {
-        if ( iter->name == arguments[0] )
+        if ( item.name == arguments[0] )
         {
-            switch (iter->type)
+            switch (item.type)
             {
                 case CTYPE_UCHAR:
                     if ( arguments.size() > 2) return false;
                     else if ( arguments.size() == 1)
                     {
                         out.str("");    //clear stringstream
-                        out << (*iter).name << " = " << *((unsigned char *)(*iter).varPtr);
+                        out << item.name << " = " << *((unsigned char *)item.varPtr);
                         Print(out.str());
                     }
                     else
                     {
-                        *((unsigned char *)(*iter).varPtr) = (unsigned char)atoi(arguments[1].c_str());
+                        *((unsigned char *)item.varPtr) = (unsigned char)atoi(arguments[1].c_str());
                     }
                     return true;
                     break;
@@ -559,12 +556,12 @@ bool Console::ParseCommandLine()
                     else if ( arguments.size() == 1)
                     {
                         out.str("");    //clear stringstream
-                        out << (*iter).name << " = " << *((char *)(*iter).varPtr);
+                        out << item.name << " = " << *((char *)item.varPtr);
                         Print(out.str());
                     }
                     else
                     {
-                        *((char *)(*iter).varPtr) = (char)atoi(arguments[1].c_str());
+                        *((char *)item.varPtr) = (char)atoi(arguments[1].c_str());
                     }
                     return true;
                     break;
@@ -573,12 +570,12 @@ bool Console::ParseCommandLine()
                     else if ( arguments.size() == 1)
                     {
                         out.str("");    //clear stringstream
-                        out << (*iter).name << " = " << *((uint32_t *)(*iter).varPtr);
+                        out << item.name << " = " << *((uint32_t *)item.varPtr);
                         Print(out.str());
                     }
                     else
                     {
-                        *((uint32_t *)(*iter).varPtr) = (uint32_t)atoi(arguments[1].c_str());
+                        *((uint32_t *)item.varPtr) = (uint32_t)atoi(arguments[1].c_str());
                     }
                     return true;
                     break;
@@ -587,12 +584,12 @@ bool Console::ParseCommandLine()
                     else if ( arguments.size() == 1)
                     {
                         out.str("");    //clear stringstream
-                        out << (*iter).name << " = " << *((int32_t *)(*iter).varPtr);
+                        out << item.name << " = " << *((int32_t *)item.varPtr);
                         Print(out.str());
                     }
                     else
                     {
-                        *((int32_t *)(*iter).varPtr) = (int32_t)atoi(arguments[1].c_str());
+                        *((int32_t *)item.varPtr) = (int32_t)atoi(arguments[1].c_str());
                     }
                     return true;
                     break;
@@ -601,12 +598,12 @@ bool Console::ParseCommandLine()
                     else if ( arguments.size() == 1)
                     {
                         out.str("");    //clear stringstream
-                        out << (*iter).name << " = " << *((float *)(*iter).varPtr);
+                        out << item.name << " = " << *((float *)item.varPtr);
                         Print(out.str());
                     }
                     else
                     {
-                        *((float *)(*iter).varPtr) = (float)atof(arguments[1].c_str());
+                        *((float *)item.varPtr) = (float)atof(arguments[1].c_str());
                     }
                     return true;
                     break;
@@ -615,12 +612,12 @@ bool Console::ParseCommandLine()
                     else if ( arguments.size() == 1)
                     {
                         out.str("");    //clear stringstream
-                        out << (*iter).name << " = " << ( *((bool *)(*iter).varPtr) ? "1" : "0" );
+                        out << item.name << " = " << ( *((bool *)item.varPtr) ? "1" : "0" );
                         Print(out.str());
                     }
                     else
                     {
-                        *((bool *)(*iter).varPtr) = atoi(arguments[1].c_str()) ? true : false;
+                        *((bool *)item.varPtr) = atoi(arguments[1].c_str()) ? true : false;
                     }
                     return true;
                     break;
@@ -629,12 +626,12 @@ bool Console::ParseCommandLine()
                     else if ( arguments.size() == 1)
                     {
                         out.str("");    //clear stringstream
-                        out << (*iter).name << " = " << *((std::string *)(*iter).varPtr);
+                        out << item.name << " = " << *((std::string *)item.varPtr);
                         Print(out.str());
                     }
                     else
                     {
-                        *((std::string *)(*iter).varPtr) = arguments[1];
+                        *((std::string *)item.varPtr) = arguments[1];
                     }
                     return true;
                     break;
@@ -643,12 +640,12 @@ bool Console::ParseCommandLine()
                     else if ( arguments.size() == 1)
                     {
                         out.str("");    //clear stringstream
-                        out << (*iter).name << " = " << std::string((char *)(*iter).varPtr);
+                        out << item.name << " = " << std::string((char *)item.varPtr);
                         Print(out.str());
                     }
                     else
                     {
-                        strcpy((char *)(*iter).varPtr, arguments[1].c_str());
+                        strcpy((char *)item.varPtr, arguments[1].c_str());
                     }
                     return true;
                     break;
@@ -657,15 +654,15 @@ bool Console::ParseCommandLine()
                     else if ( arguments.size() != 4 )
                     {
                         out.str("");    //clear stringstream
-                        out << (*iter).name << " = " << ((Vector3 *)(*iter).varPtr)->x << " " << ((Vector3 *)(*iter).varPtr)->y << " " <<
-                            ((Vector3 *)(*iter).varPtr)->z;
+                        out << item.name << " = " << ((Vector3 *)item.varPtr)->x << " " << ((Vector3 *)item.varPtr)->y << " " <<
+                            ((Vector3 *)item.varPtr)->z;
                         Print(out.str());
                     }
                     else
                     {
-                        ((Vector3 *)(*iter).varPtr)->x = (float)atof(arguments[1].c_str());
-                        ((Vector3 *)(*iter).varPtr)->y = (float)atof(arguments[2].c_str());
-                        ((Vector3 *)(*iter).varPtr)->z = (float)atof(arguments[3].c_str());
+                        ((Vector3 *)item.varPtr)->x = (float)atof(arguments[1].c_str());
+                        ((Vector3 *)item.varPtr)->y = (float)atof(arguments[2].c_str());
+                        ((Vector3 *)item.varPtr)->z = (float)atof(arguments[3].c_str());
                     }
                     return true;
                     break;
@@ -674,21 +671,21 @@ bool Console::ParseCommandLine()
                     else if ( arguments.size() != 5 )
                     {
                         out.str("");    //clear stringstream
-                        out << (*iter).name << " = " << ((Vector4 *)(*iter).varPtr)->x << " " << ((Vector4 *)(*iter).varPtr)->y << " " <<
-                            ((Vector4 *)(*iter).varPtr)->z << " " << ((Vector4 *)(*iter).varPtr)->w;
+                        out << item.name << " = " << ((Vector4 *)item.varPtr)->x << " " << ((Vector4 *)item.varPtr)->y << " " <<
+                            ((Vector4 *)item.varPtr)->z << " " << ((Vector4 *)item.varPtr)->w;
                         Print(out.str());
                     }
                     else
                     {
-                        ((Vector4 *)(*iter).varPtr)->x = (float)atof(arguments[1].c_str());
-                        ((Vector4 *)(*iter).varPtr)->y = (float)atof(arguments[2].c_str());
-                        ((Vector4 *)(*iter).varPtr)->z = (float)atof(arguments[3].c_str());
-                        ((Vector4 *)(*iter).varPtr)->w = (float)atof(arguments[4].c_str());
+                        ((Vector4 *)item.varPtr)->x = (float)atof(arguments[1].c_str());
+                        ((Vector4 *)item.varPtr)->y = (float)atof(arguments[2].c_str());
+                        ((Vector4 *)item.varPtr)->z = (float)atof(arguments[3].c_str());
+                        ((Vector4 *)item.varPtr)->w = (float)atof(arguments[4].c_str());
                     }
                     return true;
                     break;
                 case CTYPE_FUNCTION:
-                    (*iter).func(arguments, (*iter).userData);
+                    item.func(arguments, item.userData);
                     return true;
                     break;
                 default:

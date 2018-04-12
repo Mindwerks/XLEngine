@@ -99,21 +99,17 @@ void LevelFuncMgr::RemoveFromActiveList(LevelFunc *pFunc)
 
 void LevelFuncMgr::Update()
 {
-    std::vector<LevelFunc *>::iterator iActive = m_Active.begin();
-    std::vector<LevelFunc *>::iterator eActive = m_Active.end();
-    for (; iActive!=eActive; ++iActive)
+    for (LevelFunc *activeFunc : m_Active)
     {
-        if (*iActive) { (*iActive)->Update(); }
+        if (activeFunc) { activeFunc->Update(); }
     }
 
     //go through the add list and add classes...
     if ( m_AddList.size() )
     {
-        std::vector<LevelFunc *>::iterator iAdd = m_AddList.begin();
-        std::vector<LevelFunc *>::iterator eAdd = m_AddList.end();
-        for (; iAdd!=eAdd; ++iAdd)
+        for (LevelFunc *addFunc : m_AddList)
         {
-            if (*iAdd) { m_Active.push_back( *iAdd ); }
+            if (addFunc) { m_Active.push_back(addFunc); }
         }
         m_AddList.clear();
     }
@@ -121,16 +117,14 @@ void LevelFuncMgr::Update()
     //go through the remove list and remove classes...
     if ( m_RemoveList.size() )
     {
-        std::vector<LevelFunc *>::iterator iRem = m_RemoveList.begin();
-        std::vector<LevelFunc *>::iterator eRem = m_RemoveList.end();
-        for (; iRem!=eRem; ++iRem)
+        for (LevelFunc *remFunc : m_RemoveList)
         {
-            iActive = m_Active.begin();
-            eActive = m_Active.end();
+            std::vector<LevelFunc *>::iterator iActive = m_Active.begin();
+            std::vector<LevelFunc *>::iterator eActive = m_Active.end();
 
             for (; iActive!=eActive; ++iActive)
             {
-                if ( *iActive == *iRem )
+                if ( *iActive == remFunc )
                 {
                     m_Active.erase(iActive);
                     break;

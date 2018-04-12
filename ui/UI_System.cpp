@@ -507,11 +507,8 @@ void UI_System::UI_PopWindow()
 
 void UI_System::UI_EnableWindow(std::string& sName, int enable)
 {
-    std::vector<UI_Window *>::iterator iWindow = m_WindowList.begin();
-    std::vector<UI_Window *>::iterator eWindow = m_WindowList.end();
-    for (; iWindow != eWindow; ++iWindow)
+    for (UI_Window *pWindow : m_WindowList)
     {
-        UI_Window *pWindow = *iWindow;
         if ( pWindow->m_name == sName )
         {
             pWindow->m_bEnabled = enable ? true : false;

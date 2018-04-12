@@ -94,23 +94,17 @@ void Object::AddLogic(Logic *pLogic)
 //initialize the object
 void Object::Init()
 {
-    std::vector<Logic *>::iterator iLogic = m_Logics.begin();
-    std::vector<Logic *>::iterator eLogic = m_Logics.end();
-
-    for (; iLogic != eLogic; ++iLogic)
+    for (Logic *logic : m_Logics)
     {
-        (*iLogic)->InitObject(this);
+        logic->InitObject(this);
     }
 }
 
 void Object::SendMessage(uint32_t uMsgID, float fValue)
 {
-    std::vector<Logic *>::iterator iLogic = m_Logics.begin();
-    std::vector<Logic *>::iterator eLogic = m_Logics.end();
-
-    for (; iLogic != eLogic; ++iLogic)
+    for (Logic *logic : m_Logics)
     {
-        (*iLogic)->SendMessage(this, uMsgID, fValue);
+        logic->SendMessage(this, uMsgID, fValue);
     }
 }
 
@@ -118,12 +112,9 @@ void Object::Update()
 {
     if ( m_uFlags&OBJFLAGS_ACTIVE )
     {
-        std::vector<Logic *>::iterator iLogic = m_Logics.begin();
-        std::vector<Logic *>::iterator eLogic = m_Logics.end();
-
-        for (; iLogic != eLogic; ++iLogic)
+        for (Logic *logic : m_Logics)
         {
-            (*iLogic)->Update(this);
+            logic->Update(this);
         }
     }
 }
