@@ -76,7 +76,7 @@ data-path = # ...
 
 Currently the game must be run from where it can find the DarkXL/, DaggerXL/,
 etc. directories, where the AngelScript (\*.as) and image (\*.png) files are for
-the respective games, and the fonts/ directory with the necessary font files.
+the respective games. Just copy the contents of the resources/ directory to your build directory.
 
 ## Changelog
 
