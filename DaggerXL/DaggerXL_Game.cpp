@@ -1,3 +1,6 @@
+
+#include <cstdlib>
+
 #include "DaggerXL_Game.h"
 #include "DaggerXL_Player.h"
 #include "Logic_Door.h"
@@ -188,12 +191,12 @@ bool DaggerXL_Game::PlaceNPC(int32_t newNPC)
         int32_t sx, sy;
         if ( m_pAPI->Pathing_GetRandomNode(nodeX, nodeY, x, y, z, sx, sy) )
         {
-            float fAngle = (float)(rand()%360) * 0.01745329252f;
+            float fAngle = (float)(std::rand()%360) * 0.01745329252f;
             float dirX   = cosf(fAngle);
             float dirY   = sinf(fAngle);
 
             NPC *pNPC = m_NPC_List[newNPC];
-            pNPC->Reset(m_pAPI, 385 + (rand()%9), x, y, z, sx, sy, dirX, dirY);
+            pNPC->Reset(m_pAPI, 385 + (std::rand()%9), x, y, z, sx, sy, dirX, dirY);
             pNPC->Enable(m_pAPI, true);
         }
 
