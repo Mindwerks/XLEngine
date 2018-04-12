@@ -3,7 +3,7 @@
 #include "../scriptsystem/ScriptSystem.h"
 #if PLATFORM_WIN       //the Windows mapping to Virtual keys.
     #include "Win/KeyOSMapping_Win.h"
-#elif PLATFORM_LINUX   //the Linux mapping to Virtual keys.
+#else   //the non-Windows (SDL2) mapping to Virtual keys.
     #include "linux/KeyOSMapping_Linux.h"
     #include <memory.h>
 #endif
