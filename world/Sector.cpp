@@ -34,11 +34,7 @@ void Sector::AddObject(uint32_t uHandle)
 void Sector::RemoveObject(uint32_t uHandle)
 {
     //search for object handle and then erase it.
-    const auto iter = std::find_if(m_Objects.begin(), m_Objects.end(),
-        [uHandle](const uint32_t objID)
-    {
-        return objID == uHandle;
-    });
+    const auto iter = std::find(m_Objects.begin(), m_Objects.end(), uHandle);
 
     if (iter != m_Objects.end())
     {

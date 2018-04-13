@@ -74,11 +74,7 @@ void LevelFuncMgr::DestroyLevelFunc(LevelFunc *pFunc)
 
     RemoveFromActiveList(pFunc);
 
-    const auto iter = std::find_if(m_FuncList.begin(), m_FuncList.end(),
-        [pFunc](const LevelFunc *levelFunc)
-    {
-        return levelFunc == pFunc;
-    });
+    const auto iter = std::find(m_FuncList.begin(), m_FuncList.end(), pFunc);
 
     if (iter != m_FuncList.end())
     {
