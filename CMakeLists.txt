@@ -99,7 +99,9 @@ set(fileformats_sources
     ${src_root}/fileformats/TextureConverter.h
     ${src_root}/fileformats/TextureLoader.h
     ${src_root}/fileformats/TextureLoader.cpp
-    ${src_root}/fileformats/TextureTypes.h)
+    ${src_root}/fileformats/TextureTypes.h
+    ${src_root}/fileformats/Vfs.cpp
+    ${src_root}/fileformats/Vfs.h)
 set(math_sources
     ${src_root}/math/FixedPoint.h
     ${src_root}/math/FixedPoint.cpp
