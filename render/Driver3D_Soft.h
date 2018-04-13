@@ -49,7 +49,7 @@ class Driver3D_Soft : public IDriver3D
         void Clear(bool bClearColor=true) override;
 
         void SetWorldMatrix(Matrix *pMtx, int32_t worldX, int32_t worldY) override;
-        void SetViewMatrix(Matrix *pMtx, Vector3 *pLoc, Vector3 *pDir) override;
+        void SetViewMatrix(Matrix *pMtx, const Vector3 *pLoc, const Vector3 *pDir) override;
         void SetProjMtx(Matrix *pMtx) override;
         void SetCamera(Camera *pCamera) override;
         
@@ -57,7 +57,7 @@ class Driver3D_Soft : public IDriver3D
 
         //Texture Functions.
         void SetTexture(int32_t slot, TextureHandle hTex, uint32_t uFilter=FILTER_NORMAL, bool bWrap=true, int32_t frame=-1) override;
-        void SetColor(Vector4 *pColor=0) override;
+        void SetColor(const Vector4 *pColor=nullptr) override;
         TextureHandle CreateTexture(uint32_t uWidth, uint32_t uHeight, uint32_t uFormat=TEX_FORMAT_RGBA8, uint8_t *pData=0, bool bGenMips=false, int32_t nFrameCnt=1) override;
         void FillTexture(TextureHandle hTex, uint8_t *pData, uint32_t uWidth, uint32_t uHeight, bool bGenMips=false) override;
         void FreeTexture(TextureHandle hTex) override;

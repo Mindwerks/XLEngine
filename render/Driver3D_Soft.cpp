@@ -653,7 +653,7 @@ void Driver3D_Soft::SetWorldMatrix(Matrix *pMtx, int32_t worldX, int32_t worldY)
     }
 }
 
-void Driver3D_Soft::SetViewMatrix(Matrix *pMtx, Vector3 *pLoc, Vector3 *pDir)
+void Driver3D_Soft::SetViewMatrix(Matrix *pMtx, const Vector3 *pLoc, const Vector3 *pDir)
 {
     m_ViewMtx = *pMtx;
     m_Eye = *pLoc;
@@ -701,7 +701,7 @@ void Driver3D_Soft::SetTexture(int32_t slot, TextureHandle hTex, uint32_t uFilte
     assert( m_pCurTex && m_pCurTex->m_pData[ DrawScanline::_uCurFrame ] );
 }
 
-void Driver3D_Soft::SetColor(Vector4 *pColor)
+void Driver3D_Soft::SetColor(const Vector4 *pColor)
 {
 }
 

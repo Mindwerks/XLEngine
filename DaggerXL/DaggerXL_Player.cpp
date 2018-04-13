@@ -298,7 +298,7 @@ void DaggerXL_Player::Update(uint32_t uObjID, uint32_t uParamCount, LogicParam *
     }
     //do a single raycast to make sure the player hasn't sunk into the ground...
     Vector3 vStart, vEnd, vInter;
-    vStart = vLoc + Vector3(0.0f, 0.0f, 0.0f);
+    vStart = vLoc;
     vEnd = vStart - Vector3(0.0f, 0.0f, 8.9f);
     if ( m_pAPI->World_Raycast(&vStart, &vEnd, &vInter) )
     {

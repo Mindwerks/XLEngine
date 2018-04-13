@@ -10,7 +10,7 @@ class Vector4
 public:
     Vector4() { x = 0.0f; y = 0.0f; z = 0.0f; w = 0.0f; }
     Vector4(float _x, float _y, float _z, float _w) { x = _x; y = _y; z = _z; w = _w; }
-    ~Vector4() {;}
+	~Vector4() = default;
 
     float Normalize();
     float Normalize3();
@@ -38,9 +38,13 @@ public:
     float x, y, z, w;
     Vector3 m_v3;
 
-    static Vector4 One;
-    static Vector4 Half;
-    static Vector4 Zero;
+    static const Vector4 One;
+    static const Vector4 Half;
+    static const Vector4 Zero;
+    static const Vector4 UnitX;
+    static const Vector4 UnitY;
+    static const Vector4 UnitZ;
+    static const Vector4 UnitW;
 };
 
 #endif //VECTOR4_H

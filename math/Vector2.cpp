@@ -1,9 +1,10 @@
 #include "Vector2.h"
-#include <cmath>
 
-Vector2 Vector2::One(1.0f, 1.0f);
-Vector2 Vector2::Half(0.5f, 0.5f);
-Vector2 Vector2::Zero(0.0f, 0.0f);
+const Vector2 Vector2::One(1.0f, 1.0f);
+const Vector2 Vector2::Half(0.5f, 0.5f);
+const Vector2 Vector2::Zero(0.0f, 0.0f);
+const Vector2 Vector2::UnitX(1.0f, 0.0f);
+const Vector2 Vector2::UnitY(0.0f, 1.0f);
 
 float Vector2::Normalize()
 {

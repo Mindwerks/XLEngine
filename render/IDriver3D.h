@@ -99,7 +99,7 @@ class IDriver3D
         virtual void Clear(bool bClearColor=true) {};
 
         virtual void SetWorldMatrix(Matrix *pMtx, int32_t worldX, int32_t worldY) {};
-        virtual void SetViewMatrix(Matrix *pMtx, Vector3 *pLoc, Vector3 *pDir) {};
+        virtual void SetViewMatrix(Matrix *pMtx, const Vector3 *pLoc, const Vector3 *pDir) {};
         virtual void SetProjMtx(Matrix *pMtx) {};
         virtual void SetCamera(Camera *pCamera) {};
         virtual Camera *GetCamera() {return nullptr;}
@@ -109,7 +109,7 @@ class IDriver3D
         //Texture Functions.
         //SetTexture(...) : frame=-1 : use the automatic texture animation system (used for most things).
         virtual void SetTexture(int32_t slot, TextureHandle hTex, uint32_t uFilter=FILTER_NORMAL, bool bWrap=true, int32_t frame=-1) {};
-        virtual void SetColor(Vector4 *pColor=0) {};
+        virtual void SetColor(const Vector4 *pColor=nullptr) {};
         virtual TextureHandle CreateTexture(uint32_t uWidth, uint32_t uHeight, uint32_t uFormat=TEX_FORMAT_RGBA8, uint8_t *pData=0, bool bGenMips=false, int32_t nFrameCnt=1) {return 0;}
         virtual void FillTexture(TextureHandle hTex, uint8_t *pData, uint32_t uWidth, uint32_t uHeight, bool bGenMips=false) {};
         virtual void FreeTexture(TextureHandle hTex) {};

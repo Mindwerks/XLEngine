@@ -448,7 +448,7 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
 
             Object *pMeshObj = ObjectManager::CreateObject("exterior");
             pMeshObj->SetWorldPos(worldX, worldY);
-            pMeshObj->SetScale( Vector3(1,1,1) );
+            pMeshObj->SetScale( Vector3::One );
             pSector->AddObject( pMeshObj->GetID() );
             
             Vector3 vPos;
@@ -461,7 +461,7 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
             Matrix mBlockRot;
             float zAngle = -(float)pBlockPos[j].Angle * MATH_PI_OVER_2/512.0f;
             mBlockRot.Identity();
-            Vector3 vAngel = Vector3(0, 0, 1);
+            Vector3 vAngel = Vector3::UnitZ;
             mBlockRot.AxisAngle( vAngel , zAngle );
             Vector3 vBlockOffs = Vector3((float)pBlockPos[j].XPos2 * fFP_Scale, (float)pBlockPos[j].YPos2 * fFP_Scale, 0.0f);
             Vector3 vOutPos = mBlockRot.TransformVector(vPos);
@@ -640,7 +640,7 @@ Sector *CellLoader_Daggerfall::LoadBlock_Ext(IDriver3D *pDriver, uint32_t uLengt
 
         Object *pMeshObj = ObjectManager::CreateObject("exterior");
         pMeshObj->SetWorldPos(worldX, worldY);
-        pMeshObj->SetScale( Vector3(1,1,1) );
+        pMeshObj->SetScale( Vector3::One );
         pSector->AddObject( pMeshObj->GetID() );
 
         Vector3 vPos;
@@ -1072,7 +1072,7 @@ Sector *CellLoader_Daggerfall::LoadBlock(IDriver3D *pDriver, uint32_t uLength, i
                     //pMeshObj->nLightCnt = 0;
                     //pMeshObj->nFactionID = 0;
 
-                    pMeshObj->SetScale( Vector3(1,1,1) );
+                    pMeshObj->SetScale( Vector3::One );
 
                     Vector3 vPos;
                     vPos.x =  (float)object.xLoc * fFP_Scale + vBlockLoc.x;

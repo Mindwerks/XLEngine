@@ -135,7 +135,7 @@ void FontManager::EndTextRendering()
     m_pDriver->SetColor( &Vector4::One );
 }
 
-void FontManager::RenderString(int32_t x, int32_t y, const std::string& szString, XLFont *pFont, Vector4 *pColor)
+void FontManager::RenderString(int32_t x, int32_t y, const std::string& szString, XLFont *pFont, const Vector4 *pColor)
 {
     TextureHandle hTex = pFont->GetTexture();
 

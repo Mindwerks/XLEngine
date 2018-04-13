@@ -28,7 +28,7 @@ public:
     static void BeginTextRendering();
     static void EndTextRendering();
     //Render a string at location(x,y) using font pFont
-    static void RenderString(int32_t x, int32_t y, const std::string& szString, XLFont *pFont, Vector4 *pColor=&Vector4::One);
+    static void RenderString(int32_t x, int32_t y, const std::string& szString, XLFont *pFont, const Vector4 *pColor=&Vector4::One);
     static uint32_t GetLength(const std::string& szString, uint32_t uPosInString, XLFont *pFont);
 
 private:

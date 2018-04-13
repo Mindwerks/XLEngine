@@ -979,7 +979,7 @@ WorldCell *CellLoader_BloodMap::Load( IDriver3D *pDriver, World *pWorld, uint8_t
                         vLoc.y = -(float)m_pBloodSprites[i].y / fHorizScale;
                         vLoc.z = -(float)m_pBloodSprites[i].z / fVertScale;
 
-                        Vector3 vDir = Vector3(0, 0, 1);
+                        Vector3 vDir = Vector3::UnitZ;
 
                         float yaw = (float)m_pBloodSprites[i].ang/2048.0f * MATH_TWO_PI + MATH_PI;
                         Vector3 vUp;
