@@ -24,7 +24,7 @@ class Vector2
 public:
     Vector2() { x = 0.0f; y = 0.0f; }
     Vector2(float _x, float _y) { x = _x; y = _y; }
-	~Vector2() = default;
+    ~Vector2() = default;
 
     float Normalize();
     float Length()
