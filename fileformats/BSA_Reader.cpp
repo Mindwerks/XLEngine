@@ -8,44 +8,45 @@
 BSA_Reader::BSA_Reader() : Archive()
 {
     m_CurFile = -1;
-    m_pFile = nullptr;
     m_pFileListName = nullptr;
     m_pFileListNum  = nullptr;
 }
 
-bool BSA_Reader::Open(const char *pszName)
+bool BSA_Reader::Open(const char *name)
 {
-    sprintf(m_szFileName, "%s%s", EngineSettings::get().GetGameDataDir(), pszName);
+    mFileName = EngineSettings::get().GetGameDataDir();
+    mFileName += name;
 
-    FILE *f = fopen(m_szFileName, "rb");
-    if ( f )
+    auto file = Vfs::get().openInput(mFileName);
+    if(!file)
     {
-        fread(&m_Header, sizeof(BSA_Header), 1, f);
-
-        fseek(f, 0, SEEK_END);
-        int len = ftell(f);
-        
-        if ( m_Header.DirectoryType == DT_NameRecord )
-        {
-            m_pFileListName = new BSA_EntryName[ m_Header.DirectoryCount ];
-            fseek(f, len-m_Header.DirectoryCount*sizeof(BSA_EntryName), SEEK_SET);
-            fread(m_pFileListName, sizeof(BSA_EntryName), m_Header.DirectoryCount, f);
-        }
-        else
-        {
-            m_pFileListNum = new BSA_EntryNum[ m_Header.DirectoryCount ];
-            fseek(f, len-m_Header.DirectoryCount*sizeof(BSA_EntryNum), SEEK_SET);
-            fread(m_pFileListNum, sizeof(BSA_EntryNum), m_Header.DirectoryCount, f);
-        }
-
-        fclose(f);
-        m_bOpen = true;
-
-        return true;
+        XL_Console::PrintF("^1Error: Failed to load %s", mFileName.c_str());
+        return false;
     }
-    XL_Console::PrintF("^1Error: Failed to load %s", m_szFileName);
 
-    return false;
+    m_Header.DirectoryCount = read_le<int16_t>(*file);
+    m_Header.DirectoryType = read_le<uint16_t>(*file);
+
+    file->seekg(0, std::ios_base::end);
+    size_t len = file->tellg();
+
+    if(m_Header.DirectoryType == DT_NameRecord)
+    {
+        m_pFileListName = new BSA_EntryName[ m_Header.DirectoryCount ];
+        file->seekg(len - m_Header.DirectoryCount*sizeof(BSA_EntryName));
+        file->read(reinterpret_cast<char*>(m_pFileListName),
+                   sizeof(BSA_EntryName) * m_Header.DirectoryCount);
+    }
+    else
+    {
+        m_pFileListNum = new BSA_EntryNum[ m_Header.DirectoryCount ];
+        file->seekg(len - m_Header.DirectoryCount*sizeof(BSA_EntryNum));
+        file->read(reinterpret_cast<char*>(m_pFileListNum),
+                   sizeof(BSA_EntryNum) * m_Header.DirectoryCount);
+    }
+    m_bOpen = true;
+
+    return true;
 }
 
 void BSA_Reader::Close()
@@ -69,31 +70,30 @@ bool BSA_Reader::OpenFile(const char *pszFile)
     if ( m_Header.DirectoryType != DT_NameRecord )
         return false;
 
-    assert(m_pFile == nullptr);
-    m_pFile = fopen(m_szFileName, "rb");
+    assert(mFile == nullptr);
+    mFile = Vfs::get().openInput(mFileName);
     m_CurFile = -1;
     
-    if ( m_pFile )
+    if(mFile)
     {
         //search for this file.
-        for (int i=0; i<m_Header.DirectoryCount; i++)
+        for(int i = 0;i < m_Header.DirectoryCount;i++)
         {
-            if ( stricmp(pszFile, m_pFileListName[i].NAME) == 0 )
+            if(stricmp(pszFile, m_pFileListName[i].NAME) == 0)
             {
                 m_CurFile = i;
                 break;
             }
         }
 
-        if ( m_CurFile == -1 )
+        if(m_CurFile == -1)
         {
-            fclose(m_pFile);
-            m_pFile = nullptr;
-            XL_Console::PrintF("^1Error: Failed to load %s from \"%s\"", pszFile, m_szFileName);
+            mFile = nullptr;
+            XL_Console::PrintF("^1Error: Failed to load %s from \"%s\"", pszFile, mFileName.c_str());
         }
     }
 
-    return m_CurFile > -1 ? true : false;
+    return (m_CurFile > -1) ? true : false;
 }
 
 bool BSA_Reader::OpenFile(const uint32_t uID)
@@ -101,40 +101,37 @@ bool BSA_Reader::OpenFile(const uint32_t uID)
     if ( m_Header.DirectoryType != DT_NumberRecord )
         return false;
 
-    assert(m_pFile == nullptr);
-    m_pFile = fopen(m_szFileName, "rb");
-    assert(m_pFile);
+    assert(mFile == nullptr);
+    mFile = Vfs::get().openInput(mFileName);
     m_CurFile = -1;
     
-    if ( m_pFile )
+    if(mFile)
     {
         //search for this file.
-        for (int i=0; i<m_Header.DirectoryCount; i++)
+        for(int i = 0;i < m_Header.DirectoryCount;i++)
         {
-            if ( m_pFileListNum[i].RecordID == uID )
+            if(m_pFileListNum[i].RecordID == uID)
             {
                 m_CurFile = i;
                 break;
             }
         }
 
-        if ( m_CurFile == -1 )
+        if(m_CurFile == -1)
         {
-            fclose(m_pFile);
-            m_pFile = nullptr;
-
-            XL_Console::PrintF("^1Error: Failed to load %u from \"%s\"", uID, m_szFileName);
+            mFile = nullptr;
+            XL_Console::PrintF("^1Error: Failed to load %u from \"%s\"", uID, mFileName.c_str());
         }
     }
 
-    return m_CurFile > -1 ? true : false;
+    return (m_CurFile > -1) ? true : false;
 }
 
 bool BSA_Reader::SearchForFile(const char *pszFileIn, char *pszFileOut)
 {
     bool bFileFound = false;
 
-    if ( m_Header.DirectoryType != DT_NameRecord )
+    if(m_Header.DirectoryType != DT_NameRecord)
         return false;
 
     size_t lIn = strlen(pszFileIn);
@@ -144,7 +141,7 @@ bool BSA_Reader::SearchForFile(const char *pszFileIn, char *pszFileOut)
     for (int i=0; i<m_Header.DirectoryCount; i++)
     {
         lCur = strlen(m_pFileListName[i].NAME);
-        if ( lIn != lCur )
+        if(lIn != lCur)
             continue;
 
         bool bMatch = true;
@@ -152,17 +149,17 @@ bool BSA_Reader::SearchForFile(const char *pszFileIn, char *pszFileOut)
         char aWild[2];
         for (int c=0; c<(int)lIn; c++)
         {
-            if ( pszFileIn[c] != '?' && tolower(pszFileIn[c]) != tolower(m_pFileListName[i].NAME[c]) )
+            if(pszFileIn[c] != '?' && tolower(pszFileIn[c]) != tolower(m_pFileListName[i].NAME[c]))
             {
                 bMatch = false;
                 break;
             }
-            else if ( pszFileIn[c] == '?' )
+            else if(pszFileIn[c] == '?')
             {
                 aWild[ mIdx++ ] = tolower(m_pFileListName[i].NAME[c]);
             }
         }
-        if ( bMatch )
+        if(bMatch)
         {
             if ( aWild[0] < aMinWild[0] || (aWild[0] == aMinWild[0] && aWild[1] < aMinWild[1]) )
             {
@@ -183,11 +180,7 @@ bool BSA_Reader::SearchForFile(const char *pszFileIn, char *pszFileOut)
 
 void BSA_Reader::CloseFile()
 {
-    if ( m_pFile )
-    {
-        fclose(m_pFile);
-        m_pFile = nullptr;
-    }
+    mFile = nullptr;
     m_CurFile = -1;
 }
 
@@ -205,26 +198,26 @@ uint32_t BSA_Reader::GetFileLen()
 
 bool BSA_Reader::ReadFile(void *pData, uint32_t uLength)
 {
-    if ( !m_pFile ) { return false; }
+    if(!mFile) { return false; }
 
     int file_loc = sizeof(BSA_Header);
-    for (int i=0; i<m_CurFile; i++)
+    for (int i = 0;i < m_CurFile;i++)
     {
         if ( m_Header.DirectoryType == DT_NameRecord )
             file_loc += m_pFileListName[i].RecordSize;
         else
             file_loc += m_pFileListNum[i].RecordSize;
     }
-    int file_len;
+    uint32_t file_len;
     if ( m_Header.DirectoryType == DT_NameRecord )
         file_len = m_pFileListName[ m_CurFile ].RecordSize;
     else
         file_len = m_pFileListNum[ m_CurFile ].RecordSize;
 
-    fseek(m_pFile, file_loc, SEEK_SET);
-    fread(pData, file_len, 1, m_pFile);
-
-    return true;
+    if(file_len < uLength || !mFile->seekg(file_loc))
+        return false;
+    mFile->read(reinterpret_cast<char*>(pData), file_len);
+    return mFile->gcount() == file_len;
 }
 
 int32_t BSA_Reader::GetFileCount()

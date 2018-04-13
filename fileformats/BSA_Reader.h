@@ -3,7 +3,9 @@
 
 #include "../CommonTypes.h"
 #include "Archive.h"
+#include "Vfs.h"
 #include <cstdio>
+#include <string>
 
 class BSA_Reader : public Archive
 {
@@ -59,8 +61,8 @@ private:
     BSA_EntryNum  *m_pFileListNum;
     int32_t            m_CurFile;
 
-    FILE *m_pFile;
-    char m_szFileName[64];
+    istream_ptr mFile;
+    std::string mFileName;
 };
 
 #endif //BSA_READER_H
