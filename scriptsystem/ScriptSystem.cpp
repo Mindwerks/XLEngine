@@ -4,7 +4,10 @@
 #endif
 //#include "System.h"
 #include "../ui/XL_Console.h"
+#include "../fileformats/Vfs.h"
+#include <algorithm>
 #include <cstdio>
+#include <cctype>
 #include <cstring>
 #include <memory.h>
 
@@ -100,125 +103,110 @@ void ScriptSystem::SetGameDir(const char *pszGameDir)
 
 bool ScriptSystem::ReloadScript(int nModule, int nSection, const char *pszFile, bool bBuildModule)
 {
-    FILE *f = fopen(pszFile, "rb");
-    if ( !f ) { return false; }
+    istream_ptr file = Vfs::get().openInput(pszFile);
+    if(!file) return false;
 
     // Determine the size of the file
-    fseek(f, 0, SEEK_END);
-    int length = ftell(f);
-    fseek(f, 0, SEEK_SET);
+    if(!file->seekg(0, std::ios_base::end))
+        return false;
+    size_t length = file->tellg();
+    file->seekg(0);
 
-    char *script = xlNew char[length];
-    char *final_script = xlNew char[length];
-    fread(script, length, 1, f);
-    fclose(f);
+    std::vector<char> script(length);
+    file->read(script.data(), script.size());
+    file = nullptr;
 
     //discard existing script code for this module.
     m_Engine->DiscardModule(pszModules[nModule]);
 
     //now look for #includes.
-    length = FindAndLoadIncludes(script, length, final_script, nModule, nSection);
+    FindAndLoadIncludes(script, nModule, nSection);
 
     // Compile the script
     asIScriptModule *pModule = m_Engine->GetModule(pszModules[nModule], asGM_CREATE_IF_NOT_EXISTS);
-    pModule->AddScriptSection(pszSections[nSection], final_script, length);
-    if ( bBuildModule )
-    {
-        pModule->Build();
-    }
+    pModule->AddScriptSection(pszSections[nSection], script.data(), script.size());
+    if(bBuildModule) pModule->Build();
 
-    xlDelete [] script;
-    xlDelete [] final_script;
-
-    if ( !m_pContext )
-    {
+    if(!m_pContext)
         m_pContext = m_Engine->CreateContext();
-    }
 
     return true;
 }
 
-int ScriptSystem::FindAndLoadIncludes(const char *inScript, int inLength, char *outScript, int nModule, int nSection)
+void ScriptSystem::FindAndLoadIncludes(std::vector<char> &script, int nModule, int nSection)
 {
-    int outLength = inLength;
-
     //1. look for and load includes
-    int incEnd = 0;
-    for (int l=0; l<inLength-8; l++)
+    auto iter = std::find(script.begin(), script.end(), '#');
+    while(script.end()-iter > 10)
     {
-        if ( inScript[l] == '#' )
+        if(iter != script.begin() && *(iter-1) != '\n')
         {
-            if ( inScript[l+1] == 'i' && inScript[l+7] == 'e' )
-            {
-                l += 8;
-                //now keep looking until a " is found.
-                while ( inScript[l] != '"' ) { l++; }
-                l++;
-                char szInclude[32];
-                char szPath[64];
-                int c=0;
-                while ( inScript[l] != '"' )
-                {
-                    szInclude[c++] = inScript[l];
-                    l++;
-                }
-                szInclude[c] = 0;
-                l++;
-                incEnd = l;
-
-                sprintf(szPath, "%s%s", m_szGameDir, szInclude);
-                LoadScript(nModule, nSection, szPath, false);
-            }
+            iter = std::find(iter+1, script.end(), '#');
+            continue;
         }
-    }
 
-    //2. copy the script, starting on the line AFTER the last include
-    if ( incEnd == 0 )
-    {
-        memcpy(outScript, inScript, inLength);
-    }
-    else
-    {
-        outLength = inLength - incEnd;
-        memcpy(outScript, &inScript[incEnd], outLength);
-    }
+        if(std::strncmp(&*(iter+1), "include", 7) != 0 || !std::isspace(*(iter+8)))
+        {
+            iter = std::find(iter+1, script.end(), '#');
+            continue;
+        }
+        auto incStart = iter;
 
-    return outLength;
+        iter += 9;
+        while(iter != script.end() && std::isspace(*iter))
+            ++iter;
+        if(iter == script.end() || *iter != '"')
+            continue;
+        ++iter;
+        std::string incname;
+        while(iter != script.end() && *iter != '"')
+            incname += *(iter++);
+        while(iter != script.end() && *iter != '\n')
+            ++iter;
+
+        // Erase the include statement, leaving the line numbers and rest of
+        // the file intact.
+        if(incStart == script.begin())
+        {
+            script.erase(incStart, iter);
+            iter = std::find(script.begin(), script.end(), '#');
+        }
+        else
+        {
+            script.erase((--incStart)+1, iter);
+            iter = std::find(incStart+1, script.end(), '#');
+        }
+
+        incname = m_szGameDir+incname;
+        LoadScript(nModule, nSection, incname.c_str(), false);
+    }
 }
 
 bool ScriptSystem::LoadScript(int nModule, int nSection, const char *pszFile, bool bBuildModule)
 {
-    FILE *f = fopen(pszFile, "rb");
-    if ( !f ) { return false; }
+    istream_ptr file = Vfs::get().openInput(pszFile);
+    if(!file) return false;
 
     // Determine the size of the file
-    fseek(f, 0, SEEK_END);
-    int length = ftell(f);
-    fseek(f, 0, SEEK_SET);
+    if(!file->seekg(0, std::ios_base::end))
+        return false;
+    size_t length = file->tellg();
+    file->seekg(0);
 
-    char *script = xlNew char[length];
-    char *final_script = xlNew char[length];
-    fread(script, length, 1, f);
-    fclose(f);
+    std::vector<char> script(length);
+    file->read(script.data(), script.size());
+    file = nullptr;
 
     //now look for #includes.
-    length = FindAndLoadIncludes(script, length, final_script, nModule, nSection);
+    FindAndLoadIncludes(script, nModule, nSection);
 
     // Compile the script
     asIScriptModule *pModule = m_Engine->GetModule(pszModules[nModule], asGM_CREATE_IF_NOT_EXISTS);
-    int ret = pModule->AddScriptSection(pszSections[nSection], final_script, length);
-    if ( bBuildModule )
-    {
-        ret = pModule->Build();
-    }
+    int ret = pModule->AddScriptSection(pszSections[nSection], script.data(), script.size());
+    if(bBuildModule) ret = pModule->Build();
 
-    xlDelete [] script;
-    xlDelete [] final_script;
-
-    if ( !m_pContext )
-    {
+    if(!m_pContext)
         m_pContext = m_Engine->CreateContext();
-    }
 
     return true;
 }

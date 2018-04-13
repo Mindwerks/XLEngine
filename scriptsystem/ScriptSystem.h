@@ -4,6 +4,7 @@
 #include "../CommonTypes.h"
 #include "angelscript.h"
 
+#include <vector>
 #include <string>
 
 typedef asIScriptFunction *SHANDLE;
@@ -58,7 +59,7 @@ public:
     //Load the game scripts.
     static bool LoadScript(int nModule, int nSection, const char *pszFile, bool bBuildModule=true);
     static bool ReloadScript(int nModule, int nSection, const char *pszFile, bool bBuildModule=true);
-    static int FindAndLoadIncludes(const char *inScript, int inLength, char *outScript, int nModule, int nSection);
+    static void FindAndLoadIncludes(std::vector<char> &script, int nModule, int nSection);
 
     //Get Script function ID by name.
     static SHANDLE GetFunc(int nModule, const char *pszFunc);
