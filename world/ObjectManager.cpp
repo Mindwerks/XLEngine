@@ -232,11 +232,7 @@ void ObjectManager::FreeObject(Object *pObj)
     m_FreeObjects.push_back( pObj );
 
     //remove this from the active object list.
-    const auto iter = std::find_if(m_ActiveObjects.begin(), m_ActiveObjects.end(),
-        [pObj](const Object *activeObj)
-    {
-        return activeObj == pObj;
-    });
+    const auto iter = std::find(m_ActiveObjects.begin(), m_ActiveObjects.end(), pObj);
 
     if (iter != m_ActiveObjects.end())
     {

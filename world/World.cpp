@@ -53,11 +53,7 @@ bool World::AddWorldCell(WorldCell *pCell)
 
 void World::RemoveWorldCell(WorldCell *pCell)
 {
-    const auto iter = std::find_if(m_WorldCells.begin(), m_WorldCells.end(),
-        [pCell](const WorldCell *worldCell)
-    {
-        return worldCell == pCell;
-    });
+    const auto iter = std::find(m_WorldCells.begin(), m_WorldCells.end(), pCell);
 
     if (iter != m_WorldCells.end())
     {
