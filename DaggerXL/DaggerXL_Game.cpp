@@ -250,19 +250,19 @@ enum
 
 const char *_apszPalFiles[]=
 {
-    "Map.Pal",
-    "OldMap.Pal",
-    "OldPal.Pal"
+    "MAP.PAL",//"Map.Pal",
+    "OLDMAP.PAL",//"OldMap.Pal",
+    "OLDPAL.PAL"//"OldPal.Pal"
 };
 int _Pal_Count = 3;
 
 const char *_apszColFiles[]=
 {
-    "Art_Pal.Col",
-    "DankBmap.Col",
-    "Fmap_Pal.Col",
-    "NightSky.Col",
-    "Pal.Pal",
+    "ART_PAL.COL",//"Art_Pal.Col",
+    "DANKBMAP.COL",//"DankBmap.Col",
+    "FMAP_PAL.COL",//"Fmap_Pal.Col",
+    "NIGHTSKY.COL",//"NightSky.Col",
+    "PAL.PAL",//"Pal.Pal",
 };
 int _Col_Count = 5;
 int _Num_Colormap_Levels = 64;
