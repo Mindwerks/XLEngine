@@ -11,11 +11,152 @@
 
 #define CACHED_FILE_VERSION 0x01
 
+namespace
+{
+
+#pragma pack(push)
+#pragma pack(1)
+
+struct LocationRec
+{
+    int32_t oneValue;
+    int16_t NullValue1;
+    int8_t  NullValue2;
+    int32_t XPosition;
+    int32_t NullValue3;
+    int32_t YPosition;
+    int32_t LocType;
+    int32_t Unknown2;
+    int32_t Unknown3;
+    int16_t oneValue2;
+    uint16_t LocationID;
+    int32_t NullValue4;
+    int16_t Unknown4;
+    int32_t Unknown5;
+    char NullValue[26];
+    char LocationName[32];
+    char Unknowns[9];
+    int16_t PostRecCount;
+};
+
+#pragma pack(pop)
+
+const char _aszRMBHead[][5]=
+{
+    "TVRN",
+    "GENR",
+    "RESI",
+    "WEAP",
+    "ARMR",
+    "ALCH",
+    "BANK",
+    "BOOK",
+    "CLOT",
+    "FURN",
+    "GEMS",
+    "LIBR",
+    "PAWN",
+    "TEMP",
+    "TEMP",
+    "PALA",
+    "FARM",
+    "DUNG",
+    "CAST",
+    "MANR",
+    "SHRI",
+    "RUIN",
+    "SHCK",
+    "GRVE",
+    "FILL",
+    "KRAV",
+    "KDRA",
+    "KOWL",
+    "KMOO",
+    "KCAN",
+    "KFLA",
+    "KHOR",
+    "KROS",
+    "KWHE",
+    "KSCA",
+    "KHAW",
+    "MAGE",
+    "THIE",
+    "DARK",
+    "FIGH",
+    "CUST",
+    "WALL",
+    "MARK",
+    "SHIP",
+    "WITC"
+};
+
+const char _aszRMBTemple[][3]=
+{
+    "A0",
+    "B0",
+    "C0",
+    "D0",
+    "E0",
+    "F0",
+    "G0",
+    "H0",
+};
+
+#if 0 /* unneeded? */
+const char _aszRMBChar[][3]=
+{
+    "AA",
+    "AA",
+    "AA",
+    "AA",
+    /*
+    "DA",
+    "DA",
+    "DA",
+    "DA",
+    "DA",
+    */
+    "AA",
+    "AA",
+    "AA",
+    "AA",
+    "AA",
+    //
+    "AL",
+    "DL",
+    "AM",
+    "DM",
+    "AS",
+    "DS",
+    "AA",
+    "DA",
+};
+#endif
+
+const char _aszRMBCharQ[][3]=
+{
+    "AA",
+    "BA",
+    "AL",
+    "BL",
+    "AM",
+    "BM",
+    "AS",
+    "BS",
+    "GA",
+    "GL",
+    "GM",
+    "GS"
+};
+
+} // namespace
+
+
 uint32_t WorldMap::m_uRegionCount;
 std::unique_ptr<Region_Daggerfall[]> WorldMap::m_pRegions;
-std::map<uint64_t, Location_Daggerfall *> WorldMap::m_MapLoc;
+LocationMap WorldMap::m_MapLoc;
 std::map<uint64_t, WorldCell *> WorldMap::m_MapCell;
-std::map<std::string, Location_Daggerfall *> WorldMap::m_MapNames;
+NameLocationMap WorldMap::m_MapNames;
 bool WorldMap::m_bMapLoaded = false;
 
 ///////////////////////////////////////////////////////
@@ -67,7 +208,7 @@ void Location_Daggerfall::Save(FILE *f)
     }
 }
 
-bool Location_Daggerfall::Load(FILE *f, std::map<uint64_t, Location_Daggerfall *>& mapLoc, std::map<std::string, Location_Daggerfall *>& mapNames)
+bool Location_Daggerfall::Load(FILE *f, LocationMap &mapLoc, NameLocationMap &mapNames)
 {
     fread(m_szName,       1, 32, f);
     fread(&m_x,           1, sizeof(float), f);
@@ -102,11 +243,122 @@ bool Location_Daggerfall::Load(FILE *f, std::map<uint64_t, Location_Daggerfall *
     }
 
     //Add to map.
-    uint64_t uKey     = (uint64_t)((int32_t)m_y>>3)<<32ULL | (uint64_t)((int32_t)m_x>>3);
+    uint64_t uKey = (uint64_t)((int32_t)m_y>>3)<<32ULL |
+                    ((uint64_t)((int32_t)m_x>>3)&0xffffffff);
     mapLoc[uKey] = this;
     mapNames[m_szName] = this;
 
     return true;
+}
+
+
+void Location_Daggerfall::LoadLoc(const char *pData, int index, const int RegIdx, LocationMap &mapLoc, NameLocationMap &mapNames)
+{
+    int nPreRecCount = *((const int*)&pData[index]);
+    index += 4;
+
+    const uint8_t *PreRecords = nullptr;
+    if(nPreRecCount > 0)
+    {
+        PreRecords = (const uint8_t*)&pData[index];
+        index += nPreRecCount*6;
+    }
+    const LocationRec *pLocation = (const LocationRec*)&pData[index];
+    index += sizeof(LocationRec);
+    m_LocationID = pLocation->LocationID;
+    m_OrigX      = pLocation->XPosition;
+    m_OrigY      = pLocation->YPosition;
+    m_x          = (float)pLocation->XPosition / 4096.0f;
+    m_y          = (float)pLocation->YPosition / 4096.0f;
+    strcpy(m_szName, pLocation->LocationName);
+
+    uint64_t uKey = (uint64_t)((int32_t)m_y>>3)<<32ULL |
+                    ((uint64_t)((int32_t)m_x>>3)&0xffffffff);
+    mapLoc[uKey] = this;
+
+    m_BlockWidth  = 0;
+    m_BlockHeight = 0;
+    m_pBlockNames = nullptr;
+
+    if ( pLocation->LocType == 0x00008000 )
+    {
+        //town or exterior location.
+        index += 5; //unknown...
+        index += 26*pLocation->PostRecCount;    //post records.
+        index += 32;    //"Another name"
+        /*int locID2 = *((const int*)&pData[index]);*/ index += 4;
+        index += 4; //unknowns
+        char BlockWidth  = pData[index]; index++;
+        char BlockHeight = pData[index]; index++;
+        index += 7; //unknowns
+        const char *BlockFileIndex  = &pData[index]; index += 64;
+        const char *BlockFileNumber = &pData[index]; index += 64;
+        const uint8_t *BlockFileChar = (const uint8_t*)&pData[index]; index += 64;
+        m_BlockWidth  = BlockWidth;
+        m_BlockHeight = BlockHeight;
+        m_pBlockNames.reset(new LocName[BlockWidth*BlockHeight]);
+        char szName[64];
+        for (int by=0; by<BlockHeight; by++)
+        {
+            for (int bx=0; bx<BlockWidth; bx++)
+            {
+                int bidx = by*BlockWidth + bx;
+                int bfileidx = BlockFileIndex[bidx];
+                if ( BlockFileIndex[bidx] == 13 || BlockFileIndex[bidx] == 14 )
+                {
+                    if ( BlockFileChar[bidx] > 0x07 )
+                    {
+                        sprintf(szName, "%s%s%s.RMB", _aszRMBHead[bfileidx], "GA", _aszRMBTemple[BlockFileNumber[bidx]&0x07]);
+                    }
+                    else
+                    {
+                        sprintf(szName, "%s%s%s.RMB", _aszRMBHead[bfileidx], "AA", _aszRMBTemple[BlockFileNumber[bidx]&0x07]);
+                    }
+
+                    if ( !ArchiveManager::GameFile_Open(ARCHIVETYPE_BSA, "BLOCKS.BSA", szName) )
+                    {
+                        char szNameTmp[32];
+                        sprintf(szNameTmp, "%s??%s.RMB", _aszRMBHead[bfileidx], _aszRMBTemple[BlockFileNumber[bidx]&0x07]);
+                        ArchiveManager::GameFile_SearchForFile(ARCHIVETYPE_BSA, "BLOCKS.BSA", szNameTmp, szName);
+                    }
+                    ArchiveManager::GameFile_Close();
+                }
+                else
+                {
+                    int Q = BlockFileChar[bidx]/16;
+                    if ( BlockFileIndex[bidx] == 40 )   //"CUST"
+                    {
+                        if ( RegIdx == 20 )  //Sentinel logic
+                        {
+                            Q = 8;
+                        }
+                        else
+                        {
+                            Q = 0;
+                        }
+                    }
+                    else if ( RegIdx == 23 )
+                    {
+                        if (Q>0) Q--;
+                    }
+                    sprintf(szName, "%s%s%02d.RMB", _aszRMBHead[bfileidx], _aszRMBCharQ[Q], BlockFileNumber[bidx]);
+                    assert(Q < 12);
+                    //does this file exist?
+                    if ( !ArchiveManager::GameFile_Open(ARCHIVETYPE_BSA, "BLOCKS.BSA", szName) )
+                    {
+                        char szNameTmp[32];
+                        sprintf(szNameTmp, "%s??%02d.RMB", _aszRMBHead[bfileidx], BlockFileNumber[bidx]);
+                        ArchiveManager::GameFile_SearchForFile(ARCHIVETYPE_BSA, "BLOCKS.BSA", szNameTmp, szName);
+                    }
+                    ArchiveManager::GameFile_Close();
+                }
+                strcpy(m_pBlockNames[bidx].szName, szName);
+            }
+        }
+    }
+
+    //Add to map.
+    mapNames[m_szName] = this;
 }
 
 
@@ -131,7 +383,7 @@ void Region_Daggerfall::Save(FILE *f)
     }
 }
 
-bool Region_Daggerfall::Load(FILE *f, std::map<uint64_t, Location_Daggerfall *>& mapLoc, std::map<std::string, Location_Daggerfall *>& mapNames)
+bool Region_Daggerfall::Load(FILE *f, LocationMap &mapLoc, NameLocationMap &mapNames)
 {
     fread(&m_uLocationCount, 1, sizeof(uint32_t), f);
     m_pLocations.reset(new Location_Daggerfall[m_uLocationCount]);
@@ -218,139 +470,6 @@ void WorldMap::Save()
         fclose(f);
     }
 }
-
-#pragma pack(push)
-#pragma pack(1)
-
-struct LocationRec
-{
-    int32_t oneValue;
-    int16_t NullValue1;
-    int8_t  NullValue2;
-    int32_t XPosition;
-    int32_t NullValue3;
-    int32_t YPosition;
-    int32_t LocType;
-    int32_t Unknown2;
-    int32_t Unknown3;
-    int16_t oneValue2;
-    uint16_t LocationID;
-    int32_t NullValue4;
-    int16_t Unknown4;
-    int32_t Unknown5;
-    char NullValue[26];
-    char LocationName[32];
-    char Unknowns[9];
-    int16_t PostRecCount;
-};
-
-#pragma pack(pop)
-
-const char *_aszRMBHead[]=
-{
-    "TVRN",
-    "GENR",
-    "RESI",
-    "WEAP",
-    "ARMR",
-    "ALCH",
-    "BANK",
-    "BOOK",
-    "CLOT",
-    "FURN",
-    "GEMS",
-    "LIBR",
-    "PAWN",
-    "TEMP",
-    "TEMP",
-    "PALA",
-    "FARM",
-    "DUNG",
-    "CAST",
-    "MANR",
-    "SHRI",
-    "RUIN",
-    "SHCK",
-    "GRVE",
-    "FILL",
-    "KRAV",
-    "KDRA",
-    "KOWL",
-    "KMOO",
-    "KCAN",
-    "KFLA",
-    "KHOR",
-    "KROS",
-    "KWHE",
-    "KSCA",
-    "KHAW",
-    "MAGE",
-    "THIE",
-    "DARK",
-    "FIGH",
-    "CUST",
-    "WALL",
-    "MARK",
-    "SHIP",
-    "WITC"
-};
-
-const char *_aszRMBTemple[]=
-{
-    "A0",
-    "B0",
-    "C0",
-    "D0",
-    "E0",
-    "F0",
-    "G0",
-    "H0",
-};
-
-const char *_aszRMBChar[]=
-{
-    "AA",
-    "AA",
-    "AA",
-    "AA",
-    /*
-    "DA",
-    "DA",
-    "DA",
-    "DA",
-    "DA",
-    */
-    "AA",
-    "AA",
-    "AA",
-    "AA",
-    "AA",
-    //
-    "AL",
-    "DL",
-    "AM",
-    "DM",
-    "AS",
-    "DS",
-    "AA",
-    "DA",
-};
-
-const char *_aszRMBCharQ[]=
-{
-    "AA",
-    "BA",
-    "AL",
-    "BL",
-    "AM",
-    "BM",
-    "AS",
-    "BS",
-    "GA",
-    "GL",
-    "GM",
-    "GS"
-};
 
 //generate the cached data.
 bool WorldMap::Cache()
@@ -448,104 +567,7 @@ bool WorldMap::Cache()
                 for (int i=0; i<nLocationCount; i++)
                 {
                     index = base_index + offsets[i];
-                    int nPreRecCount = *((int *)&pData[index]); index += 4;
-                    uint8_t *PreRecords = nullptr;
-                    if ( nPreRecCount > 0 )
-                    {
-                        PreRecords = (uint8_t *)&pData[index]; index += nPreRecCount*6;
-                    }
-                    LocationRec *pLocation = (LocationRec *)&pData[index];
-                    index += sizeof(LocationRec);
-                    m_pRegions[r].m_pLocations[i].m_LocationID = pLocation->LocationID;
-                    m_pRegions[r].m_pLocations[i].m_OrigX      = pLocation->XPosition;
-                    m_pRegions[r].m_pLocations[i].m_OrigY      = pLocation->YPosition;
-                    m_pRegions[r].m_pLocations[i].m_x          = (float)pLocation->XPosition / 4096.0f;
-                    m_pRegions[r].m_pLocations[i].m_y          = (float)pLocation->YPosition / 4096.0f;
-                    strcpy(m_pRegions[r].m_pLocations[i].m_szName, pLocation->LocationName);
-
-                    uint64_t uKey       = (uint64_t)m_pRegions[r].m_pLocations[i].m_y<<32ULL | (uint64_t)m_pRegions[r].m_pLocations[i].m_x;
-                    m_MapLoc[uKey] = &m_pRegions[r].m_pLocations[i];
-
-                    m_pRegions[r].m_pLocations[i].m_BlockWidth  = 0;
-                    m_pRegions[r].m_pLocations[i].m_BlockHeight = 0;
-                    m_pRegions[r].m_pLocations[i].m_pBlockNames = nullptr;
-
-                    if ( pLocation->LocType == 0x00008000 )
-                    {
-                        //town or exterior location.
-                        index += 5; //unknown...
-                        index += 26*pLocation->PostRecCount;    //post records.
-                        index += 32;    //"Another name"
-                        int locID2 = *((int *)&pData[index]); index += 4;
-                        index += 4; //unknowns
-                        char BlockWidth  = pData[index]; index++;
-                        char BlockHeight = pData[index]; index++;
-                        index += 7; //unknowns
-                        char *BlockFileIndex  = &pData[index]; index += 64;
-                        char *BlockFileNumber = &pData[index]; index += 64;
-                        uint8_t *BlockFileChar = (uint8_t *)&pData[index]; index += 64;
-                        m_pRegions[r].m_pLocations[i].m_BlockWidth  = BlockWidth;
-                        m_pRegions[r].m_pLocations[i].m_BlockHeight = BlockHeight;
-                        m_pRegions[r].m_pLocations[i].m_pBlockNames.reset(
-                            new Location_Daggerfall::LocName[BlockWidth*BlockHeight]);
-                        char szName[64];
-                        for (int by=0; by<BlockHeight; by++)
-                        {
-                            for (int bx=0; bx<BlockWidth; bx++)
-                            {
-                                int bidx = by*BlockWidth + bx;
-                                if ( BlockFileIndex[bidx] == 13 || BlockFileIndex[bidx] == 14 )
-                                {
-                                    if ( BlockFileChar[bidx] > 0x07 )
-                                    {
-                                        sprintf(szName, "%s%s%s.RMB", _aszRMBHead[ BlockFileIndex[bidx] ], "GA", _aszRMBTemple[BlockFileNumber[bidx]&0x07]);
-                                    }
-                                    else
-                                    {
-                                        sprintf(szName, "%s%s%s.RMB", _aszRMBHead[ BlockFileIndex[bidx] ], "AA", _aszRMBTemple[BlockFileNumber[bidx]&0x07]);
-                                    }
-
-                                    if ( !ArchiveManager::GameFile_Open(ARCHIVETYPE_BSA, "BLOCKS.BSA", szName) )
-                                    {
-                                        char szNameTmp[32];
-                                        sprintf(szNameTmp, "%s??%s.RMB", _aszRMBHead[ BlockFileIndex[bidx] ], _aszRMBTemple[BlockFileNumber[bidx]&0x07]);
-                                        ArchiveManager::GameFile_SearchForFile(ARCHIVETYPE_BSA, "BLOCKS.BSA", szNameTmp, szName);
-                                    }
-                                    ArchiveManager::GameFile_Close();
-                                }
-                                else
-                                {
-                                    int Q = BlockFileChar[bidx]/16;
-                                    if ( BlockFileIndex[bidx] == 40 )   //"CUST"
-                                    {
-                                        if ( r == 20 )  //Sentinel logic
-                                        {
-                                            Q = 8;
-                                        }
-                                        else
-                                        {
-                                            Q = 0;
-                                        }
-                                    }
-                                    else if ( r == 23 )
-                                    {
-                                        if (Q>0) Q--;
-                                    }
-                                    sprintf(szName, "%s%s%02d.RMB", _aszRMBHead[ BlockFileIndex[bidx] ], _aszRMBCharQ[Q], BlockFileNumber[bidx]);
-                                    assert(Q < 12);
-                                    //does this file exist?
-                                    if ( !ArchiveManager::GameFile_Open(ARCHIVETYPE_BSA, "BLOCKS.BSA", szName) )
-                                    {
-                                        char szNameTmp[32];
-                                        sprintf(szNameTmp, "%s??%02d.RMB", _aszRMBHead[ BlockFileIndex[bidx] ], BlockFileNumber[bidx]);
-                                        ArchiveManager::GameFile_SearchForFile(ARCHIVETYPE_BSA, "BLOCKS.BSA", szNameTmp, szName);
-                                    }
-                                    ArchiveManager::GameFile_Close();
-                                }
-                                strcpy(m_pRegions[r].m_pLocations[i].m_pBlockNames[bidx].szName, szName);
-                            }
-                        }
-                    }
+                    m_pRegions[r].m_pLocations[i].LoadLoc(pData, index, r, m_MapLoc, m_MapNames);
                 }
             }
         }
@@ -582,7 +604,7 @@ bool WorldMap::Cache()
                     index = base_index + pOffsets[i].Offset;
 
                     //find matching exterior record...
-                    Location_Daggerfall *pCurLoc=nullptr;
+                    Location_Daggerfall *pCurLoc = nullptr;
                     for (int e=0; e<(int)m_pRegions[r].m_uLocationCount; e++)
                     {
                         if ( m_pRegions[r].m_pLocations[e].m_LocationID == pOffsets[i].ExteriorLocID )
@@ -660,47 +682,32 @@ bool WorldMap::Cache()
 
 Location_Daggerfall *WorldMap::GetLocation(int32_t x, int32_t y)
 {
-    Location_Daggerfall *pLoc = nullptr;
-
-    uint64_t uKey = (uint64_t)y<<32ULL | (uint64_t)x;
-    std::map<uint64_t, Location_Daggerfall *>::iterator iLoc = m_MapLoc.find(uKey);
-    if ( iLoc != m_MapLoc.end() )
-    {
-        pLoc = iLoc->second;
-    }
-
-    return pLoc;
+    uint64_t uKey = ((uint64_t)y<<32ULL) | ((uint64_t)x&0xffffffff);
+    auto iLoc = m_MapLoc.find(uKey);
+    if(iLoc != m_MapLoc.end())
+        return iLoc->second;
+    return nullptr;
 }
 
 Location_Daggerfall *WorldMap::GetLocation(const char *pszName)
 {
-    Location_Daggerfall *pLoc = nullptr;
-
-    std::map<std::string, Location_Daggerfall *>::iterator iLoc = m_MapNames.find(pszName);
-    if ( iLoc != m_MapNames.end() )
-    {
-        pLoc = iLoc->second;
-    }
-
-    return pLoc;
+    auto iLoc = m_MapNames.find(pszName);
+    if(iLoc != m_MapNames.end())
+        return iLoc->second;
+    return nullptr;
 }
 
 void WorldMap::SetWorldCell(int32_t x, int32_t y, WorldCell *pCell)
 {
-    uint64_t uKey = (uint64_t)y<<32ULL | (uint64_t)x;
+    uint64_t uKey = ((uint64_t)y<<32ULL) | ((uint64_t)x&0xffffffff);
     m_MapCell[uKey] = pCell;
 }
 
 WorldCell *WorldMap::GetWorldCell(int32_t x, int32_t y)
 {
-    WorldCell *pCell = nullptr;
-    uint64_t uKey = (uint64_t)y<<32ULL | (uint64_t)x;
-    std::map<uint64_t, WorldCell *>::iterator iLoc = m_MapCell.find(uKey);
-
-    if ( iLoc != m_MapCell.end() )
-    {
-        pCell = iLoc->second;
-    }
-
-    return pCell;
+    uint64_t uKey = ((uint64_t)y<<32ULL) | ((uint64_t)x&0xffffffff);
+    auto iLoc = m_MapCell.find(uKey);
+    if(iLoc != m_MapCell.end())
+        return iLoc->second;
+    return nullptr;
 }

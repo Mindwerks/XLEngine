@@ -6,7 +6,11 @@
 #include <string>
 #include <map>
 
+class Location_Daggerfall;
 class WorldCell;
+
+using NameLocationMap = std::map<std::string, Location_Daggerfall*>;
+using LocationMap = std::map<uint64_t, Location_Daggerfall*>;
 
 class Location_Daggerfall
 {
@@ -16,7 +20,9 @@ public:
 
     //Save and Load cached data.
     void Save(FILE *f);
-    bool Load(FILE *f, std::map<uint64_t, Location_Daggerfall *>& mapLoc, std::map<std::string, Location_Daggerfall *>& mapNames);
+    bool Load(FILE *f, LocationMap &mapLoc, NameLocationMap &mapNames);
+
+    void LoadLoc(const char *pData, int index, const int RegIdx, LocationMap &mapLoc, NameLocationMap &mapNames);
 
 public:
     struct LocName
@@ -94,9 +100,9 @@ private:
 public:
     static uint32_t m_uRegionCount;
     static std::unique_ptr<Region_Daggerfall[]> m_pRegions;
-    static std::map<uint64_t, Location_Daggerfall *> m_MapLoc;
+    static LocationMap m_MapLoc;
     static std::map<uint64_t, WorldCell *> m_MapCell;
-    static std::map<std::string, Location_Daggerfall *> m_MapNames;
+    static NameLocationMap m_MapNames;
     static bool m_bMapLoaded;
 };
 
