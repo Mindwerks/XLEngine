@@ -2,6 +2,8 @@
 #include "WorldCell.h"
 #include "LevelFunc_Default.h"
 
+#include <algorithm>
+
 std::vector<LevelFunc *> LevelFuncMgr::m_FuncList;
 std::vector<LevelFunc *> LevelFuncMgr::m_Active;
 std::vector<LevelFunc *> LevelFuncMgr::m_AddList;
@@ -72,16 +74,15 @@ void LevelFuncMgr::DestroyLevelFunc(LevelFunc *pFunc)
 
     RemoveFromActiveList(pFunc);
 
-    std::vector<LevelFunc *>::iterator iter = m_FuncList.begin();
-    std::vector<LevelFunc *>::iterator end  = m_FuncList.end();
-
-    for (; iter != end; ++iter)
+    const auto iter = std::find_if(m_FuncList.begin(), m_FuncList.end(),
+        [pFunc](const LevelFunc *levelFunc)
     {
-        if ( *iter == pFunc )
-        {
-            m_FuncList.erase( iter );
-            break;
-        }
+        return levelFunc == pFunc;
+    });
+
+    if (iter != m_FuncList.end())
+    {
+        m_FuncList.erase(iter);
     }
 
     delete pFunc;
@@ -117,20 +118,20 @@ void LevelFuncMgr::Update()
     //go through the remove list and remove classes...
     if ( m_RemoveList.size() )
     {
-        for (LevelFunc *remFunc : m_RemoveList)
+        for (const LevelFunc *remFunc : m_RemoveList)
         {
-            std::vector<LevelFunc *>::iterator iActive = m_Active.begin();
-            std::vector<LevelFunc *>::iterator eActive = m_Active.end();
-
-            for (; iActive!=eActive; ++iActive)
+            const auto iter = std::find_if(m_Active.begin(), m_Active.end(),
+                [remFunc](const LevelFunc *activeFunc)
             {
-                if ( *iActive == remFunc )
-                {
-                    m_Active.erase(iActive);
-                    break;
-                }
+                return activeFunc == remFunc;
+            });
+
+            if (iter != m_Active.end())
+            {
+                m_Active.erase(iter);
             }
         }
+
         m_RemoveList.clear();
     }
 }

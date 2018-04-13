@@ -6,6 +6,7 @@
 #include "../fileformats/TextureLoader.h"
 #include "../memory/ScratchPad.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cstdlib>
 #include <memory.h>
@@ -454,22 +455,17 @@ TextureHandle TextureCache::GameFile_LoadTexture(uint32_t uTextureType, uint32_t
 
 void TextureCache::FreeTexture(TextureHandle hTex)
 {
-    // Don't load the same texture twice
-    TextureMap::iterator iTexMap = m_TextureMap.begin();
-    TextureMap::iterator eTexMap = m_TextureMap.end();
-
-    TextureMap::iterator iTexFound = eTexMap;
-
-    for (; iTexMap != eTexMap; ++iTexMap)
+    // Don't load the same texture twice.
+    const auto iter = std::find_if(m_TextureMap.rbegin(), m_TextureMap.rend(),
+        [hTex](const std::pair<std::string, TextureCache::Texture> &pair)
     {
-        if ( iTexMap->second.hHandle == hTex )
-        {
-            iTexFound = iTexMap;
-        }
-    }
-    if ( iTexFound != eTexMap )
+        return pair.second.hHandle == hTex;
+    });
+
+    if (iter != m_TextureMap.rend())
     {
-        m_TextureMap.erase( iTexFound );
+        // Convert reverse iterator to forward iterator.
+        m_TextureMap.erase(std::next(iter).base());
     }
 
     m_pDriver->FreeTexture( hTex );

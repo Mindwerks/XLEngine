@@ -9,8 +9,9 @@
 #include "../fileformats/Location_Daggerfall.h"
 #include "../fileformats/CellManager.h"
 
-#include <string>
+#include <algorithm>
 #include <cstdio>
+#include <string>
 
 World::World()
 {
@@ -52,16 +53,16 @@ bool World::AddWorldCell(WorldCell *pCell)
 
 void World::RemoveWorldCell(WorldCell *pCell)
 {
-    std::vector<WorldCell *>::iterator iCell = m_WorldCells.begin();
-    std::vector<WorldCell *>::iterator eCell = m_WorldCells.end();
-    for (; iCell != eCell; ++iCell)
+    const auto iter = std::find_if(m_WorldCells.begin(), m_WorldCells.end(),
+        [pCell](const WorldCell *worldCell)
     {
-        if ( *iCell == pCell )
-        {
-            xlDelete pCell;
-            m_WorldCells.erase( iCell );
-            break;
-        }
+        return worldCell == pCell;
+    });
+
+    if (iter != m_WorldCells.end())
+    {
+        xlDelete pCell;
+        m_WorldCells.erase(iter);
     }
 }
 
