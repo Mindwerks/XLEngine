@@ -376,7 +376,7 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 # Copy required resources to the build directory
 add_custom_command(
     TARGET XLEngine POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${XLEngine_SOURCE_DIR}/XLEngine.conf $<TARGET_FILE_DIR:XLEngine>/
+    # COMMAND ${CMAKE_COMMAND} -E copy_if_different ${XLEngine_SOURCE_DIR}/XLEngine.conf $<TARGET_FILE_DIR:XLEngine>/
     COMMAND ${CMAKE_COMMAND} -E copy_directory    ${XLEngine_SOURCE_DIR}/resources     $<TARGET_FILE_DIR:XLEngine>/
     COMMENT "Copy required resources to the build directory"
     VERBATIM
