@@ -22,7 +22,7 @@ class Vector3
 public:
     Vector3() { x = 0.0f; y = 0.0f; z = 0.0f; }
     Vector3(float _x, float _y, float _z) { x = _x; y = _y; z = _z; }
-    ~Vector3() {;}
+    ~Vector3() = default;
 
     float Length()
     {
@@ -100,8 +100,8 @@ public:
     inline Vector3 operator/(float scale) { return Vector3(x/scale, y/scale, z/scale); }
     inline Vector3 operator-() { return Vector3(-x, -y, -z); }
 
-    inline bool operator==(Vector3& other) { return ( fabsf(x-other.x)<VEC_EPS && fabsf(y-other.y)<VEC_EPS && fabsf(z-other.z)<VEC_EPS )?(true):(false); }
-    inline bool operator!=(Vector3& other) { return ( fabsf(x-other.x)>VEC_EPS || fabsf(y-other.y)>VEC_EPS || fabsf(z-other.z)>VEC_EPS )?(true):(false); }
+    inline bool operator==(const Vector3& other) const { return ( fabsf(x-other.x)<VEC_EPS && fabsf(y-other.y)<VEC_EPS && fabsf(z-other.z)<VEC_EPS )?(true):(false); }
+    inline bool operator!=(const Vector3& other) const { return ( fabsf(x-other.x)>VEC_EPS || fabsf(y-other.y)>VEC_EPS || fabsf(z-other.z)>VEC_EPS )?(true):(false); }
 
     inline float Mag2() { return (x*x+y*y+z*z); }
     inline float Max() { return ( (x>y)?(x>z?x:z):(y>z?y:z) ); }
@@ -127,9 +127,12 @@ public:
 
     float x, y, z;
 
-    static Vector3 One;
-    static Vector3 Half;
-    static Vector3 Zero;
+    static const Vector3 One;
+    static const Vector3 Half;
+    static const Vector3 Zero;
+    static const Vector3 UnitX;
+    static const Vector3 UnitY;
+    static const Vector3 UnitZ;
 };
 
 #endif //VECTOR3_H

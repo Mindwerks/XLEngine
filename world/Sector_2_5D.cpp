@@ -450,7 +450,7 @@ void Sector_2_5D::RenderSectors(IDriver3D *pDriver, WorldCell *pCell, Camera *pC
     projMtx.ProjOrtho((float)1024, (float)768);
 
     pDriver->SetProjMtx( &projMtx );
-    pDriver->SetViewMatrix( &Matrix::s_Identity, &Vector3(0,0,0), &Vector3(0,0,1) );
+    pDriver->SetViewMatrix( &Matrix::s_Identity, &Vector3::Zero, &Vector3::UnitZ );
     pDriver->SetWorldMatrix( &Matrix::s_Identity, 0, 0 );
 
     pDriver->EnableDepthWrite(false);
@@ -1830,7 +1830,7 @@ void Sector_2_5D::Visibility2D(const Vector3& cPos, Vector2 fL, Vector2 fR, uint
         bool bVisible = true;
         if ( ClipAgainstFrustum(v0, v1, ws[0], ws[1], bVisible) )
         {
-            m_Camera2D.TransformPointsSS_2D(2, ws, ss, Vector2(0.0f, 0.0f));
+            m_Camera2D.TransformPointsSS_2D(2, ws, ss, Vector2::Zero);
         }
         else
         {

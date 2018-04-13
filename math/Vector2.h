@@ -24,7 +24,7 @@ class Vector2
 public:
     Vector2() { x = 0.0f; y = 0.0f; }
     Vector2(float _x, float _y) { x = _x; y = _y; }
-    ~Vector2() {;}
+    ~Vector2() = default;
 
     float Normalize();
     float Length()
@@ -96,9 +96,11 @@ public:
 
     float x, y;
 
-    static Vector2 One;
-    static Vector2 Half;
-    static Vector2 Zero;
+    static const Vector2 One;
+    static const Vector2 Half;
+    static const Vector2 Zero;
+    static const Vector2 UnitX;
+    static const Vector2 UnitY;
 };
 
 #endif //VECTOR2_H

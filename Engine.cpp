@@ -261,11 +261,8 @@ bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
                 Matrix projMtx;
                 projMtx.ProjOrtho((float)m_nWidth, (float)m_nHeight);
 
-                Vector3 pLoc = Vector3(0,0,0);
-                Vector3 pDir = Vector3(0,0,1);
-
                 m_pDriver3D->SetProjMtx( &projMtx );
-                m_pDriver3D->SetViewMatrix( &Matrix::s_Identity, &pLoc, &pDir);
+                m_pDriver3D->SetViewMatrix( &Matrix::s_Identity, &Vector3::Zero, &Vector3::UnitZ);
                 m_pDriver3D->SetWorldMatrix( &Matrix::s_Identity, 0, 0 );
 
                 //now only wait so long...
@@ -841,11 +838,8 @@ bool Engine::Loop(float fDeltaTime, bool bFullspeed)
             Matrix projMtx;
             projMtx.ProjOrtho((float)m_nWidth, (float)m_nHeight);
 
-            Vector3 pDir = Vector3(0,0,0);
-            Vector3 pLoc = Vector3(0,0,1);
-
             m_pDriver3D->SetProjMtx( &projMtx );
-            m_pDriver3D->SetViewMatrix( &Matrix::s_Identity, &pDir, &pLoc );
+            m_pDriver3D->SetViewMatrix( &Matrix::s_Identity, &Vector3::Zero, &Vector3::UnitZ);
             m_pDriver3D->SetWorldMatrix( &Matrix::s_Identity, 0, 0 );
 
             //call game PostWorld Render (usually UI).
