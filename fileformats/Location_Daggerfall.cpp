@@ -9,7 +9,6 @@
 #include <cstring>
 #include <cassert>
 
-#define CACHED_FILE_VERSION 0x01
 
 namespace
 {
@@ -174,84 +173,6 @@ Location_Daggerfall::~Location_Daggerfall()
 {
 }
 
-//Save and Load cached data.
-void Location_Daggerfall::Save(FILE *f)
-{
-    fwrite(m_szName,       1, 32, f);
-    fwrite(&m_x,           1, sizeof(float), f);
-    fwrite(&m_y,           1, sizeof(float), f);
-    fwrite(&m_OrigX,       1, sizeof(int32_t), f);
-    fwrite(&m_OrigY,       1, sizeof(int32_t), f);
-    fwrite(&m_waterHeight, 1, sizeof(int32_t), f);
-    fwrite(&m_Long,        1, sizeof(int32_t), f);
-    fwrite(&m_Lat,         1, sizeof(int32_t), f);
-    fwrite(&m_LocationID,  1, sizeof(uint32_t), f);
-    fwrite(&m_BlockWidth,  1, sizeof(int32_t), f);
-    fwrite(&m_BlockHeight, 1, sizeof(int32_t), f);
-    fwrite(&m_locType,     1, sizeof(int16_t), f);
-    fwrite(&m_locCat,      1, sizeof(int16_t), f);
-
-    for (int b=0; b<m_BlockWidth*m_BlockHeight; b++)
-    {
-        fwrite(m_pBlockNames[b].szName, 1, 32, f);
-    }
-
-    //dungeon data...
-    fwrite(&m_dungeonBlockCnt,   1, sizeof(int16_t), f);
-    fwrite(&m_startDungeonBlock, 1, sizeof(int16_t), f);
-
-    for (int b=0; b<m_dungeonBlockCnt; b++)
-    {
-        fwrite(m_pDungeonBlocks[b].szName, 1, 16, f);
-        fwrite(&m_pDungeonBlocks[b].x, 1, sizeof(int16_t), f);
-        fwrite(&m_pDungeonBlocks[b].y, 1, sizeof(int16_t), f);
-    }
-}
-
-bool Location_Daggerfall::Load(FILE *f, LocationMap &mapLoc, NameLocationMap &mapNames)
-{
-    fread(m_szName,       1, 32, f);
-    fread(&m_x,           1, sizeof(float), f);
-    fread(&m_y,           1, sizeof(float), f);
-    fread(&m_OrigX,       1, sizeof(int32_t), f);
-    fread(&m_OrigY,       1, sizeof(int32_t), f);
-    fread(&m_waterHeight, 1, sizeof(int32_t), f);
-    fread(&m_Long,        1, sizeof(int32_t), f);
-    fread(&m_Lat,         1, sizeof(int32_t), f);
-    fread(&m_LocationID,  1, sizeof(uint32_t), f);
-    fread(&m_BlockWidth,  1, sizeof(int32_t), f);
-    fread(&m_BlockHeight, 1, sizeof(int32_t), f);
-    fread(&m_locType,     1, sizeof(int16_t), f);
-    fread(&m_locCat,      1, sizeof(int16_t), f);
-
-    m_pBlockNames.reset(new Location_Daggerfall::LocName[m_BlockWidth*m_BlockHeight]);
-    for (int b=0; b<m_BlockWidth*m_BlockHeight; b++)
-    {
-        fread(m_pBlockNames[b].szName, 1, 32, f);
-    }
-
-    //dungeon data...
-    fread(&m_dungeonBlockCnt,   1, sizeof(int16_t), f);
-    fread(&m_startDungeonBlock, 1, sizeof(int16_t), f);
-
-    m_pDungeonBlocks.reset(new DungeonBlock[m_dungeonBlockCnt]);
-    for (int b=0; b<m_dungeonBlockCnt; b++)
-    {
-        fread( m_pDungeonBlocks[b].szName, 1, 16, f);
-        fread(&m_pDungeonBlocks[b].x, 1, sizeof(int16_t), f);
-        fread(&m_pDungeonBlocks[b].y, 1, sizeof(int16_t), f);
-    }
-
-    //Add to map.
-    uint64_t uKey = (uint64_t)((int32_t)m_y>>3)<<32ULL |
-                    ((uint64_t)((int32_t)m_x>>3)&0xffffffff);
-    mapLoc[uKey] = this;
-    mapNames[m_szName] = this;
-
-    return true;
-}
-
-
 void Location_Daggerfall::LoadLoc(const char *pData, int index, const int RegIdx, LocationMap &mapLoc, NameLocationMap &mapNames)
 {
     int nPreRecCount = *((const int*)&pData[index]);
@@ -373,29 +294,6 @@ Region_Daggerfall::~Region_Daggerfall()
 {
 }
 
-//Save and load cached data.
-void Region_Daggerfall::Save(FILE *f)
-{
-    fwrite(&m_uLocationCount, 1, sizeof(uint32_t), f);
-    for (uint32_t l=0; l<m_uLocationCount; l++)
-    {
-        m_pLocations[l].Save(f);
-    }
-}
-
-bool Region_Daggerfall::Load(FILE *f, LocationMap &mapLoc, NameLocationMap &mapNames)
-{
-    fread(&m_uLocationCount, 1, sizeof(uint32_t), f);
-    m_pLocations.reset(new Location_Daggerfall[m_uLocationCount]);
-    for (uint32_t l=0; l<m_uLocationCount; l++)
-    {
-        m_pLocations[l].Load(f, mapLoc, mapNames);
-    }
-
-    return true;
-}
-
-
 ///////////////////////////////////////////////////////
 // World Map
 ///////////////////////////////////////////////////////
@@ -413,62 +311,13 @@ void WorldMap::Destroy()
 //load cached data from disk if present.
 bool WorldMap::Load()
 {
-    if ( m_bMapLoaded )
-    {
-        return true;
-    }
-
-    // TODO: Disabled until a proper cache location can be handled.
-    bool bSuccess;
-    FILE *f = nullptr;//fopen(szCachedFile, "rb");
-    if ( f )
-    {
-        int version;
-        fread(&version, 1, sizeof(int), f);
-        //if the version doesn't match, the data needs to be re-cached.
-        if ( version != CACHED_FILE_VERSION )
-        {
-            fclose(f);
-            return Cache();
-        }
-        fread(&m_uRegionCount, 1, sizeof(uint32_t), f);
-        m_pRegions.reset(new Region_Daggerfall[m_uRegionCount]);
-
-        for (uint32_t r=0; r<m_uRegionCount; r++)
-        {
-            m_pRegions[r].Load(f, m_MapLoc, m_MapNames);
-        }
-
-        fclose(f);
-        bSuccess = true;
-    }
-    else
+    bool bSuccess = true;
+    if(!m_bMapLoaded)
     {
         bSuccess = Cache();
+        m_bMapLoaded = true;
     }
-
-    m_bMapLoaded = true;
     return bSuccess;
-}
-
-//save cache data to disk.
-void WorldMap::Save()
-{
-    // TODO: Disabled until a proper cache location can be handled.
-    FILE *f = nullptr;//fopen(szCachedFile, "wb");
-    if ( f )
-    {
-        int version = CACHED_FILE_VERSION;
-        fwrite(&version, 1, sizeof(int), f);
-        fwrite(&m_uRegionCount, 1, sizeof(uint32_t), f);
-
-        for (uint32_t r=0; r<m_uRegionCount; r++)
-        {
-            m_pRegions[r].Save(f);  
-        }
-
-        fclose(f);
-    }
 }
 
 //generate the cached data.
@@ -674,8 +523,6 @@ bool WorldMap::Cache()
     //just to make sure...
     ScratchPad::FreeFrame();
     m_bMapLoaded = true;
-
-    Save();
 
     return true;
 }
