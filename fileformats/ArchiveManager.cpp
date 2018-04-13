@@ -22,12 +22,12 @@ const char *ArchiveManager::m_apszArchiveExt[]=
 std::map<std::string, Archive *> ArchiveManager::m_OpenArchives;
 std::vector<Archive *> ArchiveManager::m_ArchiveList;
 Archive *ArchiveManager::m_pCurArchive;
-FILE *ArchiveManager::s_pCurrentSysFile;
+istream_ptr ArchiveManager::sCurrentSysFile;
 
 void ArchiveManager::Init()
 {
-    m_pCurArchive=nullptr;
-    s_pCurrentSysFile=nullptr;
+    m_pCurArchive = nullptr;
+    sCurrentSysFile = nullptr;
     TextureLoader::Init();
 }
 
@@ -184,38 +184,35 @@ void ArchiveManager::GameFile_Close()
     m_pCurArchive=nullptr;
 }
 
-int32_t ArchiveManager::File_Open(const char *pszFileName)
+int32_t ArchiveManager::File_Open(const char *fname)
 {
-    if ( s_pCurrentSysFile )
+    if(sCurrentSysFile)
         return 0;
 
-    char szFileName[260];
-    sprintf(szFileName, "%s%s", EngineSettings::get().GetGameDataDir(), pszFileName);
-    s_pCurrentSysFile = fopen(szFileName, "rb");
-    if ( s_pCurrentSysFile )
-        return 1;
-
+    sCurrentSysFile = Vfs::get().openInput(
+        std::string(EngineSettings::get().GetGameDataDir()) + fname
+    );
+    if(sCurrentSysFile) return 1;
     return 0;
 }
 
 uint32_t ArchiveManager::File_GetLength()
 {
     uint32_t uLen = 0;
-    if ( s_pCurrentSysFile )
+    if(sCurrentSysFile && sCurrentSysFile->seekg(0, std::ios_base::end))
     {
-        fseek(s_pCurrentSysFile, 0, SEEK_END);
-        uLen = (uint32_t)ftell(s_pCurrentSysFile);
-        fseek(s_pCurrentSysFile, 0, SEEK_SET);
+        uLen = sCurrentSysFile->tellg();
+        sCurrentSysFile->seekg(0);
     }
     return uLen;
 }
 
 void ArchiveManager::File_Read(void *pData, uint32_t uStart, uint32_t uLength)
 {
-    if ( s_pCurrentSysFile )
+    if(sCurrentSysFile)
     {
-        fseek(s_pCurrentSysFile, uStart, SEEK_SET);
-        fread(pData, uLength, 1, s_pCurrentSysFile);
+        sCurrentSysFile->seekg(uStart);
+        sCurrentSysFile->read(reinterpret_cast<char*>(pData), uLength);
     }
 }
 
@@ -226,9 +223,5 @@ void *ArchiveManager::File_GetFileInfo()
 
 void ArchiveManager::File_Close()
 {
-    if ( s_pCurrentSysFile )
-    {
-        fclose(s_pCurrentSysFile);
-    }
-    s_pCurrentSysFile = nullptr;
+    sCurrentSysFile = nullptr;
 }

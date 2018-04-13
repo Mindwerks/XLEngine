@@ -3,6 +3,8 @@
 
 #include "../CommonTypes.h"
 #include "ArchiveTypes.h"
+#include "Vfs.h"
+
 #include <string>
 #include <vector>
 #include <map>
@@ -38,7 +40,7 @@ private:
     static std::map<std::string, Archive *> m_OpenArchives;
     static std::vector<Archive *> m_ArchiveList;
     static Archive *m_pCurArchive;
-    static FILE *s_pCurrentSysFile;
+    static istream_ptr sCurrentSysFile;
 };
 
 //helper defines.
