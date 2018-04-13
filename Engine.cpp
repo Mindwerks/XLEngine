@@ -8,7 +8,7 @@
 #else
     #include "render/linux/Driver3D_OGL_Linux.h"
     #include <memory.h>
-    #include <malloc.h>
+    #include <cstdlib>
 #endif
 #include "render/Camera.h"
 #include "render/TextureCache.h"

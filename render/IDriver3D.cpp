@@ -1,7 +1,7 @@
 #include "IDriver3D.h"
 #include "../math/Vector3.h"
 #include <cstdio>
-#include <malloc.h>
+#include <cstdlib>
 
 float LightObject::s_fAnimOffset0 = 0.0f;
 float LightObject::s_fAnimOffset1 = 0.0f;

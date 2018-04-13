@@ -11,7 +11,6 @@
 #include "../os/Clock.h"
 
 #include <cstdio>
-#include <malloc.h>
 #include <cfloat>
 #include <cstdlib>
 #include <cstdint>

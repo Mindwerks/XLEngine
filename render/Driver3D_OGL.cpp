@@ -3,7 +3,7 @@
 #include "../math/Math.h"
 #include "IndexBuffer.h"
 #include <cstdio>
-#include <malloc.h>
+#include <cstdlib>
 
 #if PLATFORM_WIN    //we have to include Windows.h before gl.h on Windows platforms.
     #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers

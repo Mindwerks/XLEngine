@@ -6,7 +6,7 @@
 #include "../../math/FixedPoint.h"
 #include "../../render/Camera.h"
 #include <cstdio>
-#include <malloc.h>
+#include <cstdlib>
 #include <cfloat>
 
 #if PLATFORM_WIN    //we have to include Windows.h before gl.h on Windows platforms.
