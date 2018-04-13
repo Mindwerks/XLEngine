@@ -11,9 +11,17 @@
     #include <windows.h>
 #endif
 
-#include <GL/glew.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
+#ifdef __APPLE__
+    #include <glew.h>
+    #include <OpenGL/gl.h>
+    #include <OpenGL/glu.h>
+#else
+    #include <GL/glew.h>
+    #include <GL/gl.h>
+    #include <GL/glu.h>
+#endif
+
+
 
 #define BUFFER_OFFSET(i) ((char *)nullptr + (i))
 
