@@ -3,6 +3,8 @@
 
 #include "../CommonTypes.h"
 #include "Archive.h"
+#include "Vfs.h"
+#include <string>
 #include <cstdio>
 
 class RFF_Reader : public Archive
@@ -42,9 +44,9 @@ private:
     uint32_t m_uFileCount;
     int32_t m_CurFile;
 
-    FILE *m_pFile;
-    FILE *m_pFileLocal;
-    char m_szFileName[64];
+    istream_ptr mFile;
+    istream_ptr mFileLocal;
+    std::string mFileName;
 };
 
 #endif //RFF_READER_H

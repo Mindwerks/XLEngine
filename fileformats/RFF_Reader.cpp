@@ -52,164 +52,149 @@ struct FileInfo
 RFF_Reader::RFF_Reader() : Archive()
 {
     m_CurFile = -1;
-    m_pFile = nullptr;
-    m_pFileLocal = nullptr;
     m_pFileList = nullptr;
     m_uFileCount = 0;
     m_bEncrypt = false;
 }
 
-bool RFF_Reader::Open(const char *pszName)
+bool RFF_Reader::Open(const char *name)
 {
-    sprintf(m_szFileName, "%s%s", EngineSettings::get().GetGameDataDir(), pszName);
+    mFileName = EngineSettings::get().GetGameDataDir();
+    mFileName += name;
 
-    FILE *f = fopen(m_szFileName, "rb");
-    if ( f )
+    auto file = Vfs::get().openInput(mFileName);
+    if(!file)
     {
-        fseek(f, 0, SEEK_END);
-        uint32_t len = ftell(f)+1;
-        fseek(f, 0, SEEK_SET);
-        ScratchPad::StartFrame();
-        uint8_t *pBuffer = (uint8_t *)ScratchPad::AllocMem(len);
-
-        RffHeader header;
-        fread(&header, sizeof(RffHeader), 1, f);
-        if ( (header.Magic[0] != 'R') || (header.Magic[1] != 'F') || (header.Magic[2] != 'F') || (header.Magic[3] != 0x1a) )
-        {
-            fclose(f);
-            XL_Console::PrintF("^1Error: %s not a valid .RFF file", pszName);
-            ScratchPad::FreeFrame();
-            return false;
-        }
-
-        if ( header.Version == 0x301 ) 
-            m_bEncrypt = true;
-        else
-            m_bEncrypt = false;
-
-        uint32_t uOffset  = header.DirOffset;
-        m_uFileCount = header.fileCount;
-
-        m_pFileList = xlNew RFF_File[m_uFileCount];
-
-        //Read directory.
-        DirectoryEntry *pDirectory = (DirectoryEntry *)pBuffer;
-        fseek(f, uOffset, SEEK_SET);
-        fread(pBuffer, sizeof(DirectoryEntry), m_uFileCount, f);
-        fclose(f);
-
-        // Decrypt the directory (depend on the version)
-        if ( m_bEncrypt )
-        {
-            uint8_t CryptoByte = (uint8_t)header.DirOffset;
-            for (uint32_t i = 0; i < m_uFileCount * sizeof(DirectoryEntry); i += 2)
-            {
-                pBuffer[i+0] ^= CryptoByte;
-                pBuffer[i+1] ^= CryptoByte;
-                CryptoByte++;
-            }
-        }
-
-        DirectoryEntry *pDirectoryEntry = (DirectoryEntry *)pBuffer;
-
-        //Now go through each file listing and fill out the RFF_File structure.
-        char szFileName[9];
-        char szFileExtension[4];
-        for(uint32_t i=0, l=0; i<m_uFileCount; i++, l+=48)
-        {
-            strncpy(szFileExtension, pDirectoryEntry[i].Name,     3);
-            strncpy(szFileName,      &pDirectoryEntry[i].Name[3], 8);
-            szFileExtension[3] = 0;
-            szFileName[8] = 0;
-
-            m_pFileList[i].offset = pDirectoryEntry[i].Offset;
-            m_pFileList[i].length = pDirectoryEntry[i].Size;
-            m_pFileList[i].flags  = pDirectoryEntry[i].Flags;
-            sprintf(m_pFileList[i].szName, "%s.%s", szFileName, szFileExtension);
-        }
-
-        m_bOpen = true;
-
-        ScratchPad::FreeFrame();
-        return true;
+        XL_Console::PrintF("^1Error: Failed to load %s", mFileName.c_str());
+        return false;
     }
-    XL_Console::PrintF("^1Error: Failed to load %s", m_szFileName);
 
-    return false;
+    if(!file->seekg(0, std::ios_base::end))
+    {
+        XL_Console::PrintF("^1Error: Failed to get length of file %s", mFileName.c_str());
+        return false;
+    }
+    uint32_t len = (uint32_t)file->tellg() + 1;
+    file->seekg(0);
+
+    ScratchPad::StartFrame();
+    uint8_t *pBuffer = (uint8_t *)ScratchPad::AllocMem(len);
+
+    RffHeader header;
+    file->read(reinterpret_cast<char*>(&header), sizeof(RffHeader));
+    if(header.Magic[0] != 'R' || header.Magic[1] != 'F' || header.Magic[2] != 'F' || header.Magic[3] != 0x1a)
+    {
+        XL_Console::PrintF("^1Error: %s not a valid .RFF file", name);
+        ScratchPad::FreeFrame();
+        return false;
+    }
+
+    m_bEncrypt = (header.Version == 0x301);
+
+    uint32_t uOffset  = header.DirOffset;
+    m_uFileCount = header.fileCount;
+
+    m_pFileList = xlNew RFF_File[m_uFileCount];
+
+    //Read directory.
+    file->seekg(uOffset);
+    file->read(reinterpret_cast<char*>(pBuffer), sizeof(DirectoryEntry)*m_uFileCount);
+    file = nullptr;
+
+    // Decrypt the directory (depend on the version)
+    if ( m_bEncrypt )
+    {
+        uint8_t CryptoByte = (uint8_t)header.DirOffset;
+        for (uint32_t i = 0; i < m_uFileCount * sizeof(DirectoryEntry); i += 2)
+        {
+            pBuffer[i+0] ^= CryptoByte;
+            pBuffer[i+1] ^= CryptoByte;
+            CryptoByte++;
+        }
+    }
+
+    DirectoryEntry *pDirectoryEntry = (DirectoryEntry *)pBuffer;
+
+    //Now go through each file listing and fill out the RFF_File structure.
+    char szFileName[9];
+    char szFileExtension[4];
+    for(uint32_t i=0, l=0; i<m_uFileCount; i++, l+=48)
+    {
+        strncpy(szFileExtension, pDirectoryEntry[i].Name,     3);
+        strncpy(szFileName,      &pDirectoryEntry[i].Name[3], 8);
+        szFileExtension[3] = 0;
+        szFileName[8] = 0;
+
+        m_pFileList[i].offset = pDirectoryEntry[i].Offset;
+        m_pFileList[i].length = pDirectoryEntry[i].Size;
+        m_pFileList[i].flags  = pDirectoryEntry[i].Flags;
+        sprintf(m_pFileList[i].szName, "%s.%s", szFileName, szFileExtension);
+    }
+
+    m_bOpen = true;
+
+    ScratchPad::FreeFrame();
+    return true;
 }
 
 void RFF_Reader::Close()
 {
     CloseFile();
-    if ( m_pFileList )
-    {
-        xlDelete [] m_pFileList;
-    }
+    xlDelete [] m_pFileList;
     m_bOpen = false;
 }
 
-FILE *OpenFile_Local(const char *pszFile)
-{
-    return fopen(pszFile, "rb");
-}
-
 //This is different then other archives, we're reading indices here...
-bool RFF_Reader::OpenFile(const char *pszFile)
+bool RFF_Reader::OpenFile(const char *fname)
 {
-    if((m_pFileLocal=OpenFile_Local(pszFile)) != nullptr)
+    mFileLocal = Vfs::get().openInput(fname);
+    if(mFileLocal != nullptr)
     {
-        m_pFile = nullptr;
+        mFile = nullptr;
         return true;
     }
 
-    m_pFile = fopen(m_szFileName, "rb");
+    mFile = Vfs::get().openInput(mFileName);
     m_CurFile = -1;
     
-    if ( m_pFile )
+    if(mFile)
     {
         //search for this file.
-        for (uint32_t i=0; i<m_uFileCount; i++)
+        for(uint32_t i = 0;i < m_uFileCount;i++)
         {
-            if ( stricmp(pszFile, m_pFileList[i].szName) == 0 )
+            if(stricmp(fname, m_pFileList[i].szName) == 0 &&
+               mFile->seekg(m_pFileList[i].offset))
             {
                 m_CurFile = i;
                 break;
             }
         }
 
-        if ( m_CurFile == -1 )
+        if(m_CurFile == -1)
         {
-            XL_Console::PrintF("^1Error: Failed to load %s from \"%s\"", pszFile, m_szFileName);
+            mFile = nullptr;
+            XL_Console::PrintF("^1Error: Failed to load %s from \"%s\"", fname, mFileName.c_str());
         }
     }
 
-    return m_CurFile > -1 ? true : false;
+    return (m_CurFile > -1) ? true : false;
 }
 
 void RFF_Reader::CloseFile()
 {
-    if ( m_pFileLocal )
-    {
-        fclose(m_pFileLocal);
-        m_pFileLocal = nullptr;
-        return;
-    }
-
-    if ( m_pFile )
-    {
-        fclose(m_pFile);
-        m_pFile = nullptr;
-    }
+    mFileLocal = nullptr;
+    mFile = nullptr;
     m_CurFile = -1;
 }
 
 uint32_t RFF_Reader::GetFileLen()
 {
-    if ( m_pFileLocal )
+    if(mFileLocal)
     {
-        fseek(m_pFileLocal, 0, SEEK_END);
-        uint32_t len = ftell(m_pFileLocal)+1;
-        fseek(m_pFileLocal, 0, SEEK_SET);
+        auto old_offset = mFileLocal->tellg();
+        mFileLocal->seekg(0, std::ios_base::end);
+        uint32_t len = (uint32_t)mFileLocal->tellg() + 1;
+        mFileLocal->seekg(old_offset);
 
         return len;
     }
@@ -219,28 +204,24 @@ uint32_t RFF_Reader::GetFileLen()
 
 bool RFF_Reader::ReadFile(void *pData, uint32_t uLength)
 {
-    if ( m_pFileLocal )
+    if(mFileLocal)
     {
-        fread(pData, uLength, 1, m_pFileLocal);
+        mFileLocal->read(reinterpret_cast<char*>(pData), uLength);
         return true;
     }
 
-    if ( !m_pFile ) { return false; }
+    if(!mFile) { return false; }
 
-    fseek(m_pFile, m_pFileList[m_CurFile].offset, SEEK_SET);
-    if ( uLength == 0 )
-        uLength = GetFileLen();
+    if(uLength == 0) uLength = GetFileLen();
 
     //now reading from an RFF file is more involved due to the encryption.
-    fread(pData, uLength, 1, m_pFile);
+    mFile->read(reinterpret_cast<char*>(pData), uLength);
 
-    if ( m_bEncrypt && (m_pFileList[m_CurFile].flags & FLAG_ENCRYPTED) )
+    if(m_bEncrypt && (m_pFileList[m_CurFile].flags&FLAG_ENCRYPTED))
     {
         // Decrypt the first bytes if they're encrypted (256 bytes max)
-        for (uint32_t i = 0; i < 256 && i < uLength; i++)
-        {
-            ((uint8_t *)pData)[i] ^= (i >> 1);
-        }
+        for(uint32_t i = 0;i < 256 && i < uLength;i++)
+            ((uint8_t*)pData)[i] ^= (i >> 1);
     }
 
     return true;

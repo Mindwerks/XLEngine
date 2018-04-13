@@ -7,63 +7,61 @@
 LFD_Reader::LFD_Reader() : Archive()
 {
     m_CurFile = -1;
-    m_pFile = nullptr;
 }
 
-bool LFD_Reader::Open(const char *pszName)
+bool LFD_Reader::Open(const char *name)
 {
-    sprintf(m_szFileName, "%sLFD/%s", EngineSettings::get().GetGameDataDir(), pszName);
+    mFileName = EngineSettings::get().GetGameDataDir();
+    mFileName += "LFD/";
+    mFileName += name;
 
-    FILE *f = fopen(m_szFileName, "rb");
-    if ( f )
+    auto file = Vfs::get().openInput(mFileName);
+    if(!file)
     {
-        LFD_Entry_t root, entry;
-        fread(&root, sizeof(LFD_Entry_t), 1, f);
-        m_FileList.MASTERN = root.LENGTH / sizeof(LFD_Entry_t);
-
-        m_FileList.pEntries = xlNew LFD_EntryFinal_t[m_FileList.MASTERN];
-
-        int IX = sizeof(LFD_Entry_t) + root.LENGTH;
-        for (int i=0; i<m_FileList.MASTERN; i++)
-        {
-            fread(&entry, sizeof(LFD_Entry_t), 1, f);
-
-            memcpy(m_FileList.pEntries[i].TYPE, entry.TYPE, 4);
-            m_FileList.pEntries[i].TYPE[4] = 0;
-            memcpy(m_FileList.pEntries[i].NAME, entry.NAME, 8);
-            m_FileList.pEntries[i].NAME[8] = 0;
-            m_FileList.pEntries[i].LENGTH = entry.LENGTH;
-            m_FileList.pEntries[i].IX = IX+sizeof(LFD_Entry_t);
-
-            IX += sizeof(LFD_Entry_t)+entry.LENGTH;
-        }
-
-        fclose(f);
-        m_bOpen = true;
-
-        return true;
+        XL_Console::PrintF("^1Error: Failed to load %s, make sure that %sLFD is the correct directory for Dark Forces.",
+                           mFileName.c_str(), EngineSettings::get().GetGameDataDir());
+        return false;
     }
 
-    XL_Console::PrintF("^1Error: Failed to load %s, make sure that %sLFD is the correct directory for Dark Forces.",
-                       m_szFileName, EngineSettings::get().GetGameDataDir());
+    LFD_Entry_t root;
+    file->read(root.TYPE, 4); root.TYPE[4] = 0;
+    file->read(root.NAME, 8); root.NAME[8] = 0;
+    root.LENGTH = read_le<int32_t>(*file);
 
-    return false;
+    m_FileList.MASTERN = root.LENGTH / 16;
+    m_FileList.pEntries = xlNew LFD_Entry_t[m_FileList.MASTERN];
+
+    int IX = 16 + root.LENGTH;
+    for(int i = 0;i < m_FileList.MASTERN;i++)
+    {
+        file->read(m_FileList.pEntries[i].TYPE, 4);
+        m_FileList.pEntries[i].TYPE[4] = 0;
+        file->read(m_FileList.pEntries[i].NAME, 8);
+        m_FileList.pEntries[i].NAME[8] = 0;
+        m_FileList.pEntries[i].LENGTH = read_le<int32_t>(*file);
+        m_FileList.pEntries[i].IX = IX+16;
+
+        IX += 16+m_FileList.pEntries[i].LENGTH;
+    }
+
+    m_bOpen = true;
+
+    return true;
 }
 
 void LFD_Reader::Close()
 {
     CloseFile();
-    if ( m_FileList.pEntries )
-    {
-        xlDelete [] m_FileList.pEntries;
-        m_FileList.pEntries = nullptr;
-    }
+
+    xlDelete [] m_FileList.pEntries;
+    m_FileList.pEntries = nullptr;
+
     m_bOpen = false;
 }
 
 bool LFD_Reader::OpenFile(const char *pszFile)
 {
-    m_pFile = fopen(m_szFileName, "rb");
+    mFile = Vfs::get().openInput(mFileName);
     m_CurFile = -1;
 
     char szName[10];
@@ -93,28 +91,26 @@ bool LFD_Reader::OpenFile(const char *pszFile)
     //search for this file.
     for (int i=0; i<m_FileList.MASTERN; i++)
     {
-        if ( stricmp(szName, m_FileList.pEntries[i].NAME) == 0 && stricmp(szType, m_FileList.pEntries[i].TYPE) == 0 )
+        if(stricmp(szName, m_FileList.pEntries[i].NAME) == 0 && stricmp(szType, m_FileList.pEntries[i].TYPE) == 0 &&
+           mFile->seekg(m_FileList.pEntries[i].IX))
         {
             m_CurFile = i;
             break;
         }
     }
 
-    if ( m_CurFile == -1 )
+    if(m_CurFile == -1)
     {
-        XL_Console::PrintF("^1Error: Failed to load %s from \"%s\"", pszFile, m_szFileName);
+        mFile = nullptr;
+        XL_Console::PrintF("^1Error: Failed to load %s from \"%s\"", pszFile, mFileName.c_str());
     }
 
-    return m_CurFile > -1 ? true : false;
+    return (m_CurFile > -1) ? true : false;
 }
 
 void LFD_Reader::CloseFile()
 {
-    if ( m_pFile )
-    {
-        fclose(m_pFile);
-        m_pFile = nullptr;
-    }
+    mFile = nullptr;
     m_CurFile = -1;
 }
 
@@ -125,12 +121,7 @@ uint32_t LFD_Reader::GetFileLen()
 
 bool LFD_Reader::ReadFile(void *pData, uint32_t uLength)
 {
-    fseek(m_pFile, m_FileList.pEntries[ m_CurFile ].IX, SEEK_SET);
-
-    if ( uLength == 0 )
-        uLength = (uint32_t)m_FileList.pEntries[ m_CurFile ].LENGTH;
-
-    fread(pData, uLength, 1, m_pFile);
-
+    if(uLength == 0) uLength = (uint32_t)m_FileList.pEntries[m_CurFile].LENGTH;
+    mFile->read(reinterpret_cast<char*>(pData), uLength);
     return true;
 }

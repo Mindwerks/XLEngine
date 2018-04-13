@@ -3,6 +3,8 @@
 
 #include "../CommonTypes.h"
 #include "Archive.h"
+#include "Vfs.h"
+#include <string>
 #include <cstdio>
 #include <cstdint>
 
@@ -53,8 +55,8 @@ private:
     int32_t m_CurFile;
     bool m_bGOB;
 
-    FILE *m_pFile;
-    char m_szFileName[64];
+    istream_ptr mFile;
+    std::string mFileName;
 };
 
 #endif //GOB_READER_H

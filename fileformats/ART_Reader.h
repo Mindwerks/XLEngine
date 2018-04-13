@@ -3,7 +3,8 @@
 
 #include "../CommonTypes.h"
 #include "Archive.h"
-#include <cstdio>
+#include "Vfs.h"
+#include <string>
 
 class ART_Reader : public Archive
 {
@@ -44,8 +45,8 @@ private:
     uint32_t m_uTilesStartNum;
     int32_t m_CurFile;
 
-    FILE *m_pFile;
-    char m_szFileName[64];
+    istream_ptr mFile;
+    std::string mFileName;
 };
 
 #endif //ART_READER_H
