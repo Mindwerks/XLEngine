@@ -1,5 +1,6 @@
 #include "../Clock.h"
 #include <sys/time.h>
+#include <sys/types.h>
 #include <cstdio>
 #include <cassert>
 
@@ -9,7 +10,7 @@ float Clock::m_fDeltaTime;
 float Clock::m_fRealDeltaTime;
 int32_t Clock::m_nDeltaTicks;
 
-static __time_t _StartTime_Sec;
+static time_t _StartTime_Sec;
 static uint64_t _Start_Tick[16];
 uint64_t _GetCurTickCnt();
 
