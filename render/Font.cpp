@@ -2,6 +2,7 @@
 #include "FontManager.h"
 #include "TextureCache.h"
 #include "IDriver3D.h"
+#include "../fileformats/Vfs.h"
 
 #include <cassert>
 #include <cstdlib>
@@ -17,143 +18,138 @@ XLFont::~XLFont()
 {
 }
 
-bool XLFont::Load( const std::string& szFile, IDriver3D *pDriver )
+bool XLFont::Load( const std::string& szFile, IDriver3D */*pDriver*/ )
 {
     bool bResult = false;
 
-    FILE *fntFile = fopen( szFile.c_str(), "rb" );
-    if ( fntFile )
+    auto fntFile = Vfs::get().openInput(szFile);
+    if(!fntFile) return false;
+
+    uint8_t version[4] = {0};
+    fntFile->read(reinterpret_cast<char*>(version), 4);
+    if ( version[0] != 'B' || version[1] != 'M' || version[2] != 'F' || version[3] != 0x03 )
+        return false;
+
+    //final texture name.
+    char szTextureName[64];
+
+    //zero out all the characters.
+    memset(m_CharSet.Chars, 0, sizeof(m_CharSet.Chars));
+
+    bool bDone = false;
+    while(!fntFile->eof() && fntFile->good() && bDone == false)
     {
-        uint8_t version[4];
-        fread(version, 1, 4, fntFile);
-        if ( version[0] != 'B' || version[1] != 'M' || version[2] != 'F' || version[3] != 0x03 )
+        //read the block type and size.
+        uint8_t  uBlockType;
+        uint32_t uBlockSize;
+
+        uBlockType = fntFile->get();
+        uBlockSize = read_le<uint32_t>(*fntFile);
+
+        switch(uBlockType)
         {
-            fclose(fntFile);
-            return false;
-        }
-
-        //final texture name.
-        char szTextureName[64];
-
-        //zero out all the characters.
-        memset(m_CharSet.Chars, 0, sizeof(CharDescriptor)*256);
-
-        bool bDone = false;
-        while ( feof(fntFile) == 0 && bDone == false )
-        {
-            //read the block type and size.
-            uint8_t  uBlockType;
-            uint32_t uBlockSize;
-
-            fread(&uBlockType, 1, 1, fntFile);
-            fread(&uBlockSize, 4, 1, fntFile);
-
-            switch (uBlockType)
+            case 1: //INFO block
             {
-                case 1: //INFO block
-                {
-                    uint16_t fontSize, stretchH;
-                    uint8_t  flags, charSet, aa, spacingHoriz, spacingVert, outline;
-                    uint8_t  padding[4];
-                    char szName[64];
-                    fread(&fontSize,     2, 1, fntFile);
-                    fread(&flags,        1, 1, fntFile);
-                    fread(&charSet,      1, 1, fntFile);
-                    fread(&stretchH,     2, 1, fntFile);
-                    fread(&aa,           1, 1, fntFile);
-                    fread(&padding[0],   1, 1, fntFile);
-                    fread(&padding[1],   1, 1, fntFile);
-                    fread(&padding[2],   1, 1, fntFile);
-                    fread(&padding[3],   1, 1, fntFile);
-                    fread(&spacingHoriz, 1, 1, fntFile);
-                    fread(&spacingVert,  1, 1, fntFile);
-                    fread(&outline,      1, 1, fntFile);
-                    fread(szName,        1, uBlockSize-14, fntFile);
-                }
-                break;
-                case 2:
-                {
-                    uint8_t flags;
-                    uint8_t channels[4];
-                    fread(&m_CharSet.LineHeight, 2, 1, fntFile);
-                    fread(&m_CharSet.Base,       2, 1, fntFile);
-                    fread(&m_CharSet.Width,      2, 1, fntFile);
-                    fread(&m_CharSet.Height,     2, 1, fntFile);
-                    fread(&m_CharSet.Pages,      2, 1, fntFile);
-                    fread(&flags,                1, 1, fntFile);
-                    fread(&channels[0],          1, 1, fntFile);
-                    fread(&channels[1],          1, 1, fntFile);
-                    fread(&channels[2],          1, 1, fntFile);
-                    fread(&channels[3],          1, 1, fntFile);
-                }
-                break;
-                case 3:
-                {
-                    fread(szTextureName, 1, uBlockSize, fntFile);
-                }
-                break;
-                case 4:
-                {
-                    uint32_t ID;
-                    uint8_t page, channel;
-                    int32_t nBlockSize = (int32_t)uBlockSize;
-                    while ( nBlockSize > 0 )
-                    {
-                        fread(&ID, 4, 1, fntFile);
+                uint16_t fontSize, stretchH;
+                uint8_t  flags, charSet, aa, spacingHoriz, spacingVert, outline;
+                uint8_t  padding[4];
+                char szName[64];
+                fontSize     = read_le<uint16_t>(*fntFile);
+                flags        = fntFile->get();
+                charSet      = fntFile->get();
+                stretchH     = read_le<uint16_t>(*fntFile);
+                aa           = fntFile->get();
+                padding[0]   = fntFile->get();
+                padding[1]   = fntFile->get();
+                padding[2]   = fntFile->get();
+                padding[3]   = fntFile->get();
+                spacingHoriz = fntFile->get();
+                spacingVert  = fntFile->get();
+                outline      = fntFile->get();
+                fntFile->read(szName, uBlockSize-14);
+            }
+            break;
 
-                        if ( ID > 255 )
-                        {
-                            ID = 255;
-                        }
-                        fread(&m_CharSet.Chars[ID].x,        2, 1, fntFile);
-                        fread(&m_CharSet.Chars[ID].y,        2, 1, fntFile);
-                        fread(&m_CharSet.Chars[ID].Width,    2, 1, fntFile);
-                        fread(&m_CharSet.Chars[ID].Height,   2, 1, fntFile);
-                        fread(&m_CharSet.Chars[ID].XOffset,  2, 1, fntFile);
-                        fread(&m_CharSet.Chars[ID].YOffset,  2, 1, fntFile);
-                        fread(&m_CharSet.Chars[ID].XAdvance, 2, 1, fntFile);
-                        fread(&page,                         1, 1, fntFile);
-                        fread(&channel,                      1, 1, fntFile);
-                        m_CharSet.Chars[ID].Page = page;
+            case 2:
+            {
+                uint8_t flags;
+                uint8_t channels[4];
+                m_CharSet.LineHeight = read_le<uint16_t>(*fntFile);
+                m_CharSet.Base       = read_le<uint16_t>(*fntFile);
+                m_CharSet.Width      = read_le<uint16_t>(*fntFile);
+                m_CharSet.Height     = read_le<uint16_t>(*fntFile);
+                m_CharSet.Pages      = read_le<uint16_t>(*fntFile);
+                flags       = fntFile->get();
+                channels[0] = fntFile->get();
+                channels[1] = fntFile->get();
+                channels[2] = fntFile->get();
+                channels[3] = fntFile->get();
+            }
+            break;
 
-                        nBlockSize -= 20;
-                    };
-                }
-                break;
-                case 5: //Kerning pairs - currently unused.
+            case 3:
+            {
+                fntFile->read(szTextureName, uBlockSize);
+            }
+            break;
+
+            case 4:
+            {
+                uint32_t ID;
+                uint8_t page, channel;
+                int32_t nBlockSize = (int32_t)uBlockSize;
+                while(nBlockSize >= 20)
                 {
-                    uint32_t first, second;
-                    uint16_t amount;
-                    fread(&first,  4, 1, fntFile);
-                    fread(&second, 4, 1, fntFile);
-                    fread(&amount, 2, 1, fntFile);
-                }
-                break;
-                default:
-                {
-                    bDone = true;
-                }
-            };
-        };
+                    ID = read_le<uint32_t>(*fntFile);
+                    if(ID > 255) ID = 255;
 
-        fclose(fntFile);
-        bResult = true;
+                    m_CharSet.Chars[ID].x        = read_le<uint16_t>(*fntFile);
+                    m_CharSet.Chars[ID].y        = read_le<uint16_t>(*fntFile);
+                    m_CharSet.Chars[ID].Width    = read_le<uint16_t>(*fntFile);
+                    m_CharSet.Chars[ID].Height   = read_le<uint16_t>(*fntFile);
+                    m_CharSet.Chars[ID].XOffset  = read_le<int16_t>(*fntFile);
+                    m_CharSet.Chars[ID].YOffset  = read_le<int16_t>(*fntFile);
+                    m_CharSet.Chars[ID].XAdvance = read_le<int16_t>(*fntFile);
+                    page    = fntFile->get();
+                    channel = fntFile->get();
+                    m_CharSet.Chars[ID].Page = page;
 
-        //now load the texture.
-        m_hTex = TextureCache::LoadTexture( szTextureName, false );
+                    nBlockSize -= 20;
+                };
+            }
+            break;
+
+            case 5: //Kerning pairs - currently unused.
+            {
+                uint32_t first, second;
+                uint16_t amount;
+                first  = read_le<uint32_t>(*fntFile);
+                second = read_le<uint32_t>(*fntFile);
+                amount = read_le<uint16_t>(*fntFile);
+            }
+            break;
+
+            default:
+                bDone = true;
+        }
     }
+
+    fntFile = nullptr;
+    bResult = true;
+
+    //now load the texture.
+    m_hTex = TextureCache::LoadTexture(szTextureName, false);
 
     return bResult;
 }
 
 uint32_t XLFont::ComputePixelPos(const std::string& szString, uint32_t uPos)
 {
-    const char *pszText = szString.c_str();
+    if(uPos > szString.size())
+        uPos = szString.size();
     int32_t nCurX = 0;
-    for (uint32_t i=0; i<uPos; i++)
-    {
-        nCurX += m_CharSet.Chars[ pszText[i] ].XAdvance;
-    }
+    for(uint32_t i = 0; i < uPos;i++)
+        nCurX += m_CharSet.Chars[(uint8_t)szString[i]].XAdvance;
     return (uint32_t)nCurX;
 }
 
@@ -172,12 +168,12 @@ int32_t XLFont::FillVB(int32_t x, int32_t y, const std::string& szString, FontVe
     const char *pszText = szString.c_str();
     for (size_t i=0, i4=0; i<l; i++, i4+=4)
     {
-        uint16_t CharX   = m_CharSet.Chars[ pszText[i] ].x;
-        uint16_t CharY   = m_CharSet.Chars[ pszText[i] ].y;
-        uint16_t Width   = m_CharSet.Chars[ pszText[i] ].Width;
-        uint16_t Height  = m_CharSet.Chars[ pszText[i] ].Height;
-        int16_t OffsetX = m_CharSet.Chars[ pszText[i] ].XOffset;
-        int16_t OffsetY = m_CharSet.Chars[ pszText[i] ].YOffset;
+        uint16_t CharX   = m_CharSet.Chars[(uint8_t)pszText[i]].x;
+        uint16_t CharY   = m_CharSet.Chars[(uint8_t)pszText[i]].y;
+        uint16_t Width   = m_CharSet.Chars[(uint8_t)pszText[i]].Width;
+        uint16_t Height  = m_CharSet.Chars[(uint8_t)pszText[i]].Height;
+        int16_t OffsetX = m_CharSet.Chars[(uint8_t)pszText[i]].XOffset;
+        int16_t OffsetY = m_CharSet.Chars[(uint8_t)pszText[i]].YOffset;
 
         //upper left
         pVB_Data[i4+0].uv.x  = (float)CharX * texelX;
@@ -207,7 +203,7 @@ int32_t XLFont::FillVB(int32_t x, int32_t y, const std::string& szString, FontVe
         pVB_Data[i4+3].pos.y = (float)(nCurY + Height + OffsetY);
         pVB_Data[i4+3].pos.z = -1.0f;
 
-        nCurX += m_CharSet.Chars[ pszText[i] ].XAdvance;
+        nCurX += m_CharSet.Chars[(uint8_t)pszText[i]].XAdvance;
     }
 
     return (int32_t)l;
