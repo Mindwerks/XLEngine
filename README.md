@@ -2,7 +2,6 @@
 
 ## TODO
 * game plugin fix-ups
-* have cmake place images, as and other things into the build directory
 
 ## Dependencies
 * DevIL Cross-platform image loading and manipulation toolkit
