@@ -2,6 +2,7 @@
 #include "../EngineSettings.h"
 #include "../ui/XL_Console.h"
 #include <cstring>
+#include <cctype>
 #include <cstdio>
 #include <cstdint>
 
