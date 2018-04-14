@@ -648,7 +648,7 @@ void Driver3D_Soft::SetWorldMatrix(Matrix *pMtx, int32_t worldX, int32_t worldY)
             m_WorldMtx.m[12] += (worldX - m_pRenderCamera->GetWorldPosX()) * 1024.0f;
             m_WorldMtx.m[13] += (worldY - m_pRenderCamera->GetWorldPosY()) * 1024.0f;
         }
-        m_WorldView = m_ViewMtx.MatMul( *pMtx );
+        m_WorldView = m_ViewMtx.MatMul( m_WorldMtx );
         
         _prevWorldMtxPtr_Soft = pMtx;
         _prevWorldX = worldX;

@@ -2,6 +2,7 @@
 #include "../Engine.h"
 #include "../math/Math.h"
 #include "IndexBuffer.h"
+#include "Camera.h"
 #include <cstdio>
 #include <cstdlib>
 
@@ -281,7 +282,12 @@ void Driver3D_OGL::SetWorldMatrix(Matrix *pMtx, int32_t worldX, int32_t worldY)
     else if ( pMtx != _prevWorldMtxPtr )
     {
         m_WorldMtx = *pMtx;
-        m_WorldView = m_ViewMtx.MatMul( *pMtx );
+        if ( worldX || worldY )
+        {
+            m_WorldMtx.m[12] += (worldX - m_pRenderCamera->GetWorldPosX()) * 1024.0f;
+            m_WorldMtx.m[13] += (worldY - m_pRenderCamera->GetWorldPosY()) * 1024.0f;
+        }
+        m_WorldView = m_ViewMtx.MatMul( m_WorldMtx );
 
         glMatrixMode(GL_MODELVIEW);                         // Select The Modelview Matrix
         glLoadMatrixf( m_WorldView.GetFloatPtr() );
