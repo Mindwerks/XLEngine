@@ -116,11 +116,7 @@ void LevelFuncMgr::Update()
     {
         for (const LevelFunc *remFunc : m_RemoveList)
         {
-            const auto iter = std::find_if(m_Active.begin(), m_Active.end(),
-                [remFunc](const LevelFunc *activeFunc)
-            {
-                return activeFunc == remFunc;
-            });
+            const auto iter = std::find(m_Active.begin(), m_Active.end(), remFunc);
 
             if (iter != m_Active.end())
             {
