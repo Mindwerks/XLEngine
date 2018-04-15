@@ -237,8 +237,6 @@ int main(int argc, char **argv)
                 bDone = true;
         }
         fDeltaTime = Clock::GetDeltaTime(fMaxDelta);
-
-        usleep(1000);
     }
 
     delete m_pEngine;
