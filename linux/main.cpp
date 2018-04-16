@@ -237,6 +237,8 @@ int main(int argc, char **argv)
                 bDone = true;
         }
         fDeltaTime = Clock::GetDeltaTime(fMaxDelta);
+
+        sched_yield();
     }
 
     delete m_pEngine;
