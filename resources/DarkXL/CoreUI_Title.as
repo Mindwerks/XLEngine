@@ -37,12 +37,12 @@ void UI_Title_OnEnter()
 	DXL_Title_Img0 = UI_AddImage("DarkXL_Title1.png", 0, 0);
 	DXL_Title_Img1 = UI_AddImage("DarkXL_Title2.png", 0, 0);
 	//Buttons, each with 2 states.
-	DXL_StartBtn0  = UI_AddImage("DXL_LaunchBtn0.png", 0, 0);
-	DXL_StartBtn1  = UI_AddImage("DXL_LaunchBtn1.png", 0, 0);
+	DXL_StartBtn0 = UI_AddImage("DXL_LaunchBtn0.png", 0, 0);
+	DXL_StartBtn1 = UI_AddImage("DXL_LaunchBtn1.png", 0, 0);
 	DXL_SettingsBtn0 = UI_AddImage("DXL_SettingsBtn0.png", 0, 0);
 	DXL_SettingsBtn1 = UI_AddImage("DXL_SettingsBtn1.png", 0, 0);
-	DXL_ExitBtn0  = UI_AddImage("DXL_ExitBtn0.png", 0, 0);
-	DXL_ExitBtn1  = UI_AddImage("DXL_ExitBtn1.png", 0, 0);
+	DXL_ExitBtn0 = UI_AddImage("DXL_ExitBtn0.png", 0, 0);
+	DXL_ExitBtn1 = UI_AddImage("DXL_ExitBtn1.png", 0, 0);
 	
 	//Start music playback.
 
@@ -77,6 +77,7 @@ void UI_Title_OnRender(int state)
 	
 	//Render version text.
 	UI_RenderString("Alpha Build 9.50", int((850+offset)*scale), 740, 16, 0.8f, 0.8f, 0.8f, 1.0f);
+
 }
 
 void UI_Title_OnUpdate()

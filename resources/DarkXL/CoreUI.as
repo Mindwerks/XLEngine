@@ -8,4 +8,5 @@ void UI_Main()
 {
 	//From here we start up the first screen.
 	UI_StartScreen("UI_Title");
+	//UI_StartScreen("UI_Config");
 }
