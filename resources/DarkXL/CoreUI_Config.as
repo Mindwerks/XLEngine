@@ -44,7 +44,7 @@ void UI_Config_OnExit()
 void UI_Config_OnRender(int state)
 {
 	//Render the background.
-	UI_RenderRect(0+offset, 0, 1024*scale, 768*scale, 0.3f, 0.3f, 0.6f, 1.0f, UI_Align_Left, UI_Align_Bottom);
+	UI_RenderRect(0+offset, 0, int(1024*scale), int(768*scale), 0.3f, 0.3f, 0.6f, 1.0f, UI_Align_Left, UI_Align_Bottom);
 
 	//Render version text.
 	UI_RenderString("XL Engine Configuration", int((350+offset)*scale), 10, 32, 0.8f, 1.0f, 0.8f, 1.0f);
