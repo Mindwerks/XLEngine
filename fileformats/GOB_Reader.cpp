@@ -14,8 +14,7 @@ GOB_Reader::GOB_Reader() : Archive()
 
 bool GOB_Reader::Open(const char *name)
 {
-    mFileName = EngineSettings::get().GetGameDataDir();
-    mFileName += name;
+    mFileName = EngineSettings::get().GetGameResource(name);
 
     m_bGOB = true;
     size_t l = strlen(name);

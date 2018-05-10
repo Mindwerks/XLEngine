@@ -190,7 +190,7 @@ int32_t ArchiveManager::File_Open(const char *fname)
         return 0;
 
     sCurrentSysFile = Vfs::get().openInput(
-        std::string(EngineSettings::get().GetGameDataDir()) + fname
+        EngineSettings::get().GetGameResource(fname)
     );
     if(sCurrentSysFile) return 1;
     return 0;

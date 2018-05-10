@@ -14,8 +14,7 @@ BSA_Reader::BSA_Reader() : Archive()
 
 bool BSA_Reader::Open(const char *name)
 {
-    mFileName = EngineSettings::get().GetGameDataDir();
-    mFileName += name;
+    mFileName = EngineSettings::get().GetGameResource(name);
 
     auto file = Vfs::get().openInput(mFileName);
     if(!file)
