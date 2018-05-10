@@ -66,7 +66,7 @@ class EngineSettings
 
         void SetGameName(const char *game);
         const char *GetGameDir() { return mGameDir.c_str(); }
-        const char *GetGameDataDir();
+        const std::string GetGameResource(const char *name);
 
         int32_t GetRenderer() { return mRenderer; }
         void SetRenderer(int32_t renderer) { mRenderer = renderer; }
@@ -108,6 +108,8 @@ class EngineSettings
         float mGamma = 1.0f;
 
         uint32_t mFlags = 0;
+
+        const std::string GetGameDataDir();
 };
 
 #endif // ENGINESETTINGS_H

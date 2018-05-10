@@ -19,8 +19,7 @@ ART_Reader::ART_Reader() : Archive()
 
 bool ART_Reader::Open(const char *name)
 {
-    mFileName = EngineSettings::get().GetGameDataDir();
-    mFileName += name;
+    mFileName = EngineSettings::get().GetGameResource(name);
 
     auto file = Vfs::get().openInput(mFileName);
     if(!file)

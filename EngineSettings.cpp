@@ -243,12 +243,17 @@ void EngineSettings::SetGameName(const char *game)
     mGameDir += game;
 }
 
-const char *EngineSettings::GetGameDataDir()
+const std::string EngineSettings::GetGameDataDir()
 {
     auto iter = mGameDataDirs.find(mGameName);
     if(iter != mGameDataDirs.end())
-        return iter->second.c_str();
-    return "";
+        return iter->second;
+    return std::string("");
+}
+
+const std::string EngineSettings::GetGameResource(const char *name)
+{
+    return GetGameDataDir() + ToLower(name);
 }
 
 

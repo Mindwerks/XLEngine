@@ -59,8 +59,7 @@ RFF_Reader::RFF_Reader() : Archive()
 
 bool RFF_Reader::Open(const char *name)
 {
-    mFileName = EngineSettings::get().GetGameDataDir();
-    mFileName += name;
+    mFileName = EngineSettings::get().GetGameResource(name);
 
     auto file = Vfs::get().openInput(mFileName);
     if(!file)

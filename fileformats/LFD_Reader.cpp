@@ -11,15 +11,15 @@ LFD_Reader::LFD_Reader() : Archive()
 
 bool LFD_Reader::Open(const char *name)
 {
-    mFileName = EngineSettings::get().GetGameDataDir();
-    mFileName += "LFD/";
-    mFileName += name;
+    char fname[32];
+    sprintf(fname, "lfd/%s", name);
+    mFileName = EngineSettings::get().GetGameResource(fname);
 
     auto file = Vfs::get().openInput(mFileName);
     if(!file)
     {
-        XL_Console::PrintF("^1Error: Failed to load %s, make sure that %sLFD is the correct directory for Dark Forces.",
-                           mFileName.c_str(), EngineSettings::get().GetGameDataDir());
+        XL_Console::PrintF("^1Error: Failed to load %s, make sure that LFD sub-directory exists for Dark Forces.",
+                           mFileName.c_str());
         return false;
     }
 
