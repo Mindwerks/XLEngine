@@ -37,7 +37,9 @@
 #include "procedural/Noise.h"
 #include "plugin_framework/XLEngine_Plugin_API.h"
 #include "plugin_framework/PluginManager.h"
+#if defined(ENABLE_NETWORKING)
 #include "networking/NetworkMgr.h"
+#endif
 #include "math/Math.h"
 #include "PluginAPI_Func.h"
 
@@ -231,6 +233,7 @@ bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
     m_nWidth  = w;
     m_nHeight = h;
 
+#if defined(ENABLE_NETWORKING)
     if ( settings.IsServer() || settings.IsClient_MP() )
     {
         uint32_t uWaitFrame = 0;
@@ -320,6 +323,7 @@ bool Engine::Init(void **winParam, int32_t paramCnt, int32_t w, int32_t h)
             };
         }
     }
+#endif
     SetupPluginAPI();
 
     return true;
@@ -331,7 +335,9 @@ void Engine::Destroy()
 
     if ( settings.IsServer() || settings.IsClient_MP() )
     {
+#if defined(ENABLE_NETWORKING)
         NetworkMgr::Destroy();
+#endif
     }
 
     if ( m_pCamera )
@@ -762,8 +768,10 @@ bool Engine::Loop(float fDeltaTime, bool bFullspeed)
         m_fTotalTime += fDeltaTime*m_fFixedLoopsPerSec;
         while (m_fTotalTime >= 1.0f)
         {
+#if defined(ENABLE_NETWORKING)
             //networking - which also occurs at 60fps.
             NetworkMgr::Loop();
+#endif
 
             //Game specific update.
             m_pGameUpdate( UPDATE_STAGE_FIXED, m_fFixedLoopTime, m_pPluginAPI, m_pGameUpdate_UD );
