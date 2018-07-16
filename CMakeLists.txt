@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(XLEngine)
 
+option(ENABLE_NETWORKING "Enable networking" yes)
+
 set(CMAKE_MODULE_PATH "${XLEngine_SOURCE_DIR}/cmake")
 
 set(CMAKE_CXX_STANDARD 14)
@@ -19,7 +21,12 @@ set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 include(CheckLibraryExists)
 
 find_package(DevIL REQUIRED)
-find_package(ENet REQUIRED)
+
+if (ENABLE_NETWORKING)
+    find_package(ENet REQUIRED)
+    add_definitions(-DENABLE_NETWORKING=yes)
+endif(ENABLE_NETWORKING)
+
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Threads REQUIRED)
@@ -127,9 +134,11 @@ set(movieplayback_sources
     ${src_root}/movieplayback/MovieManager.cpp
     ${src_root}/movieplayback/MoviePlayer.h
     ${src_root}/movieplayback/MovieTypes.h)
-set(networking_sources
-    ${src_root}/networking/NetworkMgr.h
-    ${src_root}/networking/NetworkMgr.cpp)
+if (ENABLE_NETWORKING)
+    set(networking_sources
+        ${src_root}/networking/NetworkMgr.h
+        ${src_root}/networking/NetworkMgr.cpp)
+endif(ENABLE_NETWORKING)
 set(os_sources
     ${src_root}/os/Clock.h
     ${src_root}/os/Input.h
@@ -320,7 +329,9 @@ source_group("main" FILES ${xlengine_main_sources})
 source_group("math" FILES ${math_sources})
 source_group("memory" FILES ${memory_sources})
 source_group("movieplayback" FILES ${movieplayback_sources})
-source_group("networking" FILES ${networking_sources})
+if (ENABLE_NETWORKING)
+    source_group("networking" FILES ${networking_sources})
+endif(ENABLE_NETWORKING)
 source_group("os" FILES ${os_sources})
 source_group("plugin_framework" FILES ${plugin_framework_sources})
 source_group("procedural" FILES ${procedural_sources})

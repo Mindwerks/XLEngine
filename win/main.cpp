@@ -4,7 +4,9 @@
 #include "../Engine.h"
 #include "../OS/Input.h"
 #include "../OS/Clock.h"
+#if defined(ENABLE_NETWORKING)
 #include "../networking/NetworkMgr.h"
+#endif
 #include "../EngineSettings.h"
 
 #ifndef WM_XBUTTONDOWN
@@ -176,7 +178,9 @@ int main(int argc, char *argv[])
     {
         strcpy(szPlayerName, "Default_Player");
     }
+#if defined(ENABLE_NETWORKING)
     NetworkMgr::SetLocalPlayerName(szPlayerName);
+#endif
     
     //Engine settings.
     EngineSettings &settings = EngineSettings::get();

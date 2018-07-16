@@ -2,7 +2,9 @@
 #include "../render/IDriver3D.h"
 #include "../render/FontManager.h"
 #include "../render/TextureCache.h"
+#if defined(ENABLE_NETWORKING)
 #include "../networking/NetworkMgr.h"
+#endif
 #include "../os/Input.h"
 #include "../math/Math.h"
 
@@ -170,6 +172,7 @@ void Console::PassEnter()
 {
     if ( m_bActive == false )
     {
+#if defined(ENABLE_NETWORKING)
         if ( Input::LockMouse() )
         {
             if ( m_bChatMode == true )
@@ -180,6 +183,7 @@ void Console::PassEnter()
             }
             m_bChatMode = !m_bChatMode;
         }
+#endif
         return;
     }
 
