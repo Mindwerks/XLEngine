@@ -1,6 +1,7 @@
 #ifndef CUTSCENE_PLAYER
 #define CUTSCENE_PLAYER
 
+#include <string>
 #include "../CommonTypes.h"
 
 struct XLEngine_Plugin_API;
@@ -28,8 +29,8 @@ private:
         int16_t skipScene;
         int16_t midiSeq;
         int16_t midiVol;
-        char resLFD[32];
-        char scene[32];
+        std::string resLFD;
+        std::string scene;
     };
 
     static Cutscene m_CutSceneList[256];
