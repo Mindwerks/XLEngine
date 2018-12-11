@@ -2,9 +2,13 @@
 #include "../plugin_framework/plugin.h"
 #include "../fileformats/ArchiveTypes.h"
 #include "../movieplayback/MovieTypes.h"
+#include <algorithm>
+#include <cctype>
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <sstream>
+#include <string>
 
 bool CutscenePlayer::m_bCutscenePlaying;
 CutscenePlayer::Cutscene CutscenePlayer::m_CutSceneList[256];
@@ -82,87 +86,28 @@ void CutscenePlayer::CutScene_ParseLine(char *pszLine)
 {
     if ( pszLine[0] == '#' ) { return; }
 
-    int32_t l = (int32_t)strlen(pszLine);
-    char szElem[64];
-    int32_t nElemIdx=0, n=0;
-    //now acquire each component.
-    for (int32_t i=0; i<l; i++)
-    {
-        if ( pszLine[i] != ' ' )
-        {
-            szElem[ nElemIdx++ ] = pszLine[i];
-        }
-        else if ( nElemIdx > 0 )
-        {
-            szElem[ nElemIdx ] = 0;
-            switch (n)
-            {
-                case 0: //num
-                    szElem[ strlen(szElem)-1 ] = 0;
-                    m_CutSceneList[ m_nCutSceneCount ].num = (short)atoi(szElem);
-                break;
-                case 1: //resource LFD
-                    strcpy(m_CutSceneList[ m_nCutSceneCount ].resLFD, szElem);
-                break;
-                case 2: //scene file.
-                    strcpy(m_CutSceneList[ m_nCutSceneCount ].scene, szElem);
-                break;
-                case 3: //speed.
-                    m_CutSceneList[ m_nCutSceneCount ].speed = (short)atoi(szElem);
-                break;
-                case 4: //next scene.
-                    m_CutSceneList[ m_nCutSceneCount ].nextScene = (short)atoi(szElem);
-                break;
-                case 5: //skip scene.
-                    m_CutSceneList[ m_nCutSceneCount ].skipScene = (short)atoi(szElem);
-                break;
-                case 6: //midi seq.
-                    m_CutSceneList[ m_nCutSceneCount ].midiSeq = (short)atoi(szElem);
-                break;
-                case 7: //midi volume.
-                    m_CutSceneList[ m_nCutSceneCount ].midiVol = (short)atoi(szElem);
-                break;
-            };
-            n++;
-            nElemIdx = 0;
-        }
-    }
+    std::string str = pszLine;
+    std::vector<std::string> result;
 
-    if ( nElemIdx > 0 )
-    {
-        szElem[ nElemIdx ] = 0;
-        switch (n)
-        {
-            case 0: //num
-                szElem[ strlen(szElem)-1 ] = 0;
-                m_CutSceneList[ m_nCutSceneCount ].num = (short)atoi(szElem);
-            break;
-            case 1: //resource LFD
-                strcpy(m_CutSceneList[ m_nCutSceneCount ].resLFD, szElem);
-            break;
-            case 2: //scene file.
-                strcpy(m_CutSceneList[ m_nCutSceneCount ].scene, szElem);
-            break;
-            case 3: //speed.
-                m_CutSceneList[ m_nCutSceneCount ].speed = (short)atoi(szElem);
-            break;
-            case 4: //next scene.
-                m_CutSceneList[ m_nCutSceneCount ].nextScene = (short)atoi(szElem);
-            break;
-            case 5: //skip scene.
-                m_CutSceneList[ m_nCutSceneCount ].skipScene = (short)atoi(szElem);
-            break;
-            case 6: //midi seq.
-                m_CutSceneList[ m_nCutSceneCount ].midiSeq = (short)atoi(szElem);
-            break;
-            case 7: //midi volume.
-                m_CutSceneList[ m_nCutSceneCount ].midiVol = (short)atoi(szElem);
-            break;
-        };
-        n++;
-    }
+    std::istringstream iss(str);
+    for(std::string str; iss >> str; )
+        result.push_back(str);
 
-    m_nCutSceneCount++;
+    if (result.size() == 8) {
+        // Uppercase filename
+        std::transform(result.at(1).begin(), result.at(1).end(), result.at(1).begin(), ::toupper);
+
+        m_CutSceneList[ m_nCutSceneCount ].num = (int16_t) std::stoi(result.at(0).substr(0, result.at(0).size() - 1));
+        m_CutSceneList[ m_nCutSceneCount ].resLFD = result.at(1);
+        m_CutSceneList[ m_nCutSceneCount ].scene = result.at(2);
+        m_CutSceneList[ m_nCutSceneCount ].speed = (int16_t) std::stoi(result.at(3));
+        m_CutSceneList[ m_nCutSceneCount ].nextScene = (int16_t) std::stoi(result.at(4));
+        m_CutSceneList[ m_nCutSceneCount ].skipScene = (int16_t) std::stoi(result.at(5));
+        m_CutSceneList[ m_nCutSceneCount ].midiSeq = (int16_t) std::stoi(result.at(6));
+        m_CutSceneList[ m_nCutSceneCount ].midiVol = (int16_t) std::stoi(result.at(7));
+
+        m_nCutSceneCount++;
+    }
 }
 
 void CutscenePlayer::StartCutscene(int nID)
@@ -190,10 +135,9 @@ void CutscenePlayer::StartCutscene(int nID)
     m_pCurCutScene = &m_CutSceneList[cindex];
 
     //Start the LFD_Film.
-    char szFile[32];
-    sprintf(szFile, "%s.FILM", m_CutSceneList[cindex].scene);
-    m_pAPI->MoviePlayer_SetArchives( ARCHIVETYPE_LFD, m_CutSceneList[cindex].resLFD, "JEDISFX.LFD" );
-    m_pAPI->MoviePlayer_Start( szFile, (nID == 30) ? 1 : 0, (int)(m_CutSceneList[cindex].speed*1.30f) );
+    std::string szFile = m_CutSceneList[cindex].scene + ".FILM";
+    m_pAPI->MoviePlayer_SetArchives( ARCHIVETYPE_LFD, m_CutSceneList[cindex].resLFD.c_str(), "JEDISFX.LFD" );
+    m_pAPI->MoviePlayer_Start( szFile.c_str(), (nID == 30) ? 1 : 0, (int)(m_CutSceneList[cindex].speed*1.30f) );
 
     //We're playing the cutscene (hopefully)
     m_bCutscenePlaying = true;
