@@ -68,6 +68,18 @@ TextureOGL *Driver3D_OGL::m_pCurTex;
 uint32_t Driver3D_OGL::s_uColormapID;
 static uint32_t *_pCurPal = nullptr;
 
+
+// Values that control the material properties.
+float Noemit[4] = {0.0, 0.0, 0.0, 1.0};
+
+// Lighting values
+float ambientLight[4] = {0, 0, 0, 1.0};
+float Lt0amb[4] = {0.3, 0.3, 0.3, 1.0};
+float Lt0diff[4] = {1.0, 1.0, 1.0, 1.0};
+float Lt0spec[4] = {1.0, 1.0, 1.0, 1.0};
+
+float zeroPos[4] = {0, 0, 0, 1};         // Origin (homogeneous representation)
+
 Driver3D_OGL::Driver3D_OGL() : IDriver3D(), m_pRenderCamera(0)
 {
     m_uTextureCnt = 0;
@@ -136,6 +148,39 @@ bool Driver3D_OGL::Init(int32_t w, int32_t h)
     glHint(GL_FOG_HINT, GL_NICEST);
     glFogf(GL_FOG_START, 1.0f);
     glFogf(GL_FOG_END, 150.0f);
+
+
+    // lighting
+
+   // // Position the light (before drawing the illuminated objects)
+   // glPushMatrix();
+   // glRotatef( CurrentAngle, 0.0, 35.0, 1.0 );      // Rotate through animation angle
+   // glTranslatef( 7.0, 0.0, 0.0 );               // Translate rotation center to origin
+   // glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Lt0spec);   // Make sphere glow (emissive)
+   // // glutSolidSphere(0.3, 5, 5);
+   // glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Noemit);   // Turn off emission
+   //
+   // if ( LightIsPositional==1 ) {
+   //    glLightfv(GL_LIGHT0, GL_POSITION, zeroPos );   // Position is transformed by ModelView matrix
+   // }
+   // else {
+   //    glLightfv(GL_LIGHT0, GL_POSITION, dirI );      // Direction is transformed by ModelView matrix
+   // }
+   // glPopMatrix();
+
+    glEnable(GL_LIGHTING);      // Enable lighting calculations
+    glEnable(GL_LIGHT0);      // Turn on light #0.
+
+    // Set global ambient light
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
+
+    // Light 0 light values.  Its position is set in drawScene().
+    glLightfv(GL_LIGHT0, GL_POSITION, zeroPos );   // Position is transformed by ModelView matrix
+    glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION,.75);
+    // glLightfv(GL_LIGHT0, GL_AMBIENT, Lt0amb);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, Lt0diff);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, Lt0spec);
+
 
     glActiveTexture(GL_TEXTURE0);
 
@@ -221,9 +266,9 @@ void Driver3D_OGL::EnableFog(bool bEnable, float fEnd)
     if ( _fFogEnd != fEnd ) { glFogf(GL_FOG_END, fEnd); _fFogEnd = fEnd; }
     if ( bEnable != _bFogEnable )
     {
-        if ( bEnable )
-            glEnable(GL_FOG);
-        else
+        // if ( bEnable )
+            // glEnable(GL_FOG);
+        // else
             glDisable(GL_FOG);
         _bFogEnable = bEnable;
     }
