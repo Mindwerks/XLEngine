@@ -19,6 +19,8 @@
 #include <algorithm>
 #include <cstring>
 
+#include "../ui/XL_Console.h"
+
 struct TerrainVtx
 {
     float x, y, z;
@@ -57,7 +59,7 @@ static int32_t _anTileMapping[_comboCount];
 static const int32_t _workSetSize = 56;
 static int32_t _anWorkingSet[]=
 {
-    E(0,0,0,0), E(1,1,1,1), E(2,2,2,2), E(3,3,3,3),         -1, E(1,0,0,0), 
+    E(0,0,0,0), E(1,1,1,1), E(2,2,2,2), E(3,3,3,3),         -1, E(1,0,0,0),
     E(1,0,1,0), E(1,1,1,0),         -1,         -1, E(2,1,1,1), E(2,1,2,1),
     E(2,2,2,1),         -1,         -1, E(3,2,2,2), E(3,2,3,2), E(3,3,3,2),
             -1,         -1, E(2,0,0,0), E(2,0,2,0), E(2,2,2,0),         -1,
@@ -204,7 +206,7 @@ void Terrain::BinLocations()
 {
     //clear out the map, if it is already loaded.
     m_LocationMap.clear();
-    
+
     //now place locations on the map...
     for (uint32_t r=0; r<WorldMap::m_uRegionCount; r++)
     {
@@ -517,7 +519,7 @@ void Terrain::FilterHeightMap(uint8_t *pAltMap, float *pAltMapF, float *pCoastal
                         int u = xx;
                         u = (u < 0 )  ? 0 : u;
                         u = (u > 999) ? 999 : u;
-                    
+
                         if (pAltMap[yOffs+u] > 2)
                         {
                             afHeights1[yOffs+x] += afHeights0[yOffs+u] * afKernel[xx-x+4];
@@ -546,7 +548,7 @@ void Terrain::FilterHeightMap(uint8_t *pAltMap, float *pAltMapF, float *pCoastal
                         int v = yy;
                         v = (v < 0 ) ? 0 : v;
                         v = (v > 499) ? 499 : v;
-                    
+
                         if (pAltMap[v*1000+x] > 2)
                         {
                             afHeights0[yOffs+x] += afHeights1[v*1000+x] * afKernel[yy-y+4];
@@ -806,7 +808,7 @@ bool Terrain::Update(int32_t x, int32_t y, int32_t nRectCnt, LocationRect *pRect
         GenTextureTileMapping();
         m_bMeshBuilt = true;
     }
-    
+
     if ( (m_x != x || m_y != y) && x > -1 && y > -1 )
     {
         BuildHeightmap(x, y, m_x, m_y, nRectCnt, pRects);
@@ -932,7 +934,7 @@ void Terrain::Render(Camera *pCamera)
 
     m_vCamLoc = pCamera->GetLoc();
     m_vCamDir = pCamera->GetDir();
-    
+
     if ( m_bShowTerrainDebug )
     {
         int32_t x = (m_nTerrainMapX-500)*m_nTerrainMapScale + 500;
@@ -1094,7 +1096,7 @@ void Terrain::RenderLOD(Camera *pCamera, int32_t lod)
 
     if ( m_LOD[lod].m_pVB )
     {
-        //The entire LOD uses 
+        //The entire LOD uses
         m_LOD[lod].m_pVB->Set();
 
         //for now just render all the chunks... later add proper culling.
@@ -1116,7 +1118,36 @@ void Terrain::RenderLOD(Camera *pCamera, int32_t lod)
         {
             for (int i=0; i<(int)m_ChunkRenderList.size(); i++)
             {
-                m_pDriver->RenderIndexedTriangles( m_ChunkRenderList[i]->m_pChunkIB, TILE_QUAD_COUNT*2 );
+                // m_pDriver->SetExtension_Data(IDriver3D::EXT_TEXTURE_INDEX, m_ahTex, m_ChunkRenderList[i]->m_TileTexArray);
+
+                // m_pDriver->CreateTexture(64, 64, IDriver3D::TEX_FORMAT_RGBA8, (uint8_t *)&m_ChunkRenderList[i]->m_TileTexArray, true);
+                // m_pTexArray[m_pTexIndex[t>>1]&0xff]
+
+
+                m_pTexArray = (TextureHandle *)m_ahTex;
+                m_pTexIndex = (uint16_t *)m_ChunkRenderList[i]->m_TileTexArray;
+                //
+                // m_pDriver->SetTexture(0,m_pTexIndex[m_ahTex[i]]);
+
+
+                for (int t=0, i=0; t<TILE_QUAD_COUNT*2; t++, i+=3)
+                {
+                    //EXT_TEXTURE_INDEX
+                    if ( m_pTexArray )
+                    {
+                        int32_t texIndex = m_pTexArray[m_pTexIndex[t>>1]&0xff];
+                        assert( (m_pTexIndex[t>>1]&0xff) < (56*4) );
+                        m_pDriver->SetTexture(0, texIndex);
+
+                        // glBindTexture(GL_TEXTURE_2D, texIndex);
+                        // XL_Console::PrintF("^1Error: m_pTexIndexasdg", m_pTexIndex[t>>1]>>8);
+
+                    }
+
+                }
+                // m_pDriver->CreateTexture(256,256, IDriver3D::TEX_FORMAT_RGBA8, (uint8_t *)&texIndex, false,0);
+
+                m_pDriver->RenderIndexedTriangles( m_ChunkRenderList[i]->m_pChunkIB, TILE_QUAD_COUNT*2);
             }
         }
     }
@@ -1195,14 +1226,14 @@ void Terrain::BuildTerrainMeshes()
 
                 Object *pObj = ObjectManager::CreateObject("Sprite_ZAxis");
                 pObj->SetWorldPos(m_x, m_y);
-                
+
                 uint32_t uObjID = pObj->GetID();
                 m_pSector->AddObject( uObjID );
                 m_auObjID[y*uPlantsOnAxis+x] = uObjID;
                 m_auIndex[y*uPlantsOnAxis+x] = f;
                 pObj->SetSector( m_pSector->m_uID );
                 pObj->SetScale( m_aFoliageData[f].vScale );
-                
+
                 Vector3 vLoc;
                 vLoc.x = xPos;
                 vLoc.z = 0.0f;
@@ -1213,7 +1244,7 @@ void Terrain::BuildTerrainMeshes()
                 Sprite_ZAxis *pSprite = xlNew Sprite_ZAxis();
                 pSprite->SetTextureHandle( m_aFoliageData[f].hTex );
                 pObj->SetRenderComponent( pSprite );
-                
+
                 pObj->SetWorldBounds( vLoc - m_aFoliageData[f].vScale, vLoc + m_aFoliageData[f].vScale );
                 pObj->SetBoundingSphere(vLoc, m_aFoliageData[f].vScale.Length());
 
@@ -1639,7 +1670,7 @@ void Terrain::BuildHeightmap(int32_t newX, int32_t newY, int32_t prevX, int32_t 
     m_pSector->m_x = newX;
     m_pSector->m_y = newY;
     m_pWorldCell->SetWorldPos(newX, newY);
-    
+
     //build the heightmap for the area.
     const float fOO1024  = (1.0f/1024.0f);
     const float fOO8k    = (1024.0f/8192.0f);
@@ -1965,7 +1996,7 @@ void Terrain::BuildHeightmap(int32_t newX, int32_t newY, int32_t prevX, int32_t 
         for (int32_t x=0; x<uPlantsOnAxis; x++)
         {
             Object *pObj = ObjectManager::GetObjectFromID( m_auObjID[y*uPlantsOnAxis+x] );
-            
+
             int32_t vIndex = vOffsetY + vIndexX + x*2;
 
             float h = m_LOD[0].m_pLocalHM[ vIndex ];
@@ -1982,7 +2013,7 @@ void Terrain::BuildHeightmap(int32_t newX, int32_t newY, int32_t prevX, int32_t 
                 vLoc.z = h + m_aFoliageData[f].vScale.z;
                 pObj->SetLoc(vLoc);
                 pObj->SetWorldPos(newX-3+(x>>3), newY-3+(y>>3));
-        
+
                 pObj->SetScale( m_aFoliageData[f].vScale );
                 pObj->SetWorldBounds( vLoc - m_aFoliageData[f].vScale, vLoc + m_aFoliageData[f].vScale );
                 pObj->SetBoundingSphere(vLoc, m_aFoliageData[f].vScale.Length());
@@ -2091,7 +2122,7 @@ void Terrain::BuildHeightmap(int32_t newX, int32_t newY, int32_t prevX, int32_t 
         m_LOD[0].m_aChunks[i].m_aChunkBounds.vCen = (m_LOD[0].m_aChunks[i].m_aChunkBounds.vMin + m_LOD[0].m_aChunks[i].m_aChunkBounds.vMax) * 0.5f;
         m_pDriver->ResetIBFlags( m_LOD[0].m_aChunks[i].m_pChunkIB->GetID() );
     }
-    
+
 
     //now update the vertex buffer.
     TerrainVtx *pVtx  = (TerrainVtx *)m_LOD[0].m_pVB->Lock();

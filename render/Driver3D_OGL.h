@@ -8,6 +8,24 @@
 #include "../math/Vector4.h"
 #include <cassert>
 
+
+struct TextureOGL
+{
+    int32_t m_nWidth;
+    int32_t m_nHeight;
+    int32_t m_nMipCnt;
+    bool m_bIsPow2;
+    int32_t m_nFrameCnt;
+
+    uint32_t *m_pData[32];
+};
+
+struct PolygonDataOGL
+{
+    Vector3 nrmlWS;
+    Vector3 cenWS;
+    float   radius2_WS;
+};
 class IndexBuffer;
 
 class Driver3D_OGL : public IDriver3D
@@ -69,6 +87,11 @@ class Driver3D_OGL : public IDriver3D
         bool ApplyTransSort() override { return true; }
 
         Camera *GetCamera() override { return m_pRenderCamera; }
+        //Driver extensions
+        void SetExtension_Data(uint32_t uExtension, void *pData0, void *pData1) override;
+        void SetClearColorFromTex(TextureHandle hTex) override;
+        static uint8_t GetColormapID() { return s_uColormapID; }
+        static TextureOGL *GetCurTex() { return m_pCurTex; }
 
     protected:
 
@@ -77,8 +100,15 @@ class Driver3D_OGL : public IDriver3D
     private:
         uint32_t m_Textures[16384];
         uint32_t m_uTextureCnt;
+        TextureHandle *m_pTexArray;
+        uint16_t *m_pTexIndex;
 
         Camera *m_pRenderCamera;
+        void BuildColorTables_32bpp(int refPalIndex=112);
+        // TextureOGL *CreateCheckPattern();
+        static TextureOGL *m_pCurTex;
+        static uint32_t s_uColormapID;
+        PolygonDataOGL *m_pCurPolygonData;
 };
 
 #endif // DRIVER3D_OGL_H
