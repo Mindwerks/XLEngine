@@ -114,15 +114,15 @@ int32_t Terrain::s_anMapFlat[]=
 
 void TerrainDebug_KeyDownCB(int32_t key)
 {
-    if ( key == XL_F3 )
+    if ( key == XL_P )
     {
         m_bShowTerrainDebug = !m_bShowTerrainDebug;
     }
-    if ( key == XL_ADD )
+    if ( key == XL_I )
     {
         m_nTerrainMapScale = Math::Min( m_nTerrainMapScale<<1, 16 );
     }
-    else if ( key == XL_SUBTRACT )
+    else if ( key == XL_O )
     {
         m_nTerrainMapScale = Math::Max( m_nTerrainMapScale>>1, 1 );
     }
@@ -842,6 +842,8 @@ bool Terrain::Update(int32_t x, int32_t y, int32_t nRectCnt, LocationRect *pRect
     return bUpdateNeeded;
 }
 
+
+
 void Terrain::RenderSky(int32_t skyIndex, int32_t timeIndex, Camera *pCamera)
 {
     m_pSkyLoader->LoadSky(skyIndex);
@@ -856,6 +858,8 @@ void Terrain::RenderSky(int32_t skyIndex, int32_t timeIndex, Camera *pCamera)
     TextureLoader::SetColormap(4, pSkyData->aColormaps[timeIndex].data, pSkyData->aColormaps[timeIndex].lightLevels);
 
     m_pDriver->SetClearColorFromTex(pSkyData->ahTexEast[timeIndex]);
+    // m_pDriver->SetSkyColors(8, pSkyData->aPalettes[timeIndex].colors, 768, 0);
+    // printf("%s", pSkyData->aColormaps[timeIndex].data);
     m_pDriver->SetCurrentPalette(8, true);
     m_pDriver->SetCurrentColormap(4);
     m_pDriver->SetAmbient(1.0f);
@@ -909,7 +913,12 @@ void Terrain::RenderSky(int32_t skyIndex, int32_t timeIndex, Camera *pCamera)
         posList[3].Set( vLoc.x+x0*cylTaper, vLoc.y+y0*cylTaper, zTop );
 
         TextureHandle hTex = ahTex[s/uDiv];
+
+        // m_pDriver->SetBlendMode( IDriver3D::BLEND_ALPHA );
+        m_pDriver->SetBlendMode( IDriver3D::BLEND_SKY);
         m_pDriver->SetTexture(0, hTex);
+        // m_pDriver->EnableAlphaTest(false);
+
         A += dA;
 
         x0 = x1;
@@ -919,6 +928,7 @@ void Terrain::RenderSky(int32_t skyIndex, int32_t timeIndex, Camera *pCamera)
     }
 
     m_pDriver->SetTexture(0, 0);
+    m_pDriver->SetBlendMode( IDriver3D::BLEND_NONE );
     pCamera->Compute(1.0f, true);
     pCamera->Set(m_pDriver);
     m_pDriver->SetAmbient(0.75f*195.0f/255.0f);
@@ -1118,36 +1128,30 @@ void Terrain::RenderLOD(Camera *pCamera, int32_t lod)
         {
             for (int i=0; i<(int)m_ChunkRenderList.size(); i++)
             {
-                // m_pDriver->SetExtension_Data(IDriver3D::EXT_TEXTURE_INDEX, m_ahTex, m_ChunkRenderList[i]->m_TileTexArray);
-
-                // m_pDriver->CreateTexture(64, 64, IDriver3D::TEX_FORMAT_RGBA8, (uint8_t *)&m_ChunkRenderList[i]->m_TileTexArray, true);
-                // m_pTexArray[m_pTexIndex[t>>1]&0xff]
-
-
                 m_pTexArray = (TextureHandle *)m_ahTex;
                 m_pTexIndex = (uint16_t *)m_ChunkRenderList[i]->m_TileTexArray;
-                //
-                // m_pDriver->SetTexture(0,m_pTexIndex[m_ahTex[i]]);
 
-
-                for (int t=0, i=0; t<TILE_QUAD_COUNT*2; t++, i+=3)
+                for (int t=0, i=0; t<(TILE_QUAD_COUNT*2); t++, i+=3)
                 {
                     //EXT_TEXTURE_INDEX
                     if ( m_pTexArray )
                     {
+
                         int32_t texIndex = m_pTexArray[m_pTexIndex[t>>1]&0xff];
                         assert( (m_pTexIndex[t>>1]&0xff) < (56*4) );
+
+                        // int32_t texIndex = m_pTexArray[m_pTexIndexi>>1]&0xff];
+
+                        // if(Input::IsKeyDown(XL_P)){
+                        //   printf("%d \n", texIndex);
+                        // }
+
                         m_pDriver->SetTexture(0, texIndex);
-
-                        // glBindTexture(GL_TEXTURE_2D, texIndex);
-                        // XL_Console::PrintF("^1Error: m_pTexIndexasdg", m_pTexIndex[t>>1]>>8);
-
                     }
-
                 }
-                // m_pDriver->CreateTexture(256,256, IDriver3D::TEX_FORMAT_RGBA8, (uint8_t *)&texIndex, false,0);
 
-                m_pDriver->RenderIndexedTriangles( m_ChunkRenderList[i]->m_pChunkIB, TILE_QUAD_COUNT*2);
+                m_pDriver->SetExtension_Data(IDriver3D::EXT_TEXTURE_INDEX, m_ahTex, m_ChunkRenderList[i]->m_TileTexArray);
+                m_pDriver->RenderIndexedTriangles(m_ChunkRenderList[i]->m_pChunkIB, TILE_QUAD_COUNT*2);
             }
         }
     }
