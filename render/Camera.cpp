@@ -18,7 +18,7 @@ Camera::Camera()
     m_fFOV    = 65.0f * dtor;       //FOV in radians.
     m_fAspect = 1.0f;
     m_fNearZ  = 0.1f;
-    m_fFarZ   = 1000.0f;
+    m_fFarZ   = 10000.0f; // default was 1000
     m_fFrustumWidth = 1.0f;
     m_fSkew = 0.0f;
     m_fMaxRenderDist = 400.0f;
@@ -171,7 +171,7 @@ int Camera::SphereInsideFrustum(Vector3& vCen, float fRadius)
     }
 
 #if 0
-    if ( -vCen.z + fRadius < 0.0f ) 
+    if ( -vCen.z + fRadius < 0.0f )
     {
         return FRUSTUM_OUT;
     }

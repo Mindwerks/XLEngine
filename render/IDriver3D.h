@@ -14,9 +14,9 @@ class IndexBuffer;
 class LightObject
 {
 public:
-    LightObject(Vector3 vLoc) 
-    { 
-        m_vLoc = vLoc; 
+    LightObject(Vector3 vLoc)
+    {
+        m_vLoc = vLoc;
         m_fLightAnim0 = s_fAnimOffset0; s_fAnimOffset0 +=  8.0f*0.13f;
         m_fLightAnim1 = s_fAnimOffset1; s_fAnimOffset1 += 32.0f*0.13f;
         m_fIntensity = 0.2f * (sinf(m_fLightAnim0)*0.5f+0.5f) + 0.1f * (sinf(m_fLightAnim1)*0.5f+0.5f) + 0.7f;
@@ -49,7 +49,8 @@ class IDriver3D
             TEX_FORMAT_RGBA32F,
             TEX_FORMAT_R32F,
             TEX_FORMAT_FORCE_32bpp,
-            TEX_FORMAT_COUNT
+            TEX_FORMAT_COUNT,
+            TEX_FORMAT_OTHER
         };
 
         enum VBO_Flags_e
@@ -66,6 +67,7 @@ class IDriver3D
             BLEND_NONE = 0,
             BLEND_ALPHA,
             BLEND_ADDITIVE,
+            BLEND_SKY,
             BLEND_COUNT
         };
 
@@ -160,8 +162,8 @@ class IDriver3D
         const Matrix& GetRenderCam_ViewMtx() { return m_ViewMtx; }
 
         void GetWindowSize(int32_t& nWidth, int32_t& nHeight)
-        { 
-            nWidth = m_nWindowWidth; nHeight = m_nWindowHeight; 
+        {
+            nWidth = m_nWindowWidth; nHeight = m_nWindowHeight;
         }
 
         //Lights.
@@ -184,7 +186,7 @@ class IDriver3D
         void ForceMipmapping(bool bForce) { m_bForceMip = bForce; }
         bool GetForceMipmapping() { return m_bForceMip; }
         virtual void SetExtension_Data(uint32_t uExtension, void *pData0, void *pData1) {};
-            
+
     protected:
         struct Overlay
         {

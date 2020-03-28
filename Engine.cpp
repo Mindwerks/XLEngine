@@ -90,7 +90,7 @@ Engine::Engine()
     m_pSystemFont24 = nullptr;
     m_pSystemFont32 = nullptr;
     m_pWorld = nullptr;
-    m_FPS = 60.0f;
+    m_FPS = 144.0f; //default was 60.0f
 }
 
 Engine::~Engine()
