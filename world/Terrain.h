@@ -98,7 +98,7 @@ private:
     int32_t GetSkyIndex(int x, int y);
 
     void RenderSky(int32_t skyIndex, int32_t timeIndex, Camera *pCamera);
-    
+
     void LoadHeightmap();
     void BinLocations();
     void FilterHeightMap(uint8_t *pAltMap, float *pAltMapF, float *pCoastalDist);
@@ -170,7 +170,7 @@ private:
         }
         return pLoc;
     }
-    
+
     static bool SortCB_Chunks(Chunk*& d1, Chunk*& d2);
 
     static Vector3 m_vCamDir, m_vCamLoc;
@@ -180,6 +180,10 @@ private:
     static const Vector3 c_startPos;
     static int32_t s_anMapClimate[];
     static int32_t s_anMapFlat[];
+
+
+    TextureHandle *m_pTexArray;
+    uint16_t *m_pTexIndex;
 };
 
 #endif //TERRAIN_H

@@ -6,6 +6,10 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include <inttypes.h>
+#include "../ui/XL_Console.h"
+#include "../fileformats/TextureLoader.h"
+
 #if PLATFORM_WIN    //we have to include Windows.h before gl.h on Windows platforms.
     #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
     // Windows Header Files:
@@ -22,8 +26,9 @@
 #endif
 
 
-
 #define BUFFER_OFFSET(i) ((char *)nullptr + (i))
+
+#define MAX_PAL_COUNT 32
 
 uint32_t _uPrevVBO = 0xffffffff;
 uint32_t _uBlendFunc = 0;
@@ -54,16 +59,42 @@ uint32_t _uAlphaCutoff = 0;
 uint32_t _uStencilValue = 0xff;
 
 bool _bFogEnable = false;
-float _fFogDensity = 1.0f;
-float _fFogEnd = 0.0f;
+float _fFogDensity = 0.25f;
+float _fFogEnd = 150.0f;
 
 Matrix *_prevWorldMtxPtr = nullptr;
 
 Vector4 _prevColor(1.0f, 1.0f, 1.0f, 1.0f);
 
+TextureOGL *Driver3D_OGL::m_pCurTex;
+uint32_t Driver3D_OGL::s_uColormapID;
+static uint32_t *_pCurPal = nullptr;
+
+
+// Values that control the material properties.
+float Noemit[4] = {0.0, 0.0, 0.0, 1.0};
+
+// Lighting values
+// float ambientLight[4] = {0.5773502692, 0.5773502692, 0.5773502692, 1.0};
+
+float ambientLight[4] = {0.7773502692, 0.7773502692, 0.7773502692, 1.0};
+
+
+float Lt0amb[4] = {0.147, 0.12, 0.21, 1};
+float Lt0diff[4] = {1.0, 1.0, 1.0, 1.0};
+float Lt0spec[4] = {1.0, 1.0, 1.0, 1.0};
+
+GLfloat fogColor[4] = {0.0147, 0.012, 0.021, 1}; //set the for color to grey
+
+float zeroPos[4] = {0, 0, 0, 1};         // Origin (homogeneous representation)
+
 Driver3D_OGL::Driver3D_OGL() : IDriver3D(), m_pRenderCamera(0)
 {
     m_uTextureCnt = 0;
+    m_pTexArray = nullptr;
+    m_pTexIndex = nullptr;
+    m_bGouraud  = false;
+    // m_Textures.clear();
 }
 
 Driver3D_OGL::~Driver3D_OGL()
@@ -105,7 +136,7 @@ bool Driver3D_OGL::Init(int32_t w, int32_t h)
     glClearStencil(0);       /* Clear The Stencil Buffer To 0 */
 
     /* frame buffer clears should be to black */
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    // glClearColor(0.0, 0.0, 0.0, 0.0);
 
     /* set up projection transform */
     glMatrixMode(GL_PROJECTION);
@@ -118,13 +149,48 @@ bool Driver3D_OGL::Init(int32_t w, int32_t h)
     m_nWindowWidth  = w;
     m_nWindowHeight = h;
 
+    s_uColormapID = m_uColormapID;
     //default fog settings
     glFogi(GL_FOG_MODE, GL_LINEAR);
-    glFogfv(GL_FOG_COLOR, &Vector4::Zero.x);
-    glFogf(GL_FOG_DENSITY, 1.0f);
+    glFogfv(GL_FOG_COLOR, fogColor);
+    glFogf(GL_FOG_DENSITY, 0.3);
     glHint(GL_FOG_HINT, GL_NICEST);
-    glFogf(GL_FOG_START, 1.0f);
-    glFogf(GL_FOG_END, 150.0f);
+    glFogf(GL_FOG_START, 400);
+    glFogf(GL_FOG_END, 800000);
+
+
+    // lighting
+
+   // // Position the light (before drawing the illuminated objects)
+   // glPushMatrix();
+   // glRotatef( CurrentAngle, 0.0, 35.0, 1.0 );      // Rotate through animation angle
+   // glTranslatef( 7.0, 0.0, 0.0 );               // Translate rotation center to origin
+   // glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Lt0spec);   // Make sphere glow (emissive)
+   // // glutSolidSphere(0.3, 5, 5);
+   // glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Noemit);   // Turn off emission
+   //
+   // if ( LightIsPositional==1 ) {
+   //    glLightfv(GL_LIGHT0, GL_POSITION, zeroPos );   // Position is transformed by ModelView matrix
+   // }
+   // else {
+   //    glLightfv(GL_LIGHT0, GL_POSITION, dirI );      // Direction is transformed by ModelView matrix
+   // }
+   // glPopMatrix();
+
+    // glEnable(GL_LIGHTING);      // Enable lighting calculations
+    // glEnable(GL_LIGHT0);      // Turn on light #0.
+    glShadeModel (GL_SMOOTH); //set the shader to smooth shader
+
+    // Set global ambient light
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
+
+    // Light 0 light values.  Its position is set in drawScene().
+    glLightfv(GL_LIGHT0, GL_POSITION, zeroPos );   // Position is transformed by ModelView matrix
+    glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION,.75);
+    // glLightfv(GL_LIGHT0, GL_AMBIENT, Lt0amb);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, Lt0diff);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, Lt0spec);
+
 
     glActiveTexture(GL_TEXTURE0);
 
@@ -162,12 +228,12 @@ void Driver3D_OGL::EnableAlphaTest(bool bEnable, uint8_t uAlphaCutoff)
     if ( bEnable )
     {
         if ( _bAlphaTestEnable != bEnable ) glEnable(GL_ALPHA_TEST);
-        if ( _uAlphaCutoff != uAlphaCutoff ) 
-        { 
+        if ( _uAlphaCutoff != uAlphaCutoff )
+        {
             const float fOO255 = (1.0f/255.0f);
 
             glAlphaFunc(GL_GREATER, (float)uAlphaCutoff*fOO255);
-            _uAlphaCutoff = uAlphaCutoff; 
+            _uAlphaCutoff = uAlphaCutoff;
         }
     }
     else if ( _bAlphaTestEnable != bEnable )
@@ -195,6 +261,11 @@ void Driver3D_OGL::SetBlendMode(uint32_t uMode)
                 if ( _uBlendFunc == 0 ) glEnable( GL_BLEND );
                 glBlendFunc(GL_ONE, GL_ONE);
             break;
+            case BLEND_SKY:
+                if ( _uBlendFunc == 0 ) glEnable( GL_BLEND );
+                glBlendColor(1,0,1,1);
+                glBlendFuncSeparate(GL_ONE_MINUS_CONSTANT_COLOR, GL_ONE ,GL_ONE_MINUS_CONSTANT_COLOR, GL_ZERO);
+            break;
         };
         _uBlendFunc = uMode;
     }
@@ -202,12 +273,12 @@ void Driver3D_OGL::SetBlendMode(uint32_t uMode)
 
 void Driver3D_OGL::SetFogDensity(float fDensity)
 {
-    if ( _fFogDensity != fDensity ) { glFogf(GL_FOG_DENSITY, fDensity); _fFogDensity = fDensity; }
+    // if ( _fFogDensity != fDensity ) { glFogf(GL_FOG_DENSITY, fDensity); _fFogDensity = fDensity; }
 }
 
 void Driver3D_OGL::EnableFog(bool bEnable, float fEnd)
 {
-    if ( _fFogEnd != fEnd ) { glFogf(GL_FOG_END, fEnd); _fFogEnd = fEnd; }
+    // if ( _fFogEnd != fEnd ) { glFogf(GL_FOG_END, fEnd); _fFogEnd = fEnd; }
     if ( bEnable != _bFogEnable )
     {
         if ( bEnable )
@@ -226,7 +297,7 @@ void Driver3D_OGL::EnableStencilWriting(bool bEnable, uint32_t uValue)
         if ( _bStencilWriteEnabled == false || _uStencilValue != uValue ) { glStencilFunc(GL_ALWAYS, uValue, 0xff); _uStencilValue = uValue; }
         if ( _bStencilWriteEnabled == false )
         {
-            glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); // We Set The Stencil Buffer To 1 Where We Draw 
+            glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); // We Set The Stencil Buffer To 1 Where We Draw
 
             _bStencilWriteEnabled = true;
             _bStencilTestEnabled = false;
@@ -262,8 +333,41 @@ void Driver3D_OGL::EnableStencilTesting(bool bEnable)
 
 void Driver3D_OGL::Present()
 {
+    static uint32_t _palIdx = 0xffffffff;
+    if ( _pCurPal == nullptr || _palIdx != m_uPaletteID || m_bUpdatePal )
+    {
+        uint8_t *pal = TextureLoader::GetPaletteData(m_uPaletteID);
+        int index = 0;
+        for (uint32_t p=0; p<256; p++)
+        {
+            uint8_t r = pal[ index+0 ];
+            uint8_t g = pal[ index+1 ];
+            uint8_t b = pal[ index+2 ];
+            uint8_t a = pal[ index+3 ];
+
+            // _pCurPal[p] = (a<<24) | (r<<16) | (g<<8) | b;
+
+            index += 4;
+            // printf("%" PRIu32 "\n", _pCurPal[p] );
+        }
+        // _palIdx = m_uPaletteID;
+
+        // printf("%" PRIu32 "\n", _palIdx);
+        //BuildTransTable();
+        //if ( m_nBitDepth == 32 )
+        // {
+            //BuildColorTables_32bpp();
+        // }
+        // DrawScanline::_pCurPal = _pCurPal;
+
+        // m_bUpdatePal = false;
+    }
+
+    RenderOverlays();
+
     ClearDrawData();
     m_Platform->Present();
+
 }
 
 void Driver3D_OGL::Clear(bool bClearColor)
@@ -316,15 +420,75 @@ void Driver3D_OGL::SetCamera(Camera *pCamera)
 }
 
 /************** TEXTURE SUPPORT ******************/
+
+//Given color A and background color B, the table contains the closest match for
+//A*0.5+B*0.5
+void Driver3D_OGL::BuildColorTables_32bpp(int refPalIndex/*=112*/)
+{
+    uint8_t *pColormap = TextureLoader::GetColormapData(s_uColormapID);
+
+    int min_r = (_pCurPal[ pColormap[0] ]>>16)&0xff;
+    int min_g = (_pCurPal[ pColormap[0] ]>> 8)&0xff;
+    int min_b = (_pCurPal[ pColormap[0] ]    )&0xff;
+
+    for (int c=255; c>=0; c--)
+    {
+        for (int l=0; l<256; l++)
+        {
+            int light = l>>2;
+            int index = pColormap[refPalIndex + (light<<8)];
+            int r, g, b;
+
+            int r0 = (_pCurPal[index]>>16)&0xff;
+            int g0 = (_pCurPal[index]>> 8)&0xff;
+            int b0 = (_pCurPal[index]    )&0xff;
+
+            if ( 0 && l < 255 )
+            {
+                index = pColormap[refPalIndex + ((light+1)<<8)];
+                int r1 = (_pCurPal[index]>>16)&0xff;
+                int g1 = (_pCurPal[index]>> 8)&0xff;
+                int b1 = (_pCurPal[index]    )&0xff;
+
+                int rem = l - (light<<2);
+                r = ( (r0*(4-rem))>>2 ) + ((r1*rem)>>2);
+                g = ( (g0*(4-rem))>>2 ) + ((g1*rem)>>2);
+                b = ( (b0*(4-rem))>>2 ) + ((b1*rem)>>2);
+            }
+            else
+            {
+                r = r0;
+                g = g0;
+                b = b0;
+            }
+
+            // DrawScanline::_colorMap32[0][c + (l<<8)] = Math::clamp(r*c/220, min_r, 255) << 16;
+            // DrawScanline::_colorMap32[1][c + (l<<8)] = Math::clamp(g*c/220, min_g, 255) <<  8;
+            // DrawScanline::_colorMap32[2][c + (l<<8)] = Math::clamp(b*c/220, min_b, 255);
+        }
+    }
+}
+
+void Driver3D_OGL::SetClearColorFromTex(TextureHandle hTex)
+{
+
+    // glClearColor(0.5, 0.7, 0.8, 1.0);
+    glClearColor(0.203921, 0.560784, 0.9215686, 1.0);
+    // glClearColor(0.41176470588, 0.54509803921, 0.70196078431, 1.0);
+    // m_pCurTex = m_Textures[hTex];
+    // m_uClearColor = ((uint8_t *)m_pCurTex->m_pData[0])[ (m_pCurTex->m_nHeight-1)*m_pCurTex->m_nWidth ];
+}
+
+
 void Driver3D_OGL::SetTexture(int32_t slot, TextureHandle hTex, uint32_t uFilter, bool bWrap, int32_t frame)
 {
     if ( hTex != XL_INVALID_TEXTURE )
     {
         if ( _bTexEnabled == false ) { glEnable(GL_TEXTURE_2D);_bTexEnabled = true; }
-        if ( _curTex != hTex ) 
-        { 
+        if ( _curTex != hTex )
+        {
             glBindTexture(GL_TEXTURE_2D, hTex);
-            _curTex = hTex; 
+            _curTex = hTex;
         }
         else    //if the texture hasn't changed, return.
         {
@@ -355,7 +519,6 @@ void Driver3D_OGL::SetTexture(int32_t slot, TextureHandle hTex, uint32_t uFilter
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, bWrap ? GL_REPEAT : GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, bWrap ? GL_REPEAT : GL_CLAMP);
 }
@@ -397,6 +560,11 @@ TextureHandle Driver3D_OGL::CreateTexture(uint32_t uWidth, uint32_t uHeight, uin
         type = GL_FLOAT;
         glFormat = GL_RED;
     }
+    else if ( uFormat == TEX_FORMAT_OTHER)
+    {
+        internalFormat = GL_RGBA8;
+        type = GL_UNSIGNED_BYTE;
+    }
     uint32_t uTextureID = m_uTextureCnt;
     m_uTextureCnt++;
 
@@ -414,8 +582,19 @@ TextureHandle Driver3D_OGL::CreateTexture(uint32_t uWidth, uint32_t uHeight, uin
     }
     else
     {
+
+      for (uint8_t i=0; i<sizeof(pData); i++)
+      {
+        GenerateMips(uWidth, uHeight, pData);
+          // glTexImage2D(GL_TEXTURE_2D, 0, 4, uWidth, uHeight, 0, GL_RGBA8, GL_UNSIGNED_BYTE, &pData[i]);
+        // glDisable(GL_COLOR_MATERIAL);
+        // glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        // glTexImage2D(GL_TEXTURE_2D, 0, 4, uWidth, uHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pData);
+        // GenerateMips(uWidth, uHeight, pData);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      }
+
     }
 
     return m_Textures[uTextureID];
@@ -442,7 +621,7 @@ void Driver3D_OGL::FreeTexture(TextureHandle hTex)
         }
 
         m_uTextureCnt--;
-        //only delete the texture if it's in the list, 
+        //only delete the texture if it's in the list,
         //we don't want to delete it twice by accident.
         glDeleteTextures(1, (GLuint *)&hTex);
     }
@@ -460,6 +639,29 @@ void Driver3D_OGL::FillTexture(TextureHandle hTex, uint8_t *pData, uint32_t uWid
     if ( bGenMips )
     {
         GenerateMips(uWidth, uHeight, pData);
+    }
+}
+
+void Driver3D_OGL::SetExtension_Data(uint32_t uExtension, void *pData0, void *pData1)
+{
+    if ( uExtension == EXT_TEXTURE_INDEX )
+    {
+        m_pTexArray = (TextureHandle *)pData0;
+        m_pTexIndex = (uint16_t *)pData1;
+
+        // XL_Console::PrintF("^1Error: pData0 to load %s", pData0);
+        // XL_Console::PrintF("^1Error: pData1 to load %s", pData1);
+        // SetTexture(0, m_pTexArray[m_pTexIndex]);
+        // void Driver3D_OGL::SetTexture(int32_t slot, TextureHandle hTex, uint32_t uFilter, bool bWrap, int32_t frame);
+
+
+
+    }
+
+    else if ( uExtension == EXT_GOURAUD )
+    {
+        int32_t enable = *((int32_t *)pData0);
+        m_bGouraud = enable ? true : false;
     }
 }
 
@@ -684,6 +886,69 @@ void Driver3D_OGL::ClearDrawData()
     _uPrevVBO = 0xffffffff;
 }
 
+
+
+void Driver3D_OGL::RenderOverlays()
+{
+    // for (uint32_t i=0; i<m_uOverlayCount; i++)
+    // {
+    //     int32_t tw = m_Textures[ m_Overlays[i].hTex ]->m_nWidth;
+    //     int32_t th = m_Textures[ m_Overlays[i].hTex ]->m_nHeight;
+    //
+    //     int32_t tx = m_Overlays[i].x;
+    //     int32_t ty = m_Overlays[i].y;
+    //     if ( tx >= (int32_t)m_FrameWidth || ty >= (int32_t)m_FrameHeight )
+    //         continue;
+    //
+    //     int32_t tw_Clipped = Math::Min( tx+tw*m_Overlays[i].scale, (int32_t)m_FrameWidth )-tx;
+    //     int32_t th_Clipped = Math::Min( ty+th*m_Overlays[i].scale, (int32_t)m_FrameHeight )-ty;
+    //     if ( tw_Clipped <= 0 || th_Clipped <= 0 )
+    //         continue;
+    //
+    //     uint32_t *pImage = (uint32_t *)m_Textures[ m_Overlays[i].hTex ]->m_pData[0];
+    //     int32_t xOffset = 0;
+    //     if ( tx < 0 )
+    //          xOffset = -tx;
+    //     int32_t yOffset = 0;
+    //     if ( ty < 0 )
+    //         yOffset = -ty;
+    //
+    //     int32_t texel_xOffset = xOffset/m_Overlays[i].scale;
+    //     int32_t texel_yOffset = yOffset/m_Overlays[i].scale;
+    //     int32_t tex_y = texel_yOffset;
+    //     int32_t stepsPerTexel = m_Overlays[i].scale;
+    //     int32_t stepsY = stepsPerTexel;
+    //     for (int32_t y=0; y<th_Clipped-yOffset; y++)
+    //     {
+    //         uint32_t *pImageV = &pImage[ tex_y*tw + texel_xOffset ];
+    //         int32_t fy = m_FrameHeight-(ty+y+yOffset)-1;
+    //
+    //         // uint32_t *pLine = &m_pFrameBuffer_32bpp[ fy*m_FrameWidth + tx + xOffset ];
+    //         int32_t tex_x = 0;
+    //         int32_t stepsX = stepsPerTexel;
+    //         for (int32_t x=0; x<tw_Clipped-xOffset; x++)
+    //         {
+    //             // *pLine++ = pImageV[tex_x];
+    //
+    //             stepsX--;
+    //             if ( stepsX == 0 )
+    //             {
+    //                  tex_x++;
+    //                  stepsX = stepsPerTexel;
+    //             }
+    //         }
+    //
+    //         stepsY--;
+    //         if ( stepsY == 0 )
+    //         {
+    //              tex_y++;
+    //              stepsY = stepsPerTexel;
+    //         }
+    //     }
+    // }
+    m_uOverlayCount = 0;
+}
+
 //The function assumes a vertex buffer has already been set.
 void Driver3D_OGL::RenderIndexedTriangles(IndexBuffer *pIB, int32_t nTriCnt, int32_t startIndex/*=0*/)
 {
@@ -694,6 +959,32 @@ void Driver3D_OGL::RenderIndexedTriangles(IndexBuffer *pIB, int32_t nTriCnt, int
     //To render, we can either use glDrawElements or glDrawRangeElements
     //The is the number of indices. 3 indices needed to make a single triangle
     int idxCnt = nTriCnt*3;
+
+    // for (int t=0, i=startIndex; t<nTriCnt*3; t++, i+=3)
+    // {
+    //     //EXT_TEXTURE_INDEX
+    //     if ( m_pTexArray )
+    //     {
+    //         // int32_t texIndex = m_pTexArray[m_pTexIndex[t>>1]&0xff];
+    //         // assert( (m_pTexIndex[t>>1]&0xff) < (56*4) );
+    //
+    //         // DrawScanline::_pCurTex = m_Textures[ texIndex ];
+    //         // DrawScanline::_texFlip = m_pTexIndex[t>>1]>>8;
+    //         // _curTex = texIndex
+    //         // SetTexture(0,m_pTexArray[0]);
+    //
+    //         // int32_t texIndex = m_pTexArray[m_pTexIndex[t]];
+    //         // SetTexture(0,texIndex);
+    //         // CreateTexture(64, 64, IDriver3D::TEX_FORMAT_RGBA8, m_Textures[texIndex], true, 1);
+    //
+    //
+    //         if(Input::IsKeyDown(XL_I)){
+    //
+    //           // printf("%s", m_Textures[0]);
+    //       }
+    //     }
+    // }
+
     glDrawRangeElements(GL_TRIANGLES, 0, idxCnt, idxCnt, (uStride==2)?GL_UNSIGNED_SHORT:GL_UNSIGNED_INT, BUFFER_OFFSET(startIndex*uStride));
 }
 

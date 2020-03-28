@@ -7,7 +7,26 @@
 #include "../math/Vector2.h"
 #include "../math/Vector4.h"
 #include <cassert>
+#include <vector>
 
+
+struct TextureOGL
+{
+    int32_t m_nWidth;
+    int32_t m_nHeight;
+    int32_t m_nMipCnt;
+    bool m_bIsPow2;
+    int32_t m_nFrameCnt;
+
+    uint32_t *m_pData[32];
+};
+
+struct PolygonDataOGL
+{
+    Vector3 nrmlWS;
+    Vector3 cenWS;
+    float   radius2_WS;
+};
 class IndexBuffer;
 
 class Driver3D_OGL : public IDriver3D
@@ -43,6 +62,8 @@ class Driver3D_OGL : public IDriver3D
         void SetVBO(uint32_t uID, uint32_t uStride, uint32_t uVBO_Flags) override;
         uint32_t CreateIB() override;
         void FillIB(uint32_t uID, void *pData, uint32_t uSize, bool bDynamic) override;
+        //Driver extensions
+        void SetExtension_Data(uint32_t uExtension, void *pData0, void *pData1) override;
         void DeleteBuffer(uint32_t uID) override;
         void ClearDrawData() override;
 
@@ -70,15 +91,30 @@ class Driver3D_OGL : public IDriver3D
 
         Camera *GetCamera() override { return m_pRenderCamera; }
 
+        void SetClearColorFromTex(TextureHandle hTex) override;
+        bool GetGouraud()  { return m_bGouraud; }
+        static uint8_t GetColormapID() { return s_uColormapID; }
+        static TextureOGL *GetCurTex() { return m_pCurTex; }
+
     protected:
 
         void GenerateMips(uint32_t uWidth, uint32_t uHeight, uint8_t *pData);
 
     private:
         uint32_t m_Textures[16384];
+        std::vector<TextureOGL *> m_TexturesOGL;
         uint32_t m_uTextureCnt;
+        TextureHandle *m_pTexArray;
+        uint16_t *m_pTexIndex;
 
         Camera *m_pRenderCamera;
+        void BuildColorTables_32bpp(int refPalIndex=112);
+        // TextureOGL *CreateCheckPattern();
+        static TextureOGL *m_pCurTex;
+        static uint32_t s_uColormapID;
+        PolygonDataOGL *m_pCurPolygonData;
+        void RenderOverlays();
+        bool m_bGouraud;
 };
 
 #endif // DRIVER3D_OGL_H
